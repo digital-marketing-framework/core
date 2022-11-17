@@ -1,0 +1,29 @@
+<?php
+
+namespace DigitalMarketingFramework\Core\Plugin;
+
+use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+
+abstract class Plugin implements PluginInterface
+{
+    use LoggerAwareTrait;
+
+    protected const WEIGHT = 10;
+
+    protected string $keyword;
+
+    public function __construct(string $keyword)
+    {
+        $this->keyword = $keyword;
+    }
+
+    public function getKeyword(): string
+    {
+        return $this->keyword;
+    }
+
+    public function getWeight(): int
+    {
+        return static::WEIGHT;
+    }
+}
