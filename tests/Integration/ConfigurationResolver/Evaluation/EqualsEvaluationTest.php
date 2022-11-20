@@ -20,7 +20,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function equalsScalarEvalTrue(bool $implicitEquals)
+    public function equalsScalarEvalTrue(bool $implicitEquals): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -40,7 +40,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function equalsScalarEvalFalse(bool $implicitEquals)
+    public function equalsScalarEvalFalse(bool $implicitEquals): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -56,7 +56,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldEqualsScalarEvalTrue()
+    public function fieldEqualsScalarEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -68,7 +68,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldEqualsScalarEvalFalse()
+    public function fieldEqualsScalarEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -80,7 +80,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function equalsComplexValueEvalTrue()
+    public function equalsComplexValueEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -96,7 +96,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function equalsComplexValueEvalFalse()
+    public function equalsComplexValueEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -112,11 +112,10 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $implicitEquals
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function multiValueEqualsScalarValueEvalTrue(bool $implicitEquals)
+    public function multiValueEqualsScalarValueEvalTrue(bool $implicitEquals): void
     {
         $this->data['field1'] = new MultiValue(['value1']);
         $config = [
@@ -132,11 +131,10 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $implicitEquals
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function multiValueEqualsScalarValueEvalFalse(bool $implicitEquals)
+    public function multiValueEqualsScalarValueEvalFalse(bool $implicitEquals): void
     {
         $this->data['field1'] = new MultiValue(['value1']);
         $config = [
@@ -152,11 +150,10 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $implicitEquals
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function multiValueEqualsCommaSeparatedListEvalTrue(bool $implicitEquals)
+    public function multiValueEqualsCommaSeparatedListEvalTrue(bool $implicitEquals): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -172,11 +169,10 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $implicitEquals
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function multiValueEqualsCommaSeparatedUnorderedListEvalTrue(bool $implicitEquals)
+    public function multiValueEqualsCommaSeparatedUnorderedListEvalTrue(bool $implicitEquals): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -192,11 +188,10 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $implicitEquals
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function multiValueEqualsCommaSeparatedListEvalFalse(bool $implicitEquals)
+    public function multiValueEqualsCommaSeparatedListEvalFalse(bool $implicitEquals): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -212,11 +207,10 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $implicitEquals
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function multiValueEqualsCommaSeparatedListWithAdditionalValuesEvalFalse(bool $implicitEquals)
+    public function multiValueEqualsCommaSeparatedListWithAdditionalValuesEvalFalse(bool $implicitEquals): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -232,11 +226,10 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $implicitEquals
      * @dataProvider implicitEqualsProvider
      * @test
      */
-    public function multiValueEqualsCommaSeparatedListWithTooFewValuesEvalFalse(bool $implicitEquals)
+    public function multiValueEqualsCommaSeparatedListWithTooFewValuesEvalFalse(bool $implicitEquals): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -252,7 +245,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function multiValueEqualsListValueEvalTrue()
+    public function multiValueEqualsListValueEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -267,7 +260,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function multiValueEqualsUnorderedListValueEvalTrue()
+    public function multiValueEqualsUnorderedListValueEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -282,7 +275,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function multiValueEqualsListValueEvalFalse()
+    public function multiValueEqualsListValueEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -297,7 +290,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function multiValueEqualsListWithAdditionalValuesEvalFalse()
+    public function multiValueEqualsListWithAdditionalValuesEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -312,7 +305,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function multiValueEqualsListWithTooFewValuesEvalFalse()
+    public function multiValueEqualsListWithTooFewValuesEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -327,7 +320,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function scalarValueEqualsListEvalTrue()
+    public function scalarValueEqualsListEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -342,7 +335,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function scalarValueEqualsListEvalFalse()
+    public function scalarValueEqualsListEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -357,7 +350,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function scalarValueEqualsListWithTwoItemsEvalTrue()
+    public function scalarValueEqualsListWithTwoItemsEvalTrue(): void
     {
         $this->data['field1'] = 'value1,value2';
         $config = [
@@ -372,7 +365,7 @@ class EqualsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function scalarValueEqualsListWithTwoItemsEvalFalse()
+    public function scalarValueEqualsListWithTwoItemsEvalFalse(): void
     {
         $this->data['field1'] = 'value1,value2';
         $config = [

@@ -12,12 +12,10 @@ abstract class AbstractModifierEvaluationTest extends AbstractEvaluationTest
     abstract public function modifyMultiValueProvider(): array;
 
     /**
-     * @param $value
-     * @param $modifiedValue
      * @dataProvider modifyProvider
      * @test
      */
-    public function modify($value, $modifiedValue)
+    public function modify(mixed $value, mixed $modifiedValue): void
     {
         $this->data['field1'] = $value;
         $config = [
@@ -30,12 +28,10 @@ abstract class AbstractModifierEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $value
-     * @param array $modifiedValue
      * @dataProvider modifyMultiValueProvider
      * @test
      */
-    public function modifyMultiValue(array $value, array $modifiedValue)
+    public function modifyMultiValue(array $value, array $modifiedValue): void
     {
         $this->data['field1'] = new MultiValue($value);
         $config = [
@@ -50,7 +46,7 @@ abstract class AbstractModifierEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function modifyEmptyMultiValue()
+    public function modifyEmptyMultiValue(): void
     {
         $this->data['field1'] = new MultiValue();
         $config = [

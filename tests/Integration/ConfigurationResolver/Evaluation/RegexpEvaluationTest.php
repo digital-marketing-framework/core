@@ -60,13 +60,10 @@ class RegexpEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param $value
-     * @param $regexp
-     * @param $match
      * @dataProvider regexpMultiValueProvider
      * @test
      */
-    public function regexpMultiValue($value, $regexp, $match)
+    public function regexpMultiValue(array $value, string $regexp, bool $match): void
     {
         $this->data['field1'] = new MultiValue($value);
         $config = [

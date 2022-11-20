@@ -25,12 +25,10 @@ class RequiredEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $required
-     * @param bool $expected
      * @dataProvider requiredProvider
      * @test
      */
-    public function required(array $required, bool $expected)
+    public function required(array $required, bool $expected): void
     {
         $this->data['notEmptyField'] = 'value1';
         $this->data['notEmptyField2'] = 'value2';
@@ -48,12 +46,10 @@ class RequiredEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $required
-     * @param bool $expected
      * @dataProvider requiredProvider
      * @test
      */
-    public function requiredList(array $required, bool $expected)
+    public function requiredList(array $required, bool $expected): void
     {
         $this->data['notEmptyField'] = 'value1';
         $this->data['notEmptyField2'] = 'value2';
@@ -71,12 +67,10 @@ class RequiredEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $required
-     * @param bool $expected
      * @dataProvider requiredProvider
      * @test
      */
-    public function requiredComplexContentResolver(array $required, bool $expected)
+    public function requiredComplexContentResolver(array $required, bool $expected): void
     {
         $this->data['notEmptyField'] = 'value1';
         $this->data['notEmptyField2'] = 'value2';
@@ -97,12 +91,10 @@ class RequiredEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $required
-     * @param bool $expected
      * @dataProvider requiredProvider
      * @test
      */
-    public function requiredMultiValue(array $required, bool $expected)
+    public function requiredMultiValue(array $required, bool $expected): void
     {
         $this->data['notEmptyField'] = new MultiValue(['value1']);
         $this->data['notEmptyField2'] = new MultiValue(['value2']);
@@ -120,12 +112,10 @@ class RequiredEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $required
-     * @param bool $expected
      * @dataProvider requiredProvider
      * @test
      */
-    public function requiredListMultiValue(array $required, bool $expected)
+    public function requiredListMultiValue(array $required, bool $expected): void
     {
         $this->data['notEmptyField'] = new MultiValue(['value1']);
         $this->data['notEmptyField2'] = new MultiValue(['value2']);

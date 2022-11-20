@@ -78,6 +78,12 @@ class GeneralUtilityTest extends TestCase
         }
     }
 
+    /**
+     * @param $value
+     * @param $notExpected
+     * @dataProvider valueIsTrueProvider
+     * @test
+     */
     public function valueIsFalse($value, $notExpected)
     {
         $result = GeneralUtility::isFalse($value);
@@ -275,16 +281,9 @@ class GeneralUtilityTest extends TestCase
         }
     }
 
-    public function compareListsProvider(): array
+    protected function generateComparisonPairs(array $valueGroups): array
     {
         // values in one group are considered to be equal
-        $valueGroups = [
-            [new MultiValue(), '',],
-            [new MultiValue(['value1'])],
-            [new MultiValue(['value2'])],
-            [new MultiValue(['value1', 'value2']), new MultiValue(['value2', 'value1']), 'value1,value2'],
-            [new MultiValue([5,7,13]), new MultiValue([13,7,5]), '5,7,13',],
-        ];
         $provided = [];
         foreach ($valueGroups as $groupIndex => $valueGroup) {
             foreach ($valueGroup as $value) {
@@ -296,6 +295,19 @@ class GeneralUtilityTest extends TestCase
             }
         }
         return $provided;
+    }
+
+    public function compareListsProvider(): array
+    {
+        // values in one group are considered to be equal
+        $valueGroups = [
+            [new MultiValue(), '',],
+            [new MultiValue(['value1'])],
+            [new MultiValue(['value2'])],
+            [new MultiValue(['value1', 'value2']), new MultiValue(['value2', 'value1']), 'value1,value2'],
+            [new MultiValue([5,7,13]), new MultiValue([13,7,5]), '5,7,13',],
+        ];
+        return $this->generateComparisonPairs($valueGroups);
     }
 
     /**

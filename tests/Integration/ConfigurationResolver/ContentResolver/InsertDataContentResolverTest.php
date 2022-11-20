@@ -25,7 +25,7 @@ class InsertDataContentResolverTest extends AbstractContentResolverTest
         ];
     }
 
-    protected function runInsertData($template, $expected, $enabled)
+    protected function runInsertData(mixed $template, mixed $expected, bool $enabled): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => $template,
@@ -40,12 +40,10 @@ class InsertDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $template
-     * @param $expected
      * @dataProvider insertDataProvider
      * @test
      */
-    public function insertData($template, $expected)
+    public function insertData(mixed $template, mixed $expected): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->runInsertData($template, $expected, true);
@@ -53,7 +51,7 @@ class InsertDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function insertDataMultiValueOnly()
+    public function insertDataMultiValueOnly(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 17]);
         $config = [
@@ -65,7 +63,7 @@ class InsertDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function insertDataContainsMultiValue()
+    public function insertDataContainsMultiValue(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 17]);
         $config = [

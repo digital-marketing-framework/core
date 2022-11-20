@@ -15,7 +15,7 @@ class MultiValueContentResolverTest extends AbstractContentResolverTest
     protected const KEYWORD = 'multiValue';
 
     /** @test */
-    public function MultiValue()
+    public function multiValue(): void
     {
         $config = [
             static::KEYWORD => [3,5,17],
@@ -25,7 +25,7 @@ class MultiValueContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function MultiValueEmpty()
+    public function multiValueEmpty(): void
     {
         $config = [
             static::KEYWORD => [],
@@ -35,7 +35,7 @@ class MultiValueContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function MultiValueContainsNull()
+    public function multiValueContainsNull(): void
     {
         $config = [
             static::KEYWORD => [3,null,17],
@@ -45,7 +45,7 @@ class MultiValueContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function MultiValueContainsOnlyNulls()
+    public function MultiValueContainsOnlyNulls(): void
     {
         $config = [
             static::KEYWORD => [null, null, null],

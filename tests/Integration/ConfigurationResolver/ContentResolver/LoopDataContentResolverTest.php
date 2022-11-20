@@ -12,7 +12,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 class LoopDataContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function loopData()
+    public function loopData(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -23,7 +23,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataInsertDataTemplate()
+    public function loopDataInsertDataTemplate(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -39,7 +39,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataWithGlue()
+    public function loopDataWithGlue(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -53,7 +53,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataWithCustomVars()
+    public function loopDataWithCustomVars(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -72,7 +72,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataWithValueCondition()
+    public function loopDataWithValueCondition(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -89,7 +89,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataWithKeyCondition()
+    public function loopDataWithKeyCondition(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -108,7 +108,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataWithOtherCondition()
+    public function loopDataWithOtherCondition(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -125,7 +125,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataFieldTemplateMultiValuesWithLoopGlue()
+    public function loopDataFieldTemplateMultiValuesWithLoopGlue(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 17]);
         $this->data['field2'] = 's';
@@ -141,7 +141,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataFieldTemplateOneMultiValue()
+    public function loopDataFieldTemplateOneMultiValue(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 17]);
         $config = [
@@ -154,7 +154,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataFieldTemplateOneMultiValueJoined()
+    public function loopDataFieldTemplateOneMultiValueJoined(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 17]);
         $config = [
@@ -170,7 +170,7 @@ class LoopDataContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function loopDataFieldTemplateOneMultiValueJoinedWithGlue()
+    public function loopDataFieldTemplateOneMultiValueJoinedWithGlue(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 17]);
         $config = [

@@ -14,7 +14,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     protected const KEY_SELF = ConfigurationResolverInterface::KEY_SELF;
 
     /** @test */
-    public function nullReturnsNull()
+    public function nullReturnsNull(): void
     {
         $config = null;
         $result = $this->runResolverProcess($config);
@@ -22,7 +22,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function selfNullReturnsNull()
+    public function selfNullReturnsNull(): void
     {
         $config = [static::KEY_SELF => null];
         $result = $this->runResolverProcess($config);
@@ -30,7 +30,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function stringReturnsItself()
+    public function stringReturnsItself(): void
     {
         $config = 'value1';
         $result = $this->runResolverProcess($config);
@@ -38,7 +38,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function selfStringReturnsItself()
+    public function selfStringReturnsItself(): void
     {
         $config = [static::KEY_SELF => 'value1'];
         $result = $this->runResolverProcess($config);
@@ -46,7 +46,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function emptyStringReturnsEmptyString()
+    public function emptyStringReturnsEmptyString(): void
     {
         $config = '';
         $result = $this->runResolverProcess($config);
@@ -54,7 +54,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function selfEmptyStringReturnsEmptyString()
+    public function selfEmptyStringReturnsEmptyString(): void
     {
         $config = [static::KEY_SELF => ''];
         $result = $this->runResolverProcess($config);
@@ -62,7 +62,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function complexFieldReturnsItself()
+    public function complexFieldReturnsItself(): void
     {
         $config = new MultiValue(['value1', 'value2']);
         $result = $this->runResolverProcess($config);
@@ -70,7 +70,7 @@ class SelfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function selfComplexFieldReturnsItself()
+    public function selfComplexFieldReturnsItself(): void
     {
         $config = [static::KEY_SELF => new MultiValue(['value1', 'value2'])];
         $result = $this->runResolverProcess($config);

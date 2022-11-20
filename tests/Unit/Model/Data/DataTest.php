@@ -111,5 +111,5 @@ class DataTest extends TestCase
         }
     }
 
-    // TODO test pack and unpack
+    // TODO test pack and unpack, extend MultiValueTest
 }

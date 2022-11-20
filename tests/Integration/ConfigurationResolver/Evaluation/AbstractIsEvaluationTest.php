@@ -17,7 +17,7 @@ abstract class AbstractIsEvaluationTest extends AbstractEvaluationTest
      * @dataProvider isProvider
      * @test
      */
-    public function is(mixed $value, bool $is, bool $expected)
+    public function is(mixed $value, bool $is, bool $expected): void
     {
         if ($value !== null) {
             $this->data['field1'] = $value;
@@ -36,13 +36,10 @@ abstract class AbstractIsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $value
-     * @param bool $is
-     * @param bool $expected
      * @dataProvider isMultiValueProvider
      * @test
      */
-    public function isMultiValue(array $value, bool $is, bool $expected)
+    public function isMultiValue(array $value, bool $is, bool $expected): void
     {
         $this->data['field1'] = new MultiValue($value);
         $config = [
@@ -59,13 +56,10 @@ abstract class AbstractIsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $value
-     * @param bool $is
-     * @param bool $expected
      * @dataProvider anyIsMultiValueProvider
      * @test
      */
-    public function anyIsMultiValue(array $value, bool $is, bool $expected)
+    public function anyIsMultiValue(array $value, bool $is, bool $expected): void
     {
         $this->data['field1'] = new MultiValue($value);
         $config = [
@@ -84,13 +78,10 @@ abstract class AbstractIsEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param array $value
-     * @param bool $is
-     * @param bool $expected
      * @dataProvider allIsMultiValueProvider
      * @test
      */
-    public function allIsMultiValue(array $value, bool $is, bool $expected)
+    public function allIsMultiValue(array $value, bool $is, bool $expected): void
     {
         $this->data['field1'] = new MultiValue($value);
         $config = [

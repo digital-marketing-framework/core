@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
  */
 class GeneralEvaluationTest extends AbstractEvaluationTest
 {
-    public function provider()
+    public function provider(): array
     {
         $scalar1 = 'value1';
         $scalar2 = 'value2';
@@ -54,7 +54,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
         ];
     }
 
-    protected function runThenElse($then, $else, $eval, $expected, $useNullOnThen, $useNullOnElse)
+    protected function runThenElse(mixed $then, mixed $else, mixed $eval, mixed $expected, bool $useNullOnThen, bool $useNullOnElse): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => $eval,
@@ -76,15 +76,10 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param $then
-     * @param $else
-     * @param $eval
-     * @param $expected
-     *
      * @dataProvider provider
      * @test
      */
-    public function thenElse($then, $else, $eval, $expected)
+    public function thenElse(mixed $then, mixed $else, mixed $eval, mixed $expected): void
     {
         $this->runThenElse($then, $else, $eval, $expected, false, false);
         if ($else === null) {
@@ -99,7 +94,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function generalEvaluationActsAsAndEvaluationTrueTrueEvalTrue()
+    public function generalEvaluationActsAsAndEvaluationTrueTrueEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -112,7 +107,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function generalEvaluationActsAsAndEvaluationTrueFalseEvalFalse()
+    public function generalEvaluationActsAsAndEvaluationTrueFalseEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -125,7 +120,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function generalEvaluationActsAsAndEvaluationFalseTrueEvalFalse()
+    public function generalEvaluationActsAsAndEvaluationFalseTrueEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -138,7 +133,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function generalEvaluationActsAsAndEvaluationFalseFalseEvalFalse()
+    public function generalEvaluationActsAsAndEvaluationFalseFalseEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -151,7 +146,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function thenElseIsFilteredOnEvaluationEvalTrue()
+    public function thenElseIsFilteredOnEvaluationEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -164,7 +159,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function thenElseIsFilteredOnEvaluationEvalFalse()
+    public function thenElseIsFilteredOnEvaluationEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -177,7 +172,7 @@ class GeneralEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function thenElseIsFilteredOnEvaluationNoConditionEvalTrue()
+    public function thenElseIsFilteredOnEvaluationNoConditionEvalTrue(): void
     {
         $config = [
             'then' => 'thenValue',

@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\FieldEvaluat
 class FieldEvaluationTest extends AbstractEvaluationTest
 {
     /** @test */
-    public function fieldEqualsEvalTrue()
+    public function fieldEqualsEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -23,7 +23,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldEqualsEvalFalse()
+    public function fieldEqualsEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -36,7 +36,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldDoesNotExistEqualsEvalFalse()
+    public function fieldDoesNotExistEqualsEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -49,7 +49,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldEqualsNotEvalFalse()
+    public function fieldEqualsNotEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -64,7 +64,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldEqualsNotEvalTrue()
+    public function fieldEqualsNotEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -79,7 +79,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldNotEqualsEvalFalse()
+    public function fieldNotEqualsEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -94,7 +94,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldNotEqualsEvalTrue()
+    public function fieldNotEqualsEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -109,7 +109,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldKeywordEqualsEvalTrue()
+    public function fieldKeywordEqualsEvalTrue(): void
     {
         $this->data['not'] = 'value1';
         $config = [
@@ -122,7 +122,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldKeywordEqualsEvalFalse()
+    public function fieldKeywordEqualsEvalFalse(): void
     {
         $this->data['not'] = 'value1';
         $config = [
@@ -135,7 +135,7 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldKeywordDoesNotExistEqualsEvalFalse()
+    public function fieldKeywordDoesNotExistEqualsEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -158,12 +158,10 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldFieldImplicit
-     * @param bool $secondFieldImplicit
      * @dataProvider newFieldOverwritesCurrentFieldProvider
      * @test
      */
-    public function newFieldOverwritesCurrentFieldEvalTrue(bool $fieldFieldImplicit, bool $secondFieldImplicit)
+    public function newFieldOverwritesCurrentFieldEvalTrue(bool $fieldFieldImplicit, bool $secondFieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -186,12 +184,10 @@ class FieldEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $firstFieldImplicit
-     * @param bool $secondFieldImplicit
      * @dataProvider newFieldOverwritesCurrentFieldProvider
      * @test
      */
-    public function newFieldOverwritesCurrentFieldEvalFalse(bool $firstFieldImplicit, bool $secondFieldImplicit)
+    public function newFieldOverwritesCurrentFieldEvalFalse(bool $firstFieldImplicit, bool $secondFieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [

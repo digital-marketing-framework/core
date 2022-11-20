@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\IfValueMapp
 class IfValueMapperTest extends AbstractValueMapperTest
 {
     /** @test */
-    public function valueIfThenExists()
+    public function valueIfThenExists(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -28,7 +28,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function valueIfThenDoesNotExist()
+    public function valueIfThenDoesNotExist(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -45,7 +45,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function valueIfElseExists()
+    public function valueIfElseExists(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -63,7 +63,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function valueIfElseDoesNotExist()
+    public function valueIfElseDoesNotExist(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -80,7 +80,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function constIfThenExists()
+    public function constIfThenExists(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -96,7 +96,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function constIfThenDoesNotExist()
+    public function constIfThenDoesNotExist(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -111,7 +111,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function constIfElseExists()
+    public function constIfElseExists(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -127,7 +127,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function constIfElseDoesNotExist()
+    public function constIfElseDoesNotExist(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -142,7 +142,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function ifValueThen()
+    public function ifValueThen(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';
@@ -164,7 +164,7 @@ class IfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function ifValueElse()
+    public function ifValueElse(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $this->fieldValue = 'value1';

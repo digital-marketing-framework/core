@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 class GeneralContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function singleValue()
+    public function singleValue(): void
     {
         $config = 'value1';
         $result = $this->runResolverProcess($config);
@@ -19,7 +19,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenated()
+    public function concatenated(): void
     {
         $config = [
             1 => 'value1',
@@ -30,7 +30,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenatedWithGlue()
+    public function concatenatedWithGlue(): void
     {
         $config = [
             'glue' => ',',
@@ -42,7 +42,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenatedWithGlueAtTheEnd()
+    public function concatenatedWithGlueAtTheEnd(): void
     {
         $config = [
             1 => 'value1',
@@ -54,7 +54,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWithGlueThatNeedsToBeResolvedUsingIfThen()
+    public function concatenateWithGlueThatNeedsToBeResolvedUsingIfThen(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -73,7 +73,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWithGlueThatNeedsToBeResolvedUsingIfElse()
+    public function concatenateWithGlueThatNeedsToBeResolvedUsingIfElse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -92,7 +92,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWithGlueThatResolvesToNull()
+    public function concatenateWithGlueThatResolvesToNull(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -110,7 +110,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWhereGlueDoesNotGetPassedToSubResolvers()
+    public function concatenateWhereGlueDoesNotGetPassedToSubResolvers(): void
     {
         $config = [
             'glue' => ',',
@@ -131,7 +131,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWithGlueThatNeedsToBeParsed()
+    public function concatenateWithGlueThatNeedsToBeParsed(): void
     {
         $config = [
             'glue' => '\\s',
@@ -143,7 +143,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWithGlueAndEmptyValues()
+    public function concatenateWithGlueAndEmptyValues(): void
     {
         $config = [
             'glue' => ',',
@@ -155,7 +155,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWithGlueAndEmptyFirstValue()
+    public function concatenateWithGlueAndEmptyFirstValue(): void
     {
         $config = [
             'glue' => ',',
@@ -167,7 +167,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function concatenateWithGlueAndEmptySecondValue()
+    public function concatenateWithGlueAndEmptySecondValue(): void
     {
         $config = [
             'glue' => ',',
@@ -179,7 +179,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function singleMultiValueWithGlue()
+    public function singleMultiValueWithGlue(): void
     {
         $config = [
             'glue' => ',',
@@ -192,7 +192,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function emptyScalarValueAndNonEmptyMultiValueWithGlue()
+    public function emptyScalarValueAndNonEmptyMultiValueWithGlue(): void
     {
         $config = [
             'glue' => ',',
@@ -206,7 +206,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function multipleMultiValuesWithGlue()
+    public function multipleMultiValuesWithGlue(): void
     {
         $config = [
             'glue' => ';',
@@ -223,7 +223,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function firstNullSecondNullWithGlue()
+    public function firstNullSecondNullWithGlue(): void
     {
         $config = [
             'glue' => ',',
@@ -235,7 +235,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function firstNullSecondNotNullWithGlue()
+    public function firstNullSecondNotNullWithGlue(): void
     {
         $config = [
             'glue' => ',',
@@ -247,7 +247,7 @@ class GeneralContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function firstNotNullSecondNullWithGlue()
+    public function firstNotNullSecondNullWithGlue(): void
     {
         $config = [
             'glue' => ',',

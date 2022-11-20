@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\SelfValueMa
 class SelfValueMapperTest extends AbstractValueMapperTest
 {
     /** @test */
-    public function mapNull()
+    public function mapNull(): void
     {
         $this->fieldValue = null;
         $config = 'value1';
@@ -19,7 +19,7 @@ class SelfValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function mapConstant()
+    public function mapConstant(): void
     {
         $this->fieldValue = 'value1';
         $config = 'value1b';

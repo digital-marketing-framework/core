@@ -3,33 +3,35 @@
 namespace DigitalMarketingFramework\Core\Model\Cache;
 
 use DateTime;
+use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\Model\Indentifier\CacheIdentifierInterface;
 
 class CacheEntry implements CacheEntryInterface
 {
     public function __construct(
-        protected string $identifier,
-        protected array $data,
+        protected CacheIdentifierInterface $identifier,
+        protected DataInterface $data,
         protected array $tags = [],
         protected DateTime $timestamp = new DateTime(),
     ) {
     }
 
-    public function getIdentifier(): string
+    public function getIdentifier(): CacheIdentifierInterface
     {
         return $this->identifier;
     }
 
-    public function setIdentifier(string $identifier): void
+    public function setIdentifier(CacheIdentifierInterface $identifier): void
     {
         $this->identifier = $identifier;
     }
 
-    public function getData(): array
+    public function getData(): DataInterface
     {
         return $this->data;
     }
 
-    public function setData(array $data): void
+    public function setData(DataInterface $data): void
     {
         $this->data = $data;
     }

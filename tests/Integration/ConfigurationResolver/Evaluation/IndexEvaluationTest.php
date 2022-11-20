@@ -19,11 +19,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithExistingIndexEqualsEvalTrue(bool $fieldImplicit)
+    public function fieldWithExistingIndexEqualsEvalTrue(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -43,11 +42,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithNonExistentIndexEqualsEvalFalse(bool $fieldImplicit)
+    public function fieldWithNonExistentIndexEqualsEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -67,11 +65,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithExistingIndexEqualsEvalFalse(bool $fieldImplicit)
+    public function fieldWithExistingIndexEqualsEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -91,11 +88,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldDoesNotExistEqualsEvalFalse(bool $fieldImplicit)
+    public function fieldDoesNotExistEqualsEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -115,11 +111,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithExistingIndexEqualsNotEvalFalse(bool $fieldImplicit)
+    public function fieldWithExistingIndexEqualsNotEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -141,11 +136,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithNonExistentIndexEqualsNotEvalTrue(bool $fieldImplicit)
+    public function fieldWithNonExistentIndexEqualsNotEvalTrue(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -167,11 +161,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithExistingIndexEqualsNotEvalTrue(bool $fieldImplicit)
+    public function fieldWithExistingIndexEqualsNotEvalTrue(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -193,11 +186,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithExistingIndexNotEqualsEvalFalse(bool $fieldImplicit)
+    public function fieldWithExistingIndexNotEqualsEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -219,11 +211,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithNonExistentIndexNotEqualsEvalTrue(bool $fieldImplicit)
+    public function fieldWithNonExistentIndexNotEqualsEvalTrue(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -245,11 +236,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function fieldWithExistingIndexNotEqualsEvalTrue(bool $fieldImplicit)
+    public function fieldWithExistingIndexNotEqualsEvalTrue(bool $fieldImplicit): void
     {
         $this->data['field1'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -271,7 +261,7 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldKeywordWithExistingIndexEqualsEvalTrue()
+    public function fieldKeywordWithExistingIndexEqualsEvalTrue(): void
     {
         $this->data['not'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -288,7 +278,7 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldKeywordWithNonExistentIndexEqualsEvalFalse()
+    public function fieldKeywordWithNonExistentIndexEqualsEvalFalse(): void
     {
         $this->data['not'] = new MultiValue(['index1' => 'value1.1']);
         $config = [
@@ -305,7 +295,7 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldKeywordEqualsEvalFalse()
+    public function fieldKeywordEqualsEvalFalse(): void
     {
         $this->data['not'] = 'value1';
         $config = [
@@ -318,7 +308,7 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldKeywordDoesNotExistEqualsEvalFalse()
+    public function fieldKeywordDoesNotExistEqualsEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -335,7 +325,7 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function nestedMultiValueItemEqualsScalarValueEvalTrue()
+    public function nestedMultiValueItemEqualsScalarValueEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue([
             'index1' => new MultiValue([
@@ -365,7 +355,7 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function nestedMultiValueItemEqualsScalarValueEvalFalse()
+    public function nestedMultiValueItemEqualsScalarValueEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue([
             'index1' => new MultiValue([
@@ -395,11 +385,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function indexOnScalarValueEqualsScalarValueEvalFalse(bool $fieldImplicit)
+    public function indexOnScalarValueEqualsScalarValueEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -419,11 +408,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function emptyIndexClearsIndexEvalTrue(bool $fieldImplicit)
+    public function emptyIndexClearsIndexEvalTrue(bool $fieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -447,11 +435,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function emptyIndexClearsIndexEvalFalse(bool $fieldImplicit)
+    public function emptyIndexClearsIndexEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -475,11 +462,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function emptyIndexDoesNothingIfNoIndexWasSetBeforeEvalTrue(bool $fieldImplicit)
+    public function emptyIndexDoesNothingIfNoIndexWasSetBeforeEvalTrue(bool $fieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -499,11 +485,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $fieldImplicit
      * @dataProvider implicitFieldProvider
      * @test
      */
-    public function emptyIndexDoesNothingIfNoIndexWasSetBeforeEvalFalse(bool $fieldImplicit)
+    public function emptyIndexDoesNothingIfNoIndexWasSetBeforeEvalFalse(bool $fieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -533,12 +518,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $firstFieldImplicit
-     * @param bool $secondFieldImplicit
      * @dataProvider newFieldClearsIndexProvider
      * @test
      */
-    public function newFieldClearsIndexEvalTrue(bool $firstFieldImplicit, bool $secondFieldImplicit)
+    public function newFieldClearsIndexEvalTrue(bool $firstFieldImplicit, bool $secondFieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -565,12 +548,10 @@ class IndexEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param bool $firstFieldImplicit
-     * @param bool $secondFieldImplicit
      * @dataProvider newFieldClearsIndexProvider
      * @test
      */
-    public function newFieldClearsIndexEvalFalse(bool $firstFieldImplicit, bool $secondFieldImplicit)
+    public function newFieldClearsIndexEvalFalse(bool $firstFieldImplicit, bool $secondFieldImplicit): void
     {
         $this->data['field1'] = 'value1';
         $config = [

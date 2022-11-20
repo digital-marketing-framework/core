@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 class FieldContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function fieldDoesNotExist()
+    public function fieldDoesNotExist(): void
     {
         $config = [
             'field' => 'field1',
@@ -21,7 +21,7 @@ class FieldContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldExists()
+    public function fieldExists(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -32,7 +32,7 @@ class FieldContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldIsEmpty()
+    public function fieldIsEmpty(): void
     {
         $this->data['field1'] = '';
         $config = [
@@ -44,7 +44,7 @@ class FieldContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldHasMultiValue()
+    public function fieldHasMultiValue(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2']);
         $config = [
@@ -55,7 +55,7 @@ class FieldContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldHasEmptyMultiValue()
+    public function fieldHasEmptyMultiValue(): void
     {
         $this->data['field1'] = new MultiValue();
         $config = [

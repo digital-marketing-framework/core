@@ -64,7 +64,7 @@ class NegateContentResolverTest extends AbstractContentResolverTest
         ];
     }
 
-    protected function runNegate($value, $true, $false, $negate, $expected, $useNullOnTrue, $useNullOnFalse)
+    protected function runNegate(mixed $value, mixed $true, mixed $false, mixed $negate, mixed $expected, bool $useNullOnTrue, bool $useNullOnFalse): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => $value,
@@ -91,14 +91,10 @@ class NegateContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $value
-     * @param $true
-     * @param $false
-     * @param $expected
      * @dataProvider provider
      * @test
      */
-    public function negateEnabled($value, $true, $false, $expected)
+    public function negateEnabled(mixed $value, mixed $true, mixed $false, mixed $expected): void
     {
         $this->runNegate($value, $true, $false, true, $expected, false, false);
         if ($true === null) {
@@ -113,14 +109,10 @@ class NegateContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $value
-     * @param $true
-     * @param $false
-     * @param $expected
      * @dataProvider provider
      * @test
      */
-    public function negateDisabled($value, $true, $false, $expected)
+    public function negateDisabled(mixed $value, mixed $true, mixed $false, mixed $expected): void
     {
         $this->runNegate($value, $true, $false, false, $value, false, false);
         if ($true === null) {
@@ -134,7 +126,7 @@ class NegateContentResolverTest extends AbstractContentResolverTest
         }
     }
 
-    protected function runNegateMultiValue($value, $true, $false, $negate, $expected, $useNullOnTrue, $useNullOnFalse)
+    protected function runNegateMultiValue(mixed $value, mixed $true, mixed $false, mixed $negate, mixed $expected, bool $useNullOnTrue, bool $useNullOnFalse): void
     {
         $expected = $expected === null ? [] : [$expected];
         $config = [
@@ -162,14 +154,10 @@ class NegateContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $value
-     * @param $true
-     * @param $false
-     * @param $expected
      * @dataProvider provider
      * @test
      */
-    public function negateMultiValueEnabled($value, $true, $false, $expected)
+    public function negateMultiValueEnabled(mixed $value, mixed $true, mixed $false, mixed $expected): void
     {
         $this->runNegateMultiValue($value, $true, $false, true, $expected, false, false);
         if ($true === null) {
@@ -184,14 +172,10 @@ class NegateContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $value
-     * @param $true
-     * @param $false
-     * @param $expected
      * @dataProvider provider
      * @test
      */
-    public function negateMultiValueDisabled($value, $true, $false, $expected)
+    public function negateMultiValueDisabled(mixed $value, mixed $true, mixed $false, mixed $expected): void
     {
         $this->runNegateMultiValue($value, $true, $false, false, $value, false, false);
         if ($true === null) {

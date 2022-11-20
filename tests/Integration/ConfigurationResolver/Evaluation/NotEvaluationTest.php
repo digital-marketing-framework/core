@@ -16,7 +16,7 @@ class NotEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notUnaryEvalTrue()
+    public function notUnaryEvalTrue(): void
     {
         $config = [
             'not' => '0',
@@ -26,7 +26,7 @@ class NotEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notUnaryEvalFalse()
+    public function notUnaryEvalFalse(): void
     {
         $config = [
             'not' => '1',
@@ -36,7 +36,7 @@ class NotEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notFieldEqualsEvalTrue()
+    public function notFieldEqualsEvalTrue(): void
     {
         $config = [
             'not' => [
@@ -48,7 +48,7 @@ class NotEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notFieldEqualsEvalFalse()
+    public function notFieldEqualsEvalFalse(): void
     {
         $config = [
             'not' => [
@@ -60,7 +60,7 @@ class NotEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldNotEqualsEvalTrue()
+    public function fieldNotEqualsEvalTrue(): void
     {
         $config = [
             'field1' => [
@@ -72,7 +72,7 @@ class NotEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function fieldNotEqualsEvalFalse()
+    public function fieldNotEqualsEvalFalse(): void
     {
         $config = [
             'field1' => [

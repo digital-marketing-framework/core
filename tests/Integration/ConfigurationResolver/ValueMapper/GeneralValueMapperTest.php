@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 class GeneralValueMapperTest extends AbstractValueMapperTest
 {
     /** @test */
-    public function mapNull()
+    public function mapNull(): void
     {
         $this->fieldValue = null;
         $config = [
@@ -24,7 +24,7 @@ class GeneralValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function mapMatches()
+    public function mapMatches(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -37,7 +37,7 @@ class GeneralValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function mapDoesNotMatch()
+    public function mapDoesNotMatch(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -49,7 +49,7 @@ class GeneralValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function mapMultiValueAllMatch()
+    public function mapMultiValueAllMatch(): void
     {
         $this->fieldValue = new MultiValue(['value1', 'value2', 'value3']);
         $config = [
@@ -62,7 +62,7 @@ class GeneralValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function mapMultiValueSomeMatch()
+    public function mapMultiValueSomeMatch(): void
     {
         $this->fieldValue = new MultiValue(['value1', 'value2', 'value3']);
         $config = [
@@ -74,7 +74,7 @@ class GeneralValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function mapMultiValueNoneMatch()
+    public function mapMultiValueNoneMatch(): void
     {
         $this->fieldValue = new MultiValue(['value1', 'value2', 'value3']);
         $config = [
@@ -87,7 +87,7 @@ class GeneralValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function mapNestedMultiValue()
+    public function mapNestedMultiValue(): void
     {
         $this->fieldValue = new MultiValue([
             'key1' => 'value1',

@@ -21,12 +21,10 @@ class IgnoreContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $ignored
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreString($ignore, $ignored)
+    public function ignoreString(mixed $ignore, bool $ignored): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => 'value1',
@@ -41,12 +39,10 @@ class IgnoreContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $ignored
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreEmptyString($ignore, $ignored)
+    public function ignoreEmptyString(mixed $ignore, bool $ignored): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => '',
@@ -61,12 +57,10 @@ class IgnoreContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $ignored
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreNull($ignore, $ignored)
+    public function ignoreNull(mixed $ignore, bool $ignored): void
     {
         $config = [
             static::KEYWORD => $ignore,
@@ -76,12 +70,10 @@ class IgnoreContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $ignored
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreMultiValue($ignore, $ignored)
+    public function ignoreMultiValue(mixed $ignore, bool $ignored): void
     {
         $config = [
             'multiValue' => [5, 7, 13],
@@ -96,12 +88,10 @@ class IgnoreContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $ignored
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreEmptyMultiValue($ignore, $ignored)
+    public function ignoreEmptyMultiValue(mixed $ignore, bool $ignored): void
     {
         $config = [
             'multiValue' => [],

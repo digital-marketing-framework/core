@@ -35,13 +35,10 @@ class SprintfContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $value
-     * @param $format
-     * @param $expected
      * @dataProvider sprintfProvider
      * @test
      */
-    public function sprintf($value, $format, $expected)
+    public function sprintf(mixed $value, string $format, mixed $expected): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => $value,

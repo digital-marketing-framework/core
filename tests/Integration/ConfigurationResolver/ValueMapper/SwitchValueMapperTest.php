@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 class SwitchValueMapperTest extends AbstractValueMapperTest
 {
     /** @test */
-    public function switchCaseMatches()
+    public function switchCaseMatches(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -31,7 +31,7 @@ class SwitchValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function switchCaseDoesNotMatch()
+    public function switchCaseDoesNotMatch(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -51,7 +51,7 @@ class SwitchValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function switchSelfMatches()
+    public function switchSelfMatches(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -71,7 +71,7 @@ class SwitchValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function switchSelfDoesNotMatch()
+    public function switchSelfDoesNotMatch(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -91,7 +91,7 @@ class SwitchValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function switchCaseMatchesKeyword()
+    public function switchCaseMatchesKeyword(): void
     {
         $this->fieldValue = 'if';
         $config = [
@@ -107,7 +107,7 @@ class SwitchValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function switchUnsorted()
+    public function switchUnsorted(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -127,7 +127,7 @@ class SwitchValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function switchCaseIsNumberAndWillBeCastToString()
+    public function switchCaseIsNumberAndWillBeCastToString(): void
     {
         $this->fieldValue = '12';
         $config = [

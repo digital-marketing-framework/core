@@ -8,7 +8,7 @@ abstract class Initialization
 {
     protected const PLUGINS = [];
 
-    public static function initialize(PluginRegistryInterface $registry)
+    public static function initialize(PluginRegistryInterface $registry): void
     {
         foreach (static::PLUGINS as $interface => $plugins) {
             foreach ($plugins as $keyword => $class) {

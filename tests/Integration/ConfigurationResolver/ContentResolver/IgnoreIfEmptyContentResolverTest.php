@@ -19,12 +19,10 @@ class IgnoreIfEmptyContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $enabled
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreString($ignore, $enabled)
+    public function ignoreString(mixed $ignore, bool $enabled): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => 'value1',
@@ -35,12 +33,10 @@ class IgnoreIfEmptyContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $enabled
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreEmptyString($ignore, $enabled)
+    public function ignoreEmptyString(mixed $ignore, bool $enabled): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => '',
@@ -55,12 +51,10 @@ class IgnoreIfEmptyContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $enabled
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreNull($ignore, $enabled)
+    public function ignoreNull(mixed $ignore, bool $enabled): void
     {
         $config = [
             'ignoreIfEmpty' => $ignore,
@@ -70,12 +64,10 @@ class IgnoreIfEmptyContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $enabled
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreMultiValue($ignore, $enabled)
+    public function ignoreMultiValue(mixed $ignore, bool $enabled): void
     {
         $config = [
             'multiValue' => [5, 7, 13],
@@ -86,12 +78,10 @@ class IgnoreIfEmptyContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $enabled
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreEmptyMultiValue($ignore, $enabled)
+    public function ignoreEmptyMultiValue(mixed $ignore, bool $enabled): void
     {
         $config = [
             'multiValue' => [],
@@ -106,12 +96,10 @@ class IgnoreIfEmptyContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $ignore
-     * @param $enabled
      * @dataProvider trueFalseProvider
      * @test
      */
-    public function ignoreMultiValueWithEmptyItemsOnly($ignore, $enabled)
+    public function ignoreMultiValueWithEmptyItemsOnly(mixed $ignore, bool $enabled): void
     {
         $config = [
             'multiValue' => ['', ''],

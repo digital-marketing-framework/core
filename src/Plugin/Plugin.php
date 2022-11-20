@@ -2,9 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Plugin;
 
+use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 
-abstract class Plugin implements PluginInterface
+abstract class Plugin implements PluginInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 

@@ -28,7 +28,7 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function noData()
+    public function noData(): void
     {
         $this->data = [];
         $config = [
@@ -39,7 +39,7 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function collectWithDefaultConfig()
+    public function collectWithDefaultConfig(): void
     {
         $config = [
             'fieldCollector' => true,
@@ -65,14 +65,10 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $processed
-     * @param $useDefaultConfig
-     * @param $unprocessedOnly
-     * @param $expected
      * @dataProvider skipProcessedProvider
      * @test
      */
-    public function skipProcessed($processed, $useDefaultConfig, $unprocessedOnly, $expected)
+    public function skipProcessed(mixed $processed, bool $useDefaultConfig, mixed $unprocessedOnly, mixed $expected): void
     {
         foreach ($processed as $field) {
             $this->fieldTracker->markAsProcessed($field);
@@ -100,14 +96,10 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $value2
-     * @param $useDefaultConfig
-     * @param $ignoreIfEmpty
-     * @param $expected
      * @dataProvider ignoreIfEmptyProvider
      * @test
      */
-    public function ignoreIfEmpty($value2, $useDefaultConfig, $ignoreIfEmpty, $expected)
+    public function ignoreIfEmpty(mixed $value2, bool $useDefaultConfig, mixed $ignoreIfEmpty, mixed $expected): void
     {
         $this->data['field2'] = $value2;
         $config = $useDefaultConfig ? ['fieldCollector' => true] : $this->getNeutralConfig();
@@ -145,12 +137,10 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $config
-     * @param $expected
      * @dataProvider templateProvider
      * @test
      */
-    public function template($config, $expected)
+    public function template(mixed $config, mixed $expected): void
     {
         $config = [
             'fieldCollector' => $config,
@@ -174,12 +164,10 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $exclude
-     * @param $expected
      * @dataProvider excludeProvider
      * @test
      */
-    public function exclude($exclude, $expected)
+    public function exclude(mixed $exclude, mixed $expected): void
     {
         $config = $this->getNeutralConfig();
         if ($exclude !== null) {

@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\KeyEvaluatio
 class KeyEvaluationTest extends AbstractEvaluationTest
 {
     /** @test */
-    public function keyWithFieldEvalTrue()
+    public function keyWithFieldEvalTrue(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -23,7 +23,7 @@ class KeyEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function keyWithFieldEvalFalse()
+    public function keyWithFieldEvalFalse(): void
     {
         $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
         $config = [
@@ -36,7 +36,7 @@ class KeyEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function keyWithoutFieldEvalTrue()
+    public function keyWithoutFieldEvalTrue(): void
     {
         $config = [
             'field1' => [
@@ -48,7 +48,7 @@ class KeyEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function keyWithoutFieldEvalFalse()
+    public function keyWithoutFieldEvalFalse(): void
     {
         $config = [
             'field1' => [

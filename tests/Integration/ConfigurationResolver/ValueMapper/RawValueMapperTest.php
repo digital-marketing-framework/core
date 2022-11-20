@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\RawValueMap
 class RawValueMapperTest extends AbstractValueMapperTest
 {
     /** @test */
-    public function rawMatches()
+    public function rawMatches(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -23,7 +23,7 @@ class RawValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function rawDoesNotMatch()
+    public function rawDoesNotMatch(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -36,7 +36,7 @@ class RawValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function rawKeywordMatches()
+    public function rawKeywordMatches(): void
     {
         $this->fieldValue = 'if';
         $config = [
@@ -49,7 +49,7 @@ class RawValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function rawKeywordDoesNotMatch()
+    public function rawKeywordDoesNotMatch(): void
     {
         $this->fieldValue = 'value1';
         $config = [

@@ -13,7 +13,7 @@ abstract class AbstractModifierContentResolverTest extends AbstractContentResolv
 
     abstract public function modifyMultiValueProvider(): array;
 
-    protected function runModify($value, $expected, $enabled)
+    protected function runModify(mixed $value, mixed $expected, $enabled): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => $value,
@@ -28,18 +28,16 @@ abstract class AbstractModifierContentResolverTest extends AbstractContentResolv
     }
 
     /**
-     * @param $value
-     * @param $expected
      * @dataProvider modifyProvider
      * @test
      */
-    public function modify($value, $expected)
+    public function modify(mixed $value, mixed $expected): void
     {
         $this->runModify($value, $expected, true);
         $this->runModify($value, $value, false);
     }
 
-    protected function runModifyMultiValue($value, $expected, $enabled)
+    protected function runModifyMultiValue(mixed $value, mixed $expected, bool $enabled): void
     {
         $config = [
             'multiValue' => $value,
@@ -55,18 +53,16 @@ abstract class AbstractModifierContentResolverTest extends AbstractContentResolv
 
 
     /**
-     * @param $value
-     * @param $expected
      * @dataProvider modifyMultiValueProvider
      * @test
      */
-    public function modifyMultiValue($value, $expected)
+    public function modifyMultiValue($value, $expected): void
     {
         $this->runModifyMultiValue($value, $expected, true);
         $this->runModifyMultiValue($value, $value, false);
     }
 
-    protected function runModifyNestedMultiValue($value, $expected, $enabled)
+    protected function runModifyNestedMultiValue(mixed $value, mixed $expected, bool $enabled): void
     {
         $config = [
             'multiValue' => [
@@ -82,12 +78,10 @@ abstract class AbstractModifierContentResolverTest extends AbstractContentResolv
     }
 
     /**
-     * @param $value
-     * @param $expected
      * @dataProvider modifyMultiValueProvider
      * @test
      */
-    public function modifyNestedMultiValue($value, $expected)
+    public function modifyNestedMultiValue(mixed $value, mixed $expected): void
     {
         $this->runModifyNestedMultiValue($value, $expected, true);
         $this->runModifyNestedMultiValue($value, $value, false);

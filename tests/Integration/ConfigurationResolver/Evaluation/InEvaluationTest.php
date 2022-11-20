@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\InEvaluation
 class InEvaluationTest extends AbstractEvaluationTest
 {
     /** @test */
-    public function nullIn()
+    public function nullIn(): void
     {
         $config = [
             'field1' => [
@@ -22,7 +22,7 @@ class InEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function nullInList()
+    public function nullInList(): void
     {
         $config = [
             'field1' => [
@@ -36,7 +36,7 @@ class InEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function in()
+    public function in(): void
     {
         $this->data['field1'] = 5;
         $config = [
@@ -49,7 +49,7 @@ class InEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function inList()
+    public function inList(): void
     {
         $this->data['field1'] = 5;
         $config = [
@@ -65,7 +65,7 @@ class InEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notIn()
+    public function notIn(): void
     {
         $this->data['field1'] = 5;
         $config = [
@@ -78,7 +78,7 @@ class InEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notInList()
+    public function notInList(): void
     {
         $this->data['field1'] = 5;
         $config = [

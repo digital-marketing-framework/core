@@ -34,7 +34,7 @@ class IfContentResolverTest extends AbstractContentResolverTest
         ];
     }
 
-    protected function runIfThenElse($evalTrue, $then, $else, $expected, $useNullOnThen, $useNullOnElse)
+    protected function runIfThenElse(bool $evalTrue, mixed $then, mixed $else, mixed $expected, bool $useNullOnThen, bool $useNullOnElse): void
     {
         $config = [
             'if' => [
@@ -56,14 +56,10 @@ class IfContentResolverTest extends AbstractContentResolverTest
     }
 
     /**
-     * @param $evalTrue
-     * @param $then
-     * @param $else
-     * @param $expected
      * @dataProvider ifProvider
      * @test
      */
-    public function ifThenElse($evalTrue, $then, $else, $expected)
+    public function ifThenElse(bool $evalTrue, mixed $then, mixed $else, mixed $expected): void
     {
         $this->runIfThenElse($evalTrue, $then, $else, $expected, false, false);
         if ($then === null) {
@@ -78,7 +74,7 @@ class IfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function nestedIf()
+    public function nestedIf(): void
     {
         $config = [
             'if' => [

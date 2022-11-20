@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 class AllEvaluationTest extends AbstractEvaluationTest
 {
     /** @test */
-    public function allOfMultiValueRegexpEvalTrue()
+    public function allOfMultiValueRegexpEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2', 'value3']);
         $config = [
@@ -26,7 +26,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfMultiValueEqualsEvalFalse()
+    public function allOfMultiValueEqualsEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2', 'value3']);
         $config = [
@@ -41,7 +41,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfEmptyMultiValueEqualsEvalTrue()
+    public function allOfEmptyMultiValueEqualsEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue([]);
         $config = [
@@ -54,7 +54,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfNonExistentFieldEqualsEvalFalse()
+    public function allOfNonExistentFieldEqualsEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1', 'value2', 'value3']);
         $config = [
@@ -69,7 +69,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfScalarValueEqualsEvalTrue()
+    public function allOfScalarValueEqualsEvalTrue(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -82,7 +82,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfScalarValueEqualsEvalFalse()
+    public function allOfScalarValueEqualsEvalFalse(): void
     {
         $this->data['field1'] = 'value1';
         $config = [
@@ -95,7 +95,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfMultiValueEqualsNotMatchesNoneEvalTrue()
+    public function allOfMultiValueEqualsNotMatchesNoneEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 13]);
         $config = [
@@ -110,7 +110,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfMultiValueEqualsNotMatchesOneEvalFalse()
+    public function allOfMultiValueEqualsNotMatchesOneEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue([5, 7, 13]);
         $config = [
@@ -125,7 +125,7 @@ class AllEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allOfMultiValueEqualsNotMatchesAllEvalFalse()
+    public function allOfMultiValueEqualsNotMatchesAllEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue([7, 7, 7]);
         $config = [

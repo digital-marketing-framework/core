@@ -3,10 +3,11 @@
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
 class MultiValueContentResolver extends ContentResolver
 {
-    protected function getMultiValue(): MultiValue
+    protected function getMultiValue(): MultiValueInterface
     {
         return new MultiValue([]);
     }

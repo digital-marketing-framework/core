@@ -67,13 +67,13 @@ class MultiValue extends ArrayObject implements MultiValueInterface
             } else {
                 $class = $packedValue['type'];
                 $value = $packedValue['value'];
-                if (!class_exists($value['type'])) {
+                if (!class_exists($class)) {
                     throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
                 }
                 if (!in_array(ValueInterface::class, class_implements($class))) {
                     throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
                 }
-                $data[$key] = $class::unpack($value['value']);
+                $data[$key] = $class::unpack($value);
             }
         }
         return new static($data);

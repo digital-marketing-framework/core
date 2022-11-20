@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 class JoinContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function joinNull()
+    public function joinNull(): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => null,
@@ -22,7 +22,7 @@ class JoinContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function joinString()
+    public function joinString(): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => 'value1',
@@ -33,7 +33,7 @@ class JoinContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function joinMultiValue()
+    public function joinMultiValue(): void
     {
         $config = [
             'multiValue' => [5, 7, 17],
@@ -44,7 +44,7 @@ class JoinContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function joinMultiValueWithGlue()
+    public function joinMultiValueWithGlue(): void
     {
         $config = [
             'multiValue' => [5, 7, 17],

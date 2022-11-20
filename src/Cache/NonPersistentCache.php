@@ -4,6 +4,8 @@ namespace DigitalMarketingFramework\Core\Cache;
 
 use DigitalMarketingFramework\Core\Model\Cache\CacheEntry;
 use DigitalMarketingFramework\Core\Model\Cache\CacheEntryInterface;
+use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\Model\Indentifier\CacheIdentifierInterface;
 
 class NonPersistentCache implements CacheInterface
 {
@@ -22,12 +24,9 @@ class NonPersistentCache implements CacheInterface
         return $this->timeoutInSeconds;
     }
 
-    /**
-     * @return ?array<mixed>
-     */
-    public function fetch(string $identifier): ?array
+    public function fetch(CacheIdentifierInterface $identifier): ?DataInterface
     {
-        $entry = $this->storage[$identifier] ?? null;
+        $entry = $this->storage[$identifier->getCacheKey()] ?? null;
         if ($entry !== null) {
             if ($entry->expired($this->timeoutInSeconds)) {
                 unset($this->storage[$identifier]);
@@ -71,17 +70,16 @@ class NonPersistentCache implements CacheInterface
     }
 
     /**
-     * @param array<mixed> $data
      * @param array<string> $tags
      */
-    public function store(string $identifier, array $data, array $tags = []): void
+    public function store(CacheIdentifierInterface $identifier, DataInterface $data, array $tags = []): void
     {
         $this->storage[$identifier] = new CacheEntry($identifier, $data, $tags);
     }
     
-    public function purge(string $identifier): void
+    public function purge(CacheIdentifierInterface $identifier): void
     {
-        unset($this->storage[$identifier]);
+        unset($this->storage[$identifier->getCacheKey()]);
     }
 
     /**

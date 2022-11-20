@@ -57,7 +57,7 @@ class SplitContentResolverTest extends AbstractContentResolverTest
         ];
     }
 
-    protected function runSplit($value, $index, $token, $expected, $direct, $pointer)
+    protected function runSplit(mixed $value, mixed $index, mixed $token, mixed $expected, bool $direct, string $pointer): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => $value,
@@ -79,14 +79,10 @@ class SplitContentResolverTest extends AbstractContentResolverTest
 
 
     /**
-     * @param $value
-     * @param $index
-     * @param $token
-     * @param $expected
      * @dataProvider splitBySpliceProvider
      * @test
      */
-    public function splitByIndex($value, $index, $token, $expected)
+    public function splitByIndex(mixed $value, mixed $index, mixed $token, mixed $expected): void
     {
         $this->runSplit($value, $index, $token, $expected, false, 'index');
         if ($token === null) {
@@ -96,14 +92,10 @@ class SplitContentResolverTest extends AbstractContentResolverTest
 
 
     /**
-     * @param $value
-     * @param $splice
-     * @param $token
-     * @param $expected
      * @dataProvider splitByIndexProvider
      * @test
      */
-    public function splitBySplice($value, $splice, $token, $expected)
+    public function splitBySplice(mixed $value, mixed $splice, mixed $token, mixed $expected): void
     {
         $this->runSplit($value, $splice, $token, $expected, false, 'slice');
         if ($token === null) {

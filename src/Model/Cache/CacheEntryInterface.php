@@ -3,13 +3,15 @@
 namespace DigitalMarketingFramework\Core\Model\Cache;
 
 use DateTime;
+use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\Model\Indentifier\CacheIdentifierInterface;
 
 interface CacheEntryInterface
 {
-    public function getIdentifier(): string;
-    public function setIdentifier(string $identifier): void;
-    public function getData(): array;
-    public function setData(array $data): void;
+    public function getIdentifier(): CacheIdentifierInterface;
+    public function setIdentifier(CacheIdentifierInterface $identifier): void;
+    public function getData(): DataInterface;
+    public function setData(DataInterface $data): void;
     public function getTimestamp(): DateTime;
     public function setTimestamp(DateTime $timestamp): void;
     public function updateTimestamp(): void;

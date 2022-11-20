@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\FirstOf
 class FirstOfContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function multipleFieldExistAndAreNotEmptyReturnsFirstField()
+    public function multipleFieldExistAndAreNotEmptyReturnsFirstField(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -25,7 +25,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function firstFieldDoesNotExistSecondFieldDoesExistAndIsNotEmptyReturnsSecondField()
+    public function firstFieldDoesNotExistSecondFieldDoesExistAndIsNotEmptyReturnsSecondField(): void
     {
         $this->data['field2'] = 'value2';
         $config = [
@@ -39,7 +39,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function firstFieldDoesExistButIsEmptySecondFieldDoesExistAndIsNotEmptyReturnsSecondField()
+    public function firstFieldDoesExistButIsEmptySecondFieldDoesExistAndIsNotEmptyReturnsSecondField(): void
     {
         $this->data['field1'] = '';
         $this->data['field2'] = 'value2';
@@ -54,7 +54,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function firstFieldDoesNotExistSecondFieldIsEmptyReturnsEmptyString()
+    public function firstFieldDoesNotExistSecondFieldIsEmptyReturnsEmptyString(): void
     {
         $this->data['field2'] = '';
         $config = [
@@ -68,7 +68,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function firstFieldIsEmptySecondFieldDoesNotExistReturnsEmptyString()
+    public function firstFieldIsEmptySecondFieldDoesNotExistReturnsEmptyString(): void
     {
         $this->data['field1'] = '';
         $config = [
@@ -82,7 +82,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function allFieldsAreEmptyReturnsEmptyString()
+    public function allFieldsAreEmptyReturnsEmptyString(): void
     {
         $this->data['field1'] = '';
         $this->data['field2'] = '';
@@ -97,7 +97,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function noFieldExistsReturnsNull()
+    public function noFieldExistsReturnsNull(): void
     {
         $config = [
             'firstOf' => [
@@ -110,7 +110,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldsAreSortedReturnsFirstField()
+    public function fieldsAreSortedReturnsFirstField(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -125,7 +125,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldConditionFailsElseDoesNotExistReturnsSecondField()
+    public function fieldConditionFailsElseDoesNotExistReturnsSecondField(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -145,7 +145,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldConditionFailsElseDoesExistReturnsElsePart()
+    public function fieldConditionFailsElseDoesExistReturnsElsePart(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -165,7 +165,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldConditionSucceedsThenDoesNotExistReturnsSecondField()
+    public function fieldConditionSucceedsThenDoesNotExistReturnsSecondField(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
@@ -185,7 +185,7 @@ class FirstOfContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function fieldConditionSucceedsThenDoesExistReturnsSecondField()
+    public function fieldConditionSucceedsThenDoesExistReturnsSecondField(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';

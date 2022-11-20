@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 class ValueContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function selfNullReturnsNull()
+    public function selfNullReturnsNull(): void
     {
         $config = ['value' => null];
         $result = $this->runResolverProcess($config);
@@ -19,7 +19,7 @@ class ValueContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function selfStringReturnsItself()
+    public function selfStringReturnsItself(): void
     {
         $config = ['value' => 'value1'];
         $result = $this->runResolverProcess($config);
@@ -27,7 +27,7 @@ class ValueContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function selfEmptyStringReturnsEmptyString()
+    public function selfEmptyStringReturnsEmptyString(): void
     {
         $config = ['value' => ''];
         $result = $this->runResolverProcess($config);
@@ -35,7 +35,7 @@ class ValueContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function selfComplexFieldReturnsItself()
+    public function selfComplexFieldReturnsItself(): void
     {
         $config = ['value' => new MultiValue(['value1', 'value2'])];
         $result = $this->runResolverProcess($config);

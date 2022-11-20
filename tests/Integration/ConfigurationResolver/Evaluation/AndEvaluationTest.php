@@ -17,7 +17,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allTrue()
+    public function allTrue(): void
     {
         $config = [
             'and' => [
@@ -31,7 +31,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function allFalse()
+    public function allFalse(): void
     {
         $config = [
             'and' => [
@@ -45,7 +45,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function someTrue()
+    public function someTrue(): void
     {
         $config = [
             'and' => [
@@ -59,7 +59,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function complexNestedConditionEvalTrue()
+    public function complexNestedConditionEvalTrue(): void
     {
         $config = [
             'and' => [
@@ -82,7 +82,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function complexNestedConditionEvalFalse()
+    public function complexNestedConditionEvalFalse(): void
     {
         $config = [
             'and' => [
@@ -105,7 +105,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldLastEvalTrue()
+    public function staticKeywordFieldLastEvalTrue(): void
     {
         $config = [
             'equals' => 'value1',
@@ -116,7 +116,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFieldEvalTrue()
+    public function staticKeyWordFieldEvalTrue(): void
     {
         $config = [
             'field' => 'field1',
@@ -127,7 +127,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFieldEvalFalse()
+    public function staticKeyWordFieldEvalFalse(): void
     {
         $config = [
             'field' => 'field1',
@@ -138,7 +138,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFieldNonExistentFieldEvalFalse()
+    public function staticKeyWordFieldNonExistentFieldEvalFalse(): void
     {
         $config = [
             'field' => 'field4',
@@ -149,7 +149,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFieldWithComplexEvaluationEvalTrue()
+    public function staticKeyWordFieldWithComplexEvaluationEvalTrue(): void
     {
         $config = [
             'field' => 'field1',
@@ -163,7 +163,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFieldWithComplexEvaluationEvalFalse()
+    public function staticKeyWordFieldWithComplexEvaluationEvalFalse(): void
     {
         $config = [
             'field' => 'field1',
@@ -177,7 +177,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldWithSubEvaluationsEvalTrue()
+    public function staticKeywordFieldWithSubEvaluationsEvalTrue(): void
     {
         $config = [
             'field2' => 'value2',
@@ -189,7 +189,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldWithSubEvaluationsEvalFalse()
+    public function staticKeywordFieldWithSubEvaluationsEvalFalse(): void
     {
         $config = [
             'field2' => 'value2',
@@ -201,7 +201,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldIndexEvalTrue()
+    public function staticKeywordFieldIndexEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue(['value1.1', 'value1.2']);
         $config = [
@@ -214,7 +214,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldIndexLastEvalTrue()
+    public function staticKeywordFieldIndexLastEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue(['value1.1', 'value1.2']);
         $config = [
@@ -227,7 +227,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldLastIndexEvalTrue()
+    public function staticKeywordFieldLastIndexEvalTrue(): void
     {
         $this->data['field1'] = new MultiValue(['value1.1', 'value1.2']);
         $config = [
@@ -240,7 +240,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldIndexEvalFalse()
+    public function staticKeywordFieldIndexEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1.1', 'value1.2']);
         $config = [
@@ -253,7 +253,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldIndexNonExistentFieldEvalFalse()
+    public function staticKeywordFieldIndexNonExistentFieldEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1.1', 'value1.2']);
         $config = [
@@ -266,7 +266,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldIndexNonExistentIndexEvalFalse()
+    public function staticKeywordFieldIndexNonExistentIndexEvalFalse(): void
     {
         $this->data['field1'] = new MultiValue(['value1.1', 'value1.2']);
         $config = [
@@ -279,7 +279,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeywordFieldIndexNonMultiValueEvalFalse()
+    public function staticKeywordFieldIndexNonMultiValueEvalFalse(): void
     {
         $config = [
             'field' => 'field1',
@@ -291,7 +291,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFirstModifyScalarEvalTrue()
+    public function staticKeyWordFirstModifyScalarEvalTrue(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [
@@ -303,7 +303,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFirstModifyScalarEvalFalse()
+    public function staticKeyWordFirstModifyScalarEvalFalse(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [
@@ -315,7 +315,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordLastModifyScalarEvalTrue()
+    public function staticKeyWordLastModifyScalarEvalTrue(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [
@@ -327,7 +327,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordLastModifyScalarEvalFalse()
+    public function staticKeyWordLastModifyScalarEvalFalse(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [
@@ -339,7 +339,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFirstModifyArrayEvalTrue()
+    public function staticKeyWordFirstModifyArrayEvalTrue(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [
@@ -354,7 +354,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordFirstModifyArrayEvalFalse()
+    public function staticKeyWordFirstModifyArrayEvalFalse(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [
@@ -369,7 +369,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordLastModifyArrayEvalTrue()
+    public function staticKeyWordLastModifyArrayEvalTrue(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [
@@ -384,7 +384,7 @@ class AndEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function staticKeyWordLastModifyArrayEvalFalse()
+    public function staticKeyWordLastModifyArrayEvalFalse(): void
     {
         $this->data['field1'] = ' value1 ';
         $config = [

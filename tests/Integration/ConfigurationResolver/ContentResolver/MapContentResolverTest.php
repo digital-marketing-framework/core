@@ -14,7 +14,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 class MapContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function map()
+    public function map(): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => 'value1',
@@ -28,7 +28,7 @@ class MapContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function noMap()
+    public function noMap(): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => 'value1',
@@ -42,7 +42,7 @@ class MapContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function mapMultiValue()
+    public function mapMultiValue(): void
     {
         $config = [
             'multiValue' => ['value1', 'value2', 'value3'],
@@ -57,7 +57,7 @@ class MapContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function noMapMultiValue()
+    public function noMapMultiValue(): void
     {
         $config = [
             'multiValue' => ['value1', 'value2', 'value3'],
@@ -72,7 +72,7 @@ class MapContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function someMapMultiValue()
+    public function someMapMultiValue(): void
     {
         $config = [
             'multiValue' => ['value1', 'value2', 'value3'],

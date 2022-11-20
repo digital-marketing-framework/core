@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 class DefaultContentResolverTest extends AbstractContentResolverTest
 {
     /** @test */
-    public function defaultOnly()
+    public function defaultOnly(): void
     {
         $config = [
             'default' => 'default1',
@@ -21,7 +21,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function null()
+    public function null(): void
     {
         $config = [
             'default' => 'default1',
@@ -31,7 +31,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function emptyString()
+    public function emptyString(): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => '',
@@ -42,7 +42,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function emptyStringWhenTrimmed()
+    public function emptyStringWhenTrimmed(): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => ' ',
@@ -54,7 +54,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function nonEmptyString()
+    public function nonEmptyString(): void
     {
         $config = [
             ConfigurationResolverInterface::KEY_SELF => 'value1',
@@ -65,7 +65,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function multiValue()
+    public function multiValue(): void
     {
         $config = [
             'multiValue' => ['value1', 'value2'],
@@ -76,7 +76,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function emptyMultiValue()
+    public function emptyMultiValue(): void
     {
         $config = [
             'multiValue' => [],
@@ -87,7 +87,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function multiValueOneEmptyItem()
+    public function multiValueOneEmptyItem(): void
     {
         $config = [
             'multiValue' => [''],
@@ -98,7 +98,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function multiValueMultipleEmptyItems()
+    public function multiValueMultipleEmptyItems(): void
     {
         $config = [
             'multiValue' => ['', ''],
@@ -109,7 +109,7 @@ class DefaultContentResolverTest extends AbstractContentResolverTest
     }
 
     /** @test */
-    public function defaultIsMultiValue()
+    public function defaultIsMultiValue(): void
     {
         $config = [
             'default' => [

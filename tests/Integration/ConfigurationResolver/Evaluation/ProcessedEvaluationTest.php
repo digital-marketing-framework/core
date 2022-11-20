@@ -16,7 +16,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function processedInEvaluationEvalTrue()
+    public function processedInEvaluationEvalTrue(): void
     {
         $config = [
             1 => [ 'field1' => 'value1', ],
@@ -31,7 +31,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function processedInEvaluationEvalFalse()
+    public function processedInEvaluationEvalFalse(): void
     {
         $config = [
             1 => [ 'field1' => 'value1', ],
@@ -46,7 +46,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notProcessedInEvaluationEvalTrue()
+    public function notProcessedInEvaluationEvalTrue(): void
     {
         $config = [
             1 => [ 'field2' => 'value2', ],
@@ -61,7 +61,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notProcessedInEvaluationEvalFalse()
+    public function notProcessedInEvaluationEvalFalse(): void
     {
         $config = [
             1 => [ 'field2' => 'value2', ],
@@ -76,7 +76,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function processedBeforeEvalTrue()
+    public function processedBeforeEvalTrue(): void
     {
         $this->fieldTracker->markAsProcessed('field1');
         $config = [
@@ -89,7 +89,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function processedBeforeEvalFalse()
+    public function processedBeforeEvalFalse(): void
     {
         $this->fieldTracker->markAsProcessed('field1');
         $config = [
@@ -102,7 +102,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notProcessedBeforeEvalTrue()
+    public function notProcessedBeforeEvalTrue(): void
     {
         $this->fieldTracker->markAsProcessed('field2');
         $config = [
@@ -115,7 +115,7 @@ class ProcessedEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function notProcessedBeforeEvalFalse()
+    public function notProcessedBeforeEvalFalse(): void
     {
         $this->fieldTracker->markAsProcessed('field2');
         $config = [

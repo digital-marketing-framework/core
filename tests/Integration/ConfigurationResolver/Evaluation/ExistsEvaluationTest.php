@@ -16,7 +16,7 @@ class ExistsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function existsEvalTrue()
+    public function existsEvalTrue(): void
     {
         $config = [
             'field1' => [
@@ -28,7 +28,7 @@ class ExistsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function existsEvalFalse()
+    public function existsEvalFalse(): void
     {
         $config = [
             'field4' => [
@@ -40,7 +40,7 @@ class ExistsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function doesNotExistEvalTrue()
+    public function doesNotExistEvalTrue(): void
     {
         $config = [
             'field4' => [
@@ -52,7 +52,7 @@ class ExistsEvaluationTest extends AbstractEvaluationTest
     }
 
     /** @test */
-    public function doesNotExistEvalFalse()
+    public function doesNotExistEvalFalse(): void
     {
         $config = [
             'field1' => [

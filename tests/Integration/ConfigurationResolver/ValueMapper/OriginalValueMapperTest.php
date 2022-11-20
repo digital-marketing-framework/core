@@ -16,7 +16,7 @@ class OriginalValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function original()
+    public function original(): void
     {
         $this->fieldValue = 'value1';
         $config = [
@@ -27,7 +27,7 @@ class OriginalValueMapperTest extends AbstractValueMapperTest
     }
 
     /** @test */
-    public function ifOriginal()
+    public function ifOriginal(): void
     {
         $this->fieldValue = 'value1';
         $config = [
