@@ -14,6 +14,7 @@ class IfContentResolverTest extends AbstractContentResolverTest
         parent::setUp();
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
+        $this->data['field3'] = 'value3';
     }
 
     public function ifProvider(): array
@@ -89,5 +90,47 @@ class IfContentResolverTest extends AbstractContentResolverTest
         ];
         $result = $this->runResolverProcess($config);
         $this->assertEquals('expected-value', $result);
+    }
+
+    /** @test */
+    public function discardedElsePartGetsComputedAsWell(): void
+    {
+        $config = [
+            'if' => [
+                'field3' => 'value3',
+                'then' => ['field' => 'field1'],
+                'else' => ['field' => 'field2'],
+            ],
+        ];
+
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field2'));
+
+        $result = $this->runResolverProcess($config);
+        
+        $this->assertEquals('value1', $result);
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field2'));
+    }
+
+    /** @test */
+    public function discardedThenPartGetsComputedAsWell(): void
+    {
+        $config = [
+            'if' => [
+                'field3' => 'value4',
+                'then' => ['field' => 'field1'],
+                'else' => ['field' => 'field2'],
+            ],
+        ];
+
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field2'));
+
+        $result = $this->runResolverProcess($config);
+        
+        $this->assertEquals('value2', $result);
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field2'));
     }
 }

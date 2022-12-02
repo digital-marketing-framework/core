@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolver;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 abstract class ContentResolver extends ConfigurationResolver implements ContentResolverInterface
 {
@@ -13,12 +14,12 @@ abstract class ContentResolver extends ConfigurationResolver implements ContentR
         return ContentResolverInterface::class;
     }
 
-    public function build()
+    public function build(): string|ValueInterface|null
     {
         return null;
     }
 
-    public function finish(&$result): bool
+    public function finish(string|ValueInterface|null &$result): bool
     {
         return false;
     }

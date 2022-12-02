@@ -9,7 +9,7 @@ class FileValueTest extends AbstractFieldTest
 {
     protected const FIELD_CLASS =  FileValue::class;
 
-    protected function createField(...$arguments)
+    protected function createField(...$arguments): FileValue
     {
         $file = $this->createMock(FileInterface::class);
         $file->method('getName')->willReturn($arguments[0] ?? 'name1');
@@ -20,7 +20,7 @@ class FileValueTest extends AbstractFieldTest
     }
 
     /** @test */
-    public function init()
+    public function init(): void
     {
         $this->subject = $this->createField();
         $this->assertEquals('name1', $this->subject->getFileName());

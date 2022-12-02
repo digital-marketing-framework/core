@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 
 /**
  * NOTE: more elaborate tests on value mappers can be found under the namespace
- *       FormRelay\Core\Tests\Integration\ConfigurationResolver\ValueMapper
+ *       DigitalMarketingFramework\Core\Tests\Integration\ConfigurationResolver\ValueMapper
  *
  * @covers MapContentResolver
  */

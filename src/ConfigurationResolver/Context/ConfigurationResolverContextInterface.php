@@ -8,7 +8,8 @@ use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 
 interface ConfigurationResolverContextInterface extends ArrayAccess
 {
-    public function copy(): ConfigurationResolverContextInterface;
+    public function copy(bool $keepFieldTracker = true, ?DataInterface $data = null): ConfigurationResolverContextInterface;
+    public function toArray(): array;
 
     public function getFieldTracker(): FieldTrackerInterface;
     public function getData(): DataInterface;

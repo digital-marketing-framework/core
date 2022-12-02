@@ -8,9 +8,10 @@ use InvalidArgumentException;
 
 class MultiValue extends ArrayObject implements MultiValueInterface
 {
-    protected string $glue = ',';
-
-    public function __construct(array $a = []) {
+    public function __construct(
+        array $a = [],
+        protected string $glue = ',',
+    ) {
         parent::__construct($a);
     }
 
@@ -19,7 +20,17 @@ class MultiValue extends ArrayObject implements MultiValueInterface
         return iterator_to_array($this);
     }
 
-    public function setGlue(string $glue)
+    public function count(): int
+    {
+        return count($this->toArray());
+    }
+
+    public function empty(): bool
+    {
+        return $this->count() === 0;
+    }
+
+    public function setGlue(string $glue): void
     {
         $this->glue = $glue;
     }

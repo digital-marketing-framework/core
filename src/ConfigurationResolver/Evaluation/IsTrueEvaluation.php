@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class IsTrueEvaluation extends AbstractIsEvaluation
 {
-    protected function evalValue($fieldValue)
+    protected function evalValue($fieldValue): bool
     {
         return GeneralUtility::isTrue($fieldValue);
     }

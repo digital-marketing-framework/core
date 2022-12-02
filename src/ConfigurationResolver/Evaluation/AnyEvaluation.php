@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 class AnyEvaluation extends Evaluation
 {
-    protected function evalValue($fieldValue)
+    protected function evalValue($fieldValue): bool
     {
         return $this->evaluate($this->configuration);
     }
@@ -16,7 +16,7 @@ class AnyEvaluation extends Evaluation
         return false;
     }
 
-    protected function calculateResult(bool $indexResult, bool $overallResult)
+    protected function calculateResult(bool $indexResult, bool $overallResult): bool
     {
         return $indexResult || $overallResult;
     }

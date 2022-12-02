@@ -9,7 +9,9 @@ interface MultiValueInterface extends ValueInterface, ArrayAccess, IteratorAggre
 {
     public function __construct(array $a = []);
     public function toArray(): array;
-    public function setGlue(string $glue);
+    public function count(): int;
+    public function empty(): bool;
+    public function setGlue(string $glue): void;
     public function getGlue(): string;
     public function __toString(): string;
     public function pack(): array;

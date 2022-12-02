@@ -2,17 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper;
 
-use DigitalMarketingFramework\Core\Model\Form\FieldInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class IfValueMapper extends ValueMapper
 {
     protected const WEIGHT = -1;
 
-    /**
-     * @param string|FieldInterface|null $fieldValue
-     * @return string|FieldInterface|null
-     */
-    protected function resolveValue($fieldValue)
+    protected function resolveValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
         $result = $this->resolveEvaluation($this->configuration);
         if ($result !== null) {

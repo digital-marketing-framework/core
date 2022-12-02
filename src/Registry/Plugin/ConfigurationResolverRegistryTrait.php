@@ -7,10 +7,19 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\Content
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\EvaluationInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
+use DigitalMarketingFramework\Core\Service\DataProcessor;
+use DigitalMarketingFramework\Core\Service\DataProcessorInterface;
 
 trait ConfigurationResolverRegistryTrait
 {
     use PluginRegistryTrait;
+
+    abstract protected function createObject(string $class, array $arguments = []): object;
+
+    public function getDataProcessor(array $configuration): DataProcessorInterface
+    {
+        return $this->createObject(DataProcessor::class, [$this, $configuration]);
+    }
 
     public function getConfigurationResolver(string $keyword, string $interface, mixed $config, ConfigurationResolverContextInterface $context): ?ConfigurationResolverInterface
     {

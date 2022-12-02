@@ -3,16 +3,17 @@
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 abstract class AbstractModifierContentResolver extends ContentResolver
 {
     protected const WEIGHT = 20;
 
-    protected function modifyValue(&$result)
+    protected function modifyValue(string|ValueInterface|null &$result): void
     {
     }
 
-    protected function modify(&$result)
+    protected function modify(string|ValueInterface|null &$result): void
     {
         if ($result instanceof MultiValue) {
             foreach ($result as $key => $value) {
@@ -23,7 +24,7 @@ abstract class AbstractModifierContentResolver extends ContentResolver
         }
     }
 
-    public function finish(&$result): bool
+    public function finish(string|ValueInterface|null &$result): bool
     {
         if ($this->configuration && $result !== null) {
             $this->modify($result);

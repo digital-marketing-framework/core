@@ -10,7 +10,7 @@ class QueueProcessor implements QueueProcessorInterface
     ) {
     }
 
-    public function processJobs(array $jobs)
+    public function processJobs(array $jobs): void
     {
         if (!empty($jobs)) {
             $this->queue->markListAsRunning($jobs);
@@ -25,12 +25,12 @@ class QueueProcessor implements QueueProcessorInterface
         }
     }
 
-    public function processBatch(int $batchSize = 1)
+    public function processBatch(int $batchSize = 1): void
     {
         $this->processJobs($this->queue->fetchPending($batchSize));
     }
 
-    public function processAll()
+    public function processAll(): void
     {
         $this->processJobs($this->queue->fetchPending());
     }

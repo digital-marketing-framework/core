@@ -2,15 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper;
 
-use DigitalMarketingFramework\Core\Model\Form\FieldInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class RawValueMapper extends ValueMapper
 {
-    /**
-     * @param string|FieldInterface|null $fieldValue
-     * @return string|FieldInterface|null
-     */
-    public function resolveValue($fieldValue)
+    public function resolveValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
         if (isset($this->configuration[$fieldValue])) {
             /** @var GeneralValueMapper $valueMapper */

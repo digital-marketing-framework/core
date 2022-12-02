@@ -14,7 +14,7 @@ class SwitchValueMapper extends ValueMapper
      * @param string|ValueInterface|null $fieldValue
      * @return string|ValueInterface|null
      */
-    public function resolveValue($fieldValue)
+    public function resolveValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
         $valueMapper = null;
         ksort($this->configuration, SORT_NUMERIC);

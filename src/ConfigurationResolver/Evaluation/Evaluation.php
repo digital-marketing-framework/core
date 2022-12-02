@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverInterface;
+use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -15,7 +16,7 @@ abstract class Evaluation extends ConfigurationResolver implements EvaluationInt
         return EvaluationInterface::class;
     }
 
-    protected function addModifierToContext($modifier, $context = null)
+    protected function addModifierToContext($modifier, $context = null): void
     {
         if ($context === null) {
             $context = $this->context;
@@ -32,11 +33,7 @@ abstract class Evaluation extends ConfigurationResolver implements EvaluationInt
         }
     }
 
-    /**
-     * @param string|ValueInterface|null $fieldValue
-     * @return string|ValueInterface|null
-     */
-    protected function modifyValue($fieldValue)
+    protected function modifyValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
         $modifierConfig = $this->context['modifier'] ?? null;
         if ($modifierConfig) {
@@ -46,16 +43,12 @@ abstract class Evaluation extends ConfigurationResolver implements EvaluationInt
         return $fieldValue;
     }
 
-    protected function getSelectedValue($context = null)
+    protected function getSelectedValue(?ConfigurationResolverContextInterface $context = null): string|ValueInterface|null
     {
         return $this->modifyValue(parent::getSelectedValue($context));
     }
 
-    /**
-     * @param string|FieldInterface|null $fieldValue
-     * @return bool
-     */
-    protected function evalValue($fieldValue)
+    protected function evalValue(string|ValueInterface|null $fieldValue): bool
     {
         return true;
     }

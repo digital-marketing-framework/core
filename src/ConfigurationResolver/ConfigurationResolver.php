@@ -9,8 +9,8 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\EvaluationIn
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\GeneralEvaluation;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\GeneralValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
+use DigitalMarketingFramework\Core\Helper\ConfigurationResolverTrait;
 use DigitalMarketingFramework\Core\Helper\ConfigurationTrait;
-use DigitalMarketingFramework\Core\Log\LoggerInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
@@ -20,6 +20,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 abstract class ConfigurationResolver extends Plugin implements ConfigurationResolverInterface
 {
     use ConfigurationTrait;
+    use ConfigurationResolverTrait;
 
     protected const KEY_WEIGHT = 'weight';
     protected const DEFAULT_WEIGHT = null;
@@ -59,28 +60,19 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
         }
     }
 
-    protected function resolveForeignKeyword(string $resolverInterface, string $keyword, $config, ?ConfigurationResolverContextInterface $context = null)
+    protected function getConfigurationResolverContext(): ConfigurationResolverContextInterface
     {
-        if ($context === null) {
-            $context = $this->context->copy();
-        }
-        return $this->registry->getConfigurationResolver($keyword, $resolverInterface, $config, $context);
+        return $this->context->copy();
     }
 
-    /**
-     * @param string $keyword
-     * @param array|string $config
-     * @param ConfigurationResolverContextInterface $context
-     * @return ConfigurationResolverInterface|null
-     */
-    protected function resolveKeyword(string $keyword, $config, ConfigurationResolverContextInterface $context = null)
+    protected function resolveKeyword(string $keyword, mixed $config, ?ConfigurationResolverContextInterface $context = null): ?ConfigurationResolverInterface
     {
-        return $this->resolveForeignKeyword(static::getResolverInterface(), $keyword, $config, $context);
+        return $this->getConfigurationResolver(static::getResolverInterface(), $keyword, $config, $context);
     }
 
     abstract protected static function getResolverInterface(): string;
 
-    protected function sortSubResolvers(array &$subResolvers)
+    protected function sortSubResolvers(array &$subResolvers): void
     {
         ksort($subResolvers, SORT_NUMERIC);
         usort($subResolvers, function (ConfigurationResolverInterface $a, ConfigurationResolverInterface $b) {
@@ -101,7 +93,7 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
         return $this->context->getData()->fieldExists($key);
     }
 
-    protected function getFieldValue($key, bool $markAsProcessed = true)
+    protected function getFieldValue(string $key, bool $markAsProcessed = true): string|ValueInterface|null
     {
         $fieldValue = $this->fieldExists($key, $markAsProcessed)
             ? $this->context->getData()[$key]
@@ -109,7 +101,7 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
         return $fieldValue;
     }
 
-    protected function addKeyToContext(mixed $key, ?ConfigurationResolverContextInterface $context = null)
+    protected function addKeyToContext(mixed $key, ?ConfigurationResolverContextInterface $context = null): void
     {
         if ($context === null) {
             $context = $this->context;
@@ -125,7 +117,7 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
         }
     }
 
-    protected function addIndexToContext(mixed $index, ?ConfigurationResolverContextInterface $context = null)
+    protected function addIndexToContext(mixed $index, ?ConfigurationResolverContextInterface $context = null): void
     {
         if ($context === null) {
             $context = $this->context;
@@ -144,12 +136,12 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
      * @param ConfigurationResolverContextInterface|null $context
      * @return ValueInterface|string|null
      */
-    protected function getKeyFromContext($context = null)
+    protected function getKeyFromContext(?ConfigurationResolverContextInterface $context = null): string
     {
         if ($context === null) {
             $context = $this->context;
         }
-        return $context['key'] ?? '';
+        return isset($context['key']) ? (string)$context['key'] : '';
     }
 
     /**
@@ -175,11 +167,8 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
      * Examples:
      * field.country.key = country // a tautology
      * loopData.condition.key.in = country,state // loops over the fields "country" and "state" if they exist
-     *
-     * @param ConfigurationResolverContextInterface|null $context
-     * @return ValueInterface|string|null
      */
-    protected function getSelectedValue($context = null)
+    protected function getSelectedValue(?ConfigurationResolverContextInterface $context = null): string|ValueInterface|null
     {
         if ($context === null) {
             $context = $this->context;
@@ -204,34 +193,6 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
             }
         }
         return null;
-    }
-
-    protected function resolveContent($config, ConfigurationResolverContextInterface $context = null)
-    {
-        /** @var GeneralContentResolver $contentResolver */
-        $contentResolver = $this->resolveForeignKeyword(ContentResolverInterface::class, 'general', $config, $context);
-        return $contentResolver->resolve();
-    }
-
-    protected function resolveValueMap($config, $value, ConfigurationResolverContextInterface $context = null)
-    {
-        /** @var GeneralValueMapper $valueMapper */
-        $valueMapper = $this->resolveForeignKeyword(ValueMapperInterface::class, 'general', $config, $context);
-        return $valueMapper->resolve($value);
-    }
-
-    protected function resolveEvaluation($config, ConfigurationResolverContextInterface $context = null)
-    {
-        /** @var GeneralEvaluation $evaluation */
-        $evaluation = $this->resolveForeignKeyword(EvaluationInterface::class, 'general', $config, $context);
-        return $evaluation->resolve();
-    }
-
-    protected function evaluate($config, ConfigurationResolverContextInterface $context = null)
-    {
-        /** @var GeneralEvaluation $evaluation */
-        $evaluation = $this->resolveForeignKeyword(EvaluationInterface::class, 'general', $config, $context);
-        return $evaluation->eval();
     }
 
     public function getWeight(): int

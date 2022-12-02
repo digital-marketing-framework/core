@@ -24,7 +24,7 @@ class FileValue implements FileValueInterface
         }
     }
 
-    public function setFileName(string $fileName)
+    public function setFileName(string $fileName): void
     {
         $this->fileName = $fileName;
     }
@@ -34,7 +34,7 @@ class FileValue implements FileValueInterface
         return $this->fileName;
     }
 
-    public function setPublicUrl(string $publicUrl)
+    public function setPublicUrl(string $publicUrl): void
     {
         $this->publicUrl = $publicUrl;
     }
@@ -44,7 +44,7 @@ class FileValue implements FileValueInterface
         return $this->publicUrl;
     }
 
-    public function setRelativePath(string $relativePath)
+    public function setRelativePath(string $relativePath): void
     {
         $this->relativePath = $relativePath;
     }
@@ -54,7 +54,7 @@ class FileValue implements FileValueInterface
         return $this->relativePath;
     }
 
-    public function setMimeType(string $mimeType)
+    public function setMimeType(string $mimeType): void
     {
         $this->mimeType = $mimeType;
     }

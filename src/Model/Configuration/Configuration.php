@@ -14,7 +14,7 @@ class Configuration implements ConfigurationInterface
         $this->configurationList = $configurationList;
     }
 
-    public function addConfiguration(array $configuration)
+    public function addConfiguration(array $configuration): void
     {
         $this->configurationList[] = $configuration;
         unset($this->manualOverride);
@@ -79,5 +79,10 @@ class Configuration implements ConfigurationInterface
     public function offsetUnset(mixed $offset): void
     {
         $this->unset((string)$offset);
+    }
+
+    public function getDataMapConfiguration(string $key): ?array
+    {
+        return $this->get(static::KEY_DATA_MAPS, static::DEFAULT_DATA_MAPS)[$key] ?? null;
     }
 }

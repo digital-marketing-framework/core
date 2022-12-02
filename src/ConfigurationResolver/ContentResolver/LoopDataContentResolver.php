@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class LoopDataContentResolver extends ContentResolver
 {
@@ -21,7 +22,7 @@ class LoopDataContentResolver extends ContentResolver
     protected const KEY_CONDITION = 'condition';
     protected const DEFAULT_CONDITION = false;
 
-    public function build()
+    public function build(): string|ValueInterface|null
     {
         if (!is_array($this->configuration)) {
             $this->configuration = is_string($this->configuration) ? [static::KEY_TEMPLATE => $this->configuration] : [];

@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationBehaviour;
 use DigitalMarketingFramework\Core\ConfigurationResolver\GeneralConfigurationResolverInterface;
-use DigitalMarketingFramework\Core\Model\Form\FieldInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class GeneralContentResolver extends ContentResolver implements GeneralConfigurationResolverInterface
@@ -16,12 +16,7 @@ class GeneralContentResolver extends ContentResolver implements GeneralConfigura
         return ConfigurationBehaviour::ConvertScalarToArrayWithSelfValue;
     }
 
-    /**
-     * @param string|FieldInterface|null $result
-     * @param string|FieldInterface|null $content
-     * @return string|FieldInterface|null
-     */
-    protected function add($result, $content)
+    protected function add(string|ValueInterface|null $result, string|ValueInterface|null $content): string|ValueInterface|null
     {
         if ($content !== null) {
             if ($result === null || $result === '') {
@@ -34,7 +29,7 @@ class GeneralContentResolver extends ContentResolver implements GeneralConfigura
         return $result;
     }
 
-    public function build()
+    public function build(): string|ValueInterface|null
     {
         if (array_key_exists(static::KEYWORD_GLUE, $this->configuration)) {
             $glue = $this->resolveContent($this->configuration[static::KEYWORD_GLUE]);
@@ -67,10 +62,7 @@ class GeneralContentResolver extends ContentResolver implements GeneralConfigura
         return $result;
     }
 
-    /**
-     * @return FieldInterface|string|null
-     */
-    public function resolve()
+    public function resolve(): string|ValueInterface|null
     {
         $result = $this->build();
         $this->finish($result);

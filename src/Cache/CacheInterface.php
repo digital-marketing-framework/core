@@ -2,27 +2,29 @@
 
 namespace DigitalMarketingFramework\Core\Cache;
 
-use DigitalMarketingFramework\Core\Model\Data\DataInterface;
-use DigitalMarketingFramework\Core\Model\Indentifier\CacheIdentifierInterface;
-
-interface CacheInterface {
+interface CacheInterface
+{
     public function setTimeoutInSeconds(int $timeout): void;
     public function getTimeoutInSeconds(): int;
 
-    public function fetch(CacheIdentifierInterface $identifier): ?DataInterface;
+    /**
+     * @return ?array<mixed>
+     */
+    public function fetch(string $key): ?array;
 
     /**
      * @param array<string> $tags
-     * @return array<DataInterface>
+     * @return array<array<mixed>>
      */
     public function fetchByTags(array $tags): array;
 
     /**
+     * @param array<mixed> $data
      * @param array<string> $tags
      */
-    public function store(CacheIdentifierInterface $identifier, DataInterface $data, array $tags = []): void;
+    public function store(string $key, array $data, array $tags = []): void;
     
-    public function purge(CacheIdentifierInterface $identifier): void;
+    public function purge(string $key): void;
     
     /**
      * @param array<string> $tags

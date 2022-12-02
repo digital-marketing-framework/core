@@ -64,4 +64,50 @@ class FieldContentResolverTest extends AbstractContentResolverTest
         $result = $this->runResolverProcess($config);
         $this->assertMultiValueEmpty($result);
     }
+
+    /** @test */
+    public function fieldHasToBeProcessed(): void
+    {
+        $this->data['field1'] = 'value1';
+        $this->data['field2'] = 'value2';
+        $config = [
+            'field' => [
+                'if' => [
+                    'field2' => 'value2',
+                    'then' => 'field1',
+                ],
+            ],
+        ];
+        $result = $this->runResolverProcess($config);
+        $this->assertEquals('value1', $result);
+    }
+
+    /** @test */
+    public function fieldHasToBeProcessedButResolvesToNull(): void
+    {
+        $this->data['field1'] = 'value1';
+        $this->data['field2'] = 'value2';
+        $config = [
+            'field' => [
+                'if' => [
+                    'field2' => 'value3',
+                    'then' => 'field1',
+                ],
+            ],
+        ];
+        $result = $this->runResolverProcess($config);
+        $this->assertNull($result);
+    }
+
+    /** @test */
+    public function fieldHasToBeProcessedRecursively(): void
+    {
+        $this->data['field1'] = 'value1';
+        $this->data['field2'] = 'field1';
+        $config = [
+            'field' => ['field' => 'field2']
+        ];
+        $result = $this->runResolverProcess($config);
+        $this->assertEquals('value1', $result);
+    }
 }

@@ -3,8 +3,8 @@
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolver;
-use DigitalMarketingFramework\Core\Model\Form\FieldInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 abstract class ValueMapper extends ConfigurationResolver implements ValueMapperInterface
 {
@@ -13,16 +13,12 @@ abstract class ValueMapper extends ConfigurationResolver implements ValueMapperI
         return ValueMapperInterface::class;
     }
 
-    protected function resolveValue($fieldValue)
+    protected function resolveValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
         return $fieldValue;
     }
 
-    /**
-     * @param string|FieldInterface|null $fieldValue
-     * @return string|FieldInterface|null
-     */
-    public function resolve($fieldValue = null)
+    public function resolve(string|ValueInterface|null $fieldValue = null): string|ValueInterface|null
     {
         // TODO this fallback on fieldValues should not be necessary anymore. confirm and then remove
         if ($fieldValue === null) {

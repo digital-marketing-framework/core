@@ -8,7 +8,7 @@ trait ConfigurationTrait
 
     abstract public static function getDefaultConfiguration(): array;
 
-    protected function getConfig(string $key, $default = null)
+    protected function getConfig(string $key, $default = null): mixed
     {
         if ($default === null) {
             $defaults = static::getDefaultConfiguration();

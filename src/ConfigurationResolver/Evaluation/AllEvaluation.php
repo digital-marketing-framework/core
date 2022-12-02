@@ -9,7 +9,7 @@ class AllEvaluation extends AnyEvaluation
         return true;
     }
 
-    protected function calculateResult(bool $indexResult, bool $overallResult)
+    protected function calculateResult(bool $indexResult, bool $overallResult): bool
     {
         return $indexResult && $overallResult;
     }

@@ -11,7 +11,7 @@ trait PluginRegistryTrait
     protected array $pluginClasses = [];
     protected array $pluginAdditionalArguments = [];
 
-    abstract protected function createObject(string $class, array $arguments = []);
+    abstract protected function createObject(string $class, array $arguments = []): object;
     abstract protected function classValidation(string $class, string $interface): void;
     abstract protected function interfaceValidation(string $interface, string $parentInterface): void;
 

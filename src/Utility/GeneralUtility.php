@@ -2,7 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Utility;
 
+use DigitalMarketingFramework\Core\Model\Data\Data;
+use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
 final class GeneralUtility
 {
@@ -12,7 +15,7 @@ final class GeneralUtility
         '\\t' => "\t",
     ];
 
-    public static function isEmpty($value)
+    public static function isEmpty($value): bool
     {
         if (is_array($value)) {
             return empty($value);
@@ -23,7 +26,7 @@ final class GeneralUtility
         return strlen((string)$value) === 0;
     }
 
-    public static function isTrue($value)
+    public static function isTrue($value): bool
     {
         if ($value instanceof MultiValue) {
             return (bool)$value->toArray();
@@ -31,7 +34,7 @@ final class GeneralUtility
         return (bool)$value;
     }
 
-    public static function isFalse($value)
+    public static function isFalse($value): bool
     {
         if ($value instanceof MultiValue) {
             return !$value->toArray();
@@ -39,7 +42,7 @@ final class GeneralUtility
         return !$value;
     }
 
-    public static function parseSeparatorString($str)
+    public static function parseSeparatorString($str): string
     {
         $str = trim($str);
         foreach (static::CHARACTER_MAP as $key => $value) {
@@ -69,6 +72,32 @@ final class GeneralUtility
         }
 
         return $array;
+    }
+
+    public static function castArrayToMultiValue(array $array): MultiValueInterface
+    {
+        $multiValue = new MultiValue();
+        foreach ($array as $key => $value) {
+            if (!is_array($value)) {
+                $multiValue[$key] = $value;
+            } else {
+                $multiValue[$key] = static::castArrayToMultiValue($value);
+            }
+        }
+        return $multiValue;
+    }
+
+    public static function castArrayToData(array $array): DataInterface
+    {
+        $data = new Data();
+        foreach ($array as $key => $value) {
+            if (!is_array($value)) {
+                $data[$key] = $value;
+            } else {
+                $data[$key] = static::castArrayToMultiValue($value);
+            }
+        }
+        return $data;
     }
 
     public static function shortenHash(string $hash): string
@@ -118,7 +147,7 @@ final class GeneralUtility
         return static::compareValue($fieldValue, $compareValue);
     }
 
-    public static function findInList($fieldValue, array $list)
+    public static function findInList($fieldValue, array $list): string|int|false
     {
         return array_search($fieldValue, $list);
     }
@@ -141,5 +170,31 @@ final class GeneralUtility
             $keyword = lcfirst(substr($className . 'Interface', 0, -strlen($interfaceName)));
         }
         return $keyword;
+    }
+
+    public static function maskValue(string $value): string
+    {
+        if (preg_match('/@/', $value)) {
+            $parts = explode('@', $value);
+
+            $firstPart = array_shift($parts);
+            $lengthFirstPart = strlen($firstPart);
+            $maskedFirstPart = (int)ceil($lengthFirstPart / 2);
+
+            $secondPart = implode('@', $parts);
+            $lengthSecondPart = strlen($secondPart);
+            $maskedSecondPart = (int)ceil($lengthSecondPart / 2);
+
+            return substr($firstPart, 0, $lengthFirstPart - $maskedFirstPart)
+            //    . str_repeat('*', $maskedFirstPart)
+            //    . '*'
+            //    . str_repeat('*', $maskedSecondPart)
+                . '****'
+                . substr($secondPart, $maskedSecondPart);
+        }
+        $length = strlen($value);
+        $masked = (int)ceil($length / 2);
+        $start = (int)floor($masked / 2);
+        return substr($value, 0, $start) . str_repeat('*', 4) . substr($value, $start + $masked);
     }
 }

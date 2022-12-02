@@ -9,7 +9,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
  */
 class NegateContentResolverTest extends AbstractContentResolverTest
 {
-    public function provider()
+    public function provider(): array
     {
         return [
             // value, true, false, expected

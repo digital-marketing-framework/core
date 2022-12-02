@@ -19,6 +19,11 @@ class ConfigurationResolverContext extends ArrayObject implements ConfigurationR
         parent::__construct($context);
     }
 
+    public function toArray(): array
+    {
+        return iterator_to_array($this);
+    }
+
     public function getFieldTracker(): FieldTrackerInterface
     {
         return $this->fieldTracker;
@@ -29,8 +34,15 @@ class ConfigurationResolverContext extends ArrayObject implements ConfigurationR
         return $this->data;
     }
 
-    public function copy(): ConfigurationResolverContextInterface
+    public function copy(bool $keepFieldTracker = true, ?DataInterface $data = null): ConfigurationResolverContextInterface
     {
-        return new ConfigurationResolverContext($this->data, iterator_to_array($this), $this->fieldTracker);
+        if ($data === null) {
+            $data = $this->data;
+        }
+        if ($keepFieldTracker) {
+            return new ConfigurationResolverContext($data, $this->toArray(), $this->fieldTracker);
+        } else {
+            return new ConfigurationResolverContext($data, $this->toArray());
+        }
     }
 }

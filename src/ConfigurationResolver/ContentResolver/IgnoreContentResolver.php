@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+
 class IgnoreContentResolver extends ContentResolver
 {
     protected const WEIGHT = 0;
@@ -11,7 +13,7 @@ class IgnoreContentResolver extends ContentResolver
         return (bool)$this->configuration;
     }
 
-    public function finish(&$result): bool
+    public function finish(string|ValueInterface|null &$result): bool
     {
         if ($this->ignore($result)) {
             $result = null;

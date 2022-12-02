@@ -25,7 +25,7 @@ class Job implements JobInterface
         return $this->id;
     }
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -35,7 +35,7 @@ class Job implements JobInterface
         return $this->created;
     }
 
-    public function setCreated(DateTime $created)
+    public function setCreated(DateTime $created): void
     {
         $this->created = $created;
     }
@@ -45,7 +45,7 @@ class Job implements JobInterface
         return $this->status;
     }
 
-    public function setStatus(int $status)
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
@@ -55,7 +55,7 @@ class Job implements JobInterface
         return $this->skipped;
     }
 
-    public function setSkipped(bool $skipped)
+    public function setSkipped(bool $skipped): void
     {
         $this->skipped = $skipped;
     }
@@ -65,7 +65,7 @@ class Job implements JobInterface
         return $this->statusMessage;
     }
 
-    public function setStatusMessage(string $message)
+    public function setStatusMessage(string $message): void
     {
         $this->statusMessage = $message;
     }
@@ -75,7 +75,7 @@ class Job implements JobInterface
         return $this->changed;
     }
 
-    public function setChanged(DateTime $changed)
+    public function setChanged(DateTime $changed): void
     {
         $this->changed = $changed;
     }
@@ -85,7 +85,7 @@ class Job implements JobInterface
         return $this->data;
     }
 
-    public function setData(array $data)
+    public function setData(array $data): void
     {
         $this->data = $data;
     }
@@ -95,7 +95,7 @@ class Job implements JobInterface
         return $this->hash;
     }
 
-    public function setHash(string $hash)
+    public function setHash(string $hash): void
     {
         $this->hash = $hash;
     }
@@ -105,7 +105,7 @@ class Job implements JobInterface
         return $this->label;
     }
 
-    public function setLabel(string $label)
+    public function setLabel(string $label): void
     {
         $this->label = $label;
     }

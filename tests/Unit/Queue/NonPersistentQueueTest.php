@@ -37,7 +37,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function addOneJob()
+    public function addOneJob(): void
     {
         $job = $this->createJob(['value1']);
         $this->subject->addJob($job);
@@ -48,7 +48,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function addTwoJobs()
+    public function addTwoJobs(): void
     {
         $this->subject->addJob($this->createJob(['value1']));
         $this->subject->addJob($this->createJob(['value2']));
@@ -58,7 +58,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function removeJob()
+    public function removeJob(): void
     {
         $this->subject->addJob($this->createJob(['value1']));
         $this->subject->addJob($this->createJob(['value2']));
@@ -112,15 +112,10 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /**
-     * @param $limit
-     * @param $offset
-     * @param $expectedCount
-     * @param $statusFilter
-     * @param $jobStatusArray
      * @dataProvider fetchProvider
      * @test
      */
-    public function fetch($limit, $offset, $expectedCount, $statusFilter, $jobStatusArray)
+    public function fetch(int $limit, int $offset, int $expectedCount, array $statusFilter, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
             $this->subject->addJob($this->createJob(['value' . $i], $s));
@@ -166,14 +161,10 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /**
-     * @param $limit
-     * @param $offset
-     * @param $expectedCount
-     * @param $jobStatusArray
      * @dataProvider fetchPendingProvider
      * @test
      */
-    public function fetchPending($limit, $offset, $expectedCount, $jobStatusArray)
+    public function fetchPending(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
             $this->subject->addJob($this->createJob(['value' . $i], $s));
@@ -197,14 +188,10 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /**
-     * @param $limit
-     * @param $offset
-     * @param $expectedCount
-     * @param $jobStatusArray
      * @dataProvider fetchDoneProvider
      * @test
      */
-    public function fetchDone($limit, $offset, $expectedCount, $jobStatusArray)
+    public function fetchDone(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
             $this->subject->addJob($this->createJob(['value' . $i], $s));
@@ -228,14 +215,10 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /**
-     * @param $limit
-     * @param $offset
-     * @param $expectedCount
-     * @param $jobStatusArray
      * @dataProvider fetchFailedProvider
      * @test
      */
-    public function fetchFailed($limit, $offset, $expectedCount, $jobStatusArray)
+    public function fetchFailed(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
             $this->subject->addJob($this->createJob(['value' . $i], $s));
@@ -259,14 +242,10 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /**
-     * @param $limit
-     * @param $offset
-     * @param $expectedCount
-     * @param $jobStatusArray
      * @dataProvider fetchRunningProvider
      * @test
      */
-    public function fetchRunning($limit, $offset, $expectedCount, $jobStatusArray)
+    public function fetchRunning(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
             $this->subject->addJob($this->createJob(['value' . $i], $s));
@@ -293,14 +272,10 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /**
-     * @param $expectedCount
-     * @param $status
-     * @param $minAge
-     * @param $modify
      * @dataProvider fetchRunningWithMinTimeInSecondsSinceChangedProvider
      * @test
      */
-    public function fetchRunningWithMinTimeInSecondsSinceChanged($expectedCount, $status, $minAge, $modify)
+    public function fetchRunningWithMinTimeInSecondsSinceChanged(int $expectedCount, int $status, int $minAge, string $modify): void
     {
         $job = $this->createJob(['value1'], $status);
         if ($modify) {
@@ -314,7 +289,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function removeAllOldJobs()
+    public function removeAllOldJobs(): void
     {
         $this->subject->addJob($this->createJob(['value1'], QueueInterface::STATUS_DONE));
         $this->subject->addJob($this->createJob(['value2'], QueueInterface::STATUS_PENDING));
@@ -342,7 +317,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function removeOldJobsThatAreDone()
+    public function removeOldJobsThatAreDone(): void
     {
         $this->subject->addJob($this->createJob(['value1'], QueueInterface::STATUS_DONE));
         $this->subject->addJob($this->createJob(['value2'], QueueInterface::STATUS_PENDING));
@@ -369,7 +344,7 @@ class NonPersistentQueueTest extends TestCase
         $this->assertCount(5, $remainingJobs);
     }
 
-    protected function markAs($status, $initialStatus, $method, $arguments = [], $expectedStatusMessage = '', $expectedSkipped = false)
+    protected function markAs(int $status, int $initialStatus, string $method, array $arguments = [], string $expectedStatusMessage = '', bool $expectedSkipped = false): void
     {
         $job = $this->createJob(['value1'], $initialStatus);
         $this->subject->addJob($job);
@@ -382,7 +357,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markAsPending()
+    public function markAsPending(): void
     {
         $this->markAs(
             QueueInterface::STATUS_PENDING,
@@ -392,7 +367,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markAsRunning()
+    public function markAsRunning(): void
     {
         $this->markAs(
             QueueInterface::STATUS_RUNNING,
@@ -402,7 +377,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markAsDone()
+    public function markAsDone(): void
     {
         $this->markAs(
             QueueInterface::STATUS_DONE,
@@ -412,7 +387,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markAsDoneButSkipped()
+    public function markAsDoneButSkipped(): void
     {
         $this->markAs(
             QueueInterface::STATUS_DONE,
@@ -425,7 +400,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markAsFailed()
+    public function markAsFailed(): void
     {
         $this->markAs(
             QueueInterface::STATUS_FAILED,
@@ -435,7 +410,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markAsFailedWithMessage()
+    public function markAsFailedWithMessage(): void
     {
         $errorMessage = 'my error message';
         $this->markAs(
@@ -447,8 +422,15 @@ class NonPersistentQueueTest extends TestCase
         );
     }
 
-    protected function markListAs($status, $initialStatus, $unrelatedStatus, $method, $arguments=[], $expectedStatusMessage = '', $expectedSkipped = false)
-    {
+    protected function markListAs(
+        int $status, 
+        int $initialStatus, 
+        int $unrelatedStatus, 
+        string $method, 
+        array $arguments=[], 
+        string $expectedStatusMessage = '', 
+        bool $expectedSkipped = false
+    ): void {
         $this->subject->addJob($this->createJob(['value1'], $initialStatus));
         $this->subject->addJob($this->createJob(['value2'], $unrelatedStatus));
         $this->subject->addJob($this->createJob(['value3'], $initialStatus));
@@ -475,7 +457,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markListAsRunning()
+    public function markListAsRunning(): void
     {
         $this->markListAs(
             QueueInterface::STATUS_RUNNING,
@@ -486,7 +468,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markListAsDone()
+    public function markListAsDone(): void
     {
         $this->markListAs(
             QueueInterface::STATUS_DONE,
@@ -497,7 +479,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markListAsDoneButSkipped()
+    public function markListAsDoneButSkipped(): void
     {
         $this->markListAs(
             QueueInterface::STATUS_DONE,
@@ -511,7 +493,7 @@ class NonPersistentQueueTest extends TestCase
     }
 
     /** @test */
-    public function markListAsFailed()
+    public function markListAsFailed(): void
     {
         $this->markListAs(
             QueueInterface::STATUS_FAILED,

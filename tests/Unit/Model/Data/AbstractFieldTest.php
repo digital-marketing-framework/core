@@ -11,31 +11,29 @@ abstract class AbstractFieldTest extends TestCase
 
     protected ValueInterface $subject;
 
-    public static function assertFieldEquals($expected, $result)
+    public static function assertFieldEquals($expected, $result): void
     {
         static::assertInstanceOf(ValueInterface::class, $expected);
         static::assertInstanceOf(ValueInterface::class, $result);
         static::assertEquals($expected->pack(), $result->pack());
     }
 
-    protected function createField(...$arguments)
+    protected function createField(array ...$arguments): ValueInterface
     {
         $class = static::FIELD_CLASS;
         return new $class(...$arguments);
     }
 
     /** @test */
-    abstract public function init();
+    abstract public function init(): void;
 
     abstract public function castToStringProvider(): array;
 
     /**
-     * @param $arguments
-     * @param $stringRepresentation
      * @dataProvider castToStringProvider
      * @test
      */
-    public function castToString($arguments, $stringRepresentation)
+    public function castToString(array $arguments, string $stringRepresentation): void
     {
         $this->subject = $this->createField(...$arguments);
         $result = (string)$this->subject;
@@ -45,12 +43,10 @@ abstract class AbstractFieldTest extends TestCase
     abstract public function packProvider(): array;
 
     /**
-     * @param $arguments
-     * @param $packed
      * @dataProvider packProvider
      * @test
      */
-    public function pack($arguments, $packed)
+    public function pack(array $arguments, array $packed): void
     {
         $this->subject = $this->createField(...$arguments);
         $result = $this->subject->pack();
@@ -58,7 +54,7 @@ abstract class AbstractFieldTest extends TestCase
     }
 
     /** @test */
-    public function packUnpack()
+    public function packUnpack(): void
     {
         $this->subject = $this->createField();
         $packed = $this->subject->pack();

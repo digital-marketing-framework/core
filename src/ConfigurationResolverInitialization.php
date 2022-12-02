@@ -2,17 +2,23 @@
 
 namespace DigitalMarketingFramework\Core;
 
+use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\BooleanContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\ContentResolverInterface;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\DataMapContentResolver;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\DataMapPipelineContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\DefaultContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\FieldCollectorContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\FieldContentResolver;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\FileContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\FirstOfContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\GeneralContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\IfContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\IgnoreContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\IgnoreIfContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\IgnoreIfEmptyContentResolver;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\IndexContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\InsertDataContentResolver;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\IntegerContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\JoinContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\ListContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\LoopDataContentResolver;
@@ -20,6 +26,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\LowerCa
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\MapContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\MultiValueContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\NegateContentResolver;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\PassthroughFieldsContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\SelfContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\SplitContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\SprintfContentResolver;
@@ -88,16 +95,22 @@ class ConfigurationResolverInitialization extends Initialization
         ],
         ContentResolverInterface::class => [
             SelfContentResolver::class,
+            BooleanContentResolver::class,
+            DataMapContentResolver::class,
+            DataMapPipelineContentResolver::class,
             DefaultContentResolver::class,
             FieldCollectorContentResolver::class,
             FieldContentResolver::class,
+            FileContentResolver::class,
             FirstOfContentResolver::class,
             GeneralContentResolver::class,
             IfContentResolver::class,
             IgnoreContentResolver::class,
-            IgnoreIfEmptyContentResolver::class,
             IgnoreIfContentResolver::class,
+            IgnoreIfEmptyContentResolver::class,
+            IndexContentResolver::class,
             InsertDataContentResolver::class,
+            IntegerContentResolver::class,
             JoinContentResolver::class,
             ListContentResolver::class,
             LoopDataContentResolver::class,
@@ -105,6 +118,7 @@ class ConfigurationResolverInitialization extends Initialization
             MapContentResolver::class,
             MultiValueContentResolver::class,
             NegateContentResolver::class,
+            PassthroughFieldsContentResolver::class,
             SplitContentResolver::class,
             SprintfContentResolver::class,
             TrimContentResolver::class,

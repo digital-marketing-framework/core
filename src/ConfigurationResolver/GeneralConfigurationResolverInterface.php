@@ -4,5 +4,5 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver;
 
 interface GeneralConfigurationResolverInterface
 {
-    public function resolve();
+    public function resolve(): mixed;
 }

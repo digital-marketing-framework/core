@@ -6,6 +6,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationBehaviour;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class NegateContentResolver extends ContentResolver
 {
@@ -24,8 +25,11 @@ class NegateContentResolver extends ContentResolver
         return ConfigurationBehaviour::ConvertScalarToArrayWithSelfValue;
     }
 
-    protected function negateValue($value, $true, $false)
-    {
+    protected function negateValue(
+        string|ValueInterface|null $value, 
+        string|ValueInterface|null $true, 
+        string|ValueInterface|null $false
+    ): string|ValueInterface|null {
         if ($value instanceof BooleanValue) {
             if ($value->getValue() && $false !== null) {
                 return $false;
@@ -49,7 +53,7 @@ class NegateContentResolver extends ContentResolver
         }
     }
 
-    public function finish(&$result): bool
+    public function finish(string|ValueInterface|null &$result): bool
     {
         $enabled = $this->configuration[ConfigurationResolverInterface::KEY_SELF] ?? true;
         if ($enabled && $result !== null) {

@@ -2,12 +2,18 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\Utility;
 
+use DigitalMarketingFramework\Core\Model\Data\Data;
+use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 use PHPUnit\Framework\TestCase;
 
 class GeneralUtilityTest extends TestCase
 {
+    use MultiValueTestTrait;
+
     public function valueIsEmptyProvider(): array
     {
         return [
@@ -34,7 +40,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider valueIsEmptyProvider
      * @test
      */
-    public function valueIsEmpty($value, $expected)
+    public function valueIsEmpty($value, $expected): void
     {
         $result = GeneralUtility::isEmpty($value);
         if ($expected) {
@@ -68,7 +74,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider valueIsTrueProvider
      * @test
      */
-    public function valueIsTrue($value, $expected)
+    public function valueIsTrue($value, $expected): void
     {
         $result = GeneralUtility::isTrue($value);
         if ($expected) {
@@ -84,7 +90,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider valueIsTrueProvider
      * @test
      */
-    public function valueIsFalse($value, $notExpected)
+    public function valueIsFalse($value, $notExpected): void
     {
         $result = GeneralUtility::isFalse($value);
         if ($notExpected) {
@@ -113,7 +119,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider parseSeparatorStringProvider
      * @test
      */
-    public function parseSeparatorString($value, $expected)
+    public function parseSeparatorString($value, $expected): void
     {
         $result = GeneralUtility::parseSeparatorString($value);
         $this->assertEquals($expected, $result);
@@ -143,7 +149,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider isListProvider
      * @test
      */
-    public function isList($value, $expected)
+    public function isList($value, $expected): void
     {
         $result = GeneralUtility::isList($value);
         if ($expected) {
@@ -182,7 +188,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider castValueToArrayProvider
      * @test
      */
-    public function castValueToArray($value, $token, $trim, $expected)
+    public function castValueToArray($value, $token, $trim, $expected): void
     {
         if ($token === null && $trim === null) {
             $result = GeneralUtility::castValueToArray($value);
@@ -211,7 +217,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider calculateHashProvider
      * @test
      */
-    public function calculateHash($submission, $short, $expected)
+    public function calculateHash($submission, $short, $expected): void
     {
         $result = GeneralUtility::calculateHash($submission, $short);
         $this->assertEquals($expected, $result);
@@ -234,7 +240,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider shortenHashProvider
      * @test
      */
-    public function shortenHash($hash, $expected)
+    public function shortenHash($hash, $expected): void
     {
         $result = GeneralUtility::shortenHash($hash);
         $this->assertEquals($expected, $result);
@@ -271,7 +277,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider compareValueProvider
      * @test
      */
-    public function compareValue($fieldValue, $compareValue, bool $expected)
+    public function compareValue($fieldValue, $compareValue, bool $expected): void
     {
         $result = GeneralUtility::compareValue($fieldValue, $compareValue);
         if ($expected) {
@@ -317,7 +323,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider compareListsProvider
      * @test
      */
-    public function compareLists($fieldValue, $compareValue, bool $expected)
+    public function compareLists($fieldValue, $compareValue, bool $expected): void
     {
         $result = GeneralUtility::compareLists($fieldValue, $compareValue);
         if ($expected) {
@@ -335,7 +341,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider compareListsProvider
      * @test
      */
-    public function compare($fieldValue, $compareValue, bool $expected)
+    public function compare($fieldValue, $compareValue, bool $expected): void
     {
         $result = GeneralUtility::compare($fieldValue, $compareValue);
         if ($expected) {
@@ -361,7 +367,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider findInListProvider
      * @test
      */
-    public function findInList($fieldValue, $list, $expected)
+    public function findInList($fieldValue, $list, $expected): void
     {
         $result = GeneralUtility::findInList($fieldValue, $list);
         $this->assertEquals($expected, $result);
@@ -374,7 +380,7 @@ class GeneralUtilityTest extends TestCase
      * @dataProvider findInListProvider
      * @test
      */
-    public function isInList($fieldValue, $list, $expected)
+    public function isInList($fieldValue, $list, $expected): void
     {
         $result = GeneralUtility::isInList($fieldValue, $list);
         if ($expected === false) {
@@ -400,15 +406,64 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $class
-     * @param $interface
-     * @param $expected
      * @dataProvider getPluginKeywordProvider
      * @test
      */
-    public function getPluginKeyword($class, $interface, $expected)
+    public function getPluginKeyword(string $class, string $interface, string $expected): void
     {
         $result = GeneralUtility::getPluginKeyword($class, $interface);
         $this->assertEquals($expected, $result);
+    }
+
+    public function castArrayToMultiValueProvider(): array
+    {
+        return [
+            'scalarValuesInArray' => [
+                ['a', 'b', 'c'],
+                new MultiValue(['a', 'b', 'c']),
+            ],
+            'nestedArray' => [
+                ['a', 'b', ['c1', 'c2']],
+                new MultiValue(['a', 'b', new MultiValue(['c1', 'c2'])]),
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider castArrayToMultiValueProvider
+     * @test
+     */
+    public function castArrayToMultiValue(array $array, MultiValueInterface $expected): void
+    {
+        $result = GeneralUtility::castArrayToMultiValue($array);
+        $this->assertMultiValueEquals($expected, $result);
+    }
+
+    public function castArrayToDataProvider(): array
+    {
+        return [
+            'scalarValuesInData' => [
+                ['a', 'b', 'c'],
+                new Data(['a', 'b', 'c']),
+            ],
+            'arraysInData' => [
+                ['a', 'b', ['c1', 'c2']],
+                new Data(['a', 'b', new MultiValue(['c1', 'c2'])]),
+            ],
+            'nestedArraysInData' => [
+                ['a', 'b', ['c1', ['c2.1', 'c2.2']]],
+                new Data(['a', 'b', new MultiValue(['c1', new MultiValue(['c2.1', 'c2.2'])])]),
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider castArrayToDataProvider
+     * @test
+     */
+    public function castArrayToData(array $array, DataInterface $expected): void
+    {
+        $result = GeneralUtility::castArrayToData($array);
+        $this->assertMultiValueEquals($expected, $result);
     }
 }

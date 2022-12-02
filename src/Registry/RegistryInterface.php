@@ -2,9 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
+use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryInterface;
-use DigitalMarketingFramework\Core\Registry\Service\RequestRegistryInterface;
 
-interface RegistryInterface extends LoggerFactoryRegistryInterface, RequestRegistryInterface
+interface RegistryInterface extends LoggerFactoryRegistryInterface, ContextRegistryInterface, CacheRegistryInterface
 {
+    public function getGlobalConfiguration(): ConfigurationInterface;
 }

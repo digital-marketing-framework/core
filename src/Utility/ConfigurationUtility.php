@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 
 class ConfigurationUtility
 {
-    public static function mergeConfiguration(array $target, array $source, bool $resolveNull = true)
+    public static function mergeConfiguration(array $target, array $source, bool $resolveNull = true): array
     {
         foreach ($source as $key => $value) {
             if (!array_key_exists($key, $target)) {
@@ -42,7 +42,7 @@ class ConfigurationUtility
         return $target;
     }
 
-    public static function resolveNullInMergedConfiguration(array $configuration)
+    public static function resolveNullInMergedConfiguration(array $configuration): array
     {
         return static::mergeConfiguration($configuration, $configuration, true);
     }

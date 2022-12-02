@@ -2,63 +2,55 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
-use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationBehaviour;
+use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\ConfigurationResolverRegistryInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
-class FieldCollectorContentResolver extends ContentResolver
+class FieldCollectorContentResolver extends AbstractFieldCollectorContentResolver
 {
-    protected const KEY_EXCLUDE = 'exclude';
-    protected const DEFAULT_EXCLUDE = '';
-
-    protected const KEY_IGNORE_IF_EMPTY = 'ignoreIfEmpty';
-    protected const DEFAULT_IGNORE_IF_EMPTY = true;
-
-    protected const KEY_UNPROCESSED_ONLY = 'unprocessedOnly';
-    protected const DEFAULT_UNPROCESSED_ONLY = true;
-
     protected const KEY_TEMPLATE = 'template';
     protected const DEFAULT_TEMPLATE = '{key}\s=\s{value}\n';
 
-    protected function getConfigurationBehaviour(): ConfigurationBehaviour
+    protected string $template;
+
+    public function __construct(string $keyword, ConfigurationResolverRegistryInterface $registry, $config, ConfigurationResolverContextInterface $context)
     {
-        return ConfigurationBehaviour::IgnoreScalar;
+        parent::__construct($keyword, $registry, $config, $context);
+        $this->template = GeneralUtility::parseSeparatorString($this->resolveContent($this->getConfig(static::KEY_TEMPLATE)));
     }
 
-    public function build()
+    protected function getMultiValue(): MultiValueInterface
     {
-        $exclude = $this->resolveContent($this->getConfig(static::KEY_EXCLUDE));
-        $ignoreIfEmpty = $this->evaluate($this->getConfig(static::KEY_IGNORE_IF_EMPTY));
-        $unprocessedOnly = $this->evaluate($this->getConfig(static::KEY_UNPROCESSED_ONLY));
-        $template = $this->resolveContent($this->getConfig(static::KEY_TEMPLATE));
+        $value = parent::getMultiValue();
+        $value->setGlue('');
+        return $value;
+    }
 
-        $excludedFields = GeneralUtility::castValueToArray($exclude);
-        $template = GeneralUtility::parseSeparatorString($template);
-
-        $result = '';
-        foreach ($this->context->getData() as $key => $value) {
-            if (in_array($key, $excludedFields)) {
-                continue;
-            }
-            if ($ignoreIfEmpty && GeneralUtility::isEmpty($value)) {
-                continue;
-            }
-            if ($unprocessedOnly && $this->context->getFieldTracker()->hasBeenProcessed($key)) {
-                continue;
-            }
-            $part = $template;
-            $part = str_replace('{key}', $key, $part);
-            $part = str_replace('{value}', $value, $part);
-            $result .= $part;
+    protected function processField(string|int $key, string|ValueInterface|null $value): string|ValueInterface|null
+    {
+        if ($value === null) {
+            return null;
         }
-        return $result;
+        switch ($this->template) {
+            case '{key}':
+                return $key;
+            case '{value}':
+                return $value;
+            default:
+                return str_replace(['{key}', '{value}'], [$key, $value], $this->template);
+        }
+    }
+
+    protected function addValue(MultiValueInterface $output, string|int $key, string|ValueInterface|null $value): void
+    {
+        $output[] = $value;
     }
 
     public static function getDefaultConfiguration(): array
     {
         return parent::getDefaultConfiguration() + [
-            static::KEY_EXCLUDE => static::DEFAULT_EXCLUDE,
-            static::KEY_IGNORE_IF_EMPTY => static::DEFAULT_IGNORE_IF_EMPTY,
-            static::KEY_UNPROCESSED_ONLY => static::DEFAULT_UNPROCESSED_ONLY,
             static::KEY_TEMPLATE => static::DEFAULT_TEMPLATE,
         ];
     }

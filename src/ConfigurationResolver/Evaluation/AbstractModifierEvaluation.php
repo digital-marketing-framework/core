@@ -4,12 +4,12 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation;
 
 abstract class AbstractModifierEvaluation extends Evaluation
 {
-    protected function getModifierName()
+    protected function getModifierName(): string
     {
         return $this->getKeyword();
     }
 
-    protected function getModifierConfiguration()
+    protected function getModifierConfiguration(): mixed
     {
         return true;
     }

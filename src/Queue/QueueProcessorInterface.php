@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Queue;
 
 interface QueueProcessorInterface
 {
-    public function processJobs(array $jobs);
-    public function processBatch(int $batchSize = 1);
-    public function processAll();
+    public function processJobs(array $jobs): void;
+    public function processBatch(int $batchSize = 1): void;
+    public function processAll(): void;
 }

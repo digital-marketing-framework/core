@@ -4,19 +4,19 @@ namespace DigitalMarketingFramework\Core\Log;
 
 class NullLogger implements LoggerInterface
 {
-    public function debug(string $msg)
+    public function debug(string $msg): void
     {
     }
 
-    public function info(string $msg)
+    public function info(string $msg): void
     {
     }
 
-    public function warning(string $msg)
+    public function warning(string $msg): void
     {
     }
 
-    public function error(string $msg)
+    public function error(string $msg): void
     {
     }
 }

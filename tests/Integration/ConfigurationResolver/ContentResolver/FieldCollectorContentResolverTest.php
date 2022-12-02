@@ -3,12 +3,17 @@
 namespace DigitalMarketingFramework\Core\Tests\Integration\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\FieldCollectorContentResolver;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 
 /**
  * @covers FieldCollectorContentResolver
  */
 class FieldCollectorContentResolverTest extends AbstractContentResolverTest
 {
+    use MultiValueTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -45,7 +50,7 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
             'fieldCollector' => true,
         ];
         $result = $this->runResolverProcess($config);
-        $this->assertEquals("field1 = value1\nfield2 = value2\nfield3 = value3\n", $result);
+        $this->assertEquals("field1 = value1\nfield2 = value2\nfield3 = value3\n", (string)$result);
     }
 
     public function skipProcessedProvider(): array
@@ -68,7 +73,7 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
      * @dataProvider skipProcessedProvider
      * @test
      */
-    public function skipProcessed(mixed $processed, bool $useDefaultConfig, mixed $unprocessedOnly, mixed $expected): void
+    public function skipProcessed(array $processed, bool $useDefaultConfig, mixed $unprocessedOnly, mixed $expected): void
     {
         foreach ($processed as $field) {
             $this->fieldTracker->markAsProcessed($field);
@@ -78,7 +83,7 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
             $config['fieldCollector']['unprocessedOnly'] = $unprocessedOnly;
         }
         $result = $this->runResolverProcess($config);
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expected, (string)$result);
     }
 
     public function ignoreIfEmptyProvider(): array
@@ -111,7 +116,7 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
             }
         }
         $result = $this->runResolverProcess($config);
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expected, (string)$result);
     }
 
     public function templateProvider(): array
@@ -146,7 +151,7 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
             'fieldCollector' => $config,
         ];
         $result = $this->runResolverProcess($config);
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expected, (string)$result);
     }
 
     public function excludeProvider(): array
@@ -174,6 +179,70 @@ class FieldCollectorContentResolverTest extends AbstractContentResolverTest
             $config['fieldCollector']['exclude'] = $exclude;
         }
         $result = $this->runResolverProcess($config);
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expected, (string)$result);
+    }
+
+    public function includeProvider(): array
+    {
+        return [
+            'alreadyProcessedFieldsDoNotGetIncluddeWhenIncludeIsNotDefined' => [
+                ['field1', 'field2'],
+                true,
+                null,
+                "field3 = value3\n",
+            ],
+            'alreadyProcessedFieldsDoNotGetIncluddeWhenIncludeIsDisabled' => [
+                ['field1', 'field2'],
+                true,
+                false,
+                "field3 = value3\n",
+            ],
+            'alreadyProcessedFieldsGetIncluded' => [
+                ['field1', 'field2'],
+                true,
+                'field1',
+                "field1 = value1\nfield3 = value3\n",
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider includeProvider
+     * @test
+     */
+    public function include(array $processed, bool $processedOnly, mixed $include, mixed $expected): void
+    {
+        foreach ($processed as $field) {
+            $this->fieldTracker->markAsProcessed($field);
+        }
+        $config = $this->getNeutralConfig();
+        $config['fieldCollector']['unprocessedOnly'] = $processedOnly;
+        if ($include !== null) {
+            $config['fieldCollector']['include'] = $include;
+        }
+        $result = $this->runResolverProcess($config);
+        $this->assertEquals($expected, (string)$result);
+    }
+
+    /**
+     * @test
+     */
+    public function complexDataStructureKeptWhenTheTemplateIsTheValueItself(): void
+    {
+        $this->data = [
+            'field1' => new MultiValue(['value1.1', 'value1.2']),
+            'field2' => new MultiValue(['value2.1', 'value2.2']),
+        ];
+        $config = $this->getNeutralConfig();
+        $config['fieldCollector']['template'] = '{value}';
+        /** @var MultiValueInterface */
+        $result = $this->runResolverProcess($config);
+
+        $this->assertMultiValue($result);
+
+        $this->assertMultiValueEquals([
+            new MultiValue(['value1.1', 'value1.2']),
+            new MultiValue(['value2.1', 'value2.2']),
+        ], $result);
     }
 }

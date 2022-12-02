@@ -2,10 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Model\DataSet;
 
+use DigitalMarketingFramework\Core\Context\WriteableContext;
+use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
-use DigitalMarketingFramework\Core\Model\Context\Context;
-use DigitalMarketingFramework\Core\Model\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 
@@ -13,7 +13,7 @@ class DataSet implements DataSetInterface
 {
     protected DataInterface $data;
     protected ConfigurationInterface $configuration;
-    protected ContextInterface $context;
+    protected WriteableContextInterface $context;
 
     /**
      * @param array $data The form fields and their values as associative array
@@ -24,7 +24,7 @@ class DataSet implements DataSetInterface
     {
         $this->data = new Data($data);
         $this->configuration = new Configuration($configurationList);
-        $this->context = new Context($context);
+        $this->context = new WriteableContext($context);
     }
 
     public function getData(): DataInterface
@@ -37,7 +37,7 @@ class DataSet implements DataSetInterface
         return $this->configuration;
     }
 
-    public function getContext(): ContextInterface
+    public function getContext(): WriteableContextInterface
     {
         return $this->context;
     }

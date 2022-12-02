@@ -37,13 +37,10 @@ class RegexpEvaluationTest extends AbstractEvaluationTest
     }
 
     /**
-     * @param $value
-     * @param $regexp
-     * @param $match
      * @dataProvider regexpProvider
      * @test
      */
-    public function regexp($value, $regexp, $match)
+    public function regexp(string $value, string $regexp, bool $match): void
     {
         $this->data['field1'] = $value;
         $config = [

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class ConfigurationUtilityTest extends TestCase
 {
     /** @test */
-    public function empty()
+    public function empty(): void
     {
         $result = ConfigurationUtility::mergeConfiguration([], []);
         $this->assertEquals([], $result);
@@ -90,13 +90,10 @@ class ConfigurationUtilityTest extends TestCase
     }
 
     /**
-     * @param $target
-     * @param $source
-     * @param $expected
      * @dataProvider mergeDontResolveNullProvider
      * @test
      */
-    public function mergeDontResolveNull($target, $source, $expected)
+    public function mergeDontResolveNull(array $target, array $source, array $expected): void
     {
         $result = ConfigurationUtility::mergeConfiguration($target, $source, false);
         $this->assertEquals($expected, $result);
@@ -177,27 +174,21 @@ class ConfigurationUtilityTest extends TestCase
     }
 
     /**
-     * @param $target
-     * @param $source
-     * @param $expected
      * @dataProvider mergeResolveNullProvider
      * @test
      */
-    public function mergeResolveNull($target, $source, $expected)
+    public function mergeResolveNull(array $target, array $source, array $expected): void
     {
         $result = ConfigurationUtility::mergeConfiguration($target, $source, true);
         $this->assertEquals($expected, $result);
     }
 
     /**
-     * @param $target
-     * @param $source
-     * @param $expected
      * @dataProvider mergeDontResolveNullProvider
      * @dataProvider mergeResolveNullProvider
      * @test
      */
-    public function resolvedNullDirectlyEqualsUnresolvedNullThenResolvedNull($target, $source, $expected)
+    public function resolvedNullDirectlyEqualsUnresolvedNullThenResolvedNull(array $target, array $source, array $expected): void
     {
         $unresolved = ConfigurationUtility::mergeConfiguration($target, $source, false);
         $expected = ConfigurationUtility::resolveNullInMergedConfiguration($unresolved);
@@ -241,12 +232,10 @@ class ConfigurationUtilityTest extends TestCase
     }
 
     /**
-     * @param $config
-     * @param $expected
      * @dataProvider resolveNullProvider
      * @test
      */
-    public function resolveNull($config, $expected)
+    public function resolveNull(array $config, array $expected): void
     {
         $result = ConfigurationUtility::resolveNullInMergedConfiguration($config);
         $this->assertEquals($expected, $result);

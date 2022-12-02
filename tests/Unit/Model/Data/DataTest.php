@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Data;
 
 use DigitalMarketingFramework\Core\Model\Data\Data;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use PHPUnit\Framework\TestCase;
 
 class DataTest extends TestCase
@@ -27,11 +28,10 @@ class DataTest extends TestCase
     }
 
     /**
-     * @param $values
      * @dataProvider toArrayProvider
      * @test
      */
-    public function toArray($values)
+    public function toArray(array $values): void
     {
         $this->subject = new Data($values);
         $result = $this->subject->toArray();
@@ -39,7 +39,7 @@ class DataTest extends TestCase
     }
 
     /** @test */
-    public function setGetOffset()
+    public function setGetOffset(): void
     {
         $this->subject = new Data();
         $this->subject['key1'] = 'value1';
@@ -60,18 +60,17 @@ class DataTest extends TestCase
     }
 
     /**
-     * @param $value
      * @dataProvider fieldExistsProvider
      * @test
      */
-    public function fieldExists($value)
+    public function fieldExists(string|ValueInterface|null $value): void
     {
         $this->subject = new Data(['field1' => $value]);
         $this->assertTrue($this->subject->fieldExists('field1'));
     }
 
     /** @test */
-    public function fieldDoesNotExist()
+    public function fieldDoesNotExist(): void
     {
         $this->subject = new Data(['field1' => 'value1']);
         $this->assertTrue($this->subject->fieldExists('field1'));
@@ -79,7 +78,7 @@ class DataTest extends TestCase
     }
 
     /** @test */
-    public function fieldDoesNotExistIsEmpty()
+    public function fieldDoesNotExistIsEmpty(): void
     {
         $this->subject = new Data();
         $this->assertTrue($this->subject->fieldEmpty('field1'));
@@ -96,12 +95,10 @@ class DataTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $empty
      * @dataProvider fieldEmptyProvider
      * @test
      */
-    public function fieldEmpty($value, $empty)
+    public function fieldEmpty(string|ValueInterface|null $value, bool $empty): void
     {
         $this->subject = new Data(['field1' => $value]);
         if ($empty) {

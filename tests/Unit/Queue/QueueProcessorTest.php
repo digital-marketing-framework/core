@@ -42,7 +42,7 @@ class QueueProcessorTest extends TestCase
         ];
     }
 
-    protected function prepareQueue(string $method)
+    protected function prepareQueue(string $method): void
     {
         switch ($method) {
             case 'processBatch':
@@ -57,7 +57,7 @@ class QueueProcessorTest extends TestCase
         }
     }
 
-    protected function executeProcessor(string $method)
+    protected function executeProcessor(string $method): void
     {
         switch ($method) {
             case 'processBatch':
@@ -73,11 +73,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processEmpty(string $method)
+    public function processEmpty(string $method): void
     {
         $this->jobs = [];
         $this->batchSize = 1;
@@ -91,11 +90,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processJobThatSucceeds(string $method)
+    public function processJobThatSucceeds(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
 
@@ -112,11 +110,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processLessJobsThanRequested(string $method)
+    public function processLessJobsThanRequested(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
 
@@ -133,11 +130,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processTwoJobsThatSucceed(string $method)
+    public function processTwoJobsThatSucceed(string $method): void
     {
         $job1 = $this->createMock(JobInterface::class);
         $job2 = $this->createMock(JobInterface::class);
@@ -157,11 +153,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processJobThatFails(string $method)
+    public function processJobThatFails(string $method): void
     {
         $errorMessage = 'my error message';
         $job = $this->createMock(JobInterface::class);
@@ -179,11 +174,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processTwoJobsThatBothFail(string $method)
+    public function processTwoJobsThatBothFail(string $method): void
     {
         $errorMessage = 'my error message';
         $job1 = $this->createMock(JobInterface::class);
@@ -207,11 +201,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processJobThrowsArbitraryException(string $method)
+    public function processJobThrowsArbitraryException(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
 
@@ -230,11 +223,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processJobThatSucceedsButWasSkipped(string $method)
+    public function processJobThatSucceedsButWasSkipped(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
 
@@ -251,11 +243,10 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @param string $method
      * @dataProvider processorMethodProvider
      * @test
      */
-    public function processTwoJobsOfWhichTheFirstFails(string $method)
+    public function processTwoJobsOfWhichTheFirstFails(string $method): void
     {
         $errorMessage = 'my error message';
         $job1 = $this->createMock(JobInterface::class);

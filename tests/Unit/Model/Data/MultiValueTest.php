@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Data;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 
 class MultiValueTest extends AbstractFieldTest
@@ -11,7 +12,7 @@ class MultiValueTest extends AbstractFieldTest
 
     protected const FIELD_CLASS = MultiValue::class;
 
-    protected function createField(...$arguments)
+    protected function createField(...$arguments): MultiValueInterface
     {
         if (empty($arguments)) {
             $arguments = [[5, 7, 17]];
@@ -21,14 +22,14 @@ class MultiValueTest extends AbstractFieldTest
 
 
     /** @test */
-    public function init()
+    public function init(): void
     {
         $this->subject = $this->createField([5, 7, 17]);
         $this->assertMultiValueEquals([5, 7, 17], $this->subject, static::FIELD_CLASS);
     }
 
     /** @test */
-    public function initEmpty()
+    public function initEmpty(): void
     {
         $this->subject = $this->createField([]);
         $this->assertMultiValueEmpty($this->subject, static::FIELD_CLASS);
@@ -56,13 +57,10 @@ class MultiValueTest extends AbstractFieldTest
     }
 
     /**
-     * @param $glue
-     * @param $values
-     * @param $stringRepresentation
      * @dataProvider castToStringWithGlueProvider
      * @test
      */
-    public function castToStringWithGlue($glue, $values, $stringRepresentation)
+    public function castToStringWithGlue(string $glue, array $values, string $stringRepresentation): void
     {
         $this->subject = $this->createField($values);
         $this->subject->setGlue($glue);
@@ -71,7 +69,7 @@ class MultiValueTest extends AbstractFieldTest
     }
 
     /** @test */
-    public function castToStringNested()
+    public function castToStringNested(): void
     {
         $this->subject = $this->createField([
             'a',

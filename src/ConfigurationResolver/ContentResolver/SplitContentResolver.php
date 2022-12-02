@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class SplitContentResolver extends ContentResolver
@@ -17,7 +18,7 @@ class SplitContentResolver extends ContentResolver
     protected const KEY_INDEX = 'index';
     protected const DEFAULT_INDEX = null;
 
-    public function finish(&$result): bool
+    public function finish(string|ValueInterface|null &$result): bool
     {
         if ($result !== null) {
             if (!is_array($this->configuration)) {

@@ -19,7 +19,7 @@ class JobTest extends TestCase
     }
 
     /** @test */
-    public function defaultValues()
+    public function defaultValues(): void
     {
         // NOTE we can't really test the default values of the fields "created" and "changed"
         //      because we don't necessarily have the exact timestamp of the object creation
@@ -29,7 +29,7 @@ class JobTest extends TestCase
     }
 
     /** @test */
-    public function setGetCreated()
+    public function setGetCreated(): void
     {
         $value = DateTime::createFromFormat('Y-m-d', '2013-05-23');
         $this->subject->setCreated($value);
@@ -37,7 +37,7 @@ class JobTest extends TestCase
     }
 
     /** @test */
-    public function setGetChanged()
+    public function setGetChanged(): void
     {
         $value = DateTime::createFromFormat('Y-m-d', '2014-06-24');
         $this->subject->setChanged($value);
@@ -55,32 +55,31 @@ class JobTest extends TestCase
     }
 
     /**
-     * @param $value
      * @dataProvider statusProvider
      * @test
      */
-    public function setGetStatus($value)
+    public function setGetStatus(int $value): void
     {
         $this->subject->setStatus($value);
         $this->assertEquals($value, $this->subject->getStatus());
     }
 
     /** @test */
-    public function setGetSkippedTrue()
+    public function setGetSkippedTrue(): void
     {
         $this->subject->setSkipped(true);
         $this->assertTrue($this->subject->getSkipped());
     }
 
     /** @test */
-    public function setGetSkippedFalse()
+    public function setGetSkippedFalse(): void
     {
         $this->subject->setSkipped(false);
         $this->assertFalse($this->subject->getSkipped());
     }
 
     /** @test */
-    public function setGetStatusMessage()
+    public function setGetStatusMessage(): void
     {
         $value = 'my status message';
         $this->subject->setStatusMessage($value);
@@ -88,14 +87,14 @@ class JobTest extends TestCase
     }
 
     /** @test */
-    public function setGetEmptyStatusMessage()
+    public function setGetEmptyStatusMessage(): void
     {
         $this->subject->setStatusMessage('');
         $this->assertEquals('', $this->subject->getStatusMessage());
     }
 
     /** @test */
-    public function setGetData()
+    public function setGetData(): void
     {
         $value = ['key1' => 'value1'];
         $this->subject->setData($value);
@@ -103,7 +102,7 @@ class JobTest extends TestCase
     }
 
     /** @test */
-    public function setGetEmptyData()
+    public function setGetEmptyData(): void
     {
         $this->subject->setData([]);
         $this->assertEmpty($this->subject->getData());

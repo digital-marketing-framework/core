@@ -2,11 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class InsertDataContentResolver extends ContentResolver
 {
-    public function finish(&$result): bool
+    public function finish(string|ValueInterface|null &$result): bool
     {
         if ($this->configuration && $result !== null) {
             $result = GeneralUtility::parseSeparatorString($result);

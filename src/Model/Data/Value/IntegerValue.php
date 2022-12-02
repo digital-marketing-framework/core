@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-class IntegerValue implements ValueInterface
+class IntegerValue implements IntegerValueInterface
 {
     protected int $value;
 

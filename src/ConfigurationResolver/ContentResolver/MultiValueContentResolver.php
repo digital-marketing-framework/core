@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class MultiValueContentResolver extends ContentResolver
 {
@@ -12,7 +13,7 @@ class MultiValueContentResolver extends ContentResolver
         return new MultiValue([]);
     }
 
-    public function build()
+    public function build(): string|ValueInterface|null
     {
         $result = $this->getMultiValue();
         foreach ($this->configuration as $key => $valueConfiguration) {

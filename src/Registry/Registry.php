@@ -2,23 +2,32 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
+use DigitalMarketingFramework\Core\Cache\CacheAwareInterface;
+use DigitalMarketingFramework\Core\Cache\CacheInterface;
+use DigitalMarketingFramework\Core\Cache\NonPersistentCache;
+use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
+use DigitalMarketingFramework\Core\Context\ContextInterface;
+use DigitalMarketingFramework\Core\Context\RequestContext;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerFactoryInterface;
 use DigitalMarketingFramework\Core\Log\NullLoggerFactory;
+use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
+use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
-use DigitalMarketingFramework\Core\Registry\Service\RequestRegistryTrait;
-use DigitalMarketingFramework\Core\Request\DefaultRequest;
-use DigitalMarketingFramework\Core\Request\RequestAwareInterface;
-use DigitalMarketingFramework\Core\Request\RequestInterface;
 
 abstract class Registry implements RegistryInterface
 {
     use LoggerFactoryRegistryTrait;
-    use RequestRegistryTrait;
+    use ContextRegistryTrait;
+    use CacheRegistryTrait;
 
     public function __construct(
         protected LoggerFactoryInterface $loggerFactory = new NullLoggerFactory(),
-        protected RequestInterface $request = new DefaultRequest(),
+        protected ContextInterface $context = new RequestContext(),
+        protected CacheInterface $cache = new NonPersistentCache(),
+        protected ConfigurationInterface $globalConfiguration = new Configuration([]),
     ) {
     }
 
@@ -28,8 +37,11 @@ abstract class Registry implements RegistryInterface
             $logger = $this->loggerFactory->getLogger(get_class($object));
             $object->setLogger($logger);
         }
-        if ($object instanceof RequestAwareInterface) {
-            $object->setRequest($this->request);
+        if ($object instanceof ContextAwareInterface) {
+            $object->setContext($this->context);
+        }
+        if ($object instanceof CacheAwareInterface) {
+            $object->setCache($this->cache);
         }
     }
 
@@ -61,5 +73,10 @@ abstract class Registry implements RegistryInterface
         if (!is_subclass_of($interface, $parentInterface, true)) {
             throw new RegistryException('interface "' . $interface . '" has to extend "' . $parentInterface . '".');
         }
+    }
+
+    public function getGlobalConfiguration(): ConfigurationInterface
+    {
+        return $this->globalConfiguration;
     }
 }

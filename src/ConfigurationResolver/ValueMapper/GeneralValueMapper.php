@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationBehaviour;
 use DigitalMarketingFramework\Core\ConfigurationResolver\GeneralConfigurationResolverInterface;
-use DigitalMarketingFramework\Core\Model\Form\FieldInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class GeneralValueMapper extends ValueMapper implements GeneralConfigurationResolverInterface
 {
@@ -13,11 +13,7 @@ class GeneralValueMapper extends ValueMapper implements GeneralConfigurationReso
         return ConfigurationBehaviour::ConvertScalarToArrayWithSelfValue;
     }
 
-    /**
-     * @param string|FieldInterface|null $fieldValue
-     * @return string|FieldInterface|null
-     */
-    protected function resolveValue($fieldValue)
+    protected function resolveValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
         $valueMappers = [];
         foreach ($this->configuration as $key => $value) {

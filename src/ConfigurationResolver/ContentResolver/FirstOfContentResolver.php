@@ -2,11 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class FirstOfContentResolver extends ContentResolver
 {
-    public function build()
+    public function build(): string|ValueInterface|null
     {
         ksort($this->configuration, SORT_NUMERIC);
         $result = null;

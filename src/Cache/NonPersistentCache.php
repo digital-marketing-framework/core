@@ -24,12 +24,12 @@ class NonPersistentCache implements CacheInterface
         return $this->timeoutInSeconds;
     }
 
-    public function fetch(CacheIdentifierInterface $identifier): ?DataInterface
+    public function fetch(string $key): ?array
     {
-        $entry = $this->storage[$identifier->getCacheKey()] ?? null;
+        $entry = $this->storage[$key] ?? null;
         if ($entry !== null) {
             if ($entry->expired($this->timeoutInSeconds)) {
-                unset($this->storage[$identifier]);
+                unset($this->storage[$key]);
                 $entry = null;
             }
         }
@@ -43,9 +43,9 @@ class NonPersistentCache implements CacheInterface
     protected function fetchEntriesByTags(array $tags): array
     {
         $result = [];
-        foreach ($this->storage as $identifier => $entry) {
+        foreach ($this->storage as $key => $entry) {
             if ($entry->expired($this->timeoutInSeconds)) {
-                unset($this->storage[$identifier]);
+                unset($this->storage[$key]);
                 continue;
             }
             foreach ($entry->getTags() as $tag) {
@@ -72,14 +72,14 @@ class NonPersistentCache implements CacheInterface
     /**
      * @param array<string> $tags
      */
-    public function store(CacheIdentifierInterface $identifier, DataInterface $data, array $tags = []): void
+    public function store(string $key, array $data, array $tags = []): void
     {
-        $this->storage[$identifier] = new CacheEntry($identifier, $data, $tags);
+        $this->storage[$key] = new CacheEntry($key, $data, $tags);
     }
     
-    public function purge(CacheIdentifierInterface $identifier): void
+    public function purge(string $key): void
     {
-        unset($this->storage[$identifier->getCacheKey()]);
+        unset($this->storage[$key]);
     }
 
     /**

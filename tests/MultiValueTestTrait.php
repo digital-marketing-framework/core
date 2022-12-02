@@ -2,34 +2,41 @@
 
 namespace DigitalMarketingFramework\Core\Tests;
 
-use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
 trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
 {
-    public static function assertMultiValue($actual, string $class = MultiValue::class)
+    public static function assertMultiValue($actual, string $class = MultiValueInterface::class): void
     {
         static::assertIsObject($actual);
-        if ($class !== MultiValue::class) {
-            static::assertInstanceOf(MultiValue::class, $actual);
+        if ($class !== MultiValueInterface::class) {
+            static::assertInstanceOf(MultiValueInterface::class, $actual);
         }
-        static::assertEquals($class, get_class($actual));
+        static::assertInstanceOf($class, $actual);
     }
 
-    public static function assertMultiValueEquals($expected, $actual, string $class = MultiValue::class)
+    public static function assertMultiValueEquals(MultiValueInterface|array $expected, mixed $actual, string $class = ''): void
     {
-        /** @var MultiValue $actual */
+        if ($class === '') {
+            if ($expected instanceof MultiValueInterface) {
+                $class = get_class($expected);
+            } else {
+                $class = MultiValueInterface::class;
+            }
+        }
         static::assertMultiValue($actual, $class);
 
-        if ($expected instanceof MultiValue) {
+        if ($expected instanceof MultiValueInterface) {
             $expected = $expected->toArray();
         }
         $actual = $actual->toArray();
-        static::assertEquals(array_keys($actual), array_keys($expected));
+        static::assertEquals(count($expected), count($actual));
+        static::assertEquals(array_keys($expected), array_keys($actual));
 
         foreach ($expected as $key => $value) {
             if (is_scalar($value)) {
                 static::assertEquals($actual[$key], $value);
-            } elseif ($value instanceof MultiValue) {
+            } elseif ($value instanceof MultiValueInterface) {
                 static::assertMultiValueEquals($value, $actual[$key], get_class($value));
             } else {
                 static::assertMultiValueEquals($value, $actual[$key]);
@@ -37,10 +44,9 @@ trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public static function assertMultiValueEmpty($actual, string $class = MultiValue::class)
+    public static function assertMultiValueEmpty(mixed $actual, string $class = MultiValueInterface::class): void
     {
         static::assertMultiValue($actual, $class);
-        /** @var MultiValue $actual */
         static::assertEmpty($actual->toArray());
     }
 }

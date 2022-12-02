@@ -7,9 +7,12 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\Content
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\EvaluationInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
+use DigitalMarketingFramework\Core\Service\DataProcessorInterface;
 
 interface ConfigurationResolverRegistryInterface extends PluginRegistryInterface
 {
+    public function getDataProcessor(array $configuration): DataProcessorInterface;
+
     public function getConfigurationResolver(string $keyword, string $interface, mixed $config, ConfigurationResolverContextInterface $context): ?ConfigurationResolverInterface;
 
     public function registerContentResolver(string $class, array $additionalArguments = [], string $keyword = ''): void;

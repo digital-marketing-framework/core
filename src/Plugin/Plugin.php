@@ -11,11 +11,9 @@ abstract class Plugin implements PluginInterface, LoggerAwareInterface
 
     protected const WEIGHT = 10;
 
-    protected string $keyword;
-
-    public function __construct(string $keyword)
-    {
-        $this->keyword = $keyword;
+    public function __construct(
+        protected string $keyword,
+    ) {
     }
 
     public function getKeyword(): string

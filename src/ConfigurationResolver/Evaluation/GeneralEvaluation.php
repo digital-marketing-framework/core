@@ -8,8 +8,10 @@ use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 class GeneralEvaluation extends Evaluation implements GeneralConfigurationResolverInterface
 {
+    protected const KEY_THEN = 'then';
+    protected const KEY_ELSE = 'else';
+
     protected mixed $then = null;
-    
     protected mixed $else = null;
 
     public function __construct(string $keyword, RegistryInterface $registry, $config, ConfigurationResolverContextInterface $context)
@@ -18,16 +20,32 @@ class GeneralEvaluation extends Evaluation implements GeneralConfigurationResolv
         $this->initThenElseParts();
     }
 
-    protected function initThenElseParts()
+    public static function negateEvaluationConfiguration(array $configuration): array
+    {
+        $negated = [
+            'not' => $configuration,
+        ];
+        if (isset($configuration[static::KEY_THEN])) {
+            $negated[static::KEY_THEN] = $configuration[static::KEY_THEN];
+            unset($configuration[static::KEY_THEN]);
+        }
+        if (isset($configuration[static::KEY_ELSE])) {
+            $negated[static::KEY_ELSE] = $configuration[static::KEY_ELSE];
+            unset($configuration[static::KEY_ELSE]);
+        }
+        return $negated;
+    }
+
+    protected function initThenElseParts(): void
     {
         if (is_array($this->configuration)) {
-            if (array_key_exists('then', $this->configuration)) {
-                $this->then = $this->configuration['then'];
-                unset($this->configuration['then']);
+            if (array_key_exists(static::KEY_THEN, $this->configuration)) {
+                $this->then = $this->configuration[static::KEY_THEN];
+                unset($this->configuration[static::KEY_THEN]);
             }
-            if (array_key_exists('else', $this->configuration)) {
-                $this->else = $this->configuration['else'];
-                unset($this->configuration['else']);
+            if (array_key_exists(static::KEY_ELSE, $this->configuration)) {
+                $this->else = $this->configuration[static::KEY_ELSE];
+                unset($this->configuration[static::KEY_ELSE]);
             }
         }
     }

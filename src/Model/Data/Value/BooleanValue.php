@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-class BooleanValue implements ValueInterface
+class BooleanValue implements BooleanValueInterface
 {
     protected bool $value;
 
@@ -24,24 +24,24 @@ class BooleanValue implements ValueInterface
         return $this->value ? $this->false : $this->true;
     }
 
-    public function getThenValue(): string
+    public function getTrueValue(): string
     {
-        return $this->then;
+        return $this->true;
     }
 
-    public function setThenValue(string $then): void
+    public function setTrueValue(string $true): void
     {
-        $this->then = $then;
+        $this->true = $true;
     }
 
-    public function getElseValue(): string
+    public function getFalseValue(): string
     {
-        return $this->else;
+        return $this->false;
     }
 
-    public function setElseValue(string $else): void
+    public function setFalseValue(string $false): void
     {
-        $this->else = $else;
+        $this->false = $false;
     }
 
     public function getValue(): bool

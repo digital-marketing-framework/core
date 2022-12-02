@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class JoinContentResolver extends ContentResolver
@@ -10,7 +11,7 @@ class JoinContentResolver extends ContentResolver
     protected const KEY_GLUE = 'glue';
     protected const DEFAULT_GLUE = '\\n';
 
-    public function finish(&$result): bool
+    public function finish(string|ValueInterface|null &$result): bool
     {
         if ($result instanceof MultiValue) {
             $glue = GeneralUtility::parseSeparatorString($this->getConfig(static::KEY_GLUE));

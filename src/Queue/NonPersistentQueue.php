@@ -10,7 +10,7 @@ class NonPersistentQueue implements QueueInterface
     protected array $queue = [];
     protected int $index = 1;
 
-    public function fetchWhere(array $status = [], int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0, int $minAgeInSeconds = 0)
+    public function fetchWhere(array $status = [], int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0, int $minAgeInSeconds = 0): array
     {
         $result = [];
         $now = new DateTime();
@@ -37,32 +37,32 @@ class NonPersistentQueue implements QueueInterface
         return $result;
     }
 
-    public function fetch(array $status = [], int $limit = 0, int $offset = 0)
+    public function fetch(array $status = [], int $limit = 0, int $offset = 0): array
     {
         return $this->fetchWhere($status, $limit, $offset);
     }
 
-    public function fetchPending(int $limit = 0, int $offset = 0)
+    public function fetchPending(int $limit = 0, int $offset = 0): array
     {
         return $this->fetchWhere([QueueInterface::STATUS_PENDING], $limit, $offset);
     }
 
-    public function fetchRunning(int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0)
+    public function fetchRunning(int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0): array
     {
         return $this->fetchWhere([QueueInterface::STATUS_RUNNING], $limit, $offset, $minTimeSinceChangedInSeconds);
     }
 
-    public function fetchDone(int $limit = 0, int $offset = 0)
+    public function fetchDone(int $limit = 0, int $offset = 0): array
     {
         return $this->fetchWhere([QueueInterface::STATUS_DONE], $limit, $offset);
     }
 
-    public function fetchFailed(int $limit = 0, int $offset = 0)
+    public function fetchFailed(int $limit = 0, int $offset = 0): array
     {
         return $this->fetchWhere([QueueInterface::STATUS_FAILED], $limit, $offset);
     }
 
-    public function markAs(JobInterface $job, int $status, string $message = '', bool $skipped = false)
+    public function markAs(JobInterface $job, int $status, string $message = '', bool $skipped = false): void
     {
         $job->setStatus($status);
         $job->setChanged(new DateTime());
@@ -70,48 +70,48 @@ class NonPersistentQueue implements QueueInterface
         $job->setSkipped($skipped);
     }
 
-    public function markAsPending(JobInterface $job)
+    public function markAsPending(JobInterface $job): void
     {
         $this->markAs($job, QueueInterface::STATUS_PENDING);
     }
 
-    public function markAsRunning(JobInterface $job)
+    public function markAsRunning(JobInterface $job): void
     {
         $this->markAs($job, QueueInterface::STATUS_RUNNING);
     }
 
-    public function markAsDone(JobInterface $job, bool $skipped = false)
+    public function markAsDone(JobInterface $job, bool $skipped = false): void
     {
         $this->markAs($job, QueueInterface::STATUS_DONE, '', $skipped);
     }
 
-    public function markAsFailed(JobInterface $job, string $message = '')
+    public function markAsFailed(JobInterface $job, string $message = ''): void
     {
         $this->markAs($job, QueueInterface::STATUS_FAILED, $message);
     }
 
-    public function markListAsRunning(array $jobs)
+    public function markListAsRunning(array $jobs): void
     {
         foreach ($jobs as $job) {
             $this->markAsRunning($job);
         }
     }
 
-    public function markListAsDone(array $jobs, bool $skipped = false)
+    public function markListAsDone(array $jobs, bool $skipped = false): void
     {
         foreach ($jobs as $job) {
             $this->markAsDone($job, $skipped);
         }
     }
 
-    public function markListAsFailed(array $jobs, string $message = '')
+    public function markListAsFailed(array $jobs, string $message = ''): void
     {
         foreach ($jobs as $job) {
             $this->markAsFailed($job, $message);
         }
     }
 
-    public function addJob(JobInterface $job)
+    public function addJob(JobInterface $job): void
     {
         if (array_search($job, $this->queue) === false) {
             $job->setId($this->index++);
@@ -119,7 +119,7 @@ class NonPersistentQueue implements QueueInterface
         }
     }
 
-    public function removeJob(JobInterface $job)
+    public function removeJob(JobInterface $job): void
     {
         $this->queue = array_filter(
             $this->queue,
@@ -127,7 +127,7 @@ class NonPersistentQueue implements QueueInterface
         );
     }
 
-    public function removeOldJobs(int $minAgeInSeconds, array $status = [])
+    public function removeOldJobs(int $minAgeInSeconds, array $status = []): void
     {
         $jobs = $this->fetchWhere($status, 0, 0, 0, $minAgeInSeconds);
         foreach ($jobs as $job) {

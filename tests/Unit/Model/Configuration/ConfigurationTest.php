@@ -19,11 +19,10 @@ class ConfigurationTest extends TestCase
     }
 
     /**
-     * @param $values
      * @dataProvider toArrayProvider
      * @test
      */
-    public function toArray($values)
+    public function toArray(array $values): void
     {
         $this->subject = new Configuration($values);
         $result = $this->subject->toArray();
@@ -31,7 +30,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function nonExistentBasicKey()
+    public function nonExistentBasicKey(): void
     {
         $this->subject = new Configuration([]);
         $this->assertNull($this->subject->get('key'));
@@ -39,7 +38,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function basicKeys()
+    public function basicKeys(): void
     {
         $configList = [
             [
@@ -53,7 +52,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function basicKeysOverride()
+    public function basicKeysOverride(): void
     {
         $configList = [
             [
@@ -86,7 +85,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function basicKeyDelete()
+    public function basicKeyDelete(): void
     {
         $configList = [
             [ 'key1' => 'value1' ],
@@ -98,7 +97,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function basicKeyDeletesArray()
+    public function basicKeyDeletesArray(): void
     {
         $configList = [
             [ 'key1' => ['key1.1' => 'value1'] ],
@@ -110,7 +109,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function dynamicallyAddedConfiguration()
+    public function dynamicallyAddedConfiguration(): void
     {
         $configList = [
             [
@@ -133,7 +132,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function manualOverride()
+    public function manualOverride(): void
     {
         $configList = [
             [
@@ -154,7 +153,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function asArrayGet()
+    public function asArrayGet(): void
     {
         $configList = [
             ['key1' => 'value1'],
@@ -165,7 +164,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function asArraySet()
+    public function asArraySet(): void
     {
         $configList = [
             [
@@ -186,7 +185,7 @@ class ConfigurationTest extends TestCase
     }
 
     /** @test */
-    public function overrideWithAdditionalConfiguration()
+    public function overrideWithAdditionalConfiguration(): void
     {
         $configList = [
             [
