@@ -2,10 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-use DigitalMarketingFramework\Core\Cache\CacheInterface;
+use DigitalMarketingFramework\Core\Cache\DataCacheInterface;
 
 interface CacheRegistryInterface
 {
-    public function getCache(): CacheInterface;
-    public function setCache(CacheInterface $cache): void;
+    public function getCache(): DataCacheInterface;
+    public function setCache(DataCacheInterface $cache): void;
 }

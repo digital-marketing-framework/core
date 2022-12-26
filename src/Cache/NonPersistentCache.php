@@ -37,6 +37,22 @@ class NonPersistentCache implements CacheInterface
     }
 
     /**
+     * @param array<string> $keys
+     * @return array<array<mixed>>
+     */
+    public function fetchByKeys(array $keys): array
+    {
+        $result = [];
+        foreach ($keys as $key) {
+            $data = $this->fetch($key);
+            if ($data !== null) {
+                $result[] = $data;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * @param array<string> $tags
      * @return array<string,CacheEntryInterface>
      */

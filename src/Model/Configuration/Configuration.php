@@ -14,6 +14,11 @@ class Configuration implements ConfigurationInterface
         $this->configurationList = $configurationList;
     }
 
+    public static function convert(ConfigurationInterface $configuration): static
+    {
+        return new static($configuration->toArray());
+    }
+
     public function addConfiguration(array $configuration): void
     {
         $this->configurationList[] = $configuration;
@@ -83,6 +88,21 @@ class Configuration implements ConfigurationInterface
 
     public function getDataMapConfiguration(string $key): ?array
     {
-        return $this->get(static::KEY_DATA_MAPS, static::DEFAULT_DATA_MAPS)[$key] ?? null;
+        return $this->get(static::KEY_DATA_MAPS, [])[$key] ?? null;
+    }
+
+    protected function getIdentifierConfiguration(bool $resolveNull = true): array
+    {
+        return $this->getMergedConfiguration($resolveNull)[static::KEY_IDENTIFIER] ?? [];
+    }
+
+    public function getIdentifierCollectorConfiguration(string $identifierCollectorName): array
+    {
+        return $this->getIdentifierConfiguration()[static::KEY_IDENTIFIER_COLLECTORS][$identifierCollectorName] ?? [];
+    }
+
+    public function identifierCollectorExists(string $identifierCollectorName): bool
+    {
+        return isset($this->getIdentifierConfiguration()[static::KEY_IDENTIFIER_COLLECTORS][$identifierCollectorName]);
     }
 }

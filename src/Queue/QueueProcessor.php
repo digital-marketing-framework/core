@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Queue;
 
+use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
+
 class QueueProcessor implements QueueProcessorInterface
 {
     public function __construct(
@@ -10,28 +12,34 @@ class QueueProcessor implements QueueProcessorInterface
     ) {
     }
 
+    public function processJob(JobInterface $job): void
+    {
+        try {
+            $this->queue->markAsRunning($job);
+            $processed = $this->worker->processJob($job);
+            $this->queue->markAsDone($job, !$processed);
+        } catch (QueueException $e) {
+            $this->queue->markAsFailed($job, $e->getMessage());
+        }
+    }
+
     public function processJobs(array $jobs): void
     {
         if (!empty($jobs)) {
-            $this->queue->markListAsRunning($jobs);
+            $this->queue->markListAsPending($jobs);
             foreach ($jobs as $job) {
-                try {
-                    $processed = $this->worker->processJob($job);
-                    $this->queue->markAsDone($job, !$processed);
-                } catch (QueueException $e) {
-                    $this->queue->markAsFailed($job, $e->getMessage());
-                }
+                $this->processJob($job);
             }
         }
     }
 
     public function processBatch(int $batchSize = 1): void
     {
-        $this->processJobs($this->queue->fetchPending($batchSize));
+        $this->processJobs($this->queue->fetchQueued($batchSize));
     }
 
     public function processAll(): void
     {
-        $this->processJobs($this->queue->fetchPending());
+        $this->processJobs($this->queue->fetchQueued());
     }
 }

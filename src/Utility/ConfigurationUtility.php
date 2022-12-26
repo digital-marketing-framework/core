@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Utility;
 
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 
-class ConfigurationUtility
+final class ConfigurationUtility
 {
     public static function mergeConfiguration(array $target, array $source, bool $resolveNull = true): array
     {

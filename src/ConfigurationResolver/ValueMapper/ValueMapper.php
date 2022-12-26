@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolver;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 abstract class ValueMapper extends ConfigurationResolver implements ValueMapperInterface
@@ -18,6 +19,16 @@ abstract class ValueMapper extends ConfigurationResolver implements ValueMapperI
         return $fieldValue;
     }
 
+    protected function resolveMultiValue(MultiValueInterface $fieldValue): string|ValueInterface|null
+    {
+        $result = [];
+        foreach ($fieldValue as $key => $value) {
+            $result[$key] = $this->resolve($value);
+        }
+        $class = get_class($fieldValue);
+        return new $class($result);
+    }
+
     public function resolve(string|ValueInterface|null $fieldValue = null): string|ValueInterface|null
     {
         // TODO this fallback on fieldValues should not be necessary anymore. confirm and then remove
@@ -29,14 +40,10 @@ abstract class ValueMapper extends ConfigurationResolver implements ValueMapperI
             return null;
         }
 
-        if ($fieldValue instanceof MultiValue) {
-            $result = [];
-            foreach ($fieldValue as $key => $value) {
-                $result[$key] = $this->resolve($value);
-            }
-            $class = get_class($fieldValue);
-            return new $class($result);
+        if ($fieldValue instanceof MultiValueInterface) {
+            return $this->resolveMultiValue($fieldValue);
         }
+        
         return $this->resolveValue($fieldValue);
     }
 }

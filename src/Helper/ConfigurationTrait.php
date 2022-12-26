@@ -8,16 +8,17 @@ trait ConfigurationTrait
 
     abstract public static function getDefaultConfiguration(): array;
 
-    protected function getConfig(string $key, $default = null): mixed
+    protected function getConfig(string $key, $default = null, ?array $configuration = null, ?array $defaultConfiguration = null): mixed
     {
         if ($default === null) {
-            $defaults = static::getDefaultConfiguration();
-            if (array_key_exists($key, $defaults)) {
-                $default = $defaults[$key];
+            $defaultConfiguration = $defaultConfiguration ?? static::getDefaultConfiguration();
+            if (array_key_exists($key, $defaultConfiguration)) {
+                $default = $defaultConfiguration[$key];
             }
         }
-        if (is_array($this->configuration) && array_key_exists($key, $this->configuration)) {
-            return $this->configuration[$key];
+        $configuration = $configuration ?? $this->configuration;
+        if (is_array($configuration) && array_key_exists($key, $configuration)) {
+            return $configuration[$key];
         }
         return $default;
     }

@@ -10,4 +10,5 @@ use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryInterfa
 interface RegistryInterface extends LoggerFactoryRegistryInterface, ContextRegistryInterface, CacheRegistryInterface
 {
     public function getGlobalConfiguration(): ConfigurationInterface;
+    public function setGlobalConfiguration(ConfigurationInterface $globalConfiguration): void;
 }

@@ -42,14 +42,24 @@ class NonPersistentQueue implements QueueInterface
         return $this->fetchWhere($status, $limit, $offset);
     }
 
-    public function fetchPending(int $limit = 0, int $offset = 0): array
+    public function fetchQueued(int $limit = 0, int $offset = 0): array
     {
-        return $this->fetchWhere([QueueInterface::STATUS_PENDING], $limit, $offset);
+        return $this->fetchWhere([QueueInterface::STATUS_QUEUED], $limit, $offset);
+    }
+    
+    public function fetchPending(int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0): array
+    {
+        return $this->fetchWhere([QueueInterface::STATUS_PENDING], $limit, $offset, $minTimeSinceChangedInSeconds);
     }
 
     public function fetchRunning(int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0): array
     {
         return $this->fetchWhere([QueueInterface::STATUS_RUNNING], $limit, $offset, $minTimeSinceChangedInSeconds);
+    }
+
+    public function fetchPendingAndRunning(int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0): array
+    {
+        return $this->fetchWhere([QueueInterface::STATUS_PENDING, QueueInterface::STATUS_RUNNING], $limit, $offset, $minTimeSinceChangedInSeconds);
     }
 
     public function fetchDone(int $limit = 0, int $offset = 0): array
@@ -68,6 +78,11 @@ class NonPersistentQueue implements QueueInterface
         $job->setChanged(new DateTime());
         $job->setStatusMessage($message);
         $job->setSkipped($skipped);
+    }
+
+    public function markAsQueued(JobInterface $job): void
+    {
+        $this->markAs($job, QueueInterface::STATUS_QUEUED);
     }
 
     public function markAsPending(JobInterface $job): void
@@ -90,6 +105,20 @@ class NonPersistentQueue implements QueueInterface
         $this->markAs($job, QueueInterface::STATUS_FAILED, $message);
     }
 
+    public function markListAsQueued(array $jobs): void
+    {
+        foreach ($jobs as $job) {
+            $this->markAsQueued($job);
+        }
+    }
+
+    public function markListAsPending(array $jobs): void
+    {
+        foreach ($jobs as $job) {
+            $this->markAsPending($job);
+        }
+    }
+    
     public function markListAsRunning(array $jobs): void
     {
         foreach ($jobs as $job) {

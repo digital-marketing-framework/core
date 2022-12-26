@@ -8,9 +8,10 @@ class RawValueMapper extends ValueMapper
 {
     public function resolveValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
-        if (isset($this->configuration[$fieldValue])) {
+        $stringFieldValue = (string)$fieldValue;
+        if (isset($this->configuration[$stringFieldValue])) {
             /** @var GeneralValueMapper $valueMapper */
-            $valueMapper = $this->resolveKeyword('general', $this->configuration[$fieldValue]);
+            $valueMapper = $this->resolveKeyword('general', $this->configuration[$stringFieldValue]);
             $result = $valueMapper->resolve($fieldValue);
             if ($result !== null) {
                 return $result;

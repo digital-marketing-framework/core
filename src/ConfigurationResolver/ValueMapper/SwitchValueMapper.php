@@ -16,12 +16,13 @@ class SwitchValueMapper extends ValueMapper
      */
     public function resolveValue(string|ValueInterface|null $fieldValue): string|ValueInterface|null
     {
+        $stringFieldValue = (string)$fieldValue;
         $valueMapper = null;
         ksort($this->configuration, SORT_NUMERIC);
         foreach ($this->configuration as $case) {
             $caseValue = $case[static::KEY_CASE] ?? ($case[ConfigurationResolverInterface::KEY_SELF] ?? '');
             $caseResult = $case[static::KEY_VALUE] ?? '';
-            if ((string)$caseValue === (string)$fieldValue) {
+            if ((string)$caseValue === $stringFieldValue) {
                 /** @var GeneralValueMapper $valueMapper */
                 $valueMapper = $this->resolveKeyword('general', $caseResult);
                 break;

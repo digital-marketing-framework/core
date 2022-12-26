@@ -184,4 +184,50 @@ class IfValueMapperTest extends AbstractValueMapperTest
         $result = $this->runResolverProcess($config);
         $this->assertEquals('value1c', $result);
     }
+
+    /** @test */
+    public function discardedElsePartGetsComputedAsWell(): void
+    {
+        $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
+        $this->fieldValue = 'value1';
+        $config = [
+            'if' => [
+                'field3' => 'value3',
+                'then' => ['content' => ['field' => 'field1']],
+                'else' => ['content' => ['field' => 'field2']],
+            ],
+        ];
+
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field2'));
+
+        $result = $this->runResolverProcess($config);
+        
+        $this->assertEquals('value1', $result);
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field2'));
+    }
+
+    /** @test */
+    public function discardedThenPartGetsComputedAsWell(): void
+    {
+        $this->data = ['field1' => 'value1', 'field2' => 'value2', 'field3' => 'value3'];
+        $this->fieldValue = 'value1';
+        $config = [
+            'if' => [
+                'field3' => 'value4',
+                'then' => ['content' => ['field' => 'field1']],
+                'else' => ['content' => ['field' => 'field2']],
+            ],
+        ];
+
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertFalse($this->fieldTracker->hasBeenProcessed('field2'));
+
+        $result = $this->runResolverProcess($config);
+        
+        $this->assertEquals('value2', $result);
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field1'));
+        $this->assertTrue($this->fieldTracker->hasBeenProcessed('field2'));
+    }
 }

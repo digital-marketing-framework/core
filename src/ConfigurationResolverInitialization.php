@@ -57,6 +57,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\SelfEvaluati
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\TrimEvaluation;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\UpperCaseEvaluation;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\ValueEvaluation;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ContentValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\GeneralValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\IfValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\OriginalValueMapper;
@@ -69,9 +70,9 @@ class ConfigurationResolverInitialization extends Initialization
 {
     protected const PLUGINS = [
         EvaluationInterface::class => [
+            SelfEvaluation::class,
             AllEvaluation::class,
             AndEvaluation::class,
-            SelfEvaluation::class,
             AnyEvaluation::class,
             EmptyEvaluation::class,
             EqualsEvaluation::class,
@@ -127,6 +128,7 @@ class ConfigurationResolverInitialization extends Initialization
         ],
         ValueMapperInterface::class => [
             SelfValueMapper::class,
+            ContentValueMapper::class,
             GeneralValueMapper::class,
             IfValueMapper::class,
             OriginalValueMapper::class,

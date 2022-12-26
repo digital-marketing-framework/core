@@ -9,7 +9,9 @@ interface ConfigurationInterface extends ArrayAccess
     const KEY_SELF = 'self';
 
     public const KEY_DATA_MAPS = 'dataMaps';
-    public const DEFAULT_DATA_MAPS = [];
+
+    public const KEY_IDENTIFIER = 'identifier';
+    public const KEY_IDENTIFIER_COLLECTORS = 'collectors';
 
     public function addConfiguration(array $configuration): void;
     public function toArray(): array;
@@ -19,4 +21,7 @@ interface ConfigurationInterface extends ArrayAccess
     public function unset(string $key): void;
 
     public function getDataMapConfiguration(string $key): ?array;
+
+    public function getIdentifierCollectorConfiguration(string $identifierCollectorName): array;
+    public function identifierCollectorExists(string $identifierCollectorName): bool;
 }

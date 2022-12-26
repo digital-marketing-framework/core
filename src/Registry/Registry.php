@@ -2,12 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
-use DigitalMarketingFramework\Core\Cache\CacheAwareInterface;
-use DigitalMarketingFramework\Core\Cache\CacheInterface;
+use DigitalMarketingFramework\Core\Cache\DataCache;
+use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
+use DigitalMarketingFramework\Core\Cache\DataCacheInterface;
 use DigitalMarketingFramework\Core\Cache\NonPersistentCache;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\RequestContext;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerFactoryInterface;
 use DigitalMarketingFramework\Core\Log\NullLoggerFactory;
@@ -26,7 +28,7 @@ abstract class Registry implements RegistryInterface
     public function __construct(
         protected LoggerFactoryInterface $loggerFactory = new NullLoggerFactory(),
         protected ContextInterface $context = new RequestContext(),
-        protected CacheInterface $cache = new NonPersistentCache(),
+        protected DataCacheInterface $cache = new DataCache(new NonPersistentCache()),
         protected ConfigurationInterface $globalConfiguration = new Configuration([]),
     ) {
     }
@@ -40,8 +42,11 @@ abstract class Registry implements RegistryInterface
         if ($object instanceof ContextAwareInterface) {
             $object->setContext($this->context);
         }
-        if ($object instanceof CacheAwareInterface) {
+        if ($object instanceof DataCacheAwareInterface) {
             $object->setCache($this->cache);
+        }
+        if ($object instanceof GlobalConfigurationAwareInterface) {
+            $object->setGlobalConfiguration($this->globalConfiguration);
         }
     }
 
@@ -78,5 +83,10 @@ abstract class Registry implements RegistryInterface
     public function getGlobalConfiguration(): ConfigurationInterface
     {
         return $this->globalConfiguration;
+    }
+
+    public function setGlobalConfiguration(ConfigurationInterface $globalConfiguration): void
+    {
+        $this->globalConfiguration = $globalConfiguration;
     }
 }

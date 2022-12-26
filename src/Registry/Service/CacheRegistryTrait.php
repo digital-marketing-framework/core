@@ -2,18 +2,18 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-use DigitalMarketingFramework\Core\Cache\CacheInterface;
+use DigitalMarketingFramework\Core\Cache\DataCacheInterface;
 
 trait CacheRegistryTrait
 {
-    protected CacheInterface $cache;
+    protected DataCacheInterface $cache;
 
-    public function getCache(): CacheInterface
+    public function getCache(): DataCacheInterface
     {
         return $this->cache;
     }
 
-    public function setCache(CacheInterface $cache): void
+    public function setCache(DataCacheInterface $cache): void
     {
         $this->cache = $cache;
     }

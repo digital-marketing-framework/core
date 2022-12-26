@@ -13,6 +13,12 @@ interface CacheInterface
     public function fetch(string $key): ?array;
 
     /**
+     * @param array<string> $keys
+     * @return array<array<mixed>>
+     */
+    public function fetchByKeys(array $keys): array;
+
+    /**
      * @param array<string> $tags
      * @return array<array<mixed>>
      */
