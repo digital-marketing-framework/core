@@ -15,8 +15,11 @@ use DigitalMarketingFramework\Core\Log\LoggerFactoryInterface;
 use DigitalMarketingFramework\Core\Log\NullLoggerFactory;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\ConfigurationResolverRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
 
 abstract class Registry implements RegistryInterface
@@ -24,6 +27,9 @@ abstract class Registry implements RegistryInterface
     use LoggerFactoryRegistryTrait;
     use ContextRegistryTrait;
     use CacheRegistryTrait;
+    use GlobalConfigurationRegistryTrait;
+    use ConfigurationResolverRegistryTrait;
+    use IdentifierCollectorRegistryTrait;
 
     public function __construct(
         protected LoggerFactoryInterface $loggerFactory = new NullLoggerFactory(),
@@ -78,15 +84,5 @@ abstract class Registry implements RegistryInterface
         if (!is_subclass_of($interface, $parentInterface, true)) {
             throw new RegistryException('interface "' . $interface . '" has to extend "' . $parentInterface . '".');
         }
-    }
-
-    public function getGlobalConfiguration(): ConfigurationInterface
-    {
-        return $this->globalConfiguration;
-    }
-
-    public function setGlobalConfiguration(ConfigurationInterface $globalConfiguration): void
-    {
-        $this->globalConfiguration = $globalConfiguration;
     }
 }

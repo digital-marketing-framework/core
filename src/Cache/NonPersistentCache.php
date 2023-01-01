@@ -4,8 +4,6 @@ namespace DigitalMarketingFramework\Core\Cache;
 
 use DigitalMarketingFramework\Core\Model\Cache\CacheEntry;
 use DigitalMarketingFramework\Core\Model\Cache\CacheEntryInterface;
-use DigitalMarketingFramework\Core\Model\Data\DataInterface;
-use DigitalMarketingFramework\Core\Model\Indentifier\CacheIdentifierInterface;
 
 class NonPersistentCache implements CacheInterface
 {
@@ -40,7 +38,7 @@ class NonPersistentCache implements CacheInterface
      * @param array<string> $keys
      * @return array<array<mixed>>
      */
-    public function fetchByKeys(array $keys): array
+    public function fetchMultiple(array $keys): array
     {
         $result = [];
         foreach ($keys as $key) {
@@ -96,6 +94,16 @@ class NonPersistentCache implements CacheInterface
     public function purge(string $key): void
     {
         unset($this->storage[$key]);
+    }
+
+    /**
+     * @param array<string> $keys
+     */
+    public function purgeMultiple(array $keys): void
+    {
+        foreach ($keys as $key) {
+            $this->purge($key);
+        }
     }
 
     /**

@@ -3,9 +3,8 @@
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
-use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
-interface PluginRegistryInterface extends RegistryInterface
+interface PluginRegistryInterface
 {
     public function getPlugin(string $keyword, string $interface, array $arguments = []): ?PluginInterface;
     

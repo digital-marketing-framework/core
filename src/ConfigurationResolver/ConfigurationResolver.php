@@ -2,13 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver;
 
-use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\ContentResolverInterface;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\GeneralContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
-use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\EvaluationInterface;
-use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\GeneralEvaluation;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\GeneralValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
 use DigitalMarketingFramework\Core\Helper\ConfigurationResolverTrait;
 use DigitalMarketingFramework\Core\Helper\ConfigurationTrait;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
@@ -202,6 +196,8 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
 
     public static function getDefaultConfiguration(): array
     {
-        return [];
+        return [
+            static::KEY_WEIGHT => static::DEFAULT_WEIGHT,
+        ];
     }
 }

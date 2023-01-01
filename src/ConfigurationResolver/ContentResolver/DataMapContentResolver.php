@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
@@ -12,9 +13,15 @@ class DataMapContentResolver extends ContentResolver
 
     protected function resolveDataMap($dataMap): ?array
     {
+        $processedReferences = [];
         /** @var ?ConfigurationInterface */
         $collectorConfiguration = $this->context['configuration'] ?? null;
         while (!is_array($dataMap) && $dataMap !== null) {
+            $loopFound = in_array($dataMap, $processedReferences);
+            $processedReferences[] = $dataMap;
+            if ($loopFound) {
+                throw new DigitalMarketingFrameworkException(sprintf('Data map reference loop found: %s', implode('>', $processedReferences)));
+            }
             $dataMap = $collectorConfiguration?->getDataMapConfiguration((string)$dataMap);
         }
         return $dataMap;

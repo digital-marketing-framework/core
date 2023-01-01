@@ -16,9 +16,9 @@ class QueueProcessorTest extends TestCase
 {
     protected QueueProcessorInterface $subject;
 
-    protected QueueInterface $queue;
+    protected QueueInterface&MockObject $queue;
 
-    protected WorkerInterface $worker;
+    protected WorkerInterface&MockObject $worker;
 
     protected array $jobs = [];
 
@@ -46,13 +46,13 @@ class QueueProcessorTest extends TestCase
     {
         switch ($method) {
             case 'processBatch':
-                $this->queue->expects($this->once())->method('fetchPending')->with($this->batchSize)->willReturn($this->jobs);
+                $this->queue->expects($this->once())->method('fetchQueued')->with($this->batchSize)->willReturn($this->jobs);
                 break;
             case 'processAll':
-                $this->queue->expects($this->once())->method('fetchPending')->with()->willReturn($this->jobs);
+                $this->queue->expects($this->once())->method('fetchQueued')->with()->willReturn($this->jobs);
                 break;
             case 'processJobs':
-                $this->queue->expects($this->never())->method('fetchPending');
+                $this->queue->expects($this->never())->method('fetchQueued');
                 break;
         }
     }
@@ -101,7 +101,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 1;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markAsRunning')->with($job);
         $this->worker->expects($this->once())->method('processJob')->with($job)->willReturn(true);
         $this->queue->expects($this->once())->method('markAsDone')->with($job, false);
         $this->queue->expects($this->never())->method('markAsFailed');
@@ -121,7 +122,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 20;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markAsRunning')->with($job);
         $this->worker->expects($this->once())->method('processJob')->with($job)->willReturn(true);
         $this->queue->expects($this->once())->method('markAsDone')->with($job, false);
         $this->queue->expects($this->never())->method('markAsFailed');
@@ -142,7 +144,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 2;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
         $this->worker->expects($this->exactly(2))->method('processJob')
             ->withConsecutive([$job1], [$job2])
             ->willReturn(true);
@@ -165,7 +168,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 1;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markAsRunning')->with($job);
         $this->worker->expects($this->once())->method('processJob')->with($job)->willThrowException(new QueueException($errorMessage));
         $this->queue->expects($this->once())->method('markAsFailed')->with($job, $errorMessage);
         $this->queue->expects($this->never())->method('markAsDone');
@@ -187,7 +191,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 2;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
         $this->worker->expects($this->exactly(2))
             ->method('processJob')
             ->withConsecutive([$job1], [$job2])
@@ -212,7 +217,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 1;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markAsRunning')->with($job);
         $this->worker->expects($this->once())->method('processJob')->with($job)->willThrowException(new Exception('my error message'));
         $this->queue->expects($this->never())->method('markAsDone');
         $this->queue->expects($this->never())->method('markAsFailed');
@@ -234,7 +240,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 1;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markAsRunning')->with($job);
         $this->worker->expects($this->once())->method('processJob')->with($job)->willReturn(false);
         $this->queue->expects($this->once())->method('markAsDone')->with($job, true);
         $this->queue->expects($this->never())->method('markAsFailed');
@@ -256,7 +263,8 @@ class QueueProcessorTest extends TestCase
         $this->batchSize = 2;
         $this->prepareQueue($method);
 
-        $this->queue->expects($this->once())->method('markListAsRunning')->with($this->jobs);
+        $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
+        $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
         $this->worker->expects($this->exactly(2))->method('processJob')
             ->withConsecutive([$job1], [$job2])
             ->willReturnCallback(function($job) use ($job1, $job2, $errorMessage) {

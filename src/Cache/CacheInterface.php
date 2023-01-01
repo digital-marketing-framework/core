@@ -2,22 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Cache;
 
-interface CacheInterface
+interface CacheInterface extends NonTaggableCacheInterface
 {
-    public function setTimeoutInSeconds(int $timeout): void;
-    public function getTimeoutInSeconds(): int;
-
-    /**
-     * @return ?array<mixed>
-     */
-    public function fetch(string $key): ?array;
-
-    /**
-     * @param array<string> $keys
-     * @return array<array<mixed>>
-     */
-    public function fetchByKeys(array $keys): array;
-
     /**
      * @param array<string> $tags
      * @return array<array<mixed>>
@@ -30,14 +16,8 @@ interface CacheInterface
      */
     public function store(string $key, array $data, array $tags = []): void;
     
-    public function purge(string $key): void;
-    
     /**
      * @param array<string> $tags
      */
     public function purgeByTags(array $tags): void;
-    
-    public function purgeExpired(): void;
-    
-    public function purgeAll(): void;
 }

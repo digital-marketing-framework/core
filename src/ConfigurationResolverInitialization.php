@@ -62,6 +62,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\GeneralValu
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\IfValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\OriginalValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\RawValueMapper;
+use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ReferenceValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\SelfValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\SwitchValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
@@ -133,6 +134,7 @@ class ConfigurationResolverInitialization extends Initialization
             IfValueMapper::class,
             OriginalValueMapper::class,
             RawValueMapper::class,
+            ReferenceValueMapper::class,
             SwitchValueMapper::class,
         ],
     ];

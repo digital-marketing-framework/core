@@ -3,7 +3,6 @@
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper;
 
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolver;
-use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 

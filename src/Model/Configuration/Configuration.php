@@ -86,9 +86,14 @@ class Configuration implements ConfigurationInterface
         $this->unset((string)$offset);
     }
 
-    public function getDataMapConfiguration(string $key): ?array
+    public function getDataMapConfiguration(string $key): array|string|null
     {
         return $this->get(static::KEY_DATA_MAPS, [])[$key] ?? null;
+    }
+
+    public function getValueMapConfiguration(string $key): array|string|null
+    {
+        return $this->get(static::KEY_VALUE_MAPS, [])[$key] ?? null;
     }
 
     protected function getIdentifierConfiguration(bool $resolveNull = true): array
