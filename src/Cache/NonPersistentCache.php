@@ -113,7 +113,7 @@ class NonPersistentCache implements CacheInterface
     {
         $entries = $this->fetchEntriesByTags($tags);
         foreach ($entries as $entry) {
-            $this->purge($entry->getIdentifier());
+            $this->purge($entry->getKey());
         }
     }
 
