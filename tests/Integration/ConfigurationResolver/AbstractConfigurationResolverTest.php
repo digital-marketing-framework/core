@@ -5,7 +5,6 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\ConfigurationResolver
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContext;
 use DigitalMarketingFramework\Core\ConfigurationResolver\FieldTracker;
 use DigitalMarketingFramework\Core\ConfigurationResolver\GeneralConfigurationResolverInterface;
-use DigitalMarketingFramework\Core\Log\LoggerInterface;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Tests\Integration\RegistryTestTrait;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
@@ -48,8 +47,6 @@ abstract class AbstractConfigurationResolverTest extends TestCase
      */
     protected function runResolverProcess(mixed $config): mixed
     {
-        $this->loggerFactory->method('getLogger')->willReturn($this->createMock(LoggerInterface::class));
-
         $data = new Data($this->data);
         $context = new ConfigurationResolverContext($data, $this->configurationResolverContext, $this->fieldTracker);
 
