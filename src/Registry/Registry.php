@@ -15,7 +15,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
 
-abstract class Registry implements RegistryInterface
+class Registry implements RegistryInterface
 {
     use GlobalConfigurationRegistryTrait;
 
