@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core;
 
 use DigitalMarketingFramework\Core\Registry\Plugin\PluginRegistryInterface;
 
-abstract class Initialization
+abstract class PluginInitialization
 {
     protected const PLUGINS = [];
 

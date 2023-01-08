@@ -31,4 +31,13 @@ trait IdentifierCollectorRegistryTrait
     {
         $this->deletePlugin($keyword, IdentifierCollectorInterface::class);
     }
+
+    public function getIdentifierCollectorDefaultConfigurations(): array
+    {
+        $result = [];
+        foreach ($this->pluginClasses[IdentifierCollectorInterface::class] ?? [] as $key => $class) {
+            $result[$key] = $class::getDefaultConfiguration();
+        }
+        return $result;
+    }
 }

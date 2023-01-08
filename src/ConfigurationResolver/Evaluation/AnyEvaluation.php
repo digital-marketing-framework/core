@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation;
 
-use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
 class AnyEvaluation extends Evaluation
 {
@@ -21,7 +21,7 @@ class AnyEvaluation extends Evaluation
         return $indexResult || $overallResult;
     }
 
-    protected function evalMultiValue(MultiValue $fieldValue): bool
+    protected function evalMultiValue(MultiValueInterface $fieldValue): bool
     {
         $result = $this->initialValue();
         foreach ($fieldValue as $index => $value) {

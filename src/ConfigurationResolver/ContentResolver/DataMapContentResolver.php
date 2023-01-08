@@ -30,7 +30,7 @@ class DataMapContentResolver extends ContentResolver
     public function build(): string|ValueInterface|null
     {
         // find input data source
-        if ($this->configruation[static::KEY_INPUT] ?? false) {
+        if ($this->configuration[static::KEY_INPUT] ?? false) {
             $input = $this->resolveContent($this->getConfig(static::KEY_INPUT), $this->context->copy(keepFieldTracker:false));
             $dataMap = $this->getConfig(static::KEY_MAP);
         } else {

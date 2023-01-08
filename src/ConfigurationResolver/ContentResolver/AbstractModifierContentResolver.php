@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
-use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 abstract class AbstractModifierContentResolver extends ContentResolver
@@ -15,7 +15,7 @@ abstract class AbstractModifierContentResolver extends ContentResolver
 
     protected function modify(string|ValueInterface|null &$result): void
     {
-        if ($result instanceof MultiValue) {
+        if ($result instanceof MultiValueInterface) {
             foreach ($result as $key => $value) {
                 $this->modify($result[$key]);
             }

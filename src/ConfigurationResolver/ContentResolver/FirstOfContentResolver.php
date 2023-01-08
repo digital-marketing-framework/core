@@ -11,7 +11,7 @@ class FirstOfContentResolver extends ContentResolver
     {
         ksort($this->configuration, SORT_NUMERIC);
         $result = null;
-        foreach ($this->configuration as $key => $valueConfiguration) {
+        foreach ($this->configuration as $valueConfiguration) {
             $value = $this->resolveContent($valueConfiguration);
             if ($value !== null) {
                 $result = $value;

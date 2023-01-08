@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationBehaviour;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
-use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class NegateContentResolver extends ContentResolver
@@ -31,7 +31,7 @@ class NegateContentResolver extends ContentResolver
         string|ValueInterface|null $false
     ): string|ValueInterface|null {
         if ($value instanceof BooleanValue) {
-            if ($value->getValue() && $false !== null) {
+            if ((bool)$value->getValue() && $false !== null) {
                 return $false;
             } elseif (!$value->getValue() && $true !== null) {
                 return $true;
@@ -59,7 +59,7 @@ class NegateContentResolver extends ContentResolver
         if ($enabled && $result !== null) {
             $true = $this->resolveContent($this->getConfig(static::KEY_TRUE));
             $false = $this->resolveContent($this->getConfig(static::KEY_FALSE));
-            if ($result instanceof MultiValue) {
+            if ($result instanceof MultiValueInterface) {
                 foreach ($result as $key => $value) {
                     $result[$key] = $this->negateValue($value, $true, $false);
                 }

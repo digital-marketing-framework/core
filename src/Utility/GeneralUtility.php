@@ -20,7 +20,7 @@ final class GeneralUtility
         if (is_array($value)) {
             return empty($value);
         }
-        if ($value instanceof MultiValue) {
+        if ($value instanceof MultiValueInterface) {
             return empty($value->toArray());
         }
         return strlen((string)$value) === 0;
@@ -28,7 +28,7 @@ final class GeneralUtility
 
     public static function isTrue($value): bool
     {
-        if ($value instanceof MultiValue) {
+        if ($value instanceof MultiValueInterface) {
             return (bool)$value->toArray();
         }
         return (bool)$value;
@@ -36,7 +36,7 @@ final class GeneralUtility
 
     public static function isFalse($value): bool
     {
-        if ($value instanceof MultiValue) {
+        if ($value instanceof MultiValueInterface) {
             return !$value->toArray();
         }
         return !$value;
@@ -53,14 +53,14 @@ final class GeneralUtility
 
     public static function isList($value): bool
     {
-        return is_array($value) || $value instanceof MultiValue;
+        return is_array($value) || $value instanceof MultiValueInterface;
     }
 
     public static function castValueToArray($value, $token = ',', $trim = true): array
     {
         if (is_array($value)) {
             $array = $value;
-        } elseif ($value instanceof MultiValue) {
+        } elseif ($value instanceof MultiValueInterface) {
             $array = $value->toArray();
         } else {
             $value = (string)$value;

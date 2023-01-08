@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationRe
 use DigitalMarketingFramework\Core\Helper\ConfigurationResolverTrait;
 use DigitalMarketingFramework\Core\Helper\ConfigurationTrait;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\Plugin\ConfigurationResolverRegistryInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -17,7 +17,6 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
     use ConfigurationResolverTrait;
 
     protected const KEY_WEIGHT = 'weight';
-    protected const DEFAULT_WEIGHT = null;
 
     protected ConfigurationResolverRegistryInterface $registry;
 
@@ -176,7 +175,7 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
                 $indices = $this->getIndexFromContext($context);
                 while (!empty($indices)) {
                     $index = array_shift($indices);
-                    if ($fieldValue instanceof MultiValue) {
+                    if ($fieldValue instanceof MultiValueInterface) {
                         $fieldValue = $fieldValue[$index] ?? null;
                     } else {
                         $fieldValue = null;
@@ -191,13 +190,13 @@ abstract class ConfigurationResolver extends Plugin implements ConfigurationReso
 
     public function getWeight(): int
     {
-        return $this->getConfig(static::KEY_WEIGHT) ?? static::WEIGHT;
+        return $this->getConfig(static::KEY_WEIGHT);
     }
 
     public static function getDefaultConfiguration(): array
     {
         return [
-            static::KEY_WEIGHT => static::DEFAULT_WEIGHT,
+            static::KEY_WEIGHT => static::WEIGHT,
         ];
     }
 }

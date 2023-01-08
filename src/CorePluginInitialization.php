@@ -67,7 +67,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\SelfValueMa
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\SwitchValueMapper;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
 
-class ConfigurationResolverInitialization extends Initialization
+class CorePluginInitialization extends PluginInitialization
 {
     protected const PLUGINS = [
         EvaluationInterface::class => [

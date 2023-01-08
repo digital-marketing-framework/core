@@ -2,57 +2,45 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
-use DigitalMarketingFramework\Core\Cache\DataCache;
 use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
-use DigitalMarketingFramework\Core\Cache\DataCacheInterface;
-use DigitalMarketingFramework\Core\Cache\NonPersistentCache;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
-use DigitalMarketingFramework\Core\Context\ContextInterface;
-use DigitalMarketingFramework\Core\Context\RequestContext;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
-use DigitalMarketingFramework\Core\Log\LoggerFactoryInterface;
-use DigitalMarketingFramework\Core\Log\NullLoggerFactory;
-use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\ConfigurationResolverRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
 
 abstract class Registry implements RegistryInterface
 {
+    use GlobalConfigurationRegistryTrait;
+
     use LoggerFactoryRegistryTrait;
     use ContextRegistryTrait;
     use CacheRegistryTrait;
-    use GlobalConfigurationRegistryTrait;
+    use ConfigurationDocumentManagerRegistryTrait;
+
     use ConfigurationResolverRegistryTrait;
     use IdentifierCollectorRegistryTrait;
 
-    public function __construct(
-        protected LoggerFactoryInterface $loggerFactory = new NullLoggerFactory(),
-        protected ContextInterface $context = new RequestContext(),
-        protected DataCacheInterface $cache = new DataCache(new NonPersistentCache()),
-        protected ConfigurationInterface $globalConfiguration = new Configuration([]),
-    ) {
-    }
-
     protected function processObjectAwareness(object $object): void
     {
+        if ($object instanceof GlobalConfigurationAwareInterface) {
+            $object->setGlobalConfiguration($this->getGlobalConfiguration());
+        }
         if ($object instanceof LoggerAwareInterface) {
-            $logger = $this->loggerFactory->getLogger(get_class($object));
+            $logger = $this->getLoggerFactory()->getLogger(get_class($object));
             $object->setLogger($logger);
         }
         if ($object instanceof ContextAwareInterface) {
-            $object->setContext($this->context);
+            $object->setContext($this->getContext());
         }
         if ($object instanceof DataCacheAwareInterface) {
-            $object->setCache($this->cache);
-        }
-        if ($object instanceof GlobalConfigurationAwareInterface) {
-            $object->setGlobalConfiguration($this->globalConfiguration);
+            $object->setCache($this->getCache());
         }
     }
 
@@ -84,5 +72,26 @@ abstract class Registry implements RegistryInterface
         if (!is_subclass_of($interface, $parentInterface, true)) {
             throw new RegistryException('interface "' . $interface . '" has to extend "' . $parentInterface . '".');
         }
+    }
+
+    public function getIdentifierDefaultConfiguration(): array
+    {
+        $defaultIdentifierConfiguration = [];
+        $defaultIdentifierConfiguration[ConfigurationInterface::KEY_IDENTIFIER_COLLECTORS] = $this->getIdentifierCollectorDefaultConfigurations();
+        return $defaultIdentifierConfiguration;
+    }
+
+    public function getDefaultConfiguration(): array
+    {
+        return [
+            ConfigurationInterface::KEY_DATA_MAPS => [],
+            ConfigurationInterface::KEY_VALUE_MAPS => [],
+            ConfigurationInterface::KEY_IDENTIFIER => $this->getIdentifierDefaultConfiguration(),
+        ];
+    }
+
+    public function getConfigurationSchema(): array
+    {
+        return [];
     }
 }

@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolver;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 abstract class Evaluation extends ConfigurationResolver implements EvaluationInterface
@@ -53,7 +53,7 @@ abstract class Evaluation extends ConfigurationResolver implements EvaluationInt
         return true;
     }
 
-    protected function evalMultiValue(MultiValue $fieldValue): bool
+    protected function evalMultiValue(MultiValueInterface $fieldValue): bool
     {
         return $this->evalValue($fieldValue);
     }
@@ -68,7 +68,7 @@ abstract class Evaluation extends ConfigurationResolver implements EvaluationInt
     {
         $fieldValue = $this->getSelectedValue();
 
-        if ($fieldValue instanceof MultiValue) {
+        if ($fieldValue instanceof MultiValueInterface) {
             $result = $this->evalMultiValue($fieldValue);
         } else {
             $result = $this->evalValue($fieldValue);
