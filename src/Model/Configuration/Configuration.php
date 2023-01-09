@@ -2,28 +2,51 @@
 
 namespace DigitalMarketingFramework\Core\Model\Configuration;
 
+use BadMethodCallException;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 class Configuration implements ConfigurationInterface
 {
-    protected array $configurationList = [];
     protected ?array $manualOverride = null;
 
-    public function __construct(array $configurationList)
-    {
-        $this->configurationList = $configurationList;
+    public function __construct(
+        protected array $configurationList,
+        protected bool $readonly = true,
+    ) {
     }
 
-    public static function convert(ConfigurationInterface $configuration): static
+    public static function convert(ConfigurationInterface $configuration, ?bool $readonly = null): static
     {
-        return new static($configuration->toArray());
+        return new static($configuration->toArray(), $readonly ?? $configuration->isReadonly());
+    }
+
+    protected function readonlyCheck(string $action): void
+    {
+        if ($this->readonly) {
+            throw new BadMethodCallException(sprintf('configuration is readonly, action "%s" is not allowed', $action));
+        }
+    }
+
+    public function isReadonly(): bool
+    {
+        return $this->readonly;
     }
 
     public function addConfiguration(array $configuration): void
     {
+        $this->readonlyCheck('addConfiguration');
         $this->configurationList[] = $configuration;
         unset($this->manualOverride);
         $this->manualOverride = null;
+    }
+
+    public function getRootConfiguration(): array
+    {
+        $asArray = $this->toArray();
+        if (empty($asArray)) {
+            return [];
+        }
+        return reset($asArray);
     }
 
     public function toArray(): array
@@ -54,6 +77,7 @@ class Configuration implements ConfigurationInterface
 
     public function set(string $key, mixed $value): void
     {
+        $this->readonlyCheck('set');
         if ($this->manualOverride === null) {
             $this->configurationList[] = [];
             $this->manualOverride = &$this->configurationList[count($this->configurationList) - 1];
@@ -63,6 +87,7 @@ class Configuration implements ConfigurationInterface
 
     public function unset(string $key): void
     {
+        $this->readonlyCheck('unset');
         $this->set($key, null);
     }
 

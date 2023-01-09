@@ -8,7 +8,7 @@ use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 
-class ConfigurationDocumentManager implements LoggerAwareInterface
+class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
@@ -35,6 +35,7 @@ class ConfigurationDocumentManager implements LoggerAwareInterface
 
     public function saveDocument(string $documentIdentifier, string $document): void
     {
+        $document = $this->tidyDocument($document);
         $this->storage->setDocument($documentIdentifier, $document);
     }
 

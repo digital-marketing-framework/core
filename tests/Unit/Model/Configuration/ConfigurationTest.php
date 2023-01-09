@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Configuration;
 
+use BadMethodCallException;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use PHPUnit\Framework\TestCase;
@@ -118,7 +119,7 @@ class ConfigurationTest extends TestCase
                 'key3' => 'value3',
             ],
         ];
-        $this->subject = new Configuration($configList);
+        $this->subject = new Configuration($configList, false);
         $this->subject->addConfiguration([
             'key2' => 'value2b',
             'key3' => null,
@@ -141,11 +142,11 @@ class ConfigurationTest extends TestCase
                 'key3' => 'value3',
             ],
         ];
-        $this->subject = new Configuration($configList);
+        $this->subject = new Configuration($configList, false);
         $this->subject->set('key2', 'value2b');
         $this->subject->unset('key3');
         $this->subject->set('key4', 'value4b');
-        
+
         $this->assertEquals('value1', $this->subject->get('key1'));
         $this->assertEquals('value2b', $this->subject->get('key2'));
         $this->assertNull($this->subject->get('key3'));
@@ -173,11 +174,11 @@ class ConfigurationTest extends TestCase
                 'key3' => 'value3',
             ],
         ];
-        $this->subject = new Configuration($configList);
+        $this->subject = new Configuration($configList, false);
         $this->subject['key2'] = 'value2b';
         unset($this->subject['key3']);
         $this->subject['key4'] = 'value4b';
-        
+
         $this->assertEquals('value1', $this->subject['key1']);
         $this->assertEquals('value2b', $this->subject['key2']);
         $this->assertNull($this->subject['key3']);
@@ -193,11 +194,11 @@ class ConfigurationTest extends TestCase
                 'key2' => 'value2',
             ],
         ];
-        $this->subject = new Configuration($configList);
+        $this->subject = new Configuration($configList, false);
         $this->assertEquals('value1', $this->subject->get('key1'));
         $this->assertEquals('value2', $this->subject->get('key2'));
         $this->assertNull($this->subject->get('key3'));
-        
+
         $this->subject->set('key2', 'value2b');
         $this->subject->set('key3', 'value3b');
         $this->assertEquals('value1', $this->subject->get('key1'));
@@ -232,5 +233,126 @@ class ConfigurationTest extends TestCase
                 'key2' => 'value2d',
             ],
         ], $this->subject->toArray());
+    }
+
+    public function readonlyStateProvider(): array
+    {
+        return [
+            [true],
+            [false],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider readonlyStateProvider
+     */
+    public function readonlyConfigAddConfigurationIsBadMethodCall(bool $readonly): void
+    {
+        $configList = [[],];
+
+        if ($readonly) {
+            $this->expectException(BadMethodCallException::class);
+        }
+
+        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject->addConfiguration([
+            'key1' => 'value1',
+        ]);
+
+        if (!$readonly) {
+            $this->assertEquals('value1', $this->subject->get('key1'));
+        }
+    }
+
+    /**
+     * @test
+     * @dataProvider readonlyStateProvider
+     */
+    public function readonlyConfigSetIsBadMethodCall(bool $readonly): void
+    {
+        $configList = [[],];
+
+        if ($readonly) {
+            $this->expectException(BadMethodCallException::class);
+        }
+
+        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject->set('key1', 'value1');
+
+        if (!$readonly) {
+            $this->assertEquals('value1', $this->subject->get('key1'));
+        }
+    }
+
+    /**
+     * @test
+     * @dataProvider readonlyStateProvider
+     */
+    public function readonlyConfigOffsetSetIsBadMethodCall(bool $readonly): void
+    {
+        $configList = [[],];
+
+        if ($readonly) {
+            $this->expectException(BadMethodCallException::class);
+        }
+
+        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject['key1'] = 'value1';
+
+        if (!$readonly) {
+            $this->assertEquals('value1', $this->subject->get('key1'));
+        }
+    }
+
+    /**
+     * @test
+     * @dataProvider readonlyStateProvider
+     */
+    public function readonlyConfigUnsetIsBadMethodCall(bool $readonly): void
+    {
+        $configList = [['key1' => 'value1'],];
+
+        if ($readonly) {
+            $this->expectException(BadMethodCallException::class);
+        }
+
+        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject->unset('key1', 'value1');
+
+        if (!$readonly) {
+            $this->assertNull($this->subject->get('key1'));
+        }
+    }
+
+    /**
+     * @test
+     * @dataProvider readonlyStateProvider
+     */
+    public function readonlyConfigOffsetUnsetIsBadMethodCall(bool $readonly): void
+    {
+        $configList = [['key1' => 'value1'],];
+
+        if ($readonly) {
+            $this->expectException(BadMethodCallException::class);
+        }
+
+        $this->subject = new Configuration($configList, readonly:$readonly);
+        unset($this->subject['key1']);
+
+        if (!$readonly) {
+            $this->assertNull($this->subject->get('key1'));
+        }
+    }
+
+    /**
+     * @test
+     * @dataProvider readonlyStateProvider
+     */
+    public function readonlyConfigReportsAccurately(bool $readonly): void
+    {
+        $configList = [[],];
+        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->assertEquals($readonly, $this->subject->isReadonly());
     }
 }
