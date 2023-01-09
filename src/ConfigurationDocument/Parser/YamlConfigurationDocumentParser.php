@@ -15,6 +15,10 @@ class YamlConfigurationDocumentParser extends ConfigurationDocumentParser
         } catch (ParseException $e) {
             throw new DigitalMarketingFrameworkException($e->getMessage(), $e->getCode(), $e);
         }
+        if ($config === null) {
+            // and empty document is allowed and translates to an empty configuration
+            $config = [];
+        }
         if (!is_array($config) || empty($config)) {
             throw new DigitalMarketingFrameworkException('Configuration document seems to be empty');
         }

@@ -44,7 +44,7 @@ class Registry implements RegistryInterface
         }
     }
 
-    protected function createObject(string $class, array $arguments = []): object
+    public function createObject(string $class, array $arguments = []): object
     {
         if (!class_exists($class)) {
             throw new RegistryException('Class "' . $class . '" is unknown!');
