@@ -23,7 +23,7 @@ class JobTest extends TestCase
     {
         // NOTE we can't really test the default values of the fields "created" and "changed"
         //      because we don't necessarily have the exact timestamp of the object creation
-        $this->assertEquals(QueueInterface::STATUS_PENDING, $this->subject->getStatus());
+        $this->assertEquals(QueueInterface::STATUS_QUEUED, $this->subject->getStatus());
         $this->assertEquals('', $this->subject->getStatusMessage());
         $this->assertEmpty($this->subject->getData());
     }
@@ -47,6 +47,7 @@ class JobTest extends TestCase
     public function statusProvider(): array
     {
         return [
+            [QueueInterface::STATUS_QUEUED],
             [QueueInterface::STATUS_PENDING],
             [QueueInterface::STATUS_RUNNING],
             [QueueInterface::STATUS_DONE],
