@@ -11,7 +11,7 @@ class Job implements JobInterface
     public function __construct(
         protected DateTime $created = new DateTime(),
         protected DateTime $changed = new DateTime(),
-        protected int $status = QueueInterface::STATUS_PENDING,
+        protected int $status = QueueInterface::STATUS_QUEUED,
         protected bool $skipped = false,
         protected string $statusMessage = '',
         protected array $data = [],

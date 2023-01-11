@@ -21,6 +21,7 @@ class NonPersistentQueueTest extends TestCase
     public function statusProvider(): array
     {
         return [
+            [QueueInterface::STATUS_QUEUED],
             [QueueInterface::STATUS_PENDING],
             [QueueInterface::STATUS_RUNNING],
             [QueueInterface::STATUS_DONE],
@@ -28,7 +29,7 @@ class NonPersistentQueueTest extends TestCase
         ];
     }
 
-    protected function createJob(array $data, int $status = QueueInterface::STATUS_PENDING): JobInterface
+    protected function createJob(array $data, int $status = QueueInterface::STATUS_QUEUED): JobInterface
     {
         $job = new Job();
         $job->setData($data);
@@ -81,33 +82,33 @@ class NonPersistentQueueTest extends TestCase
             // limit, offset, expectedCount, statusFilter, jobStatusArray
             [0, 0, 0, [], []],
 
-            [0, 0, 2, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [0, 0, 2, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE]],
+            [0, 0, 2, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [0, 0, 2, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE]],
 
-            [0, 0, 1, [QueueInterface::STATUS_PENDING], [QueueInterface::STATUS_PENDING]],
-            [0, 0, 2, [QueueInterface::STATUS_PENDING], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [0, 0, 1, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE]],
-            [0, 0, 0, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_PENDING]],
+            [0, 0, 1, [QueueInterface::STATUS_QUEUED], [QueueInterface::STATUS_QUEUED]],
+            [0, 0, 2, [QueueInterface::STATUS_QUEUED], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [0, 0, 1, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE]],
+            [0, 0, 0, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_QUEUED]],
             [0, 0, 0, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_RUNNING]],
             [0, 0, 0, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_FAILED]],
 
-            [0, 0, 4, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE,QueueInterface::STATUS_RUNNING,QueueInterface::STATUS_FAILED]],
-            [0, 0, 1, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE,QueueInterface::STATUS_RUNNING,QueueInterface::STATUS_FAILED]],
+            [0, 0, 4, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE,QueueInterface::STATUS_RUNNING,QueueInterface::STATUS_FAILED]],
+            [0, 0, 1, [QueueInterface::STATUS_DONE], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE,QueueInterface::STATUS_RUNNING,QueueInterface::STATUS_FAILED]],
 
-            [0, 0, 2, [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE]],
-            [0, 0, 1, [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_RUNNING], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE]],
+            [0, 0, 2, [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE]],
+            [0, 0, 1, [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_RUNNING], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE]],
 
-            [0, 0, 4, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [2, 0, 2, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [1, 1, 1, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [0, 2, 2, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [3, 2, 2, [], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
+            [0, 0, 4, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [2, 0, 2, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [1, 1, 1, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [0, 2, 2, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [3, 2, 2, [], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
 
-            [0, 0, 3, [QueueInterface::STATUS_PENDING], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [2, 0, 2, [QueueInterface::STATUS_PENDING], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [1, 1, 1, [QueueInterface::STATUS_PENDING], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [0, 2, 1, [QueueInterface::STATUS_PENDING], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
-            [3, 2, 1, [QueueInterface::STATUS_PENDING], [QueueInterface::STATUS_PENDING,QueueInterface::STATUS_DONE,QueueInterface::STATUS_PENDING,QueueInterface::STATUS_PENDING]],
+            [0, 0, 3, [QueueInterface::STATUS_QUEUED], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [2, 0, 2, [QueueInterface::STATUS_QUEUED], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [1, 1, 1, [QueueInterface::STATUS_QUEUED], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [0, 2, 1, [QueueInterface::STATUS_QUEUED], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
+            [3, 2, 1, [QueueInterface::STATUS_QUEUED], [QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_DONE,QueueInterface::STATUS_QUEUED,QueueInterface::STATUS_QUEUED]],
         ];
     }
 
@@ -124,36 +125,67 @@ class NonPersistentQueueTest extends TestCase
         $this->assertCount($expectedCount, $jobs);
     }
 
-    protected function fetchStatusProvider($s1, $s2, $s3, $s4): array
+    protected function fetchStatusProvider($s1, $s2, $s3, $s4, $s5): array
     {
         return [
-            [0, 0, 0, []],
+            'empty job queue' => [0, 0, 0, []],
 
-            [0, 0, 1, [$s1]],
-            [0, 0, 2, [$s1,$s1]],
-            [0, 0, 1, [$s1,$s2]],
-            [0, 0, 0, [$s2]],
-            [0, 0, 0, [$s3]],
-            [0, 0, 0, [$s4]],
+            'one job to be fetched'  => [0, 0, 1, [$s1]],
+            'two jobs to be fetched' => [0, 0, 2, [$s1,$s1]],
 
-            [0, 0, 4, [$s1,$s1,$s1,$s1]],
-            [2, 0, 2, [$s1,$s1,$s1,$s1]],
-            [1, 1, 1, [$s1,$s1,$s1,$s1]],
-            [0, 2, 2, [$s1,$s1,$s1,$s1]],
-            [3, 2, 2, [$s1,$s1,$s1,$s1]],
+            'two jobs, one to be fetched'     => [0, 0, 1, [$s1,$s2]],
+            'one job, not to be fetched (s2)' => [0, 0, 0, [$s2]],
+            'one job, not to be fetched (s3)' => [0, 0, 0, [$s3]],
+            'one job, not to be fetched (s4)' => [0, 0, 0, [$s4]],
+            'one job, not to be fetched (s5)' => [0, 0, 0, [$s5]],
 
-            [0, 0, 3, [$s1,$s2,$s1,$s1]],
-            [2, 0, 2, [$s1,$s2,$s1,$s1]],
-            [1, 1, 1, [$s1,$s2,$s1,$s1]],
-            [0, 2, 1, [$s1,$s2,$s1,$s1]],
-            [3, 2, 1, [$s1,$s2,$s1,$s1]],
+            'all jobs, limit 0, offset 0' => [0, 0, 4, [$s1,$s1,$s1,$s1]],
+            'all jobs, limit 2, offset 0' => [2, 0, 2, [$s1,$s1,$s1,$s1]],
+            'all jobs, limit 1, offset 1' => [1, 1, 1, [$s1,$s1,$s1,$s1]],
+            'all jobs, limit 0, offset 2' => [0, 2, 2, [$s1,$s1,$s1,$s1]],
+            'all jobs, limit 3, offset 2' => [3, 2, 2, [$s1,$s1,$s1,$s1]],
+
+            'some jobs, limit 0, offset 0' => [0, 0, 3, [$s1,$s2,$s1,$s1]],
+            'some jobs, limit 2, offset 0' => [2, 0, 2, [$s1,$s2,$s1,$s1]],
+            'some jobs, limit 1, offset 1' => [1, 1, 1, [$s1,$s2,$s1,$s1]],
+            'some jobs, limit 0, offset 2' => [0, 2, 1, [$s1,$s2,$s1,$s1]],
+            'some jobs, limit 3, offset 2' => [3, 2, 1, [$s1,$s2,$s1,$s1]],
         ];
+    }
+
+    public function fetchQueuedProvider(): array
+    {
+        return $this->fetchStatusProvider(
+            QueueInterface::STATUS_QUEUED,
+            QueueInterface::STATUS_PENDING,
+            QueueInterface::STATUS_DONE,
+            QueueInterface::STATUS_RUNNING,
+            QueueInterface::STATUS_FAILED
+        );
+    }
+
+    /**
+     * @dataProvider fetchQueuedProvider
+     * @test
+     */
+    public function fetchQueued(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
+    {
+        foreach ($jobStatusArray as $i => $s) {
+            $this->subject->addJob($this->createJob(['value' . $i], $s));
+        }
+        $jobs = $this->subject->fetchQueued($limit, $offset);
+        $this->assertCount($expectedCount, $jobs);
+        /** @var JobInterface $job */
+        foreach ($jobs as $job) {
+            $this->assertEquals(QueueInterface::STATUS_QUEUED, $job->getStatus());
+        }
     }
 
     public function fetchPendingProvider(): array
     {
         return $this->fetchStatusProvider(
             QueueInterface::STATUS_PENDING,
+            QueueInterface::STATUS_QUEUED,
             QueueInterface::STATUS_DONE,
             QueueInterface::STATUS_RUNNING,
             QueueInterface::STATUS_FAILED
@@ -182,6 +214,7 @@ class NonPersistentQueueTest extends TestCase
         return $this->fetchStatusProvider(
             QueueInterface::STATUS_DONE,
             QueueInterface::STATUS_RUNNING,
+            QueueInterface::STATUS_QUEUED,
             QueueInterface::STATUS_PENDING,
             QueueInterface::STATUS_FAILED
         );
@@ -208,6 +241,7 @@ class NonPersistentQueueTest extends TestCase
     {
         return $this->fetchStatusProvider(
             QueueInterface::STATUS_FAILED,
+            QueueInterface::STATUS_QUEUED,
             QueueInterface::STATUS_PENDING,
             QueueInterface::STATUS_RUNNING,
             QueueInterface::STATUS_DONE
@@ -236,6 +270,7 @@ class NonPersistentQueueTest extends TestCase
         return $this->fetchStatusProvider(
             QueueInterface::STATUS_RUNNING,
             QueueInterface::STATUS_FAILED,
+            QueueInterface::STATUS_QUEUED,
             QueueInterface::STATUS_DONE,
             QueueInterface::STATUS_PENDING
         );
