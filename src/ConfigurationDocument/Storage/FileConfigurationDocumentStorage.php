@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\Storage;
 
-use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentNotFoundException;
 
 abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentStorage
 {
@@ -18,7 +18,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         $documentPath = $this->getDocumentPath($documentIdentifier);
         
         if (!file_exists($documentPath)) {
-            throw new DigitalMarketingFrameworkException(sprintf('Configuration document file not found: %s', $documentPath));
+            throw new ConfigurationDocumentNotFoundException(sprintf('Configuration document file not found: %s', $documentPath));
         }
 
         return file_get_contents($documentPath);
