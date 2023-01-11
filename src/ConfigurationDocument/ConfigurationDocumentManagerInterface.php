@@ -7,6 +7,8 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDo
 
 interface ConfigurationDocumentManagerInterface
 {
+    public const KEY_INCLUDES = 'includes';
+
     public function getStorage(): ConfigurationDocumentStorageInterface;
     public function getParser(): ConfigurationDocumentParserInterface;
 

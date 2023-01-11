@@ -2,9 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
-use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 
@@ -70,30 +70,53 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         );
     }
 
+    protected function getIncludes(array $configuration): array
+    {
+        if (
+            isset($configuration[static::KEY_INCLUDES])
+            && is_array($configuration[static::KEY_INCLUDES])
+            && !empty($configuration[static::KEY_INCLUDES])
+        ) {
+            return $configuration[static::KEY_INCLUDES];
+        }
+        return [];
+    }
+
+    /**
+     * @param array<string> $documentIdentifiers
+     * @param array<string> $processedDocumentIdentifiers
+     * @return array<array<mixed>>
+     */
+    protected function getIncludedConfigurations(array $documentIdentifiers, array $processedDocumentIdentifiers = []): array
+    {
+        $includes = [];
+        foreach ($documentIdentifiers as $documentIdentifier) {
+            $subProcessedDocumentIdentifiers = $processedDocumentIdentifiers;
+            $subProcessedDocumentIdentifiers[] = $documentIdentifier;
+
+            if (in_array($documentIdentifier, $processedDocumentIdentifiers)) {
+                throw new ConfigurationDocumentIncludeLoopException(sprintf('Configuration document reference loop found: %s', implode(',', $subProcessedDocumentIdentifiers)));
+            }
+
+            $configuration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier);
+            $subConfigurations = $this->getIncludedConfigurations($this->getIncludes($configuration), $subProcessedDocumentIdentifiers);
+            array_push($includes, ...$subConfigurations);
+            $includes[] = $configuration;
+        }
+        return $includes;
+    }
+
     /**
      * @param array<mixed> $configuration
      * @return array<array<mixed>>
      */
     public function getConfigurationStackFromConfiguration(array $configuration): array
     {
-        // TODO: use an include array instead of one parent include?
-        $processedDocumentIdentifiers = [];
-        $result = [$configuration];
-        while ($documentIdentifier = $configuration['parent'] ?? false) {
-            $loopFound = in_array($documentIdentifier, $processedDocumentIdentifiers);
-            $processedDocumentIdentifiers[] = $documentIdentifier;
-            if ($loopFound) {
-                throw new DigitalMarketingFrameworkException(sprintf('Configuration document reference loop found: %s', implode(',', $processedDocumentIdentifiers)));
-            }
-
-            $configuration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier);
-            if ($configuration === null) {
-                throw new DigitalMarketingFrameworkException(sprintf('Configuration document not found, identifier: %s', $documentIdentifier));
-            } else {
-                $result[] = $configuration;
-            }
-        }
-        return $result;
+        $includedConfigurations = $this->getIncludedConfigurations($this->getIncludes($configuration));
+        return [
+            $configuration,
+            ...$includedConfigurations
+        ];
     }
 
     /**
