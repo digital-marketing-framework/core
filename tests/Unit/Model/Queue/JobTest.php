@@ -47,6 +47,7 @@ class JobTest extends TestCase
     public function statusProvider(): array
     {
         return [
+            [QueueInterface::STATUS_QUEUED],
             [QueueInterface::STATUS_PENDING],
             [QueueInterface::STATUS_RUNNING],
             [QueueInterface::STATUS_DONE],
