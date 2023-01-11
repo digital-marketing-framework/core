@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
+use DigitalMarketingFramework\Core\Cache\DataCache;
 use DigitalMarketingFramework\Core\Cache\DataCacheInterface;
 use DigitalMarketingFramework\Core\Cache\NullCache;
 
@@ -12,7 +13,7 @@ trait CacheRegistryTrait
     public function getCache(): DataCacheInterface
     {
         if (!isset($this->cache)) {
-            $this->cache = new NullCache();
+            $this->cache = new DataCache(new NullCache());
         }
         return $this->cache;
     }
