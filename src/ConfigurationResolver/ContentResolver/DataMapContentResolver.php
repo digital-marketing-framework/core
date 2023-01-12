@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver;
 
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class DataMapContentResolver extends ContentResolver
@@ -31,7 +32,7 @@ class DataMapContentResolver extends ContentResolver
     {
         // find input data source
         if ($this->configuration[static::KEY_INPUT] ?? false) {
-            $input = $this->resolveContent($this->getConfig(static::KEY_INPUT), $this->context->copy(keepFieldTracker:false));
+            $input = $this->resolveContent(['dataMap' => $this->getConfig(static::KEY_INPUT)], $this->context->copy(keepFieldTracker:false));
             $dataMap = $this->getConfig(static::KEY_MAP);
         } else {
             $input = $this->context->getData();
@@ -42,9 +43,12 @@ class DataMapContentResolver extends ContentResolver
         $dataMap = $this->resolveDataMap($dataMap);
 
         // process input and map
-        if ($dataMap !== null) {
-            $dataProcessor = $this->registry->getDataProcessor($dataMap);
-            return $dataProcessor->process($input, $this->context->toArray());
+        if ($input instanceof DataInterface) {
+            if ($dataMap !== null) {
+                $dataProcessor = $this->registry->getDataProcessor($dataMap);
+                return $dataProcessor->process($input, $this->context->toArray());
+            }
+            return $input;
         }
 
         return null;

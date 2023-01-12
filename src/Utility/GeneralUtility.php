@@ -4,8 +4,13 @@ namespace DigitalMarketingFramework\Core\Utility;
 
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\Model\File\FileInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 final class GeneralUtility
 {
@@ -74,30 +79,60 @@ final class GeneralUtility
         return $array;
     }
 
+    protected static function castArrayToMultiValueStructure(array $array, MultiValueInterface $multiValue): void
+    {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $multiValue[$key] = static::castArrayToMultiValue($value);
+            } elseif ($value instanceof FileInterface) {
+                $multiValue[$key] = new FileValue($value);
+            } elseif (is_integer($value)) {
+                $multiValue[$key] = new IntegerValue($value);
+            } elseif (is_bool($value)) {
+                $multiValue[$key] = new BooleanValue($value);
+            } else {
+                $multiValue[$key] = $value;
+            }
+        }
+    }
+
     public static function castArrayToMultiValue(array $array): MultiValueInterface
     {
         $multiValue = new MultiValue();
-        foreach ($array as $key => $value) {
-            if (!is_array($value)) {
-                $multiValue[$key] = $value;
-            } else {
-                $multiValue[$key] = static::castArrayToMultiValue($value);
-            }
-        }
+        static::castArrayToMultiValueStructure($array, $multiValue);
         return $multiValue;
     }
 
     public static function castArrayToData(array $array): DataInterface
     {
         $data = new Data();
-        foreach ($array as $key => $value) {
-            if (!is_array($value)) {
-                $data[$key] = $value;
+        static::castArrayToMultiValueStructure($array, $data);
+        return $data;
+    }
+
+    protected static function castMultiValueStructureToArray(MultiValueInterface $multiValue): array
+    {
+        $array = [];
+        foreach ($multiValue as $key => $value) {
+            if ($value instanceof MultiValueInterface) {
+                $array[$key] = static::castMultiValueStructureToArray($value);
+            } elseif ($value instanceof ValueInterface) {
+                $array[$key] = $value->getValue();
             } else {
-                $data[$key] = static::castArrayToMultiValue($value);
+                $array[$key] = (string)$value;
             }
         }
-        return $data;
+        return $array;
+    }
+
+    public static function castDataToArray(DataInterface $data): array
+    {
+        return static::castMultiValueStructureToArray($data);
+    }
+
+    public static function castMultiValueToArray(MultiValueInterface $multiValue): array
+    {
+        return static::castMultiValueStructureToArray($multiValue);
     }
 
     public static function shortenHash(string $hash): string

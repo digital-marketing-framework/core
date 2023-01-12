@@ -13,7 +13,10 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapper
 
 trait ConfigurationResolverTrait
 {
-    abstract protected function getConfigurationResolverContext(): ConfigurationResolverContextInterface;
+    protected function getConfigurationResolverContext(): ConfigurationResolverContextInterface
+    {
+        throw new BadMethodCallException(sprintf('Class "%s" does not implement required method "getConfigurationResolverContext".', get_class($this)));
+    }
 
     protected function getConfigurationResolver(string $resolverInterface, string $keyword, mixed $config, ?ConfigurationResolverContextInterface $context = null): ?ConfigurationResolverInterface
     {

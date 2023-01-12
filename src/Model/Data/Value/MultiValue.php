@@ -15,6 +15,11 @@ class MultiValue extends ArrayObject implements MultiValueInterface
         parent::__construct($a);
     }
 
+    public function getValue(): array
+    {
+        return $this->toArray();
+    }
+
     public function toArray(): array
     {
         return iterator_to_array($this);

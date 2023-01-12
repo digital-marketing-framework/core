@@ -2,12 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-class BooleanValue implements BooleanValueInterface
+class BooleanValue extends Value implements BooleanValueInterface
 {
     protected bool $value;
 
     public function __construct(
-        mixed $value, 
+        mixed $value,
         protected string $true = '1',
         protected string $false = '0',
     ) {

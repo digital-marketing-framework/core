@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
 use DigitalMarketingFramework\Core\Model\File\FileInterface;
 
-class FileValue implements FileValueInterface
+class FileValue extends Value implements FileValueInterface
 {
     protected string $fileName = '';
 
@@ -16,7 +16,7 @@ class FileValue implements FileValueInterface
 
     public function __construct(FileInterface $file = null)
     {
-        if ($file) {
+        if ($file !== null) {
             $this->fileName = $file->getName();
             $this->publicUrl = $file->getPublicUrl();
             $this->relativePath = $file->getRelativePath();

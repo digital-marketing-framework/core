@@ -14,6 +14,9 @@ abstract class IdentifierCollector extends Plugin
 {
     use ConfigurationTrait;
 
+    protected const KEY_ENABLED = 'enabled';
+    protected const DEFAULT_ENABLED = false;
+
     public function __construct(
         string $keyword,
         IdentifierCollectorRegistryInterface $registry,
@@ -23,11 +26,34 @@ abstract class IdentifierCollector extends Plugin
         $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration($this->getKeyword());
     }
 
-    abstract public function addContext(ContextInterface $source, WriteableContextInterface $target): void;
-    abstract public function getIdentifier(ContextInterface $context): ?IdentifierInterface;
+    protected function proceed(): bool
+    {
+        return (bool)$this->getConfig(static::KEY_ENABLED);
+    }
+
+    abstract protected function prepareContext(ContextInterface $source, WriteableContextInterface $target): void;
+
+    public function addContext(ContextInterface $source, WriteableContextInterface $target): void
+    {
+        if ($this->proceed()) {
+            $this->prepareContext($source, $target);
+        }
+    }
+
+    abstract protected function collect(ContextInterface $context): ?IdentifierInterface;
+
+    public function getIdentifier(ContextInterface $context): ?IdentifierInterface
+    {
+        if ($this->proceed()) {
+            return $this->collect($context);
+        }
+        return null;
+    }
 
     public static function getDefaultConfiguration(): array
     {
-        return [];
+        return [
+            static::KEY_ENABLED => static::DEFAULT_ENABLED,
+        ];
     }
 }
