@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
 
-abstract class IdentifierCollector extends Plugin
+abstract class IdentifierCollector extends Plugin implements IdentifierCollectorInterface
 {
     use ConfigurationTrait;
 
