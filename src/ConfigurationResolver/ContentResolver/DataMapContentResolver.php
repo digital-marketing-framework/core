@@ -12,7 +12,7 @@ class DataMapContentResolver extends ContentResolver
     protected const KEY_INPUT = 'input';
     protected const KEY_MAP = 'map';
 
-    protected function resolveDataMap($dataMap): ?array
+    protected function resolveDataMap(string|array|null $dataMap): ?array
     {
         $processedReferences = [];
         /** @var ?ConfigurationInterface */
@@ -39,16 +39,21 @@ class DataMapContentResolver extends ContentResolver
             $dataMap = $this->configuration[static::KEY_MAP] ?? $this->configuration;
         }
 
-        // find data map
-        $dataMap = $this->resolveDataMap($dataMap);
-
-        // process input and map
         if ($input instanceof DataInterface) {
+
+            // if no data map is given, return the raw input
+            if ($dataMap === null) {
+                return $input;
+            }
+
+            // resolve data map references
+            $dataMap = $this->resolveDataMap($dataMap);
+
+            // process input and map if it exists and is valid
             if ($dataMap !== null) {
                 $dataProcessor = $this->registry->getDataProcessor($dataMap);
                 return $dataProcessor->process($input, $this->context->toArray());
             }
-            return $input;
         }
 
         return null;
