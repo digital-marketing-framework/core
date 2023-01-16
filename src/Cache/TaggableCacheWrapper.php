@@ -120,16 +120,6 @@ class TaggableCacheWrapper implements CacheInterface
     }
 
     /**
-     * @param array<string> $tags
-     * @return array<array<mixed>>
-     */
-    public function fetchByTags(array $tags): array
-    {
-        $keys = $this->fetchKeysByTags($tags);
-        return $this->fetchMultiple($keys);
-    }
-
-    /**
      * @param array<mixed> $data
      * @param array<string> $tags
      */

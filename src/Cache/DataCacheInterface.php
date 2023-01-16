@@ -21,12 +21,6 @@ interface DataCacheInterface
 
     /**
      * @param array<string> $tags
-     * @return array<DataInterface>
-     */
-    public function fetchByTags(array $tags): array;
-
-    /**
-     * @param array<string> $tags
      */
     public function store(IdentifierInterface $identifier, DataInterface $data, array $tags = [], bool $followReferences = false): void;
 

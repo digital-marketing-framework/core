@@ -12,15 +12,15 @@ abstract class Identifier implements IdentifierInterface
     }
 
     abstract protected function getInternalCacheKey(): string;
-    
+
     public function getDomainKey(): string
     {
         return GeneralUtility::getPluginKeyword(get_class($this), IdentifierInterface::class);
     }
-    
+
     public function getCacheKey(): string
     {
-        return $this->getDomainKey() . ':' . $this->getInternalCacheKey();
+        return $this->getDomainKey() . '-' . $this->getInternalCacheKey();
     }
 
     public function getPayload(): array

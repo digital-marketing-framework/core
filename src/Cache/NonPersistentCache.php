@@ -74,17 +74,6 @@ class NonPersistentCache implements CacheInterface
 
     /**
      * @param array<string> $tags
-     * @return arrray<array<mixed>>
-     */
-    public function fetchByTags(array $tags): array
-    {
-        return array_map(function(CacheEntryInterface $entry) {
-            return $entry->getData();
-        }, $this->fetchEntriesByTags($tags));
-    }
-
-    /**
-     * @param array<string> $tags
      */
     public function store(string $key, array $data, array $tags = []): void
     {
