@@ -114,8 +114,8 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     {
         $includedConfigurations = $this->getIncludedConfigurations($this->getIncludes($configuration));
         return [
-            $configuration,
-            ...$includedConfigurations
+            ...$includedConfigurations,
+            $configuration
         ];
     }
 

@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\Configuration
 abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentStorage
 {
     abstract public function getDocumentIdentifiers(): array;
-    
+
     protected function getDocumentPath(string $documentIdentifier): string
     {
         return $documentIdentifier;
@@ -16,7 +16,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     public function getDocument(string $documentIdentifier): string
     {
         $documentPath = $this->getDocumentPath($documentIdentifier);
-        
+
         if (!file_exists($documentPath)) {
             throw new ConfigurationDocumentNotFoundException(sprintf('Configuration document file not found: %s', $documentPath));
         }
@@ -28,5 +28,15 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     {
         $documentPath = $this->getDocumentPath($documentIdentifier);
         file_put_contents($documentPath, $document);
+    }
+
+    public function isReadOnly(string $identifier): bool
+    {
+        $documentPath = $this->getDocumentPath($documentIdentifier);
+        return !is_writable($documentPath);
+    }
+
+    public function initalizeConfigurationDocumentStorage(): void
+    {
     }
 }
