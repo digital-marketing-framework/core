@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Helper;
 
+use BadMethodCallException;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\ContentResolverInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\GeneralContentResolver;
