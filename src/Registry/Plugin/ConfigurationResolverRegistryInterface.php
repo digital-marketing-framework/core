@@ -6,7 +6,6 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\ContentResolverInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\EvaluationInterface;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
 use DigitalMarketingFramework\Core\Service\DataProcessorInterface;
 
 interface ConfigurationResolverRegistryInterface extends PluginRegistryInterface
@@ -26,10 +25,4 @@ interface ConfigurationResolverRegistryInterface extends PluginRegistryInterface
     public function deleteEvaluation(string $keyword): void;
 
     public function getEvaluation(string $keyword, mixed $config, ConfigurationResolverContextInterface $context): ?EvaluationInterface;
-
-    public function registerValueMapper(string $class, array $additionalArguments = [], string $keyword = ''): void;
-
-    public function deleteValueMapper(string $keyword): void;
-
-    public function getValueMapper(string $keyword, mixed $config, ConfigurationResolverContextInterface $context): ?ValueMapperInterface;
 }

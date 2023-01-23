@@ -6,7 +6,6 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ConfigurationResolverIn
 use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\ContentResolverInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\EvaluationInterface;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
 use DigitalMarketingFramework\Core\Service\DataProcessor;
 use DigitalMarketingFramework\Core\Service\DataProcessorInterface;
 
@@ -55,20 +54,5 @@ trait ConfigurationResolverRegistryTrait
     public function getEvaluation(string $keyword, mixed $config, ConfigurationResolverContextInterface $context): ?EvaluationInterface
     {
         return $this->getConfigurationResolver($keyword, EvaluationInterface::class, $config, $context);
-    }
-
-    public function registerValueMapper(string $class, array $additionalArguments = [], string $keyword = ''): void
-    {
-        $this->registerPlugin(ValueMapperInterface::class, $class, $additionalArguments, $keyword);
-    }
-
-    public function deleteValueMapper(string $keyword): void
-    {
-        $this->deletePlugin($keyword, ValueMapperInterface::class);
-    }
-
-    public function getValueMapper(string $keyword, mixed $config, ConfigurationResolverContextInterface $context): ?ValueMapperInterface
-    {
-        return $this->getConfigurationResolver($keyword, ValueMapperInterface::class, $config, $context);
     }
 }

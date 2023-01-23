@@ -57,15 +57,6 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\SelfEvaluati
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\TrimEvaluation;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\UpperCaseEvaluation;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\ValueEvaluation;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ContentValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\GeneralValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\IfValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\OriginalValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\RawValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ReferenceValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\SelfValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\SwitchValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
 
 class CorePluginInitialization extends PluginInitialization
 {
@@ -126,16 +117,6 @@ class CorePluginInitialization extends PluginInitialization
             TrimContentResolver::class,
             UpperCaseContentResolver::class,
             ValueContentResolver::class,
-        ],
-        ValueMapperInterface::class => [
-            SelfValueMapper::class,
-            ContentValueMapper::class,
-            GeneralValueMapper::class,
-            IfValueMapper::class,
-            OriginalValueMapper::class,
-            RawValueMapper::class,
-            ReferenceValueMapper::class,
-            SwitchValueMapper::class,
         ],
     ];
 }

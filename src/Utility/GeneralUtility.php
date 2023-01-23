@@ -232,4 +232,19 @@ final class GeneralUtility
         $start = (int)floor($masked / 2);
         return substr($value, 0, $start) . str_repeat('*', 4) . substr($value, $start + $masked);
     }
+
+    public static function copyMultiValue(MultiValueInterface $multiValue, bool $copyValues = true, bool $recursive = true): MultiValueInterface
+    {
+        $class = get_class($multiValue);
+        $copy = new $class([]);
+        if ($copyValues) {
+            foreach ($multiValue as $key => $value) {
+                if ($recursive && $value instanceof MultiValueInterface) {
+                    $value = static::copyMultiValue($value, $copyValues, $recursive);
+                }
+                $copy[$key] = $value;
+            }
+        }
+        return $copy;
+    }
 }

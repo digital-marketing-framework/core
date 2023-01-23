@@ -9,8 +9,6 @@ use DigitalMarketingFramework\Core\ConfigurationResolver\ContentResolver\General
 use DigitalMarketingFramework\Core\ConfigurationResolver\Context\ConfigurationResolverContextInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\EvaluationInterface;
 use DigitalMarketingFramework\Core\ConfigurationResolver\Evaluation\GeneralEvaluation;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\GeneralValueMapper;
-use DigitalMarketingFramework\Core\ConfigurationResolver\ValueMapper\ValueMapperInterface;
 
 trait ConfigurationResolverTrait
 {
@@ -35,14 +33,6 @@ trait ConfigurationResolverTrait
         return $this->registry->getContentResolver($keyword, $config, $context);
     }
 
-    protected function getValueMapper(mixed $config, string $keyword = 'general', ?ConfigurationResolverContextInterface $context = null): ?ValueMapperInterface
-    {
-        if ($context === null) {
-            $context = $this->getConfigurationResolverContext();
-        }
-        return $this->registry->getValueMapper($keyword, $config, $context);
-    }
-
     protected function getEvaluation(mixed $config, string $keyword = 'general', ?ConfigurationResolverContextInterface $context = null): ?EvaluationInterface
     {
         if ($context === null) {
@@ -56,13 +46,6 @@ trait ConfigurationResolverTrait
         /** @var ?GeneralContentResolver $contentResolver */
         $contentResolver = $this->getContentResolver($config, 'general', $context);
         return $contentResolver?->resolve();
-    }
-
-    protected function resolveValueMap(mixed $config, mixed $value, ?ConfigurationResolverContextInterface $context = null): mixed
-    {
-        /** @var ?GeneralValueMapper */
-        $valueMapper = $this->getValueMapper($config, 'general', $context);
-        return $valueMapper?->resolve($value);
     }
 
     protected function resolveEvaluation(mixed $config, ?ConfigurationResolverContextInterface $context = null): mixed
