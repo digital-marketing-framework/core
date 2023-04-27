@@ -13,7 +13,19 @@ interface PluginRegistryInterface
      * @return array<PluginInterface>
      */
     public function getAllPlugins(string $interface, array $arguments = []): array;
+
+    /**
+     * @return array<string,string>
+     */
+    public function getAllPluginClasses(string $interface): array;
+    public function getPluginClass(string $interface, string $keyword): ?string;
+
+    /**
+     * @param array<mixed> $additionalArguments
+     */
     public function registerPlugin(string $interface, string $class, array $additionalArguments = [], string $keyword = ''): void;
+
     public function deletePlugin(string $keyword, string $interface): void;
+
     public function sortPlugins(array &$plugins): void;
 }

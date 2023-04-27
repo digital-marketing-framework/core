@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Tests;
 
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
 trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
@@ -48,5 +49,28 @@ trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
     {
         static::assertMultiValue($actual, $class);
         static::assertEmpty($actual->toArray());
+    }
+
+    public static function convertMultiValues(mixed $value): mixed
+    {
+        if (is_array($value)) {
+            $value = array_map(function(mixed $subValue) {
+                return static::convertMultiValues($subValue);
+            }, $value);
+            $value = new MultiValue($value);
+        }
+        return $value;
+    }
+
+    public static function deconvertMultiValues(mixed $value): mixed
+    {
+        $result = $value;
+        if ($value instanceof MultiValueInterface) {
+            $result = [];
+            foreach ($value as $key => $subValue) {
+                $result[$key] = static::deconvertMultiValues($subValue);
+            }
+        }
+        return $result;
     }
 }

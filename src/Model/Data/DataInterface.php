@@ -8,8 +8,9 @@ interface DataInterface extends MultiValueInterface
 {
     public function toArray(): array;
 
-    public function fieldExists($key): bool;
-    public function fieldEmpty($key): bool;
+    public function fieldExists(string $key): bool;
+    public function fieldEmpty(string $key): bool;
+    public function getFieldNames(): array;
 
     public function pack(): array;
     public static function unpack(array $packed): DataInterface;

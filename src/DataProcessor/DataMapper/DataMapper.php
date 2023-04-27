@@ -1,0 +1,35 @@
+<?php
+
+namespace DigitalMarketingFramework\Core\DataProcessor\DataMapper;
+
+use DigitalMarketingFramework\Core\DataProcessor\DataProcessorPlugin;
+use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+
+abstract class DataMapper extends DataProcessorPlugin implements DataMapperInterface
+{
+
+    public const KEY_ENABLED = 'enabled';
+    public const DEFAULT_ENABLED = false;
+
+    protected function proceed(): bool
+    {
+        return $this->getConfig(static::KEY_ENABLED);
+    }
+
+    abstract protected function map(DataInterface $target);
+    
+    public function mapData(DataInterface $target): DataInterface
+    {
+        if ($this->proceed()) {
+            $this->map($target);
+        }
+        return $target;
+    }
+
+    public static function getDefaultConfiguration(?bool $enabled = null): array
+    {
+        return parent::getDefaultConfiguration() + [
+            static::KEY_ENABLED => $enabled ?? static::DEFAULT_ENABLED,
+        ];
+    }
+}

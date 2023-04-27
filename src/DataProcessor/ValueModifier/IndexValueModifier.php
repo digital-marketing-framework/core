@@ -1,0 +1,40 @@
+<?php
+
+namespace DigitalMarketingFramework\Core\DataProcessor\ValueModifier;
+
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+
+class IndexValueModifier extends ValueModifier
+{
+    public const WEIGHT = 30;
+
+    public const KEY_INDEX = 'index';
+    public const DEFAULT_INDEX = '';
+    
+    public function modify(null|string|ValueInterface $value): null|string|ValueInterface
+    {
+        if (!$this->proceed()) {
+            return $value;
+        }
+        $indexString = $this->getConfig(static::KEY_INDEX);
+        $indices = $indexString !== '' ? explode(',', $indexString) : [];
+
+        $currentValue = $value;
+        foreach ($indices as $index) {
+            if (!$currentValue instanceof MultiValueInterface) {
+                throw new DigitalMarketingFrameworkException(sprintf('Value is not a multi value and does not have an index "%s".', $index));
+            }
+            $currentValue = $currentValue[$index] ?? null;
+        }
+        return $currentValue;
+    }
+
+    public static function getDefaultConfiguration(): array
+    {
+        return parent::getDefaultConfiguration() + [
+            static::KEY_INDEX => static::DEFAULT_INDEX,
+        ];
+    }
+}

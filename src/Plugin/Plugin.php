@@ -9,10 +9,10 @@ abstract class Plugin implements PluginInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    protected const WEIGHT = 10;
+    public const WEIGHT = 10;
 
     public function __construct(
-        protected string $keyword,
+        protected string $keyword
     ) {
     }
 

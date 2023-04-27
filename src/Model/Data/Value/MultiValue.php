@@ -3,7 +3,7 @@
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
 use ArrayObject;
-use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 use InvalidArgumentException;
 
 class MultiValue extends ArrayObject implements MultiValueInterface
@@ -55,21 +55,7 @@ class MultiValue extends ArrayObject implements MultiValueInterface
         $data = $this->toArray();
         $packed = [];
         foreach ($data as $key => $value) {
-            if (is_object($value)) {
-                if ($value instanceof ValueInterface) {
-                    $type = get_class($value);
-                    $packedValue = $value->pack();
-                } else {
-                    throw new InvalidArgumentException('Invalid field class "' . get_class($value) . '"');
-                }
-            } else {
-                $type = 'string';
-                $packedValue = (string)$value;
-            }
-            $packed[$key] = [
-                'type' => $type,
-                'value' => $packedValue,
-            ];
+            $packed[$key] = GeneralUtility::packValue($value);
         }
         return $packed;
     }
@@ -78,19 +64,7 @@ class MultiValue extends ArrayObject implements MultiValueInterface
     {
         $data = [];
         foreach ($packed as $key => $packedValue) {
-            if ($packedValue['type'] === 'string') {
-                $data[$key] = $packedValue['value'];
-            } else {
-                $class = $packedValue['type'];
-                $value = $packedValue['value'];
-                if (!class_exists($class)) {
-                    throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
-                }
-                if (!in_array(ValueInterface::class, class_implements($class))) {
-                    throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
-                }
-                $data[$key] = $class::unpack($value);
-            }
+            $data[$key] = GeneralUtility::unpackValue($packedValue);
         }
         return new static($data);
     }

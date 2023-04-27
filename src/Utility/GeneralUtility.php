@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Utility;
 
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\File\FileInterface;
@@ -11,6 +12,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use InvalidArgumentException;
 
 final class GeneralUtility
 {
@@ -20,7 +22,7 @@ final class GeneralUtility
         '\\t' => "\t",
     ];
 
-    public static function isEmpty($value): bool
+    public static function isEmpty(mixed $value): bool
     {
         if (is_array($value)) {
             return empty($value);
@@ -31,7 +33,7 @@ final class GeneralUtility
         return strlen((string)$value) === 0;
     }
 
-    public static function isTrue($value): bool
+    public static function isTrue(mixed $value): bool
     {
         if ($value instanceof MultiValueInterface) {
             return (bool)$value->toArray();
@@ -39,7 +41,7 @@ final class GeneralUtility
         return (bool)$value;
     }
 
-    public static function isFalse($value): bool
+    public static function isFalse(mixed $value): bool
     {
         if ($value instanceof MultiValueInterface) {
             return !$value->toArray();
@@ -47,7 +49,7 @@ final class GeneralUtility
         return !$value;
     }
 
-    public static function parseSeparatorString($str): string
+    public static function parseSeparatorString(string $str): string
     {
         $str = trim($str);
         foreach (static::CHARACTER_MAP as $key => $value) {
@@ -56,12 +58,12 @@ final class GeneralUtility
         return $str;
     }
 
-    public static function isList($value): bool
+    public static function isList(mixed $value): bool
     {
         return is_array($value) || $value instanceof MultiValueInterface;
     }
 
-    public static function castValueToArray($value, $token = ',', $trim = true): array
+    public static function castValueToArray(mixed $value, string $token = ',', bool $trim = true): array
     {
         if (is_array($value)) {
             $array = $value;
@@ -156,12 +158,12 @@ final class GeneralUtility
         return $short ? static::shortenHash($hash) : $hash;
     }
 
-    public static function compareValue($fieldValue, $compareValue): bool
+    public static function compareValue(mixed $fieldValue, mixed $compareValue): bool
     {
         return (string)$fieldValue === (string)$compareValue;
     }
 
-    public static function compareLists($fieldValue, $compareList, bool $strict = false): bool
+    public static function compareLists(mixed $fieldValue, mixed $compareList, bool $strict = false): bool
     {
         $fieldValue = static::castValueToArray($fieldValue);
         $compareList = static::castValueToArray($compareList);
@@ -174,7 +176,7 @@ final class GeneralUtility
         return $fieldValue === $compareList;
     }
 
-    public static function compare($fieldValue, $compareValue): bool
+    public static function compare(mixed $fieldValue, mixed $compareValue): bool
     {
         if (static::isList($fieldValue) || static::isList($compareValue)) {
             return static::compareLists($fieldValue, $compareValue);
@@ -182,12 +184,12 @@ final class GeneralUtility
         return static::compareValue($fieldValue, $compareValue);
     }
 
-    public static function findInList($fieldValue, array $list): string|int|false
+    public static function findInList(mixed $fieldValue, array $list): string|int|false
     {
         return array_search($fieldValue, $list);
     }
 
-    public static function isInList($fieldValue, array $list): bool
+    public static function isInList(mixed $fieldValue, array $list): bool
     {
         return in_array($fieldValue, $list);
     }
@@ -246,5 +248,43 @@ final class GeneralUtility
             }
         }
         return $copy;
+    }
+
+    public static function packValue(mixed $value): array
+    {
+        if (is_object($value)) {
+            if ($value instanceof ValueInterface) {
+                $type = get_class($value);
+                $packedValue = $value->pack();
+            } else {
+                throw new InvalidArgumentException('Invalid field class "' . get_class($value) . '"');
+            }
+        } elseif (is_array($value)) {
+            throw new InvalidArgumentException('Fields cannot be arrays. Only string representations or ValueInterface objects are allowed.');
+        } else {
+            $type = 'string';
+            $packedValue = (string)$value;
+        }
+        return [
+            'type' => $type,
+            'value' => $packedValue,
+        ];
+    }
+
+    public static function unpackValue(array $packedValue): string|ValueInterface
+    {
+        if ($packedValue['type'] === 'string') {
+            return (string)$packedValue['value'];
+        } else {
+            $class = $packedValue['type'];
+            $value = $packedValue['value'];
+            if (!class_exists($class)) {
+                throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
+            }
+            if (!in_array(ValueInterface::class, class_implements($class))) {
+                throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
+            }
+            return $class::unpack($value);
+        }
     }
 }

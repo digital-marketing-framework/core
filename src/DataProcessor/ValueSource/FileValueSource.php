@@ -1,0 +1,74 @@
+<?php
+
+namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
+
+use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\Utility\GeneralUtility;
+
+class FileValueSource extends ValueSource
+{
+    public const KEY_NAME = 'name';
+    public const DEFAULT_NAME = [];
+
+    public const KEY_PATH = 'path';
+    public const DEFAULT_PATH = [];
+    
+    public const KEY_URL = 'url';
+    public const DEFAULT_URL = [];
+
+    public const KEY_MIMETYPE = 'mimetype';
+    public const DEFAULT_MIMETYPE = [];
+
+    public function build(): null|string|ValueInterface
+    {
+        $fileName = $this->dataProcessor->processValue($this->getConfig(static::KEY_NAME), $this->context->copy());
+        $filePath = $this->dataProcessor->processValue($this->getConfig(static::KEY_PATH), $this->context->copy());
+        $fileUrl = $this->dataProcessor->processValue($this->getConfig(static::KEY_URL), $this->context->copy());
+        $mimeType = $this->dataProcessor->processValue($this->getConfig(static::KEY_MIMETYPE), $this->context->copy());
+        
+        if (file_exists((string) $filePath)) {
+            if (GeneralUtility::isEmpty($fileName)) {
+                $fileName = pathinfo($filePath)['filename'];
+            }
+            if (GeneralUtility::isEmpty($fileUrl)) {
+                $fileUrl = $filePath;
+            }
+            if (GeneralUtility::isEmpty($mimeType)) {
+                $mimeType = mime_content_type($filePath);
+            }
+        }
+        
+        if (
+            !GeneralUtility::isEmpty($fileName)
+            && !GeneralUtility::isEmpty($filePath)
+            && !GeneralUtility::isEmpty($fileUrl)
+            && !GeneralUtility::isEmpty($mimeType)
+        ) {
+            $fileField = array(
+                'fileName' => (string) $fileName,
+                'publicUrl' => (string) $fileUrl,
+                'relativePath' => (string) $filePath,
+                'mimeType' => (string) $mimeType
+            );
+            return FileValue::unpack($fileField);
+        }
+
+        return null;
+    }
+
+    public static function getDefaultConfiguration(): array
+    {
+        return parent::getDefaultConfiguration() + [
+            static::KEY_NAME => static::DEFAULT_NAME,
+            static::KEY_PATH => static::DEFAULT_PATH,
+            static::KEY_URL => static::DEFAULT_URL,
+            static::KEY_MIMETYPE => static::DEFAULT_MIMETYPE,
+        ];
+    }
+
+    public static function canBeMultiValue(): bool
+    {
+        return false;
+    }
+}

@@ -7,14 +7,19 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class Data extends MultiValue implements DataInterface
 {
-    public function fieldExists($key): bool
+    public function fieldExists(string $key): bool
     {
         return array_key_exists($key, iterator_to_array($this));
     }
 
-    public function fieldEmpty($key): bool
+    public function fieldEmpty(string $key): bool
     {
         return !$this->fieldExists($key) || GeneralUtility::isEmpty($this[$key]);
+    }
+
+    public function getFieldNames(): array
+    {
+        return array_keys($this->toArray());
     }
 
     public static function unpack(array $packed): DataInterface

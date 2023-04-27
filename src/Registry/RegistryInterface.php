@@ -2,7 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
-use DigitalMarketingFramework\Core\Registry\Plugin\ConfigurationResolverRegistryInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
@@ -18,7 +19,7 @@ interface RegistryInterface extends
     CacheRegistryInterface,
     ConfigurationDocumentManagerRegistryInterface,
 
-    ConfigurationResolverRegistryInterface,
+    DataProcessorRegistryInterface,
     IdentifierCollectorRegistryInterface
 {
     /**
@@ -27,5 +28,5 @@ interface RegistryInterface extends
     public function createObject(string $class, array $arguments = []): object;
 
     public function getDefaultConfiguration(): array;
-    public function getConfigurationSchema(): array;
+    public function addConfigurationSchema(SchemaDocument $schemaDocument): void;
 }

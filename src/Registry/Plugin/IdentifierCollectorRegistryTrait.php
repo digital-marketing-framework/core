@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\IdentifierCollector\IdentifierCollectorSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\IdentifierCollector\IdentifierCollectorInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 
@@ -39,5 +41,10 @@ trait IdentifierCollectorRegistryTrait
             $result[$key] = $class::getDefaultConfiguration();
         }
         return $result;
+    }
+
+    public function getIdentifierCollectorSchema(): SchemaInterface
+    {
+        return new IdentifierCollectorSchema($this);
     }
 }

@@ -1,0 +1,40 @@
+<?php
+
+namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
+
+use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+
+class IntegerValueSource extends ValueSource
+{
+    public const KEY_VALUE = 'value';
+    public const DEFAULT_VALUE = null;
+
+    public function build(): null|string|ValueInterface
+    {
+        $value = $this->getConfig(static::KEY_VALUE);
+        if ($value !== null) {
+            $value = $this->dataProcessor->processValue($value, $this->context->copy());
+        }
+        if ($value === null) {
+            return null;
+        }
+        $value = (string) $value;
+        if (!is_numeric($value)) {
+            return null;
+        }
+        return new IntegerValue((int) $value);
+    }
+
+    public static function getDefaultConfiguration(): array
+    {
+        return parent::getDefaultConfiguration() + [
+            static::KEY_VALUE => static::DEFAULT_VALUE,
+        ];
+    }
+
+    public static function canBeMultiValue(): bool
+    {
+        return false;
+    }
+}

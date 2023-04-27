@@ -3,11 +3,16 @@
 namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
-use DigitalMarketingFramework\Core\Registry\Plugin\ConfigurationResolverRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
@@ -24,7 +29,7 @@ class Registry implements RegistryInterface
     use CacheRegistryTrait;
     use ConfigurationDocumentManagerRegistryTrait;
 
-    use ConfigurationResolverRegistryTrait;
+    use DataProcessorRegistryTrait;
     use IdentifierCollectorRegistryTrait;
 
     protected function processObjectAwareness(object $object): void
@@ -41,6 +46,9 @@ class Registry implements RegistryInterface
         }
         if ($object instanceof DataCacheAwareInterface) {
             $object->setCache($this->getCache());
+        }
+        if ($object instanceof DataProcessorAwareInterface) {
+            $object->setDataProcessor($this->getDataProcessor());
         }
     }
 
@@ -90,8 +98,21 @@ class Registry implements RegistryInterface
         ];
     }
 
-    public function getConfigurationSchema(): array
+    public function addConfigurationSchema(SchemaDocument $schemaDocument): void
     {
-        return [];
+        $schemaDocument->addCustomType($this->getValueSourceSchema());
+        $schemaDocument->addCustomType($this->getValueModifierSchema());
+        $schemaDocument->addCustomType(new ValueSchema($this));
+        $schemaDocument->addCustomType($this->getEvaluationSchema());
+        $schemaDocument->addCustomType($this->getComparisonSchema());
+        $schemaDocument->addCustomType($this->getDataMapperSchema());
+
+        foreach ($this->getCustomValueSchemata() as $schema) {
+            $schemaDocument->addCustomType($schema);
+        }
+
+        $mainSchema = $schemaDocument->getMainSchema();
+        $mainSchema->addProperty('valueMaps', new MapSchema(new MapSchema(new StringSchema())));
+        $mainSchema->addProperty('identifiers', $this->getIdentifierCollectorSchema());
     }
 }

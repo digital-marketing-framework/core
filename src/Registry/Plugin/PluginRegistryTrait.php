@@ -20,7 +20,7 @@ trait PluginRegistryTrait
         $class = $this->pluginClasses[$interface][$keyword] ?? null;
         $additionalArguments = $this->pluginAdditionalArguments[$interface][$keyword] ?? [];
 
-        if (!$class) {
+        if ($class === null) {
             if ($this->checkKeywordAsClass($keyword, $interface)) {
                 $class = $keyword;
                 $keyword = GeneralUtility::getPluginKeyword($keyword, $interface) ?: $keyword;
@@ -46,6 +46,20 @@ trait PluginRegistryTrait
         }
         $this->sortPlugins($result);
         return $result;
+    }
+
+    public function getAllPluginClasses(string $interface): array
+    {
+        $classes = $this->pluginClasses[$interface] ?? [];
+        uasort($classes, function(string $a, string $b) {
+            return $a::WEIGHT <=> $b::WEIGHT;
+        });
+        return $classes;
+    }
+
+    public function getPluginClass(string $interface, string $keyword): ?string
+    {
+        return $this->pluginClasses[$interface][$keyword] ?? null;
     }
 
     public function registerPlugin(string $interface, string $class, array $additionalArguments = [], string $keyword = ''): void

@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\Log\LoggerFactoryInterface;
 use DigitalMarketingFramework\Core\CorePluginInitialization;
 use DigitalMarketingFramework\Core\Log\LoggerInterface;
 use DigitalMarketingFramework\Core\Registry\Registry;
-use DigitalMarketingFramework\Core\Registry\Plugin\ConfigurationResolverRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
 trait RegistryTestTrait // extends \PHPUnit\Framework\TestCase
@@ -15,7 +15,7 @@ trait RegistryTestTrait // extends \PHPUnit\Framework\TestCase
 
     protected LoggerInterface&MockObject $logger;
 
-    protected ConfigurationResolverRegistryInterface $registry;
+    protected RegistryInterface $registry;
 
     protected function initRegistry(): void
     {

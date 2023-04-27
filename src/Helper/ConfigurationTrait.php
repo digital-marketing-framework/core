@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Helper;
 
 trait ConfigurationTrait
 {
-    protected mixed $configuration;
+    protected array $configuration;
 
     abstract public static function getDefaultConfiguration(): array;
 
