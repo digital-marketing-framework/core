@@ -2,6 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
@@ -28,5 +31,13 @@ class DefaultValueModifier extends ValueModifier
         return parent::getDefaultConfiguration() + [
             static::KEY_VALUE => static::DEFAULT_VALUE,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_VALUE, new StringSchema());
+        return $schema;
     }
 }

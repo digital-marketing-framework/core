@@ -2,6 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class FirstOfValueSource extends ValueSource
@@ -17,5 +21,10 @@ class FirstOfValueSource extends ValueSource
             }
         }
         return null;
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        return new ListSchema(new CustomSchema(ValueSchema::TYPE));
     }
 }

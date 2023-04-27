@@ -2,6 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
@@ -49,5 +52,14 @@ class SpliceValueModifier extends ValueModifier
             static::KEY_TOKEN => static::DEFAULT_TOKEN,
             static::KEY_INDEX => static::DEFAULT_INDEX,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_TOKEN, new StringSchema(static::DEFAULT_TOKEN));
+        $schema->addProperty(static::KEY_INDEX, new StringSchema(static::DEFAULT_INDEX));
+        return $schema;
     }
 }

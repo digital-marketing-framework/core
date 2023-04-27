@@ -298,7 +298,7 @@ class DataProcessorTest extends TestCase
         $config = [
             'nonExistentModifier' => ['modifierConfigKey' => 'modifierConfigValue'],
         ];
-        $this->expectExceptionMessage('ContentModifier "nonExistentModifier" not found.');
+        $this->expectExceptionMessage('ValueModifier "nonExistentModifier" not found.');
         $this->subject->processValueModifiers($config, 'foo', $this->context);
     }
 

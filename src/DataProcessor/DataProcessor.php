@@ -62,7 +62,7 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         foreach ($config as $keyword => $modifierConfig) {
             $modifier = $this->registry->getValueModifier($keyword, $modifierConfig, $context);
             if ($modifier === null) {
-                throw new DigitalMarketingFrameworkException(sprintf('ContentModifier "%s" not found.', $keyword));
+                throw new DigitalMarketingFrameworkException(sprintf('ValueModifier "%s" not found.', $keyword));
             }
             $value = $modifier->modify($value);
         }

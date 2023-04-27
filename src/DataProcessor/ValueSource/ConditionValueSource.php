@@ -2,6 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
@@ -42,5 +47,15 @@ class ConditionValueSource extends ValueSource
             static::KEY_THEN => static::DEFAULT_THEN,
             static::KEY_ELSE => static::DEFAULT_ELSE,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_IF, new CustomSchema(EvaluationSchema::TYPE));
+        $schema->addProperty(static::KEY_THEN, new CustomSchema(ValueSchema::TYPE));
+        $schema->addProperty(static::KEY_ELSE, new CustomSchema(ValueSchema::TYPE));
+        return $schema;
     }
 }

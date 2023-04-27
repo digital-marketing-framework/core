@@ -2,6 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\Evaluation;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+
 class TrueEvaluation extends Evaluation
 {
     public const WEIGHT = 0;
@@ -9,5 +12,10 @@ class TrueEvaluation extends Evaluation
     public function evaluate(): bool
     {
         return true;
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        return new ContainerSchema();
     }
 }

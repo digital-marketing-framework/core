@@ -2,6 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
@@ -54,5 +57,14 @@ class NegateValueModifier extends ValueModifier
             static::KEY_TRUE => static::DEFAULT_TRUE,
             static::KEY_FALSE => static::DEFAULT_FALSE,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_TRUE, new StringSchema(static::FALLBACK_TRUE));
+        $schema->addProperty(static::KEY_FALSE, new StringSchema(static::FALLBACK_FALSE));
+        return $schema;
     }
 }

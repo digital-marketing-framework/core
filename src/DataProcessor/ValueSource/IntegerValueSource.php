@@ -2,6 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
@@ -31,6 +35,14 @@ class IntegerValueSource extends ValueSource
         return parent::getDefaultConfiguration() + [
             static::KEY_VALUE => static::DEFAULT_VALUE,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_VALUE, new CustomSchema(ValueSchema::TYPE));
+        return $schema;
     }
 
     public static function canBeMultiValue(): bool

@@ -89,13 +89,11 @@ class Registry implements RegistryInterface
         return $defaultIdentifierConfiguration;
     }
 
-    public function getDefaultConfiguration(): array
+    public function addDefaultConfiguration(array &$configuration): void
     {
-        return [
-            ConfigurationInterface::KEY_DATA_MAPS => [],
-            ConfigurationInterface::KEY_VALUE_MAPS => [],
-            ConfigurationInterface::KEY_IDENTIFIER => $this->getIdentifierDefaultConfiguration(),
-        ];
+        $configuration[ConfigurationInterface::KEY_DATA_MAPS] = [];
+        $configuration[ConfigurationInterface::KEY_VALUE_MAPS] = [];
+        $configuration[ConfigurationInterface::KEY_IDENTIFIER] = $this->getIdentifierDefaultConfiguration();
     }
 
     public function addConfigurationSchema(SchemaDocument $schemaDocument): void

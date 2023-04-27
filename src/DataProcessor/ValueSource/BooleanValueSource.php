@@ -2,6 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -40,6 +45,16 @@ class BooleanValueSource extends ValueSource
             static::KEY_TRUE => static::DEFAULT_TRUE,
             static::KEY_FALSE => static::DEFAULT_FALSE,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_VALUE, new CustomSchema(ValueSchema::TYPE));
+        $schema->addProperty(static::KEY_TRUE, new StringSchema(static::DEFAULT_TRUE));
+        $schema->addProperty(static::KEY_FALSE, new StringSchema(static::DEFAULT_FALSE));
+        return $schema;
     }
 
     public static function canBeMultiValue(): bool

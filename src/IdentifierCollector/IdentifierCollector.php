@@ -2,6 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\IdentifierCollector;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Helper\ConfigurationTrait;
@@ -55,5 +58,12 @@ abstract class IdentifierCollector extends Plugin implements IdentifierCollector
         return [
             static::KEY_ENABLED => static::DEFAULT_ENABLED,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        $schema = new ContainerSchema();
+        $schema->addProperty(static::KEY_ENABLED, new BooleanSchema(static::DEFAULT_ENABLED));
+        return $schema;
     }
 }

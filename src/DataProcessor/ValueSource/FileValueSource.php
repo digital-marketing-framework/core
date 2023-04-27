@@ -2,6 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -65,6 +69,17 @@ class FileValueSource extends ValueSource
             static::KEY_URL => static::DEFAULT_URL,
             static::KEY_MIMETYPE => static::DEFAULT_MIMETYPE,
         ];
+    }
+
+    public static function getSchema(): SchemaInterface
+    {
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_NAME, new CustomSchema(ValueSchema::TYPE));
+        $schema->addProperty(static::KEY_PATH, new CustomSchema(ValueSchema::TYPE));
+        $schema->addProperty(static::KEY_URL, new CustomSchema(ValueSchema::TYPE));
+        $schema->addProperty(static::KEY_MIMETYPE, new CustomSchema(ValueSchema::TYPE));
+        return $schema;
     }
 
     public static function canBeMultiValue(): bool
