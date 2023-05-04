@@ -42,7 +42,7 @@ class ConfigurationUtilityTest extends TestCase
             'Target value is scalar and source value is array' => [
                 ['key1' => 'value1'],
                 ['key1' => ['key1.1' => 'value1.1']],
-                ['key1' => [ConfigurationInterface::KEY_SELF => 'value1', 'key1.1' => 'value1.1']]
+                ['key1' => ['key1.1' => 'value1.1']]
             ],
 
             'Target value is array and source value is null' => [
@@ -54,7 +54,7 @@ class ConfigurationUtilityTest extends TestCase
             'Target value is array and source value scalar' => [
                 ['key1' => ['key1.1' => 'value1.1']],
                 ['key1' => 'value1'],
-                ['key1' => [ConfigurationInterface::KEY_SELF => 'value1', 'key1.1' => 'value1.1']]
+                ['key1' => 'value1']
             ],
 
             'Target value is scalar and source value is null' => [
@@ -126,7 +126,7 @@ class ConfigurationUtilityTest extends TestCase
             'Target value is scalar and source value is array' => [
                 ['key1' => 'value1'],
                 ['key1' => ['key1.1' => 'value1.1']],
-                ['key1' => [ConfigurationInterface::KEY_SELF => 'value1', 'key1.1' => 'value1.1']]
+                ['key1' => ['key1.1' => 'value1.1']]
             ],
 
             'Target value is array and source value is null' => [
@@ -138,7 +138,7 @@ class ConfigurationUtilityTest extends TestCase
             'Target value is array and source value scalar' => [
                 ['key1' => ['key1.1' => 'value1.1']],
                 ['key1' => 'value1'],
-                ['key1' => [ConfigurationInterface::KEY_SELF => 'value1', 'key1.1' => 'value1.1']]
+                ['key1' => 'value1']
             ],
 
             'Target value is scalar and source value is null' => [

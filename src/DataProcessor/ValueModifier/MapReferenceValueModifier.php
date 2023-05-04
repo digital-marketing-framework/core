@@ -24,7 +24,7 @@ class MapReferenceValueModifier extends ValueModifier
             return null;
         }
         $map = $this->context->getConfiguration()->getValueMapConfiguration($this->getConfig(static::KEY_MAP_NAME));
-        if (is_array($map)) {
+        if ($map !== null) {
             if ($this->getConfig(static::KEY_INVERT)) {
                 $map = array_flip($map);
             }
