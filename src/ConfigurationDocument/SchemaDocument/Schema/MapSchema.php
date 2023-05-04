@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+
 class MapSchema extends ListSchema
 {
     public function __construct(
@@ -33,8 +35,14 @@ class MapSchema extends ListSchema
 
     protected function getConfig(): ?array
     {
-        return [
-            'itemNameSchema' => $this->nameSchema->toArray(),
-        ] + parent::getConfig();
+        if (SchemaDocument::FLATTEN_SCHEMA) {
+            return [
+                'nameTemplate' => $this->nameSchema->toArray(),
+            ] + parent::getConfig();
+        } else {
+            return [
+                'name' => $this->nameSchema->toArray(),
+            ] + parent::getConfig();
+        }
     }
 }

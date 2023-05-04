@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 class ContainerSchema extends Schema
@@ -64,11 +65,17 @@ class ContainerSchema extends Schema
     {
         $properties = [];
         foreach ($this->properties as $property) {
-            $properties[] = [
-                'itemName' => $property->getName(),
-                'itemSchema' => $property->getSchema()->toArray(),
-                'render' => $property->getRenderingDefinition()->toArray(),
-            ];
+            if (SchemaDocument::FLATTEN_SCHEMA) {
+                $properties[] = ['name' => $property->getName()] 
+                    + $property->getSchema()->toArray() 
+                    + ($property->getRenderingDefinition()->toArray() ?? []);
+            } else {
+                $properties[] = [
+                    'name' => $property->getName(),
+                    'item' => $property->getSchema()->toArray(),
+                    'render' => $property->getRenderingDefinition()->toArray(),
+                ];
+            }
         }
         return [
             'items' => $properties,

@@ -7,6 +7,8 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\S
 
 class SchemaDocument
 {
+    public const FLATTEN_SCHEMA = true;
+
     /**
      * @param array<string,SchemaInterface> $customTypes
      * @param array<string,array<string|int|bool>>

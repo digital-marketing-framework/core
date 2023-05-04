@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+
 class ListSchema extends Schema
 {
     public function __construct(
@@ -32,8 +34,14 @@ class ListSchema extends Schema
 
     protected function getConfig(): ?array
     {
-        return [
-            'itemSchema' => $this->valueSchema->toArray(),
-        ];
+        if (SchemaDocument::FLATTEN_SCHEMA) {
+            return [
+                'itemTemplate' => $this->valueSchema->toArray(),
+            ];
+        } else {
+            return [
+                'item' => $this->valueSchema->toArray(),
+            ];
+        }
     }
 }

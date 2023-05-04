@@ -105,9 +105,10 @@ class Registry implements RegistryInterface
         $schemaDocument->addCustomType($this->getComparisonSchema());
         $schemaDocument->addCustomType($this->getDataMapperSchema());
 
-        foreach ($this->getCustomValueSchemata() as $schema) {
-            $schemaDocument->addCustomType($schema);
-        }
+        // TODO do we need these variations of the custom type "value"?
+        // foreach ($this->getCustomValueSchemata() as $schema) {
+        //     $schemaDocument->addCustomType($schema);
+        // }
 
         $mainSchema = $schemaDocument->getMainSchema();
         $mainSchema->addProperty('valueMaps', new MapSchema(new MapSchema(new StringSchema())));

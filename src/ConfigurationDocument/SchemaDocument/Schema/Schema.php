@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Sc
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 
 abstract class Schema implements SchemaInterface
 {
@@ -55,10 +56,16 @@ abstract class Schema implements SchemaInterface
     
     public function toArray(): array
     {
-        return [
-            'type' => $this->getType(),
-            'config' => $this->getConfig(),
-            'render' => $this->renderingDefinition->toArray(),
-        ];
+        if (SchemaDocument::FLATTEN_SCHEMA) {
+            return ['type' => $this->getType()] 
+                + ($this->getConfig() ?? []) 
+                + ($this->renderingDefinition->toArray() ?? []);
+        } else {
+            return [
+                'type' => $this->getType(),
+                'config' => $this->getConfig(),
+                'render' => $this->renderingDefinition->toArray(),
+            ];
+        }
     }
 }
