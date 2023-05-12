@@ -18,7 +18,18 @@ interface DataProcessorInterface extends PluginInterface
     public function processComparison(array $config, DataProcessorContextInterface $context): bool;
     public function processDataMapper(array $config, DataInterface $data, ConfigurationInterface $configuration): DataInterface;
 
+    /**
+     * @return array<mixed>
+     */
     public static function getDefaultValueConfiguration(): array;
+
+    /**
+     * @return array<mixed>
+     */
     public static function getDefaultEvaluationConfiguration(bool $true = true): array;
-    public static function getDefaultDataMapperConfiguration(): array;
+
+    /**
+     * @return array<string,mixed>
+     */
+    public static function getDefaultDataMapperConfiguration(string $keyword = 'passthroughFields', string $class = PassthroughFieldsDataMapper::class): array;
 }

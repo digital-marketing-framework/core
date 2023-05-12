@@ -157,10 +157,10 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         ];
     }
 
-    public static function getDefaultDataMapperConfiguration(): array
+    public static function getDefaultDataMapperConfiguration(string $keyword = 'passthroughFields', string $class = PassthroughFieldsDataMapper::class): array
     {
         return [
-            'passthroughFields' => PassthroughFieldsDataMapper::getDefaultConfiguration(true),
+            $keyword => $class::getDefaultConfiguration(true),
         ];
     }
 }
