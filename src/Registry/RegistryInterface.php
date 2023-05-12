@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryIn
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryInterface;
 
@@ -18,6 +19,7 @@ interface RegistryInterface extends
     ContextRegistryInterface,
     CacheRegistryInterface,
     ConfigurationDocumentManagerRegistryInterface,
+    FileStorageRegistryInterface,
 
     DataProcessorRegistryInterface,
     IdentifierCollectorRegistryInterface

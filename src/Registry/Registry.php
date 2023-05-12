@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\S
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
+use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
@@ -17,6 +18,7 @@ use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTr
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
 
@@ -28,6 +30,7 @@ class Registry implements RegistryInterface
     use ContextRegistryTrait;
     use CacheRegistryTrait;
     use ConfigurationDocumentManagerRegistryTrait;
+    use FileStorageRegistryTrait;
 
     use DataProcessorRegistryTrait;
     use IdentifierCollectorRegistryTrait;
@@ -49,6 +52,9 @@ class Registry implements RegistryInterface
         }
         if ($object instanceof DataProcessorAwareInterface) {
             $object->setDataProcessor($this->getDataProcessor());
+        }
+        if ($object instanceof FileStorageAwareInterface) {
+            $object->setFileStorage($this->getFileStorage());
         }
     }
 
