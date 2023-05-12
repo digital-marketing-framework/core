@@ -97,7 +97,6 @@ class Registry implements RegistryInterface
 
     public function addDefaultConfiguration(array &$configuration): void
     {
-        $configuration[ConfigurationInterface::KEY_DATA_MAPS] = [];
         $configuration[ConfigurationInterface::KEY_VALUE_MAPS] = [];
         $configuration[ConfigurationInterface::KEY_IDENTIFIER] = $this->getIdentifierDefaultConfiguration();
     }
