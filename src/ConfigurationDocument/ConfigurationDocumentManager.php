@@ -15,12 +15,18 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function __construct(
         protected ConfigurationDocumentStorageInterface $storage,
         protected ConfigurationDocumentParserInterface $parser,
+        protected ?ConfigurationDocumentStorageInterface $staticStorage = null,
     ) {
     }
 
     public function getStorage(): ConfigurationDocumentStorageInterface
     {
         return $this->storage;
+    }
+
+    public function getStaticStorage(): ?ConfigurationDocumentStorageInterface
+    {
+        return $this->staticStorage;
     }
 
     public function getParser(): ConfigurationDocumentParserInterface
@@ -44,7 +50,13 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
      */
     public function getDocumentIdentifiers(): array
     {
-        return $this->storage->getDocumentIdentifiers();
+        $identifiers = $this->staticStorage?->getDocumentIdentifiers() ?? [];
+        foreach ($this->storage->getDocumentIdentifiers() as $identifier) {
+            if (!in_array($identifier, $identifiers)) {
+                $identifiers[] = $identifier;
+            }
+        }
+        return $identifiers;
     }
 
     /**
@@ -57,6 +69,10 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function getDocumentFromIdentifier(string $documentIdentifier): string
     {
+        $document = $this->staticStorage?->getDocument($documentIdentifier);
+        if ($document !== null && $document !== '') {
+            return $document;
+        }
         return $this->storage->getDocument($documentIdentifier);
     }
 

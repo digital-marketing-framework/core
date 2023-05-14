@@ -11,6 +11,7 @@ interface ConfigurationDocumentManagerInterface
 
     public function getStorage(): ConfigurationDocumentStorageInterface;
     public function getParser(): ConfigurationDocumentParserInterface;
+    public function getStaticStorage(): ?ConfigurationDocumentStorageInterface;
 
     public function tidyDocument(string $document): string;
 

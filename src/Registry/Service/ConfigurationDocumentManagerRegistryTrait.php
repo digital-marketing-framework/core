@@ -12,6 +12,7 @@ trait ConfigurationDocumentManagerRegistryTrait
 {
     protected ConfigurationDocumentStorageInterface $configurationDocumentStorage;
     protected ConfigurationDocumentParserInterface $configurationDocumentParser;
+    protected ?ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage = null;
     protected ConfigurationDocumentManagerInterface $configurationDocumentManager;
 
     abstract protected function createObject(string $class, array $arguments = []): object;
@@ -27,6 +28,16 @@ trait ConfigurationDocumentManagerRegistryTrait
     public function setConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $configurationDocumentStorage): void
     {
         $this->configurationDocumentStorage = $configurationDocumentStorage;
+    }
+
+    public function getStaticConfigurationDocumentStorage(): ?ConfigurationDocumentStorageInterface
+    {
+        return $this->staticConfigurationDocumentStorage;
+    }
+
+    public function setStaticConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void
+    {
+        $this->staticConfigurationDocumentStorage = $staticConfigurationDocumentStorage;
     }
 
     public function getConfigurationDocumentParser(): ConfigurationDocumentParserInterface
@@ -47,7 +58,15 @@ trait ConfigurationDocumentManagerRegistryTrait
         if (!isset($this->configurationDocumentManager)) {
             $configurationDocumentStorage = $this->getConfigurationDocumentStorage();
             $configurationDocumentParser = $this->getConfigurationDocumentParser();
-            $this->configurationDocumentManager = $this->createObject(ConfigurationDocumentManager::class, [$configurationDocumentStorage, $configurationDocumentParser]);
+            $staticConfigurationDocumentStorage = $this->getStaticConfigurationDocumentStorage();
+            $this->configurationDocumentManager = $this->createObject(
+                ConfigurationDocumentManager::class, 
+                [
+                    $configurationDocumentStorage, 
+                    $configurationDocumentParser,
+                    $staticConfigurationDocumentStorage
+                ]
+            );
         }
         return $this->configurationDocumentManager;
     }
