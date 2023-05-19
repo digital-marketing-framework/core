@@ -66,19 +66,19 @@ class ContainerSchema extends Schema
         $properties = [];
         foreach ($this->properties as $property) {
             if (SchemaDocument::FLATTEN_SCHEMA) {
-                $properties[] = ['name' => $property->getName()] 
-                    + $property->getSchema()->toArray() 
+                $properties[] = ['key' => $property->getName()]
+                    + $property->getSchema()->toArray()
                     + ($property->getRenderingDefinition()->toArray() ?? []);
             } else {
                 $properties[] = [
-                    'name' => $property->getName(),
-                    'item' => $property->getSchema()->toArray(),
+                    'key' => $property->getName(),
+                    'value' => $property->getSchema()->toArray(),
                     'render' => $property->getRenderingDefinition()->toArray(),
                 ];
             }
         }
         return [
-            'items' => $properties,
+            'values' => $properties,
         ];
     }
 }

@@ -37,11 +37,11 @@ class MapSchema extends ListSchema
     {
         if (SchemaDocument::FLATTEN_SCHEMA) {
             return [
-                'nameTemplate' => $this->nameSchema->toArray(),
+                'keyTemplate' => $this->nameSchema->toArray(),
             ] + parent::getConfig();
         } else {
             return [
-                'name' => $this->nameSchema->toArray(),
+                'key' => $this->nameSchema->toArray(),
             ] + parent::getConfig();
         }
     }

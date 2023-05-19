@@ -36,11 +36,11 @@ class ListSchema extends Schema
     {
         if (SchemaDocument::FLATTEN_SCHEMA) {
             return [
-                'itemTemplate' => $this->valueSchema->toArray(),
+                'valueTemplate' => $this->valueSchema->toArray(),
             ];
         } else {
             return [
-                'item' => $this->valueSchema->toArray(),
+                'value' => $this->valueSchema->toArray(),
             ];
         }
     }
