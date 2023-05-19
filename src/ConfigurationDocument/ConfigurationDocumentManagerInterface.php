@@ -16,6 +16,12 @@ interface ConfigurationDocumentManagerInterface
     public function tidyDocument(string $document): string;
 
     public function saveDocument(string $documentIdentifier, string $document): void;
+    public function createDocument(string $documentIdentifier, string $document, string $documentName = ''): void;
+    public function deleteDocument(string $documentIdentifier): void;
+
+    public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string;
+
+    public function getMetaDataFromIdentifier(string $documentIdentifier): array;
 
     /**
      * @return array<string>

@@ -16,9 +16,18 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
     public const STORAGE_CONFIGURATION_KEY = 'configurationStorage';
 
     abstract public function getDocumentIdentifiers(): array;
+    abstract public function getDocumentIdentiferFromBaseName(string $baseName, bool $newFile = true): string;
+
+    public function getShortIdentifier(string $documentIdentifier): string
+    {
+        return $documentIdentifier;
+    }
+
     abstract public function getDocument(string $documentIdentifier): string;
     abstract public function setDocument(string $documentIdentifier, string $document): void;
+    abstract public function deleteDocument(string $documentIdentifier): void;
     abstract public function isReadOnly(string $identifier): bool;
+
     protected function getStorageConfiguration(?string $key = null, mixed $default = null): mixed
     {
         $config = $this->globalConfiguration->get(static::CONFIGURATION_KEY)[static::STORAGE_CONFIGURATION_KEY] ?? [];

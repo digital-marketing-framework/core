@@ -12,6 +12,8 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 {
     use LoggerAwareTrait;
 
+    public const KEY_DOCUMENT_NAME = 'name';
+
     public function __construct(
         protected ConfigurationDocumentStorageInterface $storage,
         protected ConfigurationDocumentParserInterface $parser,
@@ -43,6 +45,44 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     {
         $document = $this->tidyDocument($document);
         $this->storage->setDocument($documentIdentifier, $document);
+    }
+
+    protected function buildDocumentNameFromIdentifier(string $documentIdentifier): string
+    {
+        return $documentIdentifier;
+    }
+
+    public function createDocument(string $documentIdentifier, string $document, string $documentName = ''): void
+    {
+        if ($documentName === '') {
+            $documentName = $this->buildDocumentNameFromIdentifier($documentIdentifier);
+        }
+        $documentConfiguration = $this->getDocumentConfigurationFromDocument($document);
+        $documentConfiguration[static::KEY_DOCUMENT_NAME] = $documentName;
+        $document = $this->parser->produceDocument($documentConfiguration);
+        $this->saveDocument($documentIdentifier, $document);
+    }
+
+    public function deleteDocument(string $documentIdentifier): void
+    {
+        $this->storage->deleteDocument($documentIdentifier);
+    }
+
+    public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string
+    {
+        return $this->storage->getDocumentIdentiferFromBaseName($baseName, $newFile);
+    }
+
+    public function getMetaDataFromIdentifier(string $documentIdentifier): array
+    {
+        $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier);
+        return [
+            'id' => $documentIdentifier,
+            'shortId' => $this->storage->getShortIdentifier($documentIdentifier),
+            'name' => $this->getName($documentConfiguration) ?: $documentIdentifier,
+            'readonly' => $this->storage->isReadOnly($documentIdentifier),
+            'includes' => $this->getIncludes($documentConfiguration),
+        ];
     }
 
     /**
@@ -96,6 +136,11 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
             return $configuration[static::KEY_INCLUDES];
         }
         return [];
+    }
+
+    protected function getName(array $configuration): string
+    {
+        return $configuration[static::KEY_DOCUMENT_NAME] ?? '';
     }
 
     /**

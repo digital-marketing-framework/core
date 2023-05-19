@@ -9,9 +9,9 @@ class JsonConfigurationDocumentParser extends ConfigurationDocumentParser
     public function parseDocument(string $document): array
     {
         $config = json_decode($document, true);
-        
+
         if (!is_array($config) || empty($config)) {
-            throw new DigitalMarketingFrameworkException('Configuration document seems to be empty or malformed');
+            return [];
         }
 
         return $config;

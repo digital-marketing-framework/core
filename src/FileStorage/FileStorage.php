@@ -31,6 +31,11 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         }
     }
 
+    public function deleteFile(string $fileIdentifier): void
+    {
+        unlink($this->getFilePath($fileIdentifier));
+    }
+
     protected function getFileInfo(string $fileIdentifier, int $flag): ?string
     {
         if ($this->fileExists($fileIdentifier)) {
@@ -55,7 +60,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
     {
         return $this->getFileInfo($fileIdentifier, PATHINFO_EXTENSION);
     }
-    
+
     public function fileExists(string $fileIdentifier): bool
     {
         return file_exists($this->getFilePath($fileIdentifier));
@@ -81,7 +86,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         $list = array_map(function(string $file) use ($path) {
             return $path . '/' . $file;
         }, $list);
-        
+
         return array_filter($list, function(string $file) {
             return is_file($file);
         });

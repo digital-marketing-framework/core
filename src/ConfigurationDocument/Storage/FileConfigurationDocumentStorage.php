@@ -12,6 +12,8 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
 
     protected array $storageConfiguration;
 
+    abstract protected function getFileExtension(): string;
+
     public function getDocument(string $documentIdentifier): string
     {
         if (!$this->fileStorage->fileExists($documentIdentifier)) {
@@ -24,6 +26,11 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     public function setDocument(string $documentIdentifier, string $document): void
     {
         $this->fileStorage->putFileContents($documentIdentifier, $document);
+    }
+
+    public function deleteDocument(string $documentIdentifier): void
+    {
+        $this->fileStorage->deleteFile($documentIdentifier);
     }
 
     public function isReadOnly(string $documentIdentifier): bool
@@ -51,6 +58,38 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
             }
         }
         return $result;
+    }
+
+    protected function buildFileBaseName(string $documentBaseName): string
+    {
+        $baseName = $documentBaseName;
+        $baseName = preg_replace_callback('/[A-Z]+/', function(array $matches) { return '-' . strtolower($matches[0]); }, $baseName);
+        $baseName = preg_replace('/[^a-zA-Z0-9]+/', '-', $baseName);
+        $baseName = preg_replace('/^[^a-zA-Z0-9]+/', '', $baseName);
+        $baseName = preg_replace('/[^a-zA-Z0-9]+$/', '', $baseName);
+        return $baseName;
+    }
+
+    public function getDocumentIdentiferFromBaseName(string $baseName, bool $newFile = true): string
+    {
+        $folder = $this->getStorageFolderIdentifier();
+        $baseName = $this->buildFileBaseName($baseName);
+        $extension = $this->getFileExtension();
+        $count = 0;
+        do {
+            $fileIdentifier = sprintf('%s/%s%s.config.%s', $folder, $baseName, ($count > 0 ? '-' . $count : ''), $extension);
+            $count++;
+        } while (!$newFile || $this->fileStorage->fileExists($fileIdentifier));
+        return $fileIdentifier;
+    }
+
+    public function getShortIdentifier(string $documentIdentifier): string
+    {
+        $baseName = $this->fileStorage->getFileBaseName($documentIdentifier);
+        $baseNameParts = explode('.', $baseName);
+        array_pop($baseNameParts);
+        $baseName = implode('.', $baseNameParts);
+        return $baseName;
     }
 
     protected function getStorageFolderIdentifier(): string

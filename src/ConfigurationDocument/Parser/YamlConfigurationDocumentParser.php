@@ -20,7 +20,7 @@ class YamlConfigurationDocumentParser extends ConfigurationDocumentParser
             $config = [];
         }
         if (!is_array($config) || empty($config)) {
-            throw new DigitalMarketingFrameworkException('Configuration document seems to be empty');
+            return [];
         }
         return $config;
     }
