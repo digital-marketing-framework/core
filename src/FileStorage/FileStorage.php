@@ -68,6 +68,11 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
 
     public function fileIsReadOnly(string $fileIdentifier): bool
     {
+        if (preg_match('/^[A-Z]{2,}:/', $fileIdentifier)) {
+            // identifiers like SYS:xxxxxxx are internal and those are always readonly
+            // we expect at least two letters though, so that we do not catch windows paths like C:\foobar
+            return true;
+        }
         return $this->fileExists($fileIdentifier) && !$this->fileIsWriteable($fileIdentifier);
     }
 
