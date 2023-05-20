@@ -28,7 +28,7 @@ class YamlConfigurationDocumentParser extends ConfigurationDocumentParser
     public function produceDocument(array $configuration): string
     {
         try {
-            return Yaml::dump($configuration);
+            return Yaml::dump($configuration, inline:25);
         } catch (ParseException $e) {
             throw new DigitalMarketingFrameworkException($e->getMessage(), $e->getCode(), $e);
         }
