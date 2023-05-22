@@ -56,6 +56,10 @@ final class ConfigurationUtility
     {
         $splitConfiguration = [];
         foreach ($mergedConfiguration as $key => $value) {
+            if (in_array($key, static::MERGE_EXCLUDE_FIELDS)) {
+                $splitConfiguration[$key] = $value;
+                continue;
+            }
             if (!array_key_exists($key, $parentConfiguration)) {
                 $splitConfiguration[$key] = $value;
             } elseif (is_array($value) && is_array($parentConfiguration[$key])) {
@@ -70,6 +74,9 @@ final class ConfigurationUtility
             }
         }
         foreach ($parentConfiguration as $key => $value) {
+            if (in_array($key, static::MERGE_EXCLUDE_FIELDS)) {
+                continue;
+            }
             if (!array_key_exists($key, $mergedConfiguration)) {
                 $splitConfiguration[$key] = null;
             }
