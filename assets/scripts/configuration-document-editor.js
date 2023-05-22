@@ -1,24 +1,37 @@
 (function() {
+  const EVENT_INIT = 'dmf-configuration-editor-init';
+  const EVENT_APP_REQUEST = 'dmf-configuration-editor-app-request';
+  const EVENT_APP_START = 'dmf-configuration-editor-app-start';
 
-  /**
-   *
-   * @param Element stage The DOM element to render the editor app in.
-   * @param object data  The configuration object to be edited.
-   * @param object settings The editor settings.
-   * @param object schema The configuration schema.
-   * @param function onSave Callback function to save the data back into the textarea.
-   * @param function onIncludeChange Callback function to update the configuration includes.
-   */
-  function view(stage, data, settings, onSave, onIncludeChange) {
-    // TODO trigger the vue app here
-    //      for testing purposes, the data object can be manipulated in the browser console
-    //      change window.dce.data to change the configuration data
-    //      a save can be triggered via window.dce.save()
-    //      updating the document includes can be triggered via window.dce.updateIncludes()
+  let appEvent = null;
+  document.addEventListener(EVENT_APP_REQUEST, () => {
+    if (appEvent !== null) {
+      document.dispatchEvent(appEvent);
+    }
+  });
+
+  function view(stage, data, schema, settings, onSave, onIncludeChange) {
+    appEvent = new CustomEvent(EVENT_APP_START, {
+      detail: {
+        stage: stage,
+        data: data,
+        schema: schema,
+        settings: settings,
+        onSave: onSave,
+        onIncludeChange: onIncludeChange,
+      }
+    });
+    document.dispatchEvent(appEvent);
+
+    // for testing purposes only, to be used in the browser console
+    // update data object by manipulating window.dce.data
+    // save data object to textarea by executing window.dce.save()
+    // update document includes by executing window.dce.updateIncludes()
     console.log('Hello DCE');
     window.dce = {
       stage: stage,
       data: data,
+      schema: schema,
       settings: settings,
       onSave: onSave,
       onIncludeChange: onIncludeChange,
@@ -96,6 +109,7 @@
       view(
         stage,
         data,
+        schema,
         settings,
         async (newData) => {
           await save(textarea, settings, newData);
@@ -162,7 +176,7 @@
     if (textarea !== null && textarea.dataset.app === 'true') {
       setup(textarea);
     } else {
-      document.addEventListener('dmf-start-app', () => {
+      document.addEventListener(EVENT_INIT, () => {
         textarea = document.querySelector('textarea.dmf-configuration-document');
         setup(textarea);
       });
