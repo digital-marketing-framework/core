@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class ConfigurationUtilityTest extends TestCase
 {
     /** @test */
-    public function empty(): void
+    public function mergeEmpty(): void
     {
         $result = ConfigurationUtility::mergeConfiguration([], []);
         $this->assertEquals([], $result);
@@ -239,5 +239,67 @@ class ConfigurationUtilityTest extends TestCase
     {
         $result = ConfigurationUtility::resolveNullInMergedConfiguration($config);
         $this->assertEquals($expected, $result);
+    }
+
+    public function splitConfigurationProvider(): array
+    {
+        return [
+            'allEmpty' => [[], [], []],
+            'parentEmpty' => [
+                [],
+                ['a' => 'A'],
+                ['a' => 'A'],
+            ],
+            'mergedEmpty' => [
+                ['a' => 'A'],
+                [],
+                ['a' => null],
+            ],
+            'scalarValues' => [
+                ['a' => 'A', 'b' => 'B', 'c' => 'C'],
+                ['b' => 'B2', 'c' => 'C', 'd' => 'D'],
+                ['a' => null, 'b' => 'B2', 'd' => 'D'],
+            ],
+            'subValues' => [
+                [
+                    'a' => ['a.a' => 'A.A', 'a.b' => 'A.B'],
+                    'b' => ['b.a' => 'B.A'],
+                    'd' => ['d.a' => 'D.A'],
+                ],
+                [
+                    'a' => ['a.a' => 'A.A2', 'a.b' => 'A.B'],
+                    'b' => ['b.a' => 'B.A'],
+                    'c' => ['c.a' => 'C.A'],
+                ],
+                [
+                    'a' => ['a.a' => 'A.A2'],
+                    'c' => ['c.a' => 'C.A'],
+                    'd' => null,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider splitConfigurationProvider
+     * @test
+     */
+    public function splitConfiguration(array $parentConfiguration, array $mergedConfiguration, array $expectedSplitConfiguration): void
+    {
+        $splitConfiguration = ConfigurationUtility::splitConfiguration($parentConfiguration, $mergedConfiguration);
+        $this->assertEquals($expectedSplitConfiguration, $splitConfiguration);
+    }
+
+    /** @test */
+    public function splitConfigurationWithInconsistentStructures(): void
+    {
+        $parentConfiguration = [
+            'a' => ['a.a' => 'A.A'],
+        ];
+        $mergedConfiguration = [
+            'a' => 'A',
+        ];
+        $this->expectExceptionMessage('config:split found inconsistent structure for key "a"');
+        ConfigurationUtility::splitConfiguration($parentConfiguration, $mergedConfiguration);
     }
 }
