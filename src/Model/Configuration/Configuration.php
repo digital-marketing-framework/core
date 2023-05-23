@@ -46,7 +46,7 @@ class Configuration implements ConfigurationInterface
         if (empty($asArray)) {
             return [];
         }
-        return reset($asArray);
+        return $asArray[count($asArray) - 1];
     }
 
     public function toArray(): array

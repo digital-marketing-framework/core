@@ -72,7 +72,7 @@
     if (document) {
       result = await ajaxFetch(settings.urls.merge, {'document': document});
     } else {
-      result = await ajaxFetch(settings.url.defaults);
+      result = await ajaxFetch(settings.urls.defaults);
     }
     return result;
   }
