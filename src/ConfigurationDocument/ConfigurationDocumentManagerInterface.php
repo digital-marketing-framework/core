@@ -55,4 +55,23 @@ interface ConfigurationDocumentManagerInterface
      * @return array<array<mixed>>
      */
     public function getConfigurationStackFromIdentifier(string $documentIdentifier): array;
+
+    /**
+     * @param array<mixed> $mergedConfiguration
+     * @return array<mixed>
+     */
+    public function splitConfiguration(array $mergedConfiguration): array;
+
+    /**
+     * @param array<mixed> $configuration
+     * @return array<mixed>
+     */
+    public function mergeConfiguration(array $configuration, bool $inheritedConfigurationOnly = false): array;
+
+    /**
+     * @param array<mixed> $referenceMergedConfiguration
+     * @param array<mixed> $mergedConfiguration
+     * @return array<mixed>
+     */
+    public function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array;
 }

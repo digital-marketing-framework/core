@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDoc
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, LoggerAwareInterface
 {
@@ -196,5 +197,39 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     {
         $document = $this->storage->getDocument($documentIdentifier);
         return $this->getConfigurationStackFromDocument($document);
+    }
+
+    public function splitConfiguration(array $mergedConfiguration): array
+    {
+        $configurationStack = $this->getConfigurationStackFromConfiguration($mergedConfiguration);
+        array_pop($configurationStack);
+        $parentConfiguration = ConfigurationUtility::mergeConfigurationStack($configurationStack);
+        return ConfigurationUtility::splitConfiguration($parentConfiguration, $mergedConfiguration);
+    }
+
+    public function mergeConfiguration(array $configuration, bool $inheritedConfigurationOnly = false): array
+    {
+        $configurationStack = $this->getConfigurationStackFromConfiguration($configuration);
+        if ($inheritedConfigurationOnly) {
+            array_pop($configurationStack);
+        }
+        return ConfigurationUtility::mergeConfigurationStack($configurationStack);
+    }
+
+    public function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array
+    {
+        $oldIncludes = $referenceMergedConfiguration['includes'] ?? [];
+        $newIncludes = $mergedConfiguration['includes'] ?? [];
+
+        $mergedConfiguration = $mergedConfiguration;
+        $mergedConfiguration['includes'] = $oldIncludes;
+        $splitConfiguration = $this->splitConfiguration($mergedConfiguration);
+
+        $splitConfiguration['includes'] = $newIncludes;
+        $configurationStack = $this->getConfigurationStackFromConfiguration($splitConfiguration);
+        if ($inheritedConfigurationOnly) {
+            array_pop($configurationStack);
+        }
+        return ConfigurationUtility::mergeConfigurationStack($configurationStack);
     }
 }

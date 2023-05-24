@@ -10,15 +10,16 @@
     }
   });
 
-  function view(stage, data, schemaDocument, settings, onSave, onIncludeChange) {
+  function view(stage, data, inheritedData, schemaDocument, settings, onSave, onIncludeChange) {
     appEvent = new CustomEvent(EVENT_APP_START, {
       detail: {
         stage: stage,
         data: data,
+        inheritedData: inheritedData,
         schemaDocument: schemaDocument,
         settings: settings,
         onSave: onSave,
-        onIncludeChange: onIncludeChange,
+        onIncludeChange: onIncludeChange
       }
     });
     document.dispatchEvent(appEvent);
@@ -31,6 +32,7 @@
     window.dce = {
       stage: stage,
       data: data,
+      inheritedData: inheritedData,
       schemaDocument: schemaDocument,
       settings: settings,
       onSave: onSave,
@@ -41,8 +43,9 @@
       },
       updateIncludes: function() {
         this.onIncludeChange(this.data)
-          .then(data => {
-            this.data = data;
+          .then(response => {
+            this.data = response.data;
+            this.inheritedData = response.inheritedData;
             console.log('includes updated');
           });
       }
@@ -90,9 +93,15 @@
     return JSON.parse(JSON.stringify(data));
   }
 
+  function getDocumentForm(textarea) {
+    return textarea.closest('form');
+  }
+
   async function save(textarea, settings, data) {
     await setData(textarea, settings, data);
-    document.dispatchEvent(new Event('dmf-saved'));
+    if (settings.mode === 'embedded') {
+      getDocumentForm(textarea)?.submit();
+    }
   }
 
   async function updateIncludes(settings, referenceData, newData) {
@@ -100,24 +109,33 @@
   }
 
   function start(textarea, stage, settings) {
-    let data, referenceData, schema;
+    let data, inheritedData, schema;
+    let referenceData;
     Promise.all([
-      getSchema(settings).then(_schema => { schema = _schema; }),
-      getData(textarea, settings).then(_data => { data = _data; })
+      getSchema(settings).then(response => {
+        schema = response;
+      }),
+      getData(textarea, settings).then(response => {
+        data = response.configuration;
+        inheritedData = response.inheritedConfiguration;
+      })
     ]).then(() => {
       referenceData = cloneData(data);
       view(
         stage,
         data,
+        inheritedData,
         schema,
         settings,
         async (newData) => {
           await save(textarea, settings, newData);
         },
         async (newData) => {
-          const updatedData = await updateIncludes(settings, referenceData, newData);
-          referenceData = cloneData(updatedData);
-          return updatedData;
+          const response = await updateIncludes(settings, referenceData, newData);
+          data = response.configuration;
+          inheritedData = response.inheritedConfiguration;
+          referenceData = cloneData(data);
+          return {data: data, inheritedData: inheritedData};
         }
       );
     });
