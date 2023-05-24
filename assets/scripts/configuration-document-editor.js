@@ -31,7 +31,7 @@
     window.dce = {
       stage: stage,
       data: data,
-      schema: schema,
+      schemaDocument: schemaDocument,
       settings: settings,
       onSave: onSave,
       onIncludeChange: onIncludeChange,
