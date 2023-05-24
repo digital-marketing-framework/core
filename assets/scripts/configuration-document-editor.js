@@ -10,12 +10,12 @@
     }
   });
 
-  function view(stage, data, schema, settings, onSave, onIncludeChange) {
+  function view(stage, data, schemaDocument, settings, onSave, onIncludeChange) {
     appEvent = new CustomEvent(EVENT_APP_START, {
       detail: {
         stage: stage,
         data: data,
-        schema: schema,
+        schemaDocument: schemaDocument,
         settings: settings,
         onSave: onSave,
         onIncludeChange: onIncludeChange,
