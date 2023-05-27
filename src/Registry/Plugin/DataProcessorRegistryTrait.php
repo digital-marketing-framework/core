@@ -56,7 +56,17 @@ trait DataProcessorRegistryTrait
 
     public function getValueSourceSchema(): SchemaInterface
     {
-        return new ValueSourceSchema($this);
+        $schema = new ValueSourceSchema();
+        foreach ($this->pluginClasses[ValueSourceInterface::class] as $key => $class) {
+            $schema->addItem($key, $class::getSchema());
+            if ($class::modifiable()) {
+                $schema->addModifiableKeyword($key);
+            }
+            if ($class::canBeMultiValue()) {
+                $schema->addCanBeMultiValueKeyword($key);
+            }
+        }
+        return $schema;
     }
 
     public function registerValueModifier(string $class, array $additionalArguments = [], string $keyword = ''): void
@@ -76,7 +86,11 @@ trait DataProcessorRegistryTrait
 
     public function getValueModifierSchema(): SchemaInterface
     {
-        return new ValueModifierSchema($this);
+        $schema = new ValueModifierSchema();
+        foreach ($this->pluginClasses[ValueSourceInterface::class] as $key => $class) {
+            $schema->addItem($key, $class::getSchema());
+        }
+        return $schema;
     }
 
     /**
@@ -91,7 +105,7 @@ trait DataProcessorRegistryTrait
         }
         return $schemata;
     }
-    
+
     public function registerEvaluation(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
         $this->registerPlugin(EvaluationInterface::class, $class, $additionalArguments, $keyword);
@@ -109,12 +123,16 @@ trait DataProcessorRegistryTrait
 
     public function getEvaluationSchema(): SchemaInterface
     {
-        return new EvaluationSchema($this);
+        $schema = new EvaluationSchema();
+        foreach ($this->pluginClasses[EvaluationInterface::class] as $key => $class) {
+            $schema->addItem($key, $class::getSchema());
+        }
+        return $schema;
     }
 
     public function registerComparison(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
-        $this->registerPlugin(ComparisonInterface::class, $additionalArguments, $keyword);
+        $this->registerPlugin(ComparisonInterface::class, $class, $additionalArguments, $keyword);
     }
 
     public function deleteComparison(string $keyword): void
@@ -129,7 +147,15 @@ trait DataProcessorRegistryTrait
 
     public function getComparisonSchema(): SchemaInterface
     {
-        return new ComparisonSchema($this);
+        $schema = new ComparisonSchema();
+        foreach ($this->pluginClasses[ComparisonInterface::class] as $key => $class) {
+            $schema->addItem(
+                $key,
+                is_a($class, BinaryComparison::class, true),
+                $class::handleMultiValuesIndividually()
+            );
+        }
+        return $schema;
     }
 
     public function registerDataMapper(string $class, array $additionalArguments = [], string $keyword = ''): void
@@ -149,6 +175,10 @@ trait DataProcessorRegistryTrait
 
     public function getDataMapperSchema(): SchemaInterface
     {
-        return new DataMapperSchema($this);
+        $schema = new DataMapperSchema();
+        foreach ($this->pluginClasses[DataMapperInterface::class] as $key => $class) {
+            $schema->addItem($key, $class::getSchema());
+        }
+        return $schema;
     }
 }

@@ -29,6 +29,6 @@ interface RegistryInterface extends
      */
     public function createObject(string $class, array $arguments = []): object;
 
-    public function addDefaultConfiguration(array &$configuration): void;
     public function addConfigurationSchema(SchemaDocument $schemaDocument): void;
+    public function getConfigurationSchema(): SchemaDocument;
 }

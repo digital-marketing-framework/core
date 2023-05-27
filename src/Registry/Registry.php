@@ -5,6 +5,12 @@ namespace DigitalMarketingFramework\Core\Registry;
 use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
@@ -34,6 +40,8 @@ class Registry implements RegistryInterface
 
     use DataProcessorRegistryTrait;
     use IdentifierCollectorRegistryTrait;
+
+    protected SchemaDocument $schemaDocument;
 
     protected function processObjectAwareness(object $object): void
     {
@@ -88,27 +96,14 @@ class Registry implements RegistryInterface
         }
     }
 
-    public function getIdentifierDefaultConfiguration(): array
-    {
-        $defaultIdentifierConfiguration = [];
-        $defaultIdentifierConfiguration[ConfigurationInterface::KEY_IDENTIFIER_COLLECTORS] = $this->getIdentifierCollectorDefaultConfigurations();
-        return $defaultIdentifierConfiguration;
-    }
-
-    public function addDefaultConfiguration(array &$configuration): void
-    {
-        $configuration[ConfigurationInterface::KEY_VALUE_MAPS] = [];
-        $configuration[ConfigurationInterface::KEY_IDENTIFIER] = $this->getIdentifierDefaultConfiguration();
-    }
-
     public function addConfigurationSchema(SchemaDocument $schemaDocument): void
     {
-        $schemaDocument->addCustomType($this->getValueSourceSchema());
-        $schemaDocument->addCustomType($this->getValueModifierSchema());
-        $schemaDocument->addCustomType(new ValueSchema($this));
-        $schemaDocument->addCustomType($this->getEvaluationSchema());
-        $schemaDocument->addCustomType($this->getComparisonSchema());
-        $schemaDocument->addCustomType($this->getDataMapperSchema());
+        $schemaDocument->addCustomType($this->getValueSourceSchema(), ValueSourceSchema::TYPE);
+        $schemaDocument->addCustomType($this->getValueModifierSchema(), ValueModifierSchema::TYPE);
+        $schemaDocument->addCustomType(new ValueSchema(), ValueSchema::TYPE);
+        $schemaDocument->addCustomType($this->getEvaluationSchema(), EvaluationSchema::TYPE);
+        $schemaDocument->addCustomType($this->getComparisonSchema(), ComparisonSchema::TYPE);
+        $schemaDocument->addCustomType($this->getDataMapperSchema(), DataMapperSchema::TYPE);
 
         // TODO do we need these variations of the custom type "value"?
         // foreach ($this->getCustomValueSchemata() as $schema) {
@@ -116,7 +111,16 @@ class Registry implements RegistryInterface
         // }
 
         $mainSchema = $schemaDocument->getMainSchema();
-        $mainSchema->addProperty('valueMaps', new MapSchema(new MapSchema(new StringSchema())));
-        $mainSchema->addProperty('identifiers', $this->getIdentifierCollectorSchema());
+        $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, new MapSchema(new MapSchema(new StringSchema())));
+        $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $this->getIdentifierCollectorSchema());
+    }
+
+    public function getConfigurationSchema(): SchemaDocument
+    {
+        if (!isset($this->schemaDocument)) {
+            $this->schemaDocument = new SchemaDocument();
+            $this->addConfigurationSchema($this->schemaDocument);
+        }
+        return $this->schemaDocument;
     }
 }

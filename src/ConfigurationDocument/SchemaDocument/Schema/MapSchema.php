@@ -9,11 +9,12 @@ class MapSchema extends ListSchema
     public function __construct(
         SchemaInterface $valueSchema = new ContainerSchema(),
         protected StringSchema $nameSchema = new StringSchema(),
+        mixed $defaultValue = null,
     ) {
-        parent::__construct($valueSchema);
+        parent::__construct($valueSchema, $defaultValue);
     }
 
-    protected function getType(): string
+    public function getType(): string
     {
         return "MAP";
     }
@@ -33,7 +34,7 @@ class MapSchema extends ListSchema
         return $this->mergeValueSets(parent::getValueSets(), $this->nameSchema->getValueSets());
     }
 
-    protected function getConfig(): ?array
+    protected function getConfig(): array
     {
         if (SchemaDocument::FLATTEN_SCHEMA) {
             return [
@@ -44,5 +45,10 @@ class MapSchema extends ListSchema
                 'key' => $this->nameSchema->toArray(),
             ] + parent::getConfig();
         }
+    }
+
+    public function getDefaultValue(SchemaDocument $schemaDocument): mixed
+    {
+        return parent::getDefaultValue($schemaDocument) ?? [];
     }
 }

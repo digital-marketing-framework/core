@@ -7,16 +7,13 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
-use DigitalMarketingFramework\Core\Helper\ConfigurationTrait;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
-use DigitalMarketingFramework\Core\Plugin\Plugin;
+use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
 
-abstract class IdentifierCollector extends Plugin implements IdentifierCollectorInterface
+abstract class IdentifierCollector extends ConfigurablePlugin implements IdentifierCollectorInterface
 {
-    use ConfigurationTrait;
-
     protected const KEY_ENABLED = 'enabled';
     protected const DEFAULT_ENABLED = false;
 
@@ -51,13 +48,6 @@ abstract class IdentifierCollector extends Plugin implements IdentifierCollector
             return $this->collect($context);
         }
         return null;
-    }
-
-    public static function getDefaultConfiguration(): array
-    {
-        return [
-            static::KEY_ENABLED => static::DEFAULT_ENABLED,
-        ];
     }
 
     public static function getSchema(): SchemaInterface

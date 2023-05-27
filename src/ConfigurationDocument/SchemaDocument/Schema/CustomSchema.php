@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+
 class CustomSchema extends Schema
 {
     public function __construct(
@@ -10,7 +12,7 @@ class CustomSchema extends Schema
         parent::__construct();
     }
 
-    protected function getType(): string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -20,8 +22,12 @@ class CustomSchema extends Schema
         $this->type = $type;
     }
 
-    protected function getConfig(): ?array
+    public function getDefaultValue(SchemaDocument $schemaDocument): mixed
     {
-        return null;
+        $defaultValue = parent::getDefaultValue($schemaDocument);
+        if ($defaultValue !== null) {
+            return $defaultValue;
+        }
+        return $schemaDocument->getCustomType($this->getType())->getDefaultValue($schemaDocument);
     }
 }

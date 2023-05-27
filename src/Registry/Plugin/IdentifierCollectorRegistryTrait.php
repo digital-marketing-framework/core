@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\IdentifierCollector\IdentifierCollectorSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\IdentifierCollector\IdentifierCollectorInterface;
@@ -15,7 +16,7 @@ trait IdentifierCollectorRegistryTrait
     {
         $this->registerPlugin(IdentifierCollectorInterface::class, $class, $additionalArguments, $keyword);
     }
-    
+
     /**
      * @return array<IdentifierCollectorInterface>
      */
@@ -34,17 +35,16 @@ trait IdentifierCollectorRegistryTrait
         $this->deletePlugin($keyword, IdentifierCollectorInterface::class);
     }
 
-    public function getIdentifierCollectorDefaultConfigurations(): array
-    {
-        $result = [];
-        foreach ($this->pluginClasses[IdentifierCollectorInterface::class] ?? [] as $key => $class) {
-            $result[$key] = $class::getDefaultConfiguration();
-        }
-        return $result;
-    }
-
     public function getIdentifierCollectorSchema(): SchemaInterface
     {
-        return new IdentifierCollectorSchema($this);
+        $schema = new ContainerSchema();
+
+        $collectorSchema = new IdentifierCollectorSchema();
+        foreach ($this->pluginClasses[IdentifierCollectorInterface::class] ?? [] as $key => $class) {
+            $collectorSchema->addItem($key, $class::getSchema());
+        }
+
+        $schema->addProperty(ConfigurationInterface::KEY_IDENTIFIER_COLLECTORS, $collectorSchema);
+        return $schema;
     }
 }

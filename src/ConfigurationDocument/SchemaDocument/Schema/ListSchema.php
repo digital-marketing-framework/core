@@ -8,11 +8,12 @@ class ListSchema extends Schema
 {
     public function __construct(
         protected SchemaInterface $valueSchema = new ContainerSchema(),
+        mixed $defaultValue = null,
     ) {
-        parent::__construct();
+        parent::__construct($defaultValue);
     }
 
-    protected function getType(): string
+    public function getType(): string
     {
         return "LIST";
     }
@@ -32,16 +33,17 @@ class ListSchema extends Schema
         return $this->mergeValueSets(parent::getValueSets(), $this->valueSchema->getValueSets());
     }
 
-    protected function getConfig(): ?array
+    protected function getConfig(): array
     {
         if (SchemaDocument::FLATTEN_SCHEMA) {
-            return [
-                'valueTemplate' => $this->valueSchema->toArray(),
-            ];
+            return parent::getConfig() + ['valueTemplate' => $this->valueSchema->toArray()];
         } else {
-            return [
-                'value' => $this->valueSchema->toArray(),
-            ];
+            return parent::getConfig() + ['value' => $this->valueSchema->toArray()];
         }
+    }
+
+    public function getDefaultValue(SchemaDocument $schemaDocument): mixed
+    {
+        return parent::getDefaultValue($schemaDocument) ?? [];
     }
 }

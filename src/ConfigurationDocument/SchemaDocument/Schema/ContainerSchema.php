@@ -12,7 +12,7 @@ class ContainerSchema extends Schema
      */
     protected array $properties = [];
 
-    protected function getType(): string
+    public function getType(): string
     {
         return "CONTAINER";
     }
@@ -61,8 +61,9 @@ class ContainerSchema extends Schema
         return $valueSets;
     }
 
-    protected function getConfig(): ?array
+    protected function getConfig(): array
     {
+        $config = parent::getConfig();
         $properties = [];
         foreach ($this->properties as $property) {
             if (SchemaDocument::FLATTEN_SCHEMA) {
@@ -77,8 +78,21 @@ class ContainerSchema extends Schema
                 ];
             }
         }
-        return [
+        return parent::getConfig() + [
             'values' => $properties,
         ];
+    }
+
+    public function getDefaultValue(SchemaDocument $schemaDocument): mixed
+    {
+        $defaultValue = parent::getDefaultValue($schemaDocument);
+        if ($defaultValue !== null) {
+            return $defaultValue;
+        }
+        $result = [];
+        foreach ($this->getProperties() as $property) {
+            $result[$property->getName()] = $property->getSchema()->getDefaultValue($schemaDocument);
+        }
+        return $result;
     }
 }

@@ -13,8 +13,9 @@ abstract class Schema implements SchemaInterface
     /** @var array<string,array<string>> $valueSets */
     protected array $valueSets = [];
 
-    public function __construct()
-    {
+    public function __construct(
+        protected mixed $defaultValue = null,
+    ) {
         $this->renderingDefinition = new RenderingDefinition();
     }
 
@@ -46,19 +47,20 @@ abstract class Schema implements SchemaInterface
         return $this->valueSets;
     }
 
-    abstract protected function getType(): string;
-    abstract protected function getConfig(): ?array;
+    abstract public function getType(): string;
 
-    public function getCustomType(): ?string
+    protected function getConfig(): array
     {
-        return null;
+        return [
+            'default' => $this->defaultValue,
+        ];
     }
-    
+
     public function toArray(): array
     {
         if (SchemaDocument::FLATTEN_SCHEMA) {
-            return ['type' => $this->getType()] 
-                + ($this->getConfig() ?? []) 
+            return ['type' => $this->getType()]
+                + ($this->getConfig() ?? [])
                 + ($this->renderingDefinition->toArray() ?? []);
         } else {
             return [
@@ -67,5 +69,15 @@ abstract class Schema implements SchemaInterface
                 'render' => $this->renderingDefinition->toArray(),
             ];
         }
+    }
+
+    public function getDefaultValue(SchemaDocument $schemaDocument): mixed
+    {
+        return $this->defaultValue;
+    }
+
+    public function setDefaultValue(mixed $value): void
+    {
+        $this->defaultValue = $value;
     }
 }

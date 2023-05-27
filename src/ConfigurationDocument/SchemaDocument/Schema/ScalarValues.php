@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+
 class ScalarValues
 {
     /**
@@ -39,5 +41,15 @@ class ScalarValues
             'list' => !empty($this->list) ? $this->list : null,
             'sets' => !empty($this->sets) ? $this->sets : null,
         ];
+    }
+
+    public function getValues(SchemaDocument $schemaDocument): array
+    {
+        $values = $this->list;
+        foreach ($this->sets as $setName) {
+            $set = $schemaDocument->getValueSet($setName) ?? [];
+            array_push($values, ...$set);
+        }
+        return $values;
     }
 }

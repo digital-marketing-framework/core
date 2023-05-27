@@ -2,6 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Plugin\ConfigurablePluginInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -14,6 +17,7 @@ trait PluginRegistryTrait
     abstract protected function createObject(string $class, array $arguments = []): object;
     abstract protected function classValidation(string $class, string $interface): void;
     abstract protected function interfaceValidation(string $interface, string $parentInterface): void;
+    abstract protected function getConfigurationSchema(): SchemaDocument;
 
     public function getPlugin(string $keyword, string $interface, array $arguments = []): ?PluginInterface
     {
@@ -32,7 +36,17 @@ trait PluginRegistryTrait
             $constructorArguments = [$keyword, $this];
             array_push($constructorArguments, ...$arguments);
             array_push($constructorArguments, ...$additionalArguments);
-            return $this->createObject($class, $constructorArguments);
+            $plugin = $this->createObject($class, $constructorArguments);
+
+            if ($plugin instanceof ConfigurablePluginInterface) {
+                $schema = $plugin::getSchema();
+                $defaults = $this->getConfigurationSchema()->getDefaultValue($schema);
+                if (!is_array($defaults)) {
+                    throw new DigitalMarketingFrameworkException('default configuration has to be an array');
+                }
+                $plugin->setDefaultConfiguration($defaults);
+            }
+            return $plugin;
         }
 
         return null;

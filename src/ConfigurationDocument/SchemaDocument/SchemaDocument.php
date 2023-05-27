@@ -2,8 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\IntegerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 class SchemaDocument
 {
@@ -30,11 +36,8 @@ class SchemaDocument
         return $this->mainSchema;
     }
 
-    public function addCustomType(SchemaInterface $schema, ?string $type = null): void
+    public function addCustomType(SchemaInterface $schema, string $type): void
     {
-        if ($type === null) {
-            $type = $schema->getCustomType();
-        }
         $this->customTypes[$type] = $schema;
     }
 
@@ -58,7 +61,7 @@ class SchemaDocument
 
     public function getValueSet(string $name): ?array
     {
-        return $this->valueSets[$name] ?? null;
+        return $this->getAllValueSets()[$name] ?? null;
     }
 
     public function setValueSet(string $name, array $valueSet): void
@@ -125,5 +128,13 @@ class SchemaDocument
         }
         $this->filterSchemaDocument($schemaDocument);
         return $schemaDocument;
+    }
+
+    public function getDefaultValue(?SchemaInterface $schema = null): mixed
+    {
+        if ($schema === null) {
+            $schema = $this->mainSchema;
+        }
+        return $schema->getDefaultValue($this);
     }
 }

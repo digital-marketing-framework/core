@@ -2,10 +2,17 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+
 class IntegerSchema extends ScalarValueSchema
 {
-    protected function getType(): string
+    public function getType(): string
     {
         return "INTEGER";
+    }
+
+    public function getDefaultValue(?SchemaDocument $schemaDocument = null): mixed
+    {
+        return parent::getDefaultValue($schemaDocument) ?? 0;
     }
 }
