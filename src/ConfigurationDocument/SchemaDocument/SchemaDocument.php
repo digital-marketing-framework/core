@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\L
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ValueSet;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 class SchemaDocument
@@ -17,7 +18,7 @@ class SchemaDocument
 
     /**
      * @param array<string,SchemaInterface> $customTypes
-     * @param array<string,array<string|int|bool>>
+     * @param array<string,ValueSet> $valueSets
      */
     public function __construct(
         protected ContainerSchema $mainSchema = new ContainerSchema(),
@@ -59,7 +60,7 @@ class SchemaDocument
         return $this->valueSets;
     }
 
-    public function getValueSet(string $name): ?array
+    public function getValueSet(string $name): ?ValueSet
     {
         return $this->getAllValueSets()[$name] ?? null;
     }
@@ -76,13 +77,12 @@ class SchemaDocument
         }
     }
 
-    public function addValueToValueSet(string $name, string|int|bool $value): void
+    public function addValueToValueSet(string $name, string|int|bool $value, ?string $label = null): void
     {
-        $valueSet = $this->getValueSet($name) ?? [];
-        if (!in_array($value, $valueSet, true)) {
-            $valueSet[] = $value;
+        if (!isset($this->valueSets[$name])) {
+            $this->valueSets[$name] = new ValueSet();
         }
-        $this->setValueSet($name, $valueSet);
+        $this->valueSets[$name]->addValue($value, $label);
     }
 
     protected function filterSchemaDocument(array &$schemaDocument): void
@@ -102,27 +102,32 @@ class SchemaDocument
         foreach ($this->mainSchema->getValueSets() as $name => $set) {
             if (!isset($valueSets[$name])) {
                 $valueSets[$name] = $set;
+            } else {
+                $valuesSets[$name] = $valueSets[$name]->merge($set);
             }
         }
-
         foreach ($this->customTypes as $customTypeSchema) {
             foreach ($customTypeSchema->getValueSets() as $name => $set) {
                 if (!isset($valueSets[$name])) {
                     $valueSets[$name] = $set;
+                } else {
+                    $valueSets[$name] = $valueSets[$name]->merge($set);
                 }
             }
         }
-
         return $valueSets;
     }
 
     public function toArray(): array
     {
         $schemaDocument = [
-            'valueSets' => $this->getAllValueSets(),
+            'valueSets' => [],
             'types' => [],
             'schema' => $this->mainSchema->toArray(),
         ];
+        foreach ($this->getAllValueSets() as $name => $set) {
+            $schemaDocument['valueSets'][$name] = $set->toArray();
+        }
         foreach ($this->customTypes as $type => $customTypeSchema) {
             $schemaDocument['types'][$type] = $customTypeSchema->toArray();
         }

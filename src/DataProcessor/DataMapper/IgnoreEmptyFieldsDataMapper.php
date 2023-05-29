@@ -7,6 +7,8 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class IgnoreEmptyFieldsDataMapper extends DataMapper
 {
+    public const WEIGHT = 30;
+
     protected function map(DataInterface $target)
     {
         $toDeleteList = [];

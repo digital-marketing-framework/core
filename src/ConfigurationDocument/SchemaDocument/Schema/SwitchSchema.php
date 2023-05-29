@@ -48,7 +48,7 @@ abstract class SwitchSchema extends ContainerSchema
 
     public function addItem(string $type, SchemaInterface $schema): void
     {
-        $this->valueSets[$this->getSwitchName() . '/all'][] = $type;
+        $this->addValueToValueSet($this->getSwitchName() . '/all', $type);
         $property = $this->configSchema->addProperty($type, $schema);
         $property->getRenderingDefinition()->setVisibilityConditionByString('../type', $type);
     }

@@ -57,7 +57,7 @@ trait DataProcessorRegistryTrait
     public function getValueSourceSchema(): SchemaInterface
     {
         $schema = new ValueSourceSchema();
-        foreach ($this->pluginClasses[ValueSourceInterface::class] as $key => $class) {
+        foreach ($this->getAllPluginClasses(ValueSourceInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
             if ($class::modifiable()) {
                 $schema->addModifiableKeyword($key);
@@ -87,7 +87,7 @@ trait DataProcessorRegistryTrait
     public function getValueModifierSchema(): SchemaInterface
     {
         $schema = new ValueModifierSchema();
-        foreach ($this->pluginClasses[ValueSourceInterface::class] as $key => $class) {
+        foreach ($this->getAllPluginClasses(ValueSourceInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
         return $schema;
@@ -124,7 +124,7 @@ trait DataProcessorRegistryTrait
     public function getEvaluationSchema(): SchemaInterface
     {
         $schema = new EvaluationSchema();
-        foreach ($this->pluginClasses[EvaluationInterface::class] as $key => $class) {
+        foreach ($this->getAllPluginClasses(EvaluationInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
         return $schema;
@@ -148,7 +148,7 @@ trait DataProcessorRegistryTrait
     public function getComparisonSchema(): SchemaInterface
     {
         $schema = new ComparisonSchema();
-        foreach ($this->pluginClasses[ComparisonInterface::class] as $key => $class) {
+        foreach ($this->getAllPluginClasses(ComparisonInterface::class) as $key => $class) {
             $schema->addItem(
                 $key,
                 is_a($class, BinaryComparison::class, true),
@@ -176,7 +176,7 @@ trait DataProcessorRegistryTrait
     public function getDataMapperSchema(): SchemaInterface
     {
         $schema = new DataMapperSchema();
-        foreach ($this->pluginClasses[DataMapperInterface::class] as $key => $class) {
+        foreach ($this->getAllPluginClasses(DataMapperInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
         return $schema;

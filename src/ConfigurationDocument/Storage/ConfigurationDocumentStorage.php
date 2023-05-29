@@ -23,7 +23,7 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
         return $documentIdentifier;
     }
 
-    abstract public function getDocument(string $documentIdentifier): string;
+    abstract public function getDocument(string $documentIdentifier, bool $metaDataOnly = false): string;
     abstract public function setDocument(string $documentIdentifier, string $document): void;
     abstract public function deleteDocument(string $documentIdentifier): void;
     abstract public function isReadOnly(string $identifier): bool;

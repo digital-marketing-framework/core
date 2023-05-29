@@ -8,6 +8,12 @@ class ValueSourceSchema extends SwitchSchema
 {
     public const TYPE = 'VALUE_SOURCE';
 
+    public function __construct(mixed $defaultValue = null)
+    {
+        parent::__construct($defaultValue);
+        $this->getRenderingDefinition()->setNavigationItem(false);
+    }
+
     protected function getSwitchName(): string
     {
         return 'valueSource';
@@ -15,11 +21,11 @@ class ValueSourceSchema extends SwitchSchema
 
     public function addModifiableKeyword(string $keyword): void
     {
-        $this->valueSets[$this->getSwitchName() . '/modifiable'][] = $keyword;
+        $this->addValueToValueSet($this->getSwitchName() . '/modifiable', $keyword);
     }
 
     public function addCanBeMultiValueKeyword(string $keyword): void
     {
-        $this->valueSets[$this->getSwitchName() . '/canBeMultiValue'][] = $keyword;
+        $this->addValueToValueSet($this->getSwitchName() . '/canBeMultiValue', $keyword);
     }
 }

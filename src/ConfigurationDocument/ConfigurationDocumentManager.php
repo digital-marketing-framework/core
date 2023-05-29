@@ -76,7 +76,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function getMetaDataFromIdentifier(string $documentIdentifier): array
     {
-        $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier);
+        $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier, true);
         return [
             'id' => $documentIdentifier,
             'shortId' => $this->storage->getShortIdentifier($documentIdentifier),
@@ -108,22 +108,22 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $this->parser->parseDocument($document);
     }
 
-    public function getDocumentFromIdentifier(string $documentIdentifier): string
+    public function getDocumentFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): string
     {
-        $document = $this->staticStorage?->getDocument($documentIdentifier);
+        $document = $this->staticStorage?->getDocument($documentIdentifier, $metaDataOnly);
         if ($document !== null && $document !== '') {
             return $document;
         }
-        return $this->storage->getDocument($documentIdentifier);
+        return $this->storage->getDocument($documentIdentifier, $metaDataOnly);
     }
 
     /**
      * @return array<mixed>
      */
-    public function getDocumentConfigurationFromIdentifier(string $documentIdentifier): array
+    public function getDocumentConfigurationFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): array
     {
         return $this->getDocumentConfigurationFromDocument(
-            $this->getDocumentFromIdentifier($documentIdentifier)
+            $this->getDocumentFromIdentifier($documentIdentifier, $metaDataOnly)
         );
     }
 

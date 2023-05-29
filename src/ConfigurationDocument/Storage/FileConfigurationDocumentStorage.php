@@ -14,7 +14,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
 
     abstract protected function getFileExtension(): string;
 
-    public function getDocument(string $documentIdentifier): string
+    public function getDocument(string $documentIdentifier, bool $metaDataOnly = false): string
     {
         if (!$this->fileStorage->fileExists($documentIdentifier)) {
             throw new ConfigurationDocumentNotFoundException(sprintf('Configuration document file not found: %s', $documentIdentifier));

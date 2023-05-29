@@ -5,12 +5,13 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Sc
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ValueSet;
 
 abstract class Schema implements SchemaInterface
 {
     protected RenderingDefinitionInterface $renderingDefinition;
 
-    /** @var array<string,array<string>> $valueSets */
+    /** @var array<string,ValueSet> $valueSets */
     protected array $valueSets = [];
 
     public function __construct(
@@ -24,23 +25,37 @@ abstract class Schema implements SchemaInterface
         return $this->renderingDefinition;
     }
 
-    protected function mergeValueSets(array $a, array $b): array
+    protected function addValueToValueSet(string $name, string|int|bool $value, ?string $label = null): void
     {
-        foreach ($b as $name => $set) {
-            if (!isset($a[$name])) {
-                $a[$name] = $set;
-            } else {
-                foreach ($b[$name] as $value) {
-                    $a[$name] = $value;
-                }
-                $a[$name] = array_values(array_unique($a[$name]));
-            }
+        if (!isset($this->valueSets[$name])) {
+            $this->valueSets[$name] = new ValueSet();
         }
-        return $a;
+        $this->valueSets[$name]->addValue($value, $label);
     }
 
     /**
-     * @return array<string<array<string>>
+     * @param array<string,ValueSet> $a
+     * @param array<string,ValueSet> $b
+     * @param array<string,ValueSet>
+     */
+    protected function mergeValueSets(array $a, array $b): array
+    {
+        $mergedSets = [];
+        foreach ($a as $valueSetName => $valueSet) {
+            $mergedSet = $mergedSets[$valueSetName] ?? new ValueSet();
+            $mergedSet->merge($valueSet);
+            $mergedSets[$valueSetName] = $mergedSet;
+        }
+        foreach ($b as $valueSetName => $valueSet) {
+            $mergedSet = $mergedSets[$valueSetName] ?? new ValueSet();
+            $mergedSet->merge($valueSet);
+            $mergedSets[$valueSetName] = $mergedSet;
+        }
+        return $mergedSets;
+    }
+
+    /**
+     * @return array<string,ValueSet>
      */
     public function getValueSets(): array
     {

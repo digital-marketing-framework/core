@@ -1,0 +1,968 @@
+{
+  "valueSets": {
+    "valueSource/all": [
+      "constant",
+      "field",
+      "concatenation",
+      "condition",
+      "list",
+      "firstOf",
+      "boolean",
+      "file",
+      "integer",
+      "multiValue",
+      "discreteMultiValue",
+      "fieldCollector",
+      "null"
+    ],
+    "valueSource/modifiable": [
+      "field",
+      "concatenation",
+      "condition",
+      "list",
+      "firstOf",
+      "boolean",
+      "file",
+      "integer",
+      "multiValue",
+      "discreteMultiValue",
+      "fieldCollector"
+    ],
+    "valueSource/canBeMultiValue": [
+      "field",
+      "condition",
+      "list",
+      "firstOf",
+      "multiValue",
+      "discreteMultiValue"
+    ],
+    "valueModifier/all": [
+      "insertData",
+      "trim",
+      "upperCase",
+      "lowerCase",
+      "negate",
+      "join",
+      "splice",
+      "sprintf",
+      "index",
+      "mapReference",
+      "map",
+      "default"
+    ],
+    "comparison/binaryOperations": ["equals", "in", "regExp"],
+    "comparison/multiValueHandlingOperations": ["equals", "in", "isFalse", "isTrue", "regExp"]
+  },
+  "types": {
+    "VALUE_SOURCE": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "type",
+          "type": "STRING",
+          "allowedValues": {
+            "sets": ["valueSource/all"]
+          },
+          "format": "select"
+        },
+        {
+          "name": "config",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "constant",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "value",
+                  "type": "STRING"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "constant"
+              }
+            },
+            {
+              "name": "field",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "fieldName",
+                  "type": "STRING"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "field"
+              }
+            },
+            {
+              "name": "concatenation",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "glue",
+                  "type": "STRING",
+                  "default": "\\s"
+                },
+                {
+                  "name": "values",
+                  "type": "LIST",
+                  "itemTemplate": {
+                    "type": "VALUE"
+                  }
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "concatenation"
+              }
+            },
+            {
+              "name": "condition",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "if",
+                  "type": "EVALUATION"
+                },
+                {
+                  "name": "then",
+                  "type": "VALUE"
+                },
+                {
+                  "name": "else",
+                  "type": "VALUE"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "condition"
+              }
+            },
+            {
+              "name": "list",
+              "type": "LIST",
+              "itemTemplate": {
+                "type": "VALUE"
+              },
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "list"
+              }
+            },
+            {
+              "name": "firstOf",
+              "type": "LIST",
+              "itemTemplate": {
+                "type": "VALUE"
+              },
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "firstOf"
+              }
+            },
+            {
+              "name": "boolean",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "value",
+                  "type": "VALUE"
+                },
+                {
+                  "name": "true",
+                  "type": "STRING",
+                  "default": "1"
+                },
+                {
+                  "name": "false",
+                  "type": "STRING",
+                  "default": "0"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "boolean"
+              }
+            },
+            {
+              "name": "file",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "name",
+                  "type": "VALUE"
+                },
+                {
+                  "name": "path",
+                  "type": "VALUE"
+                },
+                {
+                  "name": "url",
+                  "type": "VALUE"
+                },
+                {
+                  "name": "mimetype",
+                  "type": "VALUE"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "file"
+              }
+            },
+            {
+              "name": "integer",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "value",
+                  "type": "VALUE"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "integer"
+              }
+            },
+            {
+              "name": "multiValue",
+              "type": "LIST",
+              "itemTemplate": {
+                "type": "VALUE"
+              },
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "multiValue"
+              }
+            },
+            {
+              "name": "discreteMultiValue",
+              "type": "LIST",
+              "itemTemplate": {
+                "type": "VALUE"
+              },
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "discreteMultiValue"
+              }
+            },
+            {
+              "name": "fieldCollector",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "ignoreIfEmpty",
+                  "type": "BOOLEAN",
+                  "default": true
+                },
+                {
+                  "name": "unprocessedOnly",
+                  "type": "BOOLEAN",
+                  "default": true
+                },
+                {
+                  "name": "exclude",
+                  "type": "STRING"
+                },
+                {
+                  "name": "include",
+                  "type": "STRING"
+                },
+                {
+                  "name": "template",
+                  "type": "STRING",
+                  "default": "{key}\\s=\\s{value}\\n"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "fieldCollector"
+              }
+            },
+            {
+              "name": "null",
+              "type": "CONTAINER",
+              "items": [],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "null"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "VALUE_MODIFIER": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "insertData",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "trim",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "upperCase",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "lowerCase",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "negate",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "true",
+              "type": "STRING",
+              "default": "1"
+            },
+            {
+              "name": "false",
+              "type": "STRING",
+              "default": "0"
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "join",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "glue",
+              "type": "STRING",
+              "default": ","
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "splice",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "token",
+              "type": "STRING",
+              "default": "\\s"
+            },
+            {
+              "name": "index",
+              "type": "STRING",
+              "default": "1"
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "sprintf",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "format",
+              "type": "STRING",
+              "default": "%s"
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "index",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "index",
+              "type": "STRING"
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "mapReference",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "reference",
+              "type": "STRING"
+            },
+            {
+              "name": "invert",
+              "type": "BOOLEAN",
+              "default": false
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "map",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "map",
+              "type": "MAP",
+              "items": [],
+              "keyTemplate": {
+                "type": "STRING"
+              },
+              "valueTemplate": {
+                "type": "STRING"
+              }
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "default",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "value",
+              "type": "STRING"
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        }
+      ]
+    },
+    "VALUE": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "data",
+          "type": "VALUE_SOURCE"
+        },
+        {
+          "name": "modifiers",
+          "type": "VALUE_MODIFIER",
+          "visibility": {
+            "type": "valueSet",
+            "path": "./data/type",
+            "set": "valueSource/modifiable"
+          }
+        }
+      ]
+    },
+    "EVALUATION": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "type",
+          "type": "STRING",
+          "allowedValues": {
+            "list": ["true", "false", "comparison", "not", "and", "or", "gate"]
+          }
+        },
+        {
+          "name": "config",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "true",
+              "type": "CONTAINER",
+              "items": [],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "true"
+              }
+            },
+            {
+              "name": "false",
+              "type": "CONTAINER",
+              "items": [],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "false"
+              }
+            },
+            {
+              "name": "comparison",
+              "type": "COMPARISON",
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "comparison"
+              }
+            },
+            {
+              "name": "not",
+              "type": "EVALUATION",
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "not"
+              }
+            },
+            {
+              "name": "and",
+              "type": "LIST",
+              "itemTemplate": {
+                "type": "EVALUATION"
+              },
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "and"
+              }
+            },
+            {
+              "name": "or",
+              "type": "LIST",
+              "itemTemplate": {
+                "type": "EVALUATION"
+              },
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "or"
+              }
+            },
+            {
+              "name": "gate",
+              "type": "CONTAINER",
+              "items": [
+                {
+                  "name": "key",
+                  "type": "STRING",
+                  "default": ""
+                },
+                {
+                  "name": "pass",
+                  "type": "STRING",
+                  "default": "any"
+                }
+              ],
+              "visibility": {
+                "type": "string",
+                "path": "../type",
+                "value": "gate"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "COMPARISON": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "type",
+          "type": "STRING",
+          "allowedValues": {
+            "list": ["equals", "exists", "in", "isEmpty", "isFalse", "isTrue", "regExp"]
+          },
+          "format": "select",
+          "hideLabel": true
+        },
+        {
+          "name": "anyAll",
+          "type": "STRING",
+          "allowedValues": {
+            "list": ["any", "all"]
+          },
+          "format": "select",
+          "hideLabel": true,
+          "visibility": {
+            "type": "valueSet",
+            "path": "./type",
+            "set": "comparison/multiValueHandlingOperations"
+          }
+        },
+        {
+          "name": "firstOperand",
+          "type": "DEFAULT_FIELD_VALUE",
+          "hideLabel": true
+        },
+        {
+          "name": "secondOperand",
+          "type": "VALUE",
+          "hideLabel": true,
+          "visibility": {
+            "type": "valueSet",
+            "path": "./type",
+            "set": "comparison/binaryOperations"
+          }
+        }
+      ],
+      "alignments": [
+        {
+          "alignment": "horizontal",
+          "items": ["firstOperand", "anyAll", "type", "secondOperand"]
+        }
+      ]
+    },
+    "DATA_MAPPER": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "excludeFields",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "fields",
+              "type": "STRING"
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "fields",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "overwrite",
+              "type": "BOOLEAN"
+            },
+            {
+              "name": "fields",
+              "type": "MAP",
+              "items": [],
+              "keyTemplate": {
+                "type": "STRING"
+              },
+              "valueTemplate": {
+                "type": "VALUE"
+              }
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "ignoreEmptyFields",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        },
+        {
+          "name": "passthroughFields",
+          "type": "CONTAINER",
+          "items": [
+            {
+              "name": "enabled",
+              "type": "BOOLEAN",
+              "default": false
+            },
+            {
+              "name": "overwrite",
+              "type": "BOOLEAN"
+            }
+          ],
+          "visibility": {
+            "type": "toggle",
+            "path": "./enabled"
+          }
+        }
+      ]
+    }
+  },
+  "schema": {
+    "type": "CONTAINER",
+    "items": [
+      {
+        "name": "valueMaps",
+        "type": "MAP",
+        "items": [],
+        "keyTemplate": {
+          "type": "STRING"
+        },
+        "valueTemplate": {
+          "type": "MAP",
+          "keyTemplate": {
+            "type": "STRING"
+          },
+          "valueTemplate": {
+            "type": "STRING"
+          }
+        }
+      },
+      {
+        "name": "identifiers",
+        "type": "CONTAINER",
+        "items": []
+      },
+      {
+        "name": "distributor",
+        "type": "CONTAINER",
+        "items": [
+          {
+            "name": "routes",
+            "type": "CONTAINER",
+            "items": []
+          },
+          {
+            "name": "dataProviders",
+            "type": "CONTAINER",
+            "items": [
+              {
+                "name": "cookie",
+                "type": "CONTAINER",
+                "items": [
+                  {
+                    "name": "enabled",
+                    "type": "BOOLEAN",
+                    "default": false
+                  },
+                  {
+                    "name": "mustExist",
+                    "type": "BOOLEAN",
+                    "default": false
+                  },
+                  {
+                    "name": "mustBeEmpty",
+                    "type": "BOOLEAN",
+                    "default": true
+                  },
+                  {
+                    "name": "cookieFieldMap",
+                    "type": "MAP",
+                    "items": [],
+                    "keyTemplate": {
+                      "type": "STRING"
+                    },
+                    "valueTemplate": {
+                      "type": "STRING"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "ipAddress",
+                "type": "CONTAINER",
+                "items": [
+                  {
+                    "name": "enabled",
+                    "type": "BOOLEAN",
+                    "default": false
+                  },
+                  {
+                    "name": "mustExist",
+                    "type": "BOOLEAN",
+                    "default": false
+                  },
+                  {
+                    "name": "mustBeEmpty",
+                    "type": "BOOLEAN",
+                    "default": true
+                  },
+                  {
+                    "name": "field",
+                    "type": "STRING",
+                    "default": "ip_address"
+                  }
+                ]
+              },
+              {
+                "name": "timestamp",
+                "type": "CONTAINER",
+                "items": [
+                  {
+                    "name": "enabled",
+                    "type": "BOOLEAN",
+                    "default": false
+                  },
+                  {
+                    "name": "mustExist",
+                    "type": "BOOLEAN",
+                    "default": false
+                  },
+                  {
+                    "name": "mustBeEmpty",
+                    "type": "BOOLEAN",
+                    "default": true
+                  },
+                  {
+                    "name": "field",
+                    "type": "STRING",
+                    "default": "timestamp"
+                  },
+                  {
+                    "name": "format",
+                    "type": "STRING",
+                    "default": "c"
+                  }
+                ]
+              },
+              {
+                "type": "LIST",
+                "name": "ideas",
+                "items": [],
+                "valueTemplate": {
+                  "type": "STRING"
+                }
+              },
+              {
+                "type": "MAP",
+                "name": "translations",
+                "items": [],
+                "keyTemplate": {
+                  "type": "STRING"
+                },
+                "valueTemplate": {
+                  "type": "STRING"
+                }
+              },
+              {
+                "type": "INTEGER",
+                "name": "days",
+                "default": 5
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -8,6 +8,8 @@ class RenderingDefinition implements RenderingDefinitionInterface
     protected array $alignments = [];
     protected ?string $format = null;
     protected ?bool $hideLabel = null;
+    protected ?string $label = null;
+    protected ?bool $isNavigationItem = null;
 
     public function toArray(): ?array
     {
@@ -24,7 +26,33 @@ class RenderingDefinition implements RenderingDefinitionInterface
         if (!empty($this->alignments)) {
             $render['alignments'] = $this->alignments;
         }
+        if ($this->isNavigationItem !== null) {
+            $render['navigationItem'] = $this->isNavigationItem;
+        }
+        if ($this->label !== null) {
+            $render['label'] = $this->label;
+        }
         return !empty($render) ? $render : null;
+    }
+
+    public function setLabel(?string $label): void
+    {
+        $this->label = $label;
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function setNavigationItem(bool $value): void
+    {
+        $this->isNavigationItem = $value;
+    }
+
+    public function getNavigationItem(): bool
+    {
+        return $this->isNavigationItem;
     }
 
     public function setVisibilityConditionByString(string $path, string $value): void

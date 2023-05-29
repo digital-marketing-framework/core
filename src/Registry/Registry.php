@@ -105,13 +105,25 @@ class Registry implements RegistryInterface
         $schemaDocument->addCustomType($this->getComparisonSchema(), ComparisonSchema::TYPE);
         $schemaDocument->addCustomType($this->getDataMapperSchema(), DataMapperSchema::TYPE);
 
+        $configurationDocumentManager = $this->getConfigurationDocumentManager();
+        $documentIdentifiers = $configurationDocumentManager->getDocumentIdentifiers();
+        foreach ($documentIdentifiers as $documentIdentifier) {
+            $metaData = $configurationDocumentManager->getMetaDataFromIdentifier($documentIdentifier);
+            $schemaDocument->addValueToValueSet('documents/all', $documentIdentifier, $metaData['name']);
+        }
+
         // TODO do we need these variations of the custom type "value"?
         // foreach ($this->getCustomValueSchemata() as $schema) {
         //     $schemaDocument->addCustomType($schema);
         // }
 
         $mainSchema = $schemaDocument->getMainSchema();
-        $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, new MapSchema(new MapSchema(new StringSchema())));
+        $mainSchema->getRenderingDefinition()->setLabel('Digital Marketing');
+
+        $valueMapsSchema = new MapSchema(new MapSchema(new StringSchema()));
+        $valueMapsSchema->getRenderingDefinition()->setLabel('Value Maps');
+
+        $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
         $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $this->getIdentifierCollectorSchema());
     }
 

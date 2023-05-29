@@ -16,12 +16,13 @@ class ValueModifierSchema extends ContainerSchema
     {
         parent::__construct($defaultValue);
         $this->getRenderingDefinition()->setVisibilityConditionByValueSet('../data/type', static::VALUE_SET_VALUE_MODIFIER_MODIFIABLE);
+        $this->getRenderingDefinition()->setNavigationItem(false);
     }
 
     public function addItem(string $keyword, SchemaInterface $schema): void
     {
         $property = $this->addProperty($keyword, $schema);
         $property->getRenderingDefinition()->setVisibilityConditionByToggle('./enabled');
-        $this->valueSets[static::VALUE_SET_VALUE_MODIFIER][] = $keyword;
+        $this->addValueToValueSet(static::VALUE_SET_VALUE_MODIFIER, $keyword);
     }
 }

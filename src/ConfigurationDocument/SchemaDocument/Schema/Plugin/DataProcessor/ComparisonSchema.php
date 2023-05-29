@@ -29,6 +29,8 @@ class ComparisonSchema extends ContainerSchema
     public function __construct(mixed $defaultValue = null)
     {
         parent::__construct($defaultValue);
+        $this->getRenderingDefinition()->setNavigationItem(false);
+
         $this->typeSchema = new StringSchema();
         $this->typeSchema->getRenderingDefinition()->setFormat('select');
         $this->typeSchema->getRenderingDefinition()->hideLabel();
@@ -59,12 +61,12 @@ class ComparisonSchema extends ContainerSchema
     public function addItem(string $keyword, bool $binaryOperation, bool $multiValueHandlingOperation): void
     {
         $this->typeSchema->getAllowedValues()->addValue($keyword);
-        $this->valueSets[static::VALUE_SET_COMPARISONS][] = $keyword;
+        $this->addValueToValueSet(static::VALUE_SET_COMPARISONS, $keyword);
         if ($binaryOperation) {
-            $this->valueSets[static::VALUE_SET_BINARY_OPERATIONS][] = $keyword;
+            $this->addValueToValueSet(static::VALUE_SET_BINARY_OPERATIONS, $keyword);
         }
         if ($multiValueHandlingOperation) {
-            $this->valueSets[static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS][] = $keyword;
+            $this->addValueToValueSet(static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS, $keyword);
         }
     }
 }

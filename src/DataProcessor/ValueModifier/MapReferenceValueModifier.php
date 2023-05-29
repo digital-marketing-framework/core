@@ -45,7 +45,9 @@ class MapReferenceValueModifier extends ValueModifier
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_MAP_NAME, new StringSchema());
+        $mapNameSchema = new StringSchema();
+        $mapNameSchema->getAllowedValues()->addReference('/valueMaps');
+        $schema->addProperty(static::KEY_MAP_NAME, $mapNameSchema);
         $schema->addProperty(static::KEY_INVERT, new BooleanSchema(false));
         return $schema;
     }

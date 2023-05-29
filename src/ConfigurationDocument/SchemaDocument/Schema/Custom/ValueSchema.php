@@ -17,5 +17,6 @@ class ValueSchema extends ContainerSchema
         $this->addProperty('data', new CustomSchema(ValueSourceSchema::TYPE));
         $property = $this->addProperty('modifiers', new CustomSchema(ValueModifierSchema::TYPE));
         $property->getRenderingDefinition()->setVisibilityConditionByValueSet('./data/type', 'valueSource/modifiable');
+        $property->getRenderingDefinition()->setNavigationItem(false);
     }
 }

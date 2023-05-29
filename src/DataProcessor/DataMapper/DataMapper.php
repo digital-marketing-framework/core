@@ -20,7 +20,7 @@ abstract class DataMapper extends DataProcessorPlugin implements DataMapperInter
     }
 
     abstract protected function map(DataInterface $target);
-    
+
     public function mapData(DataInterface $target): DataInterface
     {
         if ($this->proceed()) {
@@ -39,6 +39,7 @@ abstract class DataMapper extends DataProcessorPlugin implements DataMapperInter
     public static function getSchema(): SchemaInterface
     {
         $schema = new ContainerSchema();
+        $schema->getRenderingDefinition()->setNavigationItem(false);
         $schema->addProperty(static::KEY_ENABLED, new BooleanSchema(false));
         return $schema;
     }

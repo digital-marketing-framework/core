@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Sc
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ValueSet;
 
 interface SchemaInterface
 {
@@ -17,7 +18,7 @@ interface SchemaInterface
     public function getRenderingDefinition(): RenderingDefinitionInterface;
 
     /**
-     * @return array<string<array<string>>
+     * @return array<string,ValueSet>
      */
     public function getValueSets(): array;
 

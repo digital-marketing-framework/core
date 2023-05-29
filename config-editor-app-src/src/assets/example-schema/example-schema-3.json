@@ -1,0 +1,108 @@
+{
+  "valueSets": [],
+  "types": {
+    "MY_CUSTOM_TYPE": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "first_name",
+          "type": "STRING"
+        },
+        {
+          "name": "last_name",
+          "type": "STRING"
+        }
+      ]
+    },
+    "MY_RECURSIVE_CUSTOM_TYPE": {
+      "type": "CONTAINER",
+      "items": [
+        {
+          "name": "value",
+          "type": "STRING"
+        },
+        {
+          "name": "children",
+          "type": "LIST",
+          "config": {
+            "type": "MY_RECURSIVE_CUSTOM_TYPE"
+          }
+        }
+      ]
+    }
+  },
+  "schema": {
+    "items": [
+      {
+        "type": "BOOLEAN",
+        "name": "enabled",
+        "default": false
+      },
+      {
+        "type": "STRING",
+        "name": "email"
+      },
+      {
+        "type": "INTEGER",
+        "name": "days",
+        "default": 5
+      },
+      {
+        "type": "CONTAINER",
+        "name": "additional_info",
+        "items": [
+          {
+            "type": "INTEGER",
+            "name": "siblings"
+          },
+          {
+            "type": "STRING",
+            "name": "religion"
+          },
+          {
+            "type": "CONTAINER",
+            "name": "some container",
+            "items": [
+              {
+                "type": "INTEGER",
+                "name": "item 1"
+              },
+              {
+                "type": "STRING",
+                "name": "religion"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "LIST",
+        "name": "ideas",
+        "items": [],
+        "template": {
+          "type": "STRING"
+        }
+      },
+      {
+        "type": "MAP",
+        "name": "translations",
+        "template": {
+          "itemNameSchema": {
+            "type": "STRING"
+          },
+          "itemSchema": {
+            "type": "STRING"
+          }
+        }
+      },
+      {
+        "name": "name",
+        "type": "MY_CUSTOM_TYPE"
+      },
+      {
+        "name": "my_tree",
+        "type": "MY_RECURSIVE_CUSTOM_TYPE"
+      }
+    ]
+  }
+}

@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ScalarValues;
 
 abstract class ScalarValueSchema extends Schema
 {
@@ -52,7 +53,7 @@ abstract class ScalarValueSchema extends Schema
         }
         $allowedValues = $this->allowedValues->getValues($schemaDocument);
         if (!empty($allowedValues)) {
-            return reset($allowedValues);
+            return reset(array_keys($allowedValues));
         }
         return null;
     }

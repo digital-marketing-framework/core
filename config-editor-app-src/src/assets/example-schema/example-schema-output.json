@@ -1,0 +1,41 @@
+{
+  "enabled": true,
+  "email": "foo@bar.com",
+  "days": 17,
+  "additional_info": {
+    "siblings": 9,
+    "religion": "none"
+  },
+  "ideas": ["more money", "more power", "more more"],
+  "translations": {
+    "foo": "oof",
+    "bar": "rab",
+    "snafu": "ufans"
+  },
+  "name": {
+    "first_name": "John",
+    "last_name": "Smith"
+  },
+  "my_tree": {
+    "value": "tree_value_a",
+    "children": [
+      {
+        "value": "tree_value_a_a",
+        "children": [
+          {
+            "value": "tree_value_a_a_a",
+            "children": []
+          },
+          {
+            "value": "tree_value_a_a_b",
+            "children": []
+          }
+        ]
+      },
+      {
+        "value": "tree_value_a_b",
+        "children": []
+      }
+    ]
+  }
+}

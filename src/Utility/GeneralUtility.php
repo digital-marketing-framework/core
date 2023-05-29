@@ -287,4 +287,22 @@ final class GeneralUtility
             return $class::unpack($value);
         }
     }
+
+    /**
+     * fooBar => Foo Bar
+     * foo-bar => Foo Bar
+     * foo_bar => Foo Bar
+     * fooBAR => Foo BAR
+     */
+    public static function getLabelFromValue(string $value): string
+    {
+        $label = $value;
+        $label = preg_replace_callback('/[A-Z]+/', function(array $matches) {
+            return ' ' . $matches[0];
+        }, $label);
+        $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', function(array $matches) {
+            return ' ' . ucfirst($matches[1]);
+        }, $label);
+        return ucfirst($label);
+    }
 }

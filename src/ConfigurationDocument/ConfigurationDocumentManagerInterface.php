@@ -33,12 +33,12 @@ interface ConfigurationDocumentManagerInterface
      */
     public function getDocumentConfigurationFromDocument(string $document): array;
 
-    public function getDocumentFromIdentifier(string $documentIdentifier): string;
+    public function getDocumentFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): string;
 
     /**
      * @return array<mixed>
      */
-    public function getDocumentConfigurationFromIdentifier(string $documentIdentifier): array;
+    public function getDocumentConfigurationFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): array;
 
     /**
      * @param array<mixed> $configuration

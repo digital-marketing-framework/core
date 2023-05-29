@@ -10,6 +10,8 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class ExcludeFieldsDataMapper extends DataMapper
 {
+    public const WEIGHT = 40;
+
     public const KEY_FIELDS = 'fields';
     public const DEFAULT_FIELDS = '';
 

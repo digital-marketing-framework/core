@@ -8,7 +8,7 @@ class MapSchema extends ListSchema
 {
     public function __construct(
         SchemaInterface $valueSchema = new ContainerSchema(),
-        protected StringSchema $nameSchema = new StringSchema(),
+        protected StringSchema $nameSchema = new StringSchema('mapKey'),
         mixed $defaultValue = null,
     ) {
         parent::__construct($valueSchema, $defaultValue);
