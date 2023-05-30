@@ -15,6 +15,7 @@ const selectedPath = computed(() => store.getSelectedPath());
 const rootSelected = computed(() => store.isRoot(selectedPath.value));
 
 onMounted(() => {
+  store.fix('/');
   if (!window.DMF_CONFIG_EDITOR) {
     store.fetchData();
   }

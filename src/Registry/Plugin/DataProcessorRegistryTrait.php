@@ -87,7 +87,7 @@ trait DataProcessorRegistryTrait
     public function getValueModifierSchema(): SchemaInterface
     {
         $schema = new ValueModifierSchema();
-        foreach ($this->getAllPluginClasses(ValueSourceInterface::class) as $key => $class) {
+        foreach ($this->getAllPluginClasses(ValueModifierInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
         return $schema;
