@@ -128,8 +128,9 @@ export const useDmfStore = defineStore('dmf', {
     async save() {
       // TODO purge switch elements > do not delete, but reset the config items that are not selected
       // TODO check if includes have changed, updateIncludes() if they have
+      this.finish('/');
       await this.onSave(this.data);
-      this.writeMessage('saved!');
+      this.writeMessage('Document saved!');
     },
     async updateIncludes() {
       const response = await this.onIncludeChange(this.data);
@@ -245,6 +246,8 @@ export const useDmfStore = defineStore('dmf', {
     addValue(path, currentPath) {
       const schema = this.getSchema(path, currentPath);
       this._addValue(schema, path, currentPath);
+      // TODO do we need this fix call? can a default value have objects instead of arrays or vice versa?
+      // this.fix(path, currentPath);
     },
     removeValue(path, currentPath) {
       const parentPath = path + '/..';
@@ -423,6 +426,17 @@ export const useDmfStore = defineStore('dmf', {
         this.unsetWarning(WARNING_DOCUMENT_INVALID);
       }
     },
+    /**
+     * The server expresses both empty MAPs and empty LISTs
+     * In YAML an empty MAP is not distinugishable from an empty LIST.
+     * Both are expressed as "{ }", which is interpreted as an empty array by the YAML parser.
+     *
+     * This method goes over a freshly created value and its corresponding schemas
+     * and all its sub values and tries to fix this issue.
+     *
+     * @param string path
+     * @param string currentPath
+     */
     fix(path, currentPath) {
       const schema = this.getSchema(path, currentPath);
       const value = this.getValue(path, currentPath);
@@ -435,6 +449,34 @@ export const useDmfStore = defineStore('dmf', {
           this.fix(childPath, absolutePath);
         });
       }
+    },
+    /**
+     * This method does document cleanup tasks right before the document is saved.
+     *
+     * The SWITCH containers create data whenever their type if switched.
+     * This creates a lot of overhead data that should stay during the editing
+     * but that is useless when the document is about to be saved.
+     *
+     * TODO: Not implemented yet - we also may want to remove the artificially added include SYS:defaults.
+     *
+     * @param string path
+     * @param string currentPath
+     */
+    finish(path, currentPath) {
+      const schema = this.getSchema(path, currentPath, true);
+      const absolutePath = this.getAbsolutePath(path, currentPath);
+      if (schema.type === 'SWITCH') {
+        const switchObject = this.getValue(path, currentPath);
+        const selectedType = switchObject.type;
+        Object.keys(switchObject.config).forEach(type => {
+          if (selectedType !== type && !this.isInherited('config/' + type, absolutePath)) {
+            delete switchObject.config[type];
+          }
+        });
+      }
+      this.getChildPaths(path, currentPath).forEach(childPath => {
+        this.finish(childPath, absolutePath);
+      });
     },
     toggleView(path, currentPath) {
       const absolutePath = this.getAbsolutePath(path, currentPath);
@@ -450,6 +492,12 @@ export const useDmfStore = defineStore('dmf', {
     }
   },
   getters: {
+    getDocumentMetaData(state) {
+      return () => state.data.metaData;
+    },
+    getDocumentName() {
+      return () => this.getDocumentMetaData().name;
+    },
     isNativeType() {
       return type => NATIVE_SCHEMA_TYPES.indexOf(type) >= 0;
     },
@@ -807,6 +855,9 @@ export const useDmfStore = defineStore('dmf', {
     },
     getValue(state) {
       return (path, currentPath, withDefault, source) => {
+        // TODO should we have the flag "withDefault"?
+        //      or should we have another flag "addDefaultIfEmpty"
+        //      or just do that automatically?
         source = source || state.data;
         const pathParts = this._getPathParts(path, currentPath);
         const value = this._getValue(pathParts, source);

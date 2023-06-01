@@ -23,6 +23,8 @@ const warnings = computed(() => {
     return warnings;
 });
 
+const documentName = computed(() => store.getDocumentName());
+
 onMounted(() => {
   store.initData();
 //   if (!window.DMF_CONFIG_EDITOR) {
@@ -59,6 +61,7 @@ onMounted(() => {
       <div class="flex grow">
         <div class="grow">
           <div class="sticky top-0 z-10 px-4 py-3 text-right bg-gray-100 border-b border-gray-200 sm:px-6">
+            <span class="text-2xl leading-none font-caveat">{{ documentName }}</span>
             <button type="button"
                     @click="store.save()"
                     class="rounded px-4 text-sm py-1.5 disabled:opacity-50 bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
