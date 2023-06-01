@@ -23,14 +23,15 @@ const props = defineProps({
 });
 
 const item = computed(() => store.getItem(props.currentPath));
+const containerState = computed(() => store.getContainerState(props.currentPath));
 </script>
 
 <template>
-    <Disclosure default-open
+    <Disclosure :default-open="containerState"
                     v-slot="{ open }">
         <ContainerHeader :currentPath="currentPath">
             <template #disclosureButton>
-                <DisclosureButton v-if="item.childPaths.length && !item.isRoot" class="p-1">
+                <DisclosureButton v-if="item.childPaths.length && !item.selected" class="p-1" @click="store.toggleContainerState(currentPath)">
                     <AngleDownIcon class="w-3 h-3"
                                     :class="{
                                         '-rotate-90': !open

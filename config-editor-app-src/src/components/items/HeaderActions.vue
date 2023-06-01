@@ -10,7 +10,6 @@ import { useTippy } from 'vue-tippy';
 import DebugInfo from '../DebugInfo.vue';
 import BugIcon from '../icons/BugIcon.vue';
 
-import ItemIcon from '../icons/ItemIcon.vue';
 import PlusIcon from '../icons/PlusIcon.vue';
 import TrashIcon from '../icons/TrashIcon.vue';
 
@@ -42,7 +41,7 @@ const { setContent } = useTippy(debugToggle, {
 });
 
 // Needed as VueTippy doesn't update content
-watch(() => props.item, () => {
+watch(() => item, () => {
     setContent(h(DebugInfo, props));
 });
 </script>
@@ -56,11 +55,11 @@ watch(() => props.item, () => {
             <TrashIcon class="w-3 h-3" />
         </div>
         <div @click="store.toggleView(currentPath)" class="p-1 text-indigo-400">
-            &lt;/&gt; <ItemIcon item-type="BOOLEAN" :active="item.rawView" class="w-3 h-3" />
+            <button type="button">&lt;/&gt;</button>
         </div>
-        <!--<div v-if="item.isOverwritten" v-on:click="store.resetValue(currentPath)" class="p-1 text-indigo-400">
-            &lt;&lt; <ItemIcon item-type="BOOLEAN" :active="true" class="w-3 h-3" />
-        </div>-->
+        <div v-if="item.isOverwritten" v-on:click="store.resetValue(currentPath)" class="p-1 text-indigo-400">
+            <button type="button">&lt;&lt;</button>
+        </div>
         <div ref="debugToggle"
                 class="p-1 text-indigo-400 hover:text-indigo-500">
             <BugIcon class="w-3 h-3" />

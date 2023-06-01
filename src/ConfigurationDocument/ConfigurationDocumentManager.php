@@ -13,8 +13,6 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 {
     use LoggerAwareTrait;
 
-    public const KEY_DOCUMENT_NAME = 'name';
-
     public function __construct(
         protected ConfigurationDocumentStorageInterface $storage,
         protected ConfigurationDocumentParserInterface $parser,
@@ -59,7 +57,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
             $documentName = $this->buildDocumentNameFromIdentifier($documentIdentifier);
         }
         $documentConfiguration = $this->getDocumentConfigurationFromDocument($document);
-        $documentConfiguration[static::KEY_DOCUMENT_NAME] = $documentName;
+        $this->setName($documentConfiguration, $documentName);
         $document = $this->parser->produceDocument($documentConfiguration);
         $this->saveDocument($documentIdentifier, $document);
     }
@@ -74,7 +72,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $this->storage->getDocumentIdentiferFromBaseName($baseName, $newFile);
     }
 
-    public function getMetaDataFromIdentifier(string $documentIdentifier): array
+    public function getDocumentInformation(string $documentIdentifier): array
     {
         $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier, true);
         return [
@@ -127,21 +125,24 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         );
     }
 
-    protected function getIncludes(array $configuration): array
+    public function getIncludes(array $configuration): array
     {
-        if (
-            isset($configuration[static::KEY_INCLUDES])
-            && is_array($configuration[static::KEY_INCLUDES])
-            && !empty($configuration[static::KEY_INCLUDES])
-        ) {
-            return $configuration[static::KEY_INCLUDES];
-        }
-        return [];
+        return $configuration[static::KEY_META_DATA][static::KEY_INCLUDES] ?? [];
     }
 
-    protected function getName(array $configuration): string
+    public function setIncludes(array &$configuration, array $includes): void
     {
-        return $configuration[static::KEY_DOCUMENT_NAME] ?? '';
+        $configuration[static::KEY_META_DATA][static::KEY_INCLUDES] = $includes;
+    }
+
+    public function getName(array $configuration): string
+    {
+        return $configuration[static::KEY_META_DATA][static::KEY_DOCUMENT_NAME] ?? '';
+    }
+
+    public function setName(array &$configuration, string $name): void
+    {
+        $configuration[static::KEY_META_DATA][static::KEY_DOCUMENT_NAME] = $name;
     }
 
     /**
@@ -218,14 +219,14 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array
     {
-        $oldIncludes = $referenceMergedConfiguration['includes'] ?? [];
-        $newIncludes = $mergedConfiguration['includes'] ?? [];
+        $oldIncludes = $this->getIncludes($referenceMergedConfiguration);
+        $newIncludes = $this->getIncludes($mergedConfiguration);
 
         $mergedConfiguration = $mergedConfiguration;
-        $mergedConfiguration['includes'] = $oldIncludes;
+        $this->setIncludes($mergedConfiguration, $oldIncludes);
         $splitConfiguration = $this->splitConfiguration($mergedConfiguration);
 
-        $splitConfiguration['includes'] = $newIncludes;
+        $this->setIncludes($splitConfiguration, $newIncludes);
         $configurationStack = $this->getConfigurationStackFromConfiguration($splitConfiguration);
         if ($inheritedConfigurationOnly) {
             array_pop($configurationStack);

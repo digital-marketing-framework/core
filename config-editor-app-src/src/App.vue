@@ -1,11 +1,12 @@
 <script setup>
 
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted } from "vue";
 import { useDmfStore } from './stores/dmf';
 
 import ArrowLeftLongIcon from './components/icons/ArrowLeftLongIcon.vue';
 import MediatisLogo from './components/icons/MediatisLogo.vue';
 
+import TimedMessage from './components/TimedMessage.vue';
 import MenuItem from './components/MenuItem.vue';
 import GenericItem from './components/GenericItem.vue';
 
@@ -14,20 +15,24 @@ const store = useDmfStore();
 const selectedPath = computed(() => store.getSelectedPath());
 const rootSelected = computed(() => store.isRoot(selectedPath.value));
 
-onMounted(() => {
-  store.fix('/');
-  if (!window.DMF_CONFIG_EDITOR) {
-    store.fetchData();
-  }
+const warnings = computed(() => {
+    const warnings = [];
+    Object.keys(store.warnings).forEach(key => {
+        warnings.push(store.warnings[key]);
+    });
+    return warnings;
 });
 
-watch(() => selectedPath, () => {
-  this.$forceUpdate();
+onMounted(() => {
+  store.initData();
+//   if (!window.DMF_CONFIG_EDITOR) {
+//     store.fetchData();
+//   }
 });
 </script>
 
 <template>
-  <main class="flex flex-col min-h-screen">
+  <main class="flex flex-col min-h-screen" v-if="store.renderComponent">
     <div class="flex grow">
       <div class="sticky top-0 z-50 flex h-screen shrink-0 w-96">
         <div class="flex flex-col w-full overflow-y-auto bg-white border-r border-gray-200 grow gap-y-5 overscroll-none">
@@ -59,25 +64,31 @@ watch(() => selectedPath, () => {
                     class="rounded px-4 text-sm py-1.5 disabled:opacity-50 bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
               Save
             </button>
-            <button type="button"
-                    @click="store.updateIncludes()"
-                    class="rounded px-4 text-sm py-1.5 disabled:opacity-50 bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-              Update includes
-            </button>
           </div>
-          <!--
-          <ul>
-            <li v-for="(message, index) in store.messages" :key="index" :class="message.type">
-                {{ message.text }}
-                <button @click="store.messages.splice(index, 1)">X</button>
+
+          <ul v-if="store.messages.length > 0">
+            <TimedMessage v-for="(message, index) in store.messages" :key="index" :index="index" />
+          </ul>
+
+          <ul v-if="warnings.length > 0">
+            <li v-for="(warning, index) in warnings" :key="index">
+                <button type="button" v-if="warning.action && !warning.actionLabel" @click="warning.action()">
+                    {{ warning.message }}
+                </button>
+                <span v-else>
+                    {{ warning.message }}<span v-if="warning.actionLabel">:
+                        <button v-if="warning.action" type="button" @click="warning.action()">{{ warning.actionLabel }}</button>
+                        <span v-else>{{ warning.actionLabel }}</span>
+                    </span>
+                </span>
             </li>
           </ul>
-          -->
+
           <div class="flex justify-center px-4 py-10 sm:px-6 grow">
             <div class="grow max-w-7xl">
-              <button type="button" v-if="!rootSelected"
+              <button type="button"
                       class="flex items-center mb-4 text-xs text-gray-500 hover:text-gray-600 gap-x-2">
-                <ArrowLeftLongIcon class="w-3 h-3 shrink-0" @click="store.selectParentPath()" />
+                <ArrowLeftLongIcon v-if="!rootSelected" class="w-3 h-3 shrink-0" @click="store.selectParentPath()" />
                 <span v-for="rootLinePath in store.getRootLine(selectedPath)" :key="rootLinePath">
                   / <span @click="store.selectPath(rootLinePath)">{{ store.getLabel(rootLinePath) }}</span>
                 </span>

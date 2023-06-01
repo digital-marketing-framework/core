@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 final class ConfigurationUtility
 {
-    const MERGE_EXCLUDE_FIELDS = ['name', 'includes'];
+    const MERGE_EXCLUDE_FIELDS = ['metaData'];
 
     public static function mergeConfiguration(array $target, array $source, bool $resolveNull = true): array
     {

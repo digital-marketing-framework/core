@@ -22,10 +22,11 @@ const props = defineProps({
 });
 
 const item = computed(() => store.getItem(props.currentPath));
+const containerNavigationState = computed(() => store.getContainerNavigationState(props.currentPath));
 </script>
 
 <template>
-    <Disclosure default-open v-slot="{ open }">
+    <Disclosure :default-open="containerNavigationState" v-slot="{ open }">
 
         <div class="flex justify-between rounded cursor-pointer gap-x-3"
              :class="{
@@ -48,7 +49,8 @@ const item = computed(() => store.getItem(props.currentPath));
                 {{ item.label }}
             </div>
             <DisclosureButton v-if="item.navigationChildPaths.length && !item.isRoot"
-                              class="flex items-center justify-center w-8 hover:text-indigo-600">
+                              class="flex items-center justify-center w-8 hover:text-indigo-600"
+                              @click="store.toggleContainerNavigationState(currentPath)">
                 <AngleDownIcon class="w-3 h-3"
                                :class="open && 'rotate-180 transform'" />
             </DisclosureButton>

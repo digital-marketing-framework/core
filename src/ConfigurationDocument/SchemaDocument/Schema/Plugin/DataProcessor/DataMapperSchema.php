@@ -13,5 +13,6 @@ class DataMapperSchema extends ContainerSchema
     {
         $property = $this->addProperty($keyword, $schema);
         $property->getRenderingDefinition()->setVisibilityConditionByToggle('./enabled');
+        $this->getRenderingDefinition()->setNavigationItem(false);
     }
 }

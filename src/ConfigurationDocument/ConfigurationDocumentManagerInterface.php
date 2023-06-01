@@ -7,7 +7,9 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDo
 
 interface ConfigurationDocumentManagerInterface
 {
+    public const KEY_META_DATA = 'metaData';
     public const KEY_INCLUDES = 'includes';
+    public const KEY_DOCUMENT_NAME = 'name';
 
     public function getStorage(): ConfigurationDocumentStorageInterface;
     public function getParser(): ConfigurationDocumentParserInterface;
@@ -21,7 +23,12 @@ interface ConfigurationDocumentManagerInterface
 
     public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string;
 
-    public function getMetaDataFromIdentifier(string $documentIdentifier): array;
+    public function getDocumentInformation(string $documentIdentifier): array;
+
+    public function getIncludes(array $configuration): array;
+    public function setIncludes(array &$configuration, array $includes): void;
+    public function getName(array $configuration): string;
+    public function setName(array &$configuration, string $name): void;
 
     /**
      * @return array<string>

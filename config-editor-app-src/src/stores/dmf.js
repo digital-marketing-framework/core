@@ -23,40 +23,55 @@ const DYNAMIC_CONTAINER_TYPES = [
   'MAP'
 ];
 
-const doFetchData = async function() {
-  const dataPromise = new Promise(resolve => {
-    document.addEventListener(EVENT_APP_START, e => {
-      resolve(e.detail);
-    });
-  });
-  document.dispatchEvent(new Event(EVENT_APP_REQUEST));
-  return dataPromise;
+const WARNING_INCLUDES_CHANGED = 'includesChanged';
+const WARNING_DOCUMENT_INVALID = 'documentInvalid';
+const WARNINGS = {};
+WARNINGS[WARNING_INCLUDES_CHANGED] = 'Includes have changed';
+WARNINGS[WARNING_DOCUMENT_INVALID] = 'Document validation failed';
+
+const cloneValue = (value) => {
+  if (typeof value === 'undefined') {
+    return undefined;
+  }
+  return JSON.parse(JSON.stringify(value));
 };
 
-window.DMF_CONFIG_EDITOR = window.DMF_CONFIG_EDITOR || {
-  data: {},
-  inheritedData: {},
-  schemaDocument: {
-    valueSets: {},
-    types: {},
-    schema: {
-      type: 'CONTAINER',
-      values: []
-    }
-  },
-  settings: {
-  },
-  onSave: null,
-  onIncludeChange: null,
-  loaded: false
-};
+// const doFetchData = async function() {
+//   const dataPromise = new Promise(resolve => {
+//     document.addEventListener(EVENT_APP_START, e => {
+//       resolve(e.detail);
+//     });
+//   });
+//   document.dispatchEvent(new Event(EVENT_APP_REQUEST));
+//   return dataPromise;
+// };
+
+// window.DMF_CONFIG_EDITOR = window.DMF_CONFIG_EDITOR || {
+//   data: {},
+//   inheritedData: {},
+//   schemaDocument: {
+//     valueSets: {},
+//     types: {},
+//     schema: {
+//       type: 'CONTAINER',
+//       values: []
+//     }
+//   },
+//   settings: {
+//   },
+//   onSave: null,
+//   onIncludeChange: null,
+//   loaded: false
+// };
 
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
       selectedPath: '/',
       rawViewPaths: {},
       collapsedMenuPaths: {},
+      collapsedContainerPaths: {},
 
+      referenceIncludes: [],
       data: window.DMF_CONFIG_EDITOR.data,
       inheritedData: window.DMF_CONFIG_EDITOR.inheritedData,
       schemaDocument: window.DMF_CONFIG_EDITOR.schemaDocument,
@@ -66,39 +81,74 @@ export const useDmfStore = defineStore('dmf', {
 
       loaded: window.DMF_CONFIG_EDITOR.loaded,
       issues: {},
-      messages: []
+      warnings: {},
+      messages: [],
+      renderComponent: true
   }),
   actions: {
     writeMessage(message, type) {
       this.messages.push({text: message, type: type || 'info'});
+      this.triggerRerender();
     },
-    _updateData(dataKey, data) {
-      Object.keys(data).forEach(key => {
-        this[dataKey][key] = data;
-      });
+    removeMessage(index) {
+      this.messages.splice(index, 1);
+      this.triggerRerender();
     },
-    async fetchData() {
-      const response = await doFetchData();
-      this._updateData('data', response.data);
-      this._updateData('inheritedData', response.inheritedData);
-      this._updateData('schemaDocument', response.inheritedDocument);
-      this._updateData('settings', response.settings);
-      this.onSave = response.onSave;
-      this.onIncludeChange = response.onIncludeChange;
-      this.loaded = true;
-      this._updateValue('/');
+    initData() {
+      if (typeof this.data.metaData === 'undefined') {
+        this.data.metaData = {};
+      }
+      if (typeof this.data.metaData.includes === 'undefined') {
+        this.data.metaData.includes = [];
+      }
+      this.referenceIncludes = cloneValue(this.data.metaData.includes || []),
       this.fix('/');
-      this.evaluate('/');
-      this.writeMessage('loaded!');
+      // this.evaluate('/');
+      this.triggerRerender();
     },
+    // _updateData(dataKey, data) {
+    //   Object.keys(data).forEach(key => {
+    //     this[dataKey][key] = data;
+    //   });
+    // },
+    // async fetchData() {
+    //   const response = await doFetchData();
+    //   this._updateData('data', response.data);
+    //   this._updateData('inheritedData', response.inheritedData);
+    //   this._updateData('schemaDocument', response.inheritedDocument);
+    //   this._updateData('settings', response.settings);
+    //   this.onSave = response.onSave;
+    //   this.onIncludeChange = response.onIncludeChange;
+    //   this.loaded = true;
+    //   this._updateValue('/');
+    //   this.fix('/');
+    //   this.evaluate('/');
+    //   this.writeMessage('loaded!');
+    // },
     async save() {
+      // TODO purge switch elements > do not delete, but reset the config items that are not selected
+      // TODO check if includes have changed, updateIncludes() if they have
       await this.onSave(this.data);
       this.writeMessage('saved!');
     },
     async updateIncludes() {
-      const newData = await this.onIncludeChange(this.data);
-      this.data = newData;
-      this.writeMessage('includes updated!');
+      const response = await this.onIncludeChange(this.data);
+      this.data = response.data;
+      this.inheritedData = response.inheritedData;
+      this.initData();
+      this.unsetWarning(WARNING_INCLUDES_CHANGED);
+      this.writeMessage('Includes updated successfully!');
+    },
+    triggerRerender() {
+      // funny things I do that weirdly seem to help in some situations
+      // to update all components when the state is changing
+      window.dmfUpdateFunctionFwegwWfwegwFG = window.dmfUpdateFunctionFwegwWfwegwFG || function() {};
+      window.dmfUpdateFunctionFwegwWfwegwFG(this.$forceUpdate);
+      try {
+        this.$forceUpdate();
+      } catch(e) {
+        // nothing to do here
+      }
     },
     _updateParentValue(path, currentPath) {
       const parentPath = path + '/..';
@@ -221,16 +271,32 @@ export const useDmfStore = defineStore('dmf', {
               throw new Error('type ' + parentSchema.type + ' does not have sub elements');
           }
       }
+      if (this.getAbsolutePath(path, currentPath) === this.selectedPath) {
+        this.selectParentPath();
+      }
     },
     resetValue(path, currentPath) {
-      this.setValue(path, currentPath, this.getInheritedValue(path, currentPath));
+      const inheritedValue = this.getInheritedValue(path, currentPath);
+      if (typeof inheritedValue === 'undefined') {
+        this.removeValue(path, currentPath);
+      } else {
+        const clonedValue = cloneValue(inheritedValue);
+        if (this.isRoot(path, currentPath)) {
+          // do not reset meta data!
+          const metaData = this.getValue('/metaData') || {};
+          clonedValue.metaData = metaData;
+        }
+        this.setValue(path, currentPath, clonedValue);
+      }
+      this.triggerRerender();
     },
     selectPath(path, currentPath) {
       this.selectedPath = this.getAbsolutePath(path, currentPath);
+      this.triggerRerender();
     },
     selectParentPath() {
       if (!this.isRoot(this.selectedPath)) {
-        this.selectedPath = this.getAbsolutePath('..', this.selectedPath);
+        this.selectPath('..', this.selectedPath);
       }
     },
     _evaluateAllowedValues(schema, value) {
@@ -299,15 +365,37 @@ export const useDmfStore = defineStore('dmf', {
       }
       return '';
     },
-    _evaluate(path, currentPath, issues) {
-      issues = issues || [];
+    setWarning(key, action, actionLabel) {
+      const warning = {
+        message: WARNINGS[key] || key
+      };
+      if (action) {
+        warning.action = action;
+      }
+      if (actionLabel) {
+        warning.actionLabel = actionLabel;
+      }
+      this.warnings[key] = warning;
+    },
+    unsetWarning(key) {
+      if (typeof this.warnings[key] !== 'undefined') {
+        delete this.warnings[key];
+      }
+    },
+    _clearIssues(path, currentPath) {
+      const absolutePath = this.getAbsolutePath(path, currentPath);
+      if (typeof this.issues[absolutePath] !== 'undefined') {
+        delete this.issues[absolutePath];
+      }
+    },
+    _evaluate(path, currentPath) {
+      this._clearIssues(path, currentPath);
       const absolutePath = this.getAbsolutePath(path, currentPath);
       const schema = this.getSchema(path, currentPath, true);
       const value = this.getValue(path, currentPath);
-
       const issue = this._evaluateSchemaWithoutChildren(schema, value);
       if (issue) {
-          issues.push(absolutePath + ': ' + issue);
+          this.issues[absolutePath] = issue;
       } else if (this.isContainerType(schema.type)) {
           const childPaths = this.getChildPaths(path, currentPath);
           childPaths.forEach(key => {
@@ -315,18 +403,24 @@ export const useDmfStore = defineStore('dmf', {
                   const issue = this._evaluateSchemaWithoutChildren(schema.keyTemplate, key);
                   if (issue) {
                       const absoluteChildPath = this.getAbsolutePath(key, absolutePath);
-                      issues.push(absoluteChildPath + ': ' + issue);
+                      this.issues[absoluteChildPath] = issue;
                   }
               }
-              this._evaluate(key, absolutePath, issues);
+              this._evaluate(key, absolutePath);
           });
       }
-      return issues;
     },
     evaluate(path, currentPath) {
-      this.issues = this._evaluate(path, currentPath);
-      if (this.issues.length > 0) {
-        console.log('issues', this.issues);
+      // TODO trigger this action whenever something in the document changed
+      // TODO if there is an issue reported with a path, should the corresponding component go into raw mode automatically?
+      //      probably not a good idea for all issues, like a required field being empty
+      //      but it might be good for issues where the data structure is invalid
+      this._evaluate(path, currentPath);
+      const issueKeys = Object.keys(this.issues);
+      if (issueKeys.length > 0) {
+        this.setWarning(WARNING_DOCUMENT_INVALID, null, issueKeys[0]);
+      } else {
+        this.unsetWarning(WARNING_DOCUMENT_INVALID);
       }
     },
     fix(path, currentPath) {
@@ -345,6 +439,14 @@ export const useDmfStore = defineStore('dmf', {
     toggleView(path, currentPath) {
       const absolutePath = this.getAbsolutePath(path, currentPath);
       this.rawViewPaths[absolutePath] = !this.rawViewPaths[absolutePath];
+    },
+    toggleContainerState(path, currentPath) {
+      const absolutePath = this.getAbsolutePath(path, currentPath);
+      this.collapsedContainerPaths[absolutePath] = !this.collapsedContainerPaths[absolutePath];
+    },
+    toggleContainerNavigationState(path, currentPath) {
+      const absolutePath = this.getAbsolutePath(path, currentPath);
+      this.collapsedMenuPaths[absolutePath] = !this.collapsedMenuPaths[absolutePath];
     }
   },
   getters: {
@@ -718,9 +820,7 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     getInheritedValue(state) {
-      return (path, currentPath, withDefault) => {
-        return this.getValue(path, currentPath, withDefault, state.inheritedData);
-      };
+      return (path, currentPath, withDefault) => this.getValue(path, currentPath, withDefault, state.inheritedData);
     },
     getParentValue() {
       return (path, currentPath, withDefault, source) => {
@@ -729,6 +829,9 @@ export const useDmfStore = defineStore('dmf', {
         }
         return this.getValue(path + '/..', currentPath, withDefault, source);
       };
+    },
+    getInheritedParentValue() {
+      return (path, currentPath, withDefault) => this.getParentValue(path, currentPath, withDefault, this.inheritedData);
     },
     _getChildPaths() {
       return (schema, path, currentPath, absolute) => {
@@ -828,6 +931,11 @@ export const useDmfStore = defineStore('dmf', {
                     return false;
                 }
             }
+            for (let key in b) {
+              if (typeof a[key] === 'undefined') {
+                return false;
+              }
+            }
             return true;
         } else {
             return a === b;
@@ -836,36 +944,48 @@ export const useDmfStore = defineStore('dmf', {
     },
     isInherited() {
       return (path, currentPath) => {
-        const value = this.getValue(path, currentPath);
-        const inheritedValue = this.getInheritedValue(path, currentPath);
+        if (this.isMetaData(path, currentPath)) {
+          return false;
+        }
+        const value = cloneValue(this.getValue(path, currentPath));
+        const inheritedValue = cloneValue(this.getInheritedValue(path, currentPath));
         if (typeof inheritedValue === 'undefined') {
             return false;
+        }
+        if (this.isRoot(path, currentPath)) {
+          if (typeof value.metaData !== 'undefined') {
+            delete value.metaData;
+          }
+          if (typeof inheritedValue.metaData !== 'undefined') {
+            delete inheritedValue.metaData;
+          }
         }
         return this._valuesEqual(value, inheritedValue);
       };
     },
     isOverwritten() {
       return (path, currentPath) => {
+        if (this.isMetaData(path, currentPath)) {
+          return false;
+        }
         if (this.isInherited(path, currentPath)) {
             return false;
         }
         if (typeof this.getValue(path, currentPath) === 'undefined') {
             return false;
         }
+        // TODO if the inherited value does not exist at all, we must not count an element as overwritten if it is not dynamic
+        //      it will have a parent element that is dynamic and is also overwritten. that's where the option to reset the element should be
+        //      right now such a non-dynamic element is considered not overwritten, but it should probably still be marked as overwritten
+        //      it should just not be possible to reset that particular element. maybe clicking the reset button should trigger the reset on the first dynamic parent element?
+        if (typeof this.getInheritedValue(path, currentPath) === 'undefined' && !this.isDynamicChild(path, currentPath)) {
+          return false;
+        }
         return true;
       };
     },
     getIssue(state) {
-      return (path, currentPath) => {
-        const absolutePath = this.getAbsolutePath(path, currentPath);
-        for (let index = 0; index < state.issues.length; index++) {
-          const issue = state.issues[index];
-          if (issue.startsWith(absolutePath)) {
-            return issue.substring(absolutePath.length + 2);
-          }
-        }
-        return '';
-      };
+      return (path, currentPath) => state.issues[this.getAbsolutePath(path, currentPath)] || '';
     },
     hasIssues() {
       return (path, currentPath) => this.getIssue(path, currentPath) !== '';
@@ -891,7 +1011,7 @@ export const useDmfStore = defineStore('dmf', {
       return (path, currentPath) => {
         const pathParts = this._getPathParts(path, currentPath);
         let currentRootLinePath = '/';
-        const rootLine = [];
+        const rootLine = ['/'];
         pathParts.forEach(pathPart => {
           currentRootLinePath = this.getAbsolutePath(pathPart, currentRootLinePath);
           rootLine.push(currentRootLinePath);
@@ -901,6 +1021,50 @@ export const useDmfStore = defineStore('dmf', {
     },
     isRawView(state) {
       return (path, currentPath) => !!state.rawViewPaths[this.getAbsolutePath(path, currentPath)];
+    },
+    isMetaData() {
+      return (path, currentPath) => {
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        return absolutePath === '/metaData' || absolutePath.startsWith('/metaData/');
+      };
+    },
+    includesChanged(state) {
+      return () => {
+        const changed =JSON.stringify(state.data.metaData.includes || []) !== JSON.stringify(state.referenceIncludes || []);
+        if (changed) {
+          this.setWarning(WARNING_INCLUDES_CHANGED, () => { this.updateIncludes(); }, 'apply changes');
+        } else {
+          this.unsetWarning(WARNING_INCLUDES_CHANGED);
+        }
+        return changed;
+      };
+    },
+    getContainerState(state) {
+      return (path, currentPath) => {
+        if (this.isSelected(path, currentPath)) {
+          return true;
+        }
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        if (typeof state.collapsedContainerPaths[absolutePath] === 'undefined') {
+          const schema = this.getSchema(path, currentPath);
+          // TODO setup schema rendering property "closedInitially", also, should it be closed initially or open initially?
+          state.collapsedContainerPaths[absolutePath] = this.getSelectedPath() === absolutePath || (schema.openInitially ? true : false);
+        }
+        return state.collapsedContainerPaths[absolutePath];
+      };
+    },
+    getContainerNavigationState(state) {
+      return (path, currentPath) => {
+        if (this.isRoot(path, currentPath)) {
+          return true;
+        }
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        if (typeof state.collapsedMenuPaths[absolutePath] === 'undefined') {
+          // TODO should the default nav state be open or closed or configurable in schema?
+          state.collapsedMenuPaths[absolutePath] = false;
+        }
+        return state.collapsedMenuPaths[absolutePath];
+      };
     },
     getItem() {
       return (path, currentPath) => {
