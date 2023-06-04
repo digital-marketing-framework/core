@@ -149,11 +149,15 @@ trait DataProcessorRegistryTrait
     {
         $schema = new ComparisonSchema();
         foreach ($this->getAllPluginClasses(ComparisonInterface::class) as $key => $class) {
-            $schema->addItem(
-                $key,
-                is_a($class, BinaryComparison::class, true),
-                $class::handleMultiValuesIndividually()
-            );
+            $binaryOperation = is_a($class, BinaryComparison::class, true);
+            $multiValueHandlingOperation = $class::handleMultiValuesIndividually();
+            $schema->addValueToValueSet(ComparisonSchema::VALUE_SET_ALL, $key);
+            if ($binaryOperation) {
+                $schema->addValueToValueSet(ComparisonSchema::VALUE_SET_BINARY_OPERATIONS, $key);
+            }
+            if ($multiValueHandlingOperation) {
+                $schema->addValueToValueSet(ComparisonSchema::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS, $key);
+            }
         }
         return $schema;
     }

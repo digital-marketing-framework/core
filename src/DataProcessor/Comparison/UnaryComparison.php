@@ -41,7 +41,7 @@ abstract class UnaryComparison extends Comparison
         }
         return true;
     }
-    
+
     public function compare(): bool
     {
         $value = $this->dataProcessor->processValue($this->getConfig(static::KEY_VALUE), $this->context->copy());
@@ -54,12 +54,5 @@ abstract class UnaryComparison extends Comparison
                 return $this->compareAll($value);
             }
         }
-    }
-
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_VALUE => static::DEFAULT_VALUE,
-        ];
     }
 }

@@ -30,4 +30,9 @@ class CustomSchema extends Schema
         }
         return $schemaDocument->getCustomType($this->getType())->getDefaultValue($schemaDocument);
     }
+
+    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
+    {
+        $schemaDocument->getCustomType($this->getType())->preSaveDataTransform($value, $schemaDocument);
+    }
 }

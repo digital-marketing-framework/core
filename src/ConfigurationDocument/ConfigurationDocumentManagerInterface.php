@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 
 interface ConfigurationDocumentManagerInterface
@@ -15,10 +16,10 @@ interface ConfigurationDocumentManagerInterface
     public function getParser(): ConfigurationDocumentParserInterface;
     public function getStaticStorage(): ?ConfigurationDocumentStorageInterface;
 
-    public function tidyDocument(string $document): string;
+    public function tidyDocument(string $document, SchemaDocument $schemaDocument): string;
 
-    public function saveDocument(string $documentIdentifier, string $document): void;
-    public function createDocument(string $documentIdentifier, string $document, string $documentName = ''): void;
+    public function saveDocument(string $documentIdentifier, string $document, SchemaDocument $schemaDocument): void;
+    public function createDocument(string $documentIdentifier, string $document, string $documentName, SchemaDocument $schemaDocument): void;
     public function deleteDocument(string $documentIdentifier): void;
 
     public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string;

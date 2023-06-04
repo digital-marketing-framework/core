@@ -33,14 +33,6 @@ class MapReferenceValueModifier extends ValueModifier
         return $value;
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_MAP_NAME => static::DEFAULT_MAP_NAME,
-            static::KEY_INVERT => static::DEFAULT_INVERT,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

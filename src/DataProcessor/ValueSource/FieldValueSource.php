@@ -24,13 +24,6 @@ class FieldValueSource extends ValueSource
         return $this->getFieldValue($fieldName);
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_FIELD_NAME => static::DEFAULT_FIELD_NAME,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

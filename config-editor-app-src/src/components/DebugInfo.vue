@@ -10,11 +10,6 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
-    },
-    isSwitchKey: {
-        type: Boolean,
-        required: false,
-        default: () => false
     }
 });
 
@@ -71,6 +66,10 @@ const item = computed(() => store.getItem(props.currentPath));
             <tr v-if="item.isScalar">
                 <th class="p-1 align-top">Schema</th>
                 <td class="p-1 align-top">{{ item.schema }}</td>
+            </tr>
+            <tr v-if="item.triggers.length > 0">
+                <th class="p-1 align-top">Triggers</th>
+                <td class="p1-align-top">{{ item.triggers }}</td>
             </tr>
         </table>
     </div>

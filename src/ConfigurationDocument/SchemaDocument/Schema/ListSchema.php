@@ -46,4 +46,11 @@ class ListSchema extends Schema
     {
         return parent::getDefaultValue($schemaDocument) ?? [];
     }
+
+    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
+    {
+        foreach (array_keys($value) as $key) {
+            $this->valueSchema->preSaveDataTransform($value[$key], $schemaDocument);
+        }
+    }
 }

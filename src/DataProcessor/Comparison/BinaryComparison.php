@@ -41,7 +41,7 @@ abstract class BinaryComparison extends Comparison
         }
         return true;
     }
-    
+
     public function compare(): bool
     {
         $a = $this->dataProcessor->processValue($this->getConfig(static::KEY_FIRST_OPERAND), $this->context->copy());
@@ -55,13 +55,5 @@ abstract class BinaryComparison extends Comparison
                 return $this->compareAll($a, $b);
             }
         }
-    }
-
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_FIRST_OPERAND => static::DEFAULT_FIRST_OPERAND,
-            static::KEY_SECOND_OPERAND => static::DEFAULT_SECOND_OPERAND,
-        ];
     }
 }

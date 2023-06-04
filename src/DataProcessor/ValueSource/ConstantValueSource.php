@@ -19,18 +19,11 @@ class ConstantValueSource extends ValueSource
         return $this->getConfig(static::KEY_VALUE);
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_VALUE => static::DEFAULT_VALUE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_VALUE, new StringSchema());
+        $schema->addProperty(static::KEY_VALUE, new StringSchema(static::DEFAULT_VALUE));
         return $schema;
     }
 

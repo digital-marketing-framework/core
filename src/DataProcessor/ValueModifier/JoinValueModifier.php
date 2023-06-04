@@ -27,13 +27,6 @@ class JoinValueModifier extends ValueModifier
         return $value;
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_GLUE => static::DEFAULT_GLUE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

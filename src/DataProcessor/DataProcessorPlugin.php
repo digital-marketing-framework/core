@@ -2,21 +2,19 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor;
 
-use DigitalMarketingFramework\Core\Helper\ConfigurationTrait;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Plugin\Plugin;
+use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
-abstract class DataProcessorPlugin extends Plugin implements DataProcessorPluginInterface, DataProcessorAwareInterface
+abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataProcessorPluginInterface, DataProcessorAwareInterface
 {
     use DataProcessorAwareTrait;
-    use ConfigurationTrait;
 
     // protected const KEY_WEIGHT = 'weight';
 
     public function __construct(
-        string $keyword, 
-        protected RegistryInterface $registry, 
+        string $keyword,
+        protected RegistryInterface $registry,
         protected array $configuration,
         protected DataProcessorContextInterface $context,
     ) {
@@ -50,9 +48,4 @@ abstract class DataProcessorPlugin extends Plugin implements DataProcessorPlugin
     //         static::KEY_WEIGHT => static::WEIGHT,
     //     ];
     // }
-
-    public static function getDefaultConfiguration(): array
-    {
-        return [];
-    }
 }

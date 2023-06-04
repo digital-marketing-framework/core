@@ -20,13 +20,6 @@ abstract class WritingDataMapper extends DataMapper
         }
     }
 
-    public static function getDefaultConfiguration(?bool $enabled = null): array
-    {
-        return parent::getDefaultConfiguration($enabled) + [
-            static::KEY_OVERWRITE => static::DEFAULT_OVERWRITE,
-        ];
-    }
-    
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

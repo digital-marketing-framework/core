@@ -10,6 +10,5 @@ interface DataMapperInterface extends PluginInterface
 {
     public function mapData(DataInterface $target): DataInterface;
 
-    public static function getDefaultConfiguration(?bool $enabled = null): array;
     public static function getSchema(): SchemaInterface;
 }

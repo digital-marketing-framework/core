@@ -17,7 +17,7 @@ class FileValueSource extends ValueSource
 
     public const KEY_PATH = 'path';
     public const DEFAULT_PATH = [];
-    
+
     public const KEY_URL = 'url';
     public const DEFAULT_URL = [];
 
@@ -30,7 +30,7 @@ class FileValueSource extends ValueSource
         $filePath = $this->dataProcessor->processValue($this->getConfig(static::KEY_PATH), $this->context->copy());
         $fileUrl = $this->dataProcessor->processValue($this->getConfig(static::KEY_URL), $this->context->copy());
         $mimeType = $this->dataProcessor->processValue($this->getConfig(static::KEY_MIMETYPE), $this->context->copy());
-        
+
         if (file_exists((string) $filePath)) {
             if (GeneralUtility::isEmpty($fileName)) {
                 $fileName = pathinfo($filePath)['filename'];
@@ -42,7 +42,7 @@ class FileValueSource extends ValueSource
                 $mimeType = mime_content_type($filePath);
             }
         }
-        
+
         if (
             !GeneralUtility::isEmpty($fileName)
             && !GeneralUtility::isEmpty($filePath)
@@ -59,16 +59,6 @@ class FileValueSource extends ValueSource
         }
 
         return null;
-    }
-
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_NAME => static::DEFAULT_NAME,
-            static::KEY_PATH => static::DEFAULT_PATH,
-            static::KEY_URL => static::DEFAULT_URL,
-            static::KEY_MIMETYPE => static::DEFAULT_MIMETYPE,
-        ];
     }
 
     public static function getSchema(): SchemaInterface

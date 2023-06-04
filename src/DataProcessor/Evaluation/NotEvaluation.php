@@ -12,7 +12,10 @@ class NotEvaluation extends Evaluation
 
     public function evaluate(): bool
     {
-        return !$this->dataProcessor->processEvaluation($this->configuration, $this->context->copy());
+        return !$this->dataProcessor->processEvaluation(
+            $this->configuration,
+            $this->context->copy()
+        );
     }
 
     public static function getSchema(): SchemaInterface

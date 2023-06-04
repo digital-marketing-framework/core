@@ -8,6 +8,7 @@ interface RenderingDefinitionInterface
 
     public function setFormat(string $format): void;
     public function hideLabel(bool $hide = true): void;
+
     public function setLabel(?string $label): void;
     public function getLabel(): ?string;
 
@@ -19,5 +20,8 @@ interface RenderingDefinitionInterface
     public function setNavigationItem(bool $value): void;
     public function getNavigationItem(): bool;
 
-    public function addAlignment(string $alignment, array $fields): void;
+    public function setSkipHeader(bool $skipHeader): void;
+    public function getSkipHeader(): bool;
+
+    public function addTrigger(string $triggerName): void;
 }

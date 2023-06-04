@@ -44,7 +44,7 @@ trait ConfigurationDocumentManagerRegistryTrait
 
     public function getConfigurationDocumentParser(): ConfigurationDocumentParserInterface
     {
-        if (!isset($this->configurationDocumentStorage)) {
+        if (!isset($this->configurationDocumentParser)) {
             throw new RegistryException('Configuration document storage not defined');
         }
         return $this->configurationDocumentParser;

@@ -29,13 +29,6 @@ abstract class DataMapper extends DataProcessorPlugin implements DataMapperInter
         return $target;
     }
 
-    public static function getDefaultConfiguration(?bool $enabled = null): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_ENABLED => $enabled ?? static::DEFAULT_ENABLED,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         $schema = new ContainerSchema();

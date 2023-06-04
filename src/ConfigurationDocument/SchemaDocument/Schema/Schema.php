@@ -25,7 +25,7 @@ abstract class Schema implements SchemaInterface
         return $this->renderingDefinition;
     }
 
-    protected function addValueToValueSet(string $name, string|int|bool $value, ?string $label = null): void
+    public function addValueToValueSet(string $name, string|int|bool $value, ?string $label = null): void
     {
         if (!isset($this->valueSets[$name])) {
             $this->valueSets[$name] = new ValueSet();
@@ -94,5 +94,9 @@ abstract class Schema implements SchemaInterface
     public function setDefaultValue(mixed $value): void
     {
         $this->defaultValue = $value;
+    }
+
+    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
+    {
     }
 }

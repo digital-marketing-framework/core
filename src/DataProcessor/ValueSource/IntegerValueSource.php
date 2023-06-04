@@ -30,13 +30,6 @@ class IntegerValueSource extends ValueSource
         return new IntegerValue((int) $value);
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_VALUE => static::DEFAULT_VALUE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

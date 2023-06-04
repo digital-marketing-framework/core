@@ -27,7 +27,7 @@ class MapValueModifier extends ValueModifier
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_MAP, new MapSchema(new StringSchema()));
+        $schema->addProperty(static::KEY_MAP, new MapSchema(new StringSchema('mappedValue'), new StringSchema('value')));
         return $schema;
     }
 }

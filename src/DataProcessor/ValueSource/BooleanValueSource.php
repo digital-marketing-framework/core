@@ -38,15 +38,6 @@ class BooleanValueSource extends ValueSource
         );
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_VALUE => static::DEFAULT_VALUE,
-            static::KEY_TRUE => static::DEFAULT_TRUE,
-            static::KEY_FALSE => static::DEFAULT_FALSE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

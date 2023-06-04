@@ -15,7 +15,7 @@ class IndexValueModifier extends ValueModifier
 
     public const KEY_INDEX = 'index';
     public const DEFAULT_INDEX = '';
-    
+
     public function modify(null|string|ValueInterface $value): null|string|ValueInterface
     {
         if (!$this->proceed()) {
@@ -34,18 +34,11 @@ class IndexValueModifier extends ValueModifier
         return $currentValue;
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_INDEX => static::DEFAULT_INDEX,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_INDEX, new StringSchema());
+        $schema->addProperty(static::KEY_INDEX, new StringSchema(static::DEFAULT_INDEX));
         return $schema;
     }
 }

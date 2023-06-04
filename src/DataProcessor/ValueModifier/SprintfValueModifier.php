@@ -32,13 +32,6 @@ class SprintfValueModifier extends ValueModifier
         return sprintf($format, ...$values);
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_FORMAT => static::DEFAULT_FORMAT,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

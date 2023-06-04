@@ -13,9 +13,4 @@ class TrueEvaluation extends Evaluation
     {
         return true;
     }
-
-    public static function getSchema(): SchemaInterface
-    {
-        return new ContainerSchema();
-    }
 }

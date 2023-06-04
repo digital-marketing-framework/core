@@ -23,9 +23,11 @@ abstract class SwitchSchema extends ContainerSchema
     public function __construct(mixed $defaultValue = null)
     {
         parent::__construct($defaultValue);
+        $this->getRenderingDefinition()->setLabel('{type}');
 
         $this->typeSchema = new StringSchema();
         $this->typeSchema->getRenderingDefinition()->setFormat('select');
+        $this->typeSchema->getRenderingDefinition()->addTrigger('switch');
         $this->typeSchema->getAllowedValues()->addValueSet($this->getSwitchName() . '/all');
 
         $this->configSchema = new ContainerSchema();
@@ -49,8 +51,9 @@ abstract class SwitchSchema extends ContainerSchema
     public function addItem(string $type, SchemaInterface $schema): void
     {
         $this->addValueToValueSet($this->getSwitchName() . '/all', $type);
-        $property = $this->configSchema->addProperty($type, $schema);
-        $property->getRenderingDefinition()->setVisibilityConditionByString('../type', $type);
+        $schema->getRenderingDefinition()->setSkipHeader(true);
+        $schema->getRenderingDefinition()->setNavigationItem(false);
+        $this->configSchema->addProperty($type, $schema);
     }
 
     public function getDefaultValue(SchemaDocument $schemaDocument): mixed

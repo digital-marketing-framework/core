@@ -63,7 +63,6 @@ class ContainerSchema extends Schema
 
     protected function getConfig(): array
     {
-        $config = parent::getConfig();
         $properties = [];
         foreach ($this->properties as $property) {
             if (SchemaDocument::FLATTEN_SCHEMA) {
@@ -94,5 +93,16 @@ class ContainerSchema extends Schema
             $result[$property->getName()] = $property->getSchema()->getDefaultValue($schemaDocument);
         }
         return $result;
+    }
+
+    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
+    {
+        if (!is_array($value) || empty($value)) {
+            $value = (object)[];
+        } else {
+            foreach (array_keys($value) as $key) {
+                $this->getProperty($key)->getSchema()->preSaveDataTransform($value[$key], $schemaDocument);
+            }
+        }
     }
 }

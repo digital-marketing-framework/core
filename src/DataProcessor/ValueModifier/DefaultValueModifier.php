@@ -14,7 +14,7 @@ class DefaultValueModifier extends ValueModifier
 
     public const KEY_VALUE = 'value';
     public const DEFAULT_VALUE = '';
-    
+
     public function modify(null|string|ValueInterface $value): null|string|ValueInterface
     {
         if (!$this->proceed()) {
@@ -26,18 +26,11 @@ class DefaultValueModifier extends ValueModifier
         return $value;
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_VALUE => static::DEFAULT_VALUE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_VALUE, new StringSchema());
+        $schema->addProperty(static::KEY_VALUE, new StringSchema(static::DEFAULT_VALUE));
         return $schema;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\Parser;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
@@ -13,10 +14,18 @@ abstract class ConfigurationDocumentParser implements ConfigurationDocumentParse
     use LoggerAwareTrait;
 
     abstract public function parseDocument(string $document): array;
-    abstract public function produceDocument(array $configuration): string;
+    abstract protected function doProduceDocument(array $configuration): string;
 
-    public function tidyDocument(string $document): string
+    public function produceDocument(array $configuration, ?SchemaDocument $schemaDocument = null): string
     {
-        return $this->produceDocument($this->parseDocument($document));
+        if ($schemaDocument !== null) {
+            $schemaDocument->preSaveDataTransform($configuration);
+        }
+        return $this->doProduceDocument($configuration);
+    }
+
+    public function tidyDocument(string $document, ?SchemaDocument $schemaDocument = null): string
+    {
+        return $this->produceDocument($this->parseDocument($document), $schemaDocument);
     }
 }

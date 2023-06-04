@@ -2,8 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\Parser;
 
-use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
-
 class JsonConfigurationDocumentParser extends ConfigurationDocumentParser
 {
     public function parseDocument(string $document): array
@@ -17,7 +15,7 @@ class JsonConfigurationDocumentParser extends ConfigurationDocumentParser
         return $config;
     }
 
-    public function produceDocument(array $configuration): string
+    protected function doProduceDocument(array $configuration): string
     {
         return json_encode($configuration);
     }

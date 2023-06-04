@@ -5,11 +5,12 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Re
 class RenderingDefinition implements RenderingDefinitionInterface
 {
     protected ?array $visibility = null;
-    protected array $alignments = [];
     protected ?string $format = null;
     protected ?bool $hideLabel = null;
     protected ?string $label = null;
     protected ?bool $isNavigationItem = null;
+    protected ?bool $skipHeader = null;
+    protected array $triggers = [];
 
     public function toArray(): ?array
     {
@@ -23,14 +24,17 @@ class RenderingDefinition implements RenderingDefinitionInterface
         if ($this->visibility !== null) {
             $render['visibility'] = $this->visibility;
         }
-        if (!empty($this->alignments)) {
-            $render['alignments'] = $this->alignments;
-        }
         if ($this->isNavigationItem !== null) {
             $render['navigationItem'] = $this->isNavigationItem;
         }
         if ($this->label !== null) {
             $render['label'] = $this->label;
+        }
+        if ($this->skipHeader !== null) {
+            $render['skipHeader'] = $this->skipHeader;
+        }
+        if (!empty($this->triggers)) {
+            $render['triggers'] = $this->triggers;
         }
         return !empty($render) ? $render : null;
     }
@@ -43,6 +47,23 @@ class RenderingDefinition implements RenderingDefinitionInterface
     public function getLabel(): ?string
     {
         return $this->label;
+    }
+
+    public function addTrigger(string $triggerName): void
+    {
+        if (!in_array($triggerName, $this->triggers)) {
+            $this->triggers[] = $triggerName;
+        }
+    }
+
+    public function setSkipHeader(bool $skipHeader): void
+    {
+        $this->skipHeader = $skipHeader;
+    }
+
+    public function getSkipHeader(): bool
+    {
+        return $this->skipHeader;
     }
 
     public function setNavigationItem(bool $value): void
@@ -86,14 +107,6 @@ class RenderingDefinition implements RenderingDefinitionInterface
         $this->visibility = [
             'type' => 'toggle',
             'path' => $path,
-        ];
-    }
-
-    public function addAlignment(string $alignment, array $fields): void
-    {
-        $this->alignments[] = [
-            'alignment' => $alignment,
-            'items' => $fields,
         ];
     }
 

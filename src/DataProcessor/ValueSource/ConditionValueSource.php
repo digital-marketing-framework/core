@@ -36,17 +36,8 @@ class ConditionValueSource extends ValueSource
         $evalResult = $this->dataProcessor->processEvaluation($if, $this->context->copy());
         $thenResult = $then === null ? null : $this->dataProcessor->processValue($then, $this->context->copy());
         $elseResult = $else === null ? null : $this->dataProcessor->processValue($else, $this->context->copy());
-        
-        return $evalResult ? $thenResult : $elseResult;
-    }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_IF => static::DEFAULT_IF,
-            static::KEY_THEN => static::DEFAULT_THEN,
-            static::KEY_ELSE => static::DEFAULT_ELSE,
-        ];
+        return $evalResult ? $thenResult : $elseResult;
     }
 
     public static function getSchema(): SchemaInterface

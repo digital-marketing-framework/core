@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
@@ -35,14 +36,14 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $this->parser;
     }
 
-    public function tidyDocument(string $document): string
+    public function tidyDocument(string $document, SchemaDocument $schemaDocument): string
     {
-        return $this->parser->tidyDocument($document);
+        return $this->parser->tidyDocument($document, $schemaDocument);
     }
 
-    public function saveDocument(string $documentIdentifier, string $document): void
+    public function saveDocument(string $documentIdentifier, string $document, SchemaDocument $schemaDocument): void
     {
-        $document = $this->tidyDocument($document);
+        $document = $this->tidyDocument($document, $schemaDocument);
         $this->storage->setDocument($documentIdentifier, $document);
     }
 
@@ -51,15 +52,15 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $documentIdentifier;
     }
 
-    public function createDocument(string $documentIdentifier, string $document, string $documentName = ''): void
+    public function createDocument(string $documentIdentifier, string $document, string $documentName, SchemaDocument $schemaDocument): void
     {
         if ($documentName === '') {
             $documentName = $this->buildDocumentNameFromIdentifier($documentIdentifier);
         }
         $documentConfiguration = $this->getDocumentConfigurationFromDocument($document);
         $this->setName($documentConfiguration, $documentName);
-        $document = $this->parser->produceDocument($documentConfiguration);
-        $this->saveDocument($documentIdentifier, $document);
+        $document = $this->parser->produceDocument($documentConfiguration, $schemaDocument);
+        $this->saveDocument($documentIdentifier, $document, $schemaDocument);
     }
 
     public function deleteDocument(string $documentIdentifier): void

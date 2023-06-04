@@ -49,6 +49,21 @@ class MapSchema extends ListSchema
 
     public function getDefaultValue(SchemaDocument $schemaDocument): mixed
     {
-        return parent::getDefaultValue($schemaDocument) ?? [];
+        $defaultValue = parent::getDefaultValue($schemaDocument);
+        if (is_array($defaultValue) && empty($defaultValue)) {
+            $defaultValue = [];
+        }
+        return $defaultValue;
+    }
+
+    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
+    {
+        if (empty($value)) {
+            $value = (object)[];
+        } else {
+            foreach (array_keys($value) as $key) {
+                $this->valueSchema->preSaveDataTransform($value[$key], $schemaDocument);
+            }
+        }
     }
 }

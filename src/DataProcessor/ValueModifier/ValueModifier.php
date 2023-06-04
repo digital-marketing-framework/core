@@ -45,13 +45,6 @@ abstract class ValueModifier extends DataProcessorPlugin implements ValueModifie
         return $modifiedValue;
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_ENABLED => static::DEFAULT_ENABLED,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         $schema = new ContainerSchema();

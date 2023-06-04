@@ -6,67 +6,41 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
 
 class ComparisonSchema extends ContainerSchema
 {
     public const TYPE = 'COMPARISON';
 
-    public const VALUE_SET_COMPARISONS = 'comparison/all';
+    public const VALUE_SET_ALL = 'comparison/all';
     public const VALUE_SET_BINARY_OPERATIONS = 'comparison/binaryOperations';
     public const VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS = 'comparison/multiValueHandlingOperations';
-
-    protected StringSchema $typeSchema;
-    protected StringSchema $anyAllSchema;
-    protected CustomSchema $firstOperandSchema;
-    protected CustomSchema $secondOperandSchema;
-
-    /** @var array<string> $binaryOperations */
-    protected array $binaryOperations = [];
-
-    /** @var array<string> $multiValueHandlingOperations */
-    protected array $multiValueHandlingOperations = [];
 
     public function __construct(mixed $defaultValue = null)
     {
         parent::__construct($defaultValue);
-        $this->getRenderingDefinition()->setNavigationItem(false);
+        $firstOperand = new CustomSchema(ValueSchema::TYPE);
 
-        $this->typeSchema = new StringSchema();
-        $this->typeSchema->getRenderingDefinition()->setFormat('select');
-        $this->typeSchema->getRenderingDefinition()->hideLabel();
-
-        $this->anyAllSchema = new StringSchema();
-        $this->anyAllSchema->getAllowedValues()->addValue('any');
-        $this->anyAllSchema->getAllowedValues()->addValue('all');
-        $this->anyAllSchema->getRenderingDefinition()->setFormat('select');
-        $this->anyAllSchema->getRenderingDefinition()->hideLabel();
-        $this->anyAllSchema->getRenderingDefinition()->setVisibilityConditionByValueSet('./type', static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS);
+        $anyAll = new StringSchema();
+        $anyAll->getAllowedValues()->addValue(Comparison::VALUE_ANY_ALL_ANY);
+        $anyAll->getAllowedValues()->addValue(Comparison::VALUE_ANY_ALL_ALL);
+        $anyAll->getRenderingDefinition()->setFormat('select');
+        $anyAll->getRenderingDefinition()->hideLabel();
+        $anyAll->getRenderingDefinition()->setVisibilityConditionByValueSet(Comparison::KEY_OPERATION, static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS);
         // TODO it is currently not possible to have more than one condition on visibility
-        // $this->anyAllSchema->getRenderingDefinition()->setVisibilityConditionByValueSet('../data/type', ValueSourceSchema::VALUE_SET_VALUE_SOURCE_CAN_BE_MULTI_VALUE);
+        // $anyAll->getRenderingDefinition()->setVisibilityConditionByValueSet('../data/type', ValueSourceSchema::VALUE_SET_VALUE_SOURCE_CAN_BE_MULTI_VALUE);
 
-        $this->firstOperandSchema = new CustomSchema(ValueSchema::TYPE);
-        $this->firstOperandSchema->getRenderingDefinition()->hideLabel();
+        $operation = new StringSchema();
+        $operation->getAllowedValues()->addValueSet(static::VALUE_SET_ALL);
+        $operation->getRenderingDefinition()->setFormat('select');
+        $operation->getRenderingDefinition()->hideLabel();
 
-        $this->secondOperandSchema = new CustomSchema(ValueSchema::TYPE);
-        $this->secondOperandSchema->getRenderingDefinition()->hideLabel();
-        $this->secondOperandSchema->getRenderingDefinition()->setVisibilityConditionByValueSet('./type', static::VALUE_SET_BINARY_OPERATIONS);
+        $secondOperand = new CustomSchema(ValueSchema::TYPE);
+        $secondOperand->getRenderingDefinition()->setVisibilityConditionByValueSet(Comparison::KEY_OPERATION, static::VALUE_SET_BINARY_OPERATIONS);
 
-        $this->addProperty('type', $this->typeSchema);
-        $this->addProperty('anyAll', $this->anyAllSchema);
-        $this->addProperty('firstOperand', $this->firstOperandSchema);
-        $this->addProperty('secondOperand', $this->secondOperandSchema);
-        $this->getRenderingDefinition()->addAlignment('horizontal', ['firstOperand', 'anyAll', 'type', 'secondOperand']);
-    }
-
-    public function addItem(string $keyword, bool $binaryOperation, bool $multiValueHandlingOperation): void
-    {
-        $this->typeSchema->getAllowedValues()->addValue($keyword);
-        $this->addValueToValueSet(static::VALUE_SET_COMPARISONS, $keyword);
-        if ($binaryOperation) {
-            $this->addValueToValueSet(static::VALUE_SET_BINARY_OPERATIONS, $keyword);
-        }
-        if ($multiValueHandlingOperation) {
-            $this->addValueToValueSet(static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS, $keyword);
-        }
+        $this->addProperty(Comparison::KEY_FIRST_OPERAND, $firstOperand);
+        $this->addProperty(Comparison::KEY_ANY_ALL, $anyAll);
+        $this->addProperty(Comparison::KEY_OPERATION, $operation);
+        $this->addProperty(Comparison::KEY_SECOND_OPERAND, $secondOperand);
     }
 }

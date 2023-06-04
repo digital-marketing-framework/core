@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterfac
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
@@ -18,6 +19,7 @@ interface RegistryInterface extends
     LoggerFactoryRegistryInterface,
     ContextRegistryInterface,
     CacheRegistryInterface,
+    ConfigurationSchemaRegistryInterface,
     ConfigurationDocumentManagerRegistryInterface,
     FileStorageRegistryInterface,
 
@@ -28,7 +30,4 @@ interface RegistryInterface extends
      * Create a class instance and process awareness
      */
     public function createObject(string $class, array $arguments = []): object;
-
-    public function addConfigurationSchema(SchemaDocument $schemaDocument): void;
-    public function getConfigurationSchema(): SchemaDocument;
 }

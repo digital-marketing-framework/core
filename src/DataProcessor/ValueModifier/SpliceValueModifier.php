@@ -46,14 +46,6 @@ class SpliceValueModifier extends ValueModifier
         return implode($token, $slices);
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_TOKEN => static::DEFAULT_TOKEN,
-            static::KEY_INDEX => static::DEFAULT_INDEX,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

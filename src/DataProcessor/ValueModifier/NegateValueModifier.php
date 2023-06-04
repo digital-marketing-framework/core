@@ -51,14 +51,6 @@ class NegateValueModifier extends ValueModifier
         }
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_TRUE => static::DEFAULT_TRUE,
-            static::KEY_FALSE => static::DEFAULT_FALSE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

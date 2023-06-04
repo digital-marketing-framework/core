@@ -27,11 +27,11 @@ const containerState = computed(() => store.getContainerState(props.currentPath)
 </script>
 
 <template>
-    <Disclosure :default-open="containerState"
+    <Disclosure v-if="!item.schema.skipHeader" :default-open="containerState"
                     v-slot="{ open }">
         <ContainerHeader :currentPath="currentPath">
             <template #disclosureButton>
-                <DisclosureButton v-if="item.childPaths.length && !item.selected" class="p-1" @click="store.toggleContainerState(currentPath)">
+                <DisclosureButton v-if="!item.selected" class="p-1" @click="store.toggleContainerState(currentPath)">
                     <AngleDownIcon class="w-3 h-3"
                                     :class="{
                                         '-rotate-90': !open
@@ -48,4 +48,5 @@ const containerState = computed(() => store.getContainerState(props.currentPath)
             </DisclosurePanel>
         </TransitionExpand>
     </Disclosure>
+    <slot v-else name="fieldsUi"></slot>
 </template>

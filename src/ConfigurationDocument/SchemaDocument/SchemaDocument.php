@@ -142,4 +142,12 @@ class SchemaDocument
         }
         return $schema->getDefaultValue($this);
     }
+
+    public function preSaveDataTransform(array &$data, ?SchemaInterface $schema = null): void
+    {
+        if ($schema === null) {
+            $schema = $this->mainSchema;
+        }
+        $schema->preSaveDataTransform($data, $this);
+    }
 }

@@ -26,13 +26,6 @@ class FieldsDataMapper extends WritingDataMapper
         }
     }
 
-    public static function getDefaultConfiguration(?bool $enabled = null): array
-    {
-        return parent::getDefaultConfiguration($enabled) + [
-            static::KEY_FIELDS => static::DEFAULT_FIELDS,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

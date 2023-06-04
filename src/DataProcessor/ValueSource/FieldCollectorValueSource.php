@@ -115,17 +115,6 @@ class FieldCollectorValueSource extends ValueSource
         return $result;
     }
 
-    public static function getDefaultConfiguration(): array
-    {
-        return parent::getDefaultConfiguration() + [
-            static::KEY_IGNORE_IF_EMPTY => static::DEFAULT_IGNORE_IF_EMPTY,
-            static::KEY_UNPROCESSED_ONLY => static::DEFAULT_UNPROCESSED_ONLY,
-            static::KEY_EXCLUDE => static::DEFAULT_EXCLUDE,
-            static::KEY_INCLUDE => static::DEFAULT_INCLUDE,
-            static::KEY_TEMPLATE => static::DEFAULT_TEMPLATE,
-        ];
-    }
-
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */

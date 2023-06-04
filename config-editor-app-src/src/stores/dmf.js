@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 
+import { cloneValue, mergeValue, valuesEqual } from '../composables/valueHelper';
+
 export const EVENT_APP_REQUEST = 'dmf-configuration-editor-app-request';
 export const EVENT_APP_START = 'dmf-configuration-editor-app-start';
 
@@ -12,12 +14,14 @@ const NATIVE_SCHEMA_TYPES = [
     'INTEGER',
     'BOOLEAN',
 ];
+
 const CONTAINER_TYPES = [
     'SWITCH',
     'CONTAINER',
     'MAP',
     'LIST'
 ];
+
 const DYNAMIC_CONTAINER_TYPES = [
   'LIST',
   'MAP'
@@ -28,13 +32,6 @@ const WARNING_DOCUMENT_INVALID = 'documentInvalid';
 const WARNINGS = {};
 WARNINGS[WARNING_INCLUDES_CHANGED] = 'Includes have changed';
 WARNINGS[WARNING_DOCUMENT_INVALID] = 'Document validation failed';
-
-const cloneValue = (value) => {
-  if (typeof value === 'undefined') {
-    return undefined;
-  }
-  return JSON.parse(JSON.stringify(value));
-};
 
 // const doFetchData = async function() {
 //   const dataPromise = new Promise(resolve => {
@@ -102,7 +99,6 @@ export const useDmfStore = defineStore('dmf', {
         this.data.metaData.includes = [];
       }
       this.referenceIncludes = cloneValue(this.data.metaData.includes || []),
-      this.fix('/');
       // this.evaluate('/');
       this.triggerRerender();
     },
@@ -121,7 +117,6 @@ export const useDmfStore = defineStore('dmf', {
     //   this.onIncludeChange = response.onIncludeChange;
     //   this.loaded = true;
     //   this._updateValue('/');
-    //   this.fix('/');
     //   this.evaluate('/');
     //   this.writeMessage('loaded!');
     // },
@@ -175,7 +170,7 @@ export const useDmfStore = defineStore('dmf', {
       if (lastPathPart !== 'type') {
           return;
       }
-      const parentSchema = this.getSchema(path + '/..', currentPath, true);
+      const parentSchema = this.getSchema('.', this.getParentPath(path, currentPath), true);
       if (parentSchema.type !== 'SWITCH') {
           return;
       }
@@ -186,7 +181,6 @@ export const useDmfStore = defineStore('dmf', {
       if (this.isRoot(path, currentPath)) {
         this.data = value;
       } else {
-        // this._updateParentValue(path, currentPath);
         if (isSwitchKey) {
           this.processSwitchChange(path, currentPath, value);
         }
@@ -246,8 +240,6 @@ export const useDmfStore = defineStore('dmf', {
     addValue(path, currentPath) {
       const schema = this.getSchema(path, currentPath);
       this._addValue(schema, path, currentPath);
-      // TODO do we need this fix call? can a default value have objects instead of arrays or vice versa?
-      // this.fix(path, currentPath);
     },
     removeValue(path, currentPath) {
       const parentPath = path + '/..';
@@ -427,33 +419,9 @@ export const useDmfStore = defineStore('dmf', {
       }
     },
     /**
-     * The server expresses both empty MAPs and empty LISTs
-     * In YAML an empty MAP is not distinugishable from an empty LIST.
-     * Both are expressed as "{ }", which is interpreted as an empty array by the YAML parser.
-     *
-     * This method goes over a freshly created value and its corresponding schemas
-     * and all its sub values and tries to fix this issue.
-     *
-     * @param string path
-     * @param string currentPath
-     */
-    fix(path, currentPath) {
-      const schema = this.getSchema(path, currentPath);
-      const value = this.getValue(path, currentPath);
-      if (schema.type === 'MAP' && typeof value === 'object' && Array.isArray(value) && value.length === 0) {
-        // empty map values can be interpreted as array instead of object by parsers
-        this.setValue(path, currentPath, {});
-      } else {
-        const absolutePath = this.getAbsolutePath(path, currentPath);
-        this.getChildPaths(path, currentPath).forEach(childPath => {
-          this.fix(childPath, absolutePath);
-        });
-      }
-    },
-    /**
      * This method does document cleanup tasks right before the document is saved.
      *
-     * The SWITCH containers create data whenever their type if switched.
+     * The SWITCH containers create data whenever their type is switched.
      * This creates a lot of overhead data that should stay during the editing
      * but that is useless when the document is about to be saved.
      *
@@ -790,8 +758,9 @@ export const useDmfStore = defineStore('dmf', {
         if (this.isNativeType(schema.type)) {
           return schema;
         }
-        schema = this.getCustomSchema(schema.type);
-        return this.resolveSchema(schema);
+        const customSchema = cloneValue(this.getCustomSchema(schema.type));
+        mergeValue(schema, customSchema, ['type']);
+        return this.resolveSchema(customSchema);
       };
     },
     _getSchema() {
@@ -939,7 +908,7 @@ export const useDmfStore = defineStore('dmf', {
     },
     getChildPaths() {
       return (path, currentPath, absolute) => {
-          const schema = this.getSchema(path, currentPath);
+          const schema = this.getSchema(path, currentPath, true);
           const childPaths = this._getChildPaths(schema, path, currentPath, absolute);
           return childPaths;
       };
@@ -971,28 +940,6 @@ export const useDmfStore = defineStore('dmf', {
     getSelectedPath(state) {
       return () => state.selectedPath;
     },
-    _valuesEqual() {
-      return (a, b) => {
-        if (typeof a === 'object' && typeof b === 'object') {
-            for (let key in a) {
-                if (typeof b[key] === 'undefined') {
-                    return false;
-                }
-                if (!this._valuesEqual(a[key], b[key])) {
-                    return false;
-                }
-            }
-            for (let key in b) {
-              if (typeof a[key] === 'undefined') {
-                return false;
-              }
-            }
-            return true;
-        } else {
-            return a === b;
-        }
-      };
-    },
     isInherited() {
       return (path, currentPath) => {
         if (this.isMetaData(path, currentPath)) {
@@ -1011,7 +958,7 @@ export const useDmfStore = defineStore('dmf', {
             delete inheritedValue.metaData;
           }
         }
-        return this._valuesEqual(value, inheritedValue);
+        return valuesEqual(value, inheritedValue);
       };
     },
     isOverwritten() {
@@ -1041,21 +988,47 @@ export const useDmfStore = defineStore('dmf', {
     hasIssues() {
       return (path, currentPath) => this.getIssue(path, currentPath) !== '';
     },
+    _processLabel() {
+      return (label, path, currentPath) => {
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        let variableFound = true;
+        while (variableFound) {
+          variableFound = false;
+          label = label.replace(/^\{[^}]+\}$/, match => {
+            variableFound = true;
+            const referencePath = match.substring(1, match.length - 1);
+            return this.getValue(referencePath, absolutePath);
+          });
+        }
+        return label;
+      };
+    },
+    _prettifyLabel() {
+      return label => {
+        const ucfirst = s => s.substring(0, 1).toUpperCase() + s.substring(1);
+        label = label.replace(/[A-Z]+/g, match => ' ' + match);
+        label = label.replace(/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/g, (wholeMatch, match) => ' ' + ucfirst(match));
+        return ucfirst(label);
+      };
+    },
     getLabel() {
       return (path, currentPath) => {
-        const ucfirst = s => s.substring(0, 1).toUpperCase() + s.substring(1);
-        const schema = this.getSchema(path, currentPath);
+        const schema = this.getSchema(path, currentPath, true);
+
+        let label;
         if (schema.hideLabel) {
-          return '';
+          label = '';
+        } else if (schema.label) {
+          label = this._processLabel(schema.label, path, currentPath);
+        } else {
+          label = this.getLeafKey(path, currentPath);
         }
-        if (schema.label) {
-          return schema.label;
+
+        if (schema.useOriginalLabel) {
+          return label;
         }
-        const key = this.getLeafKey(path, currentPath);
-        let label = key;
-        label = label.replace(/[A-Z]+/g, function(match) { return ' ' + match; });
-        label = label.replace(/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/g, function(wholeMatch, match) { return ' ' + ucfirst(match); });
-        return ucfirst(label);
+
+        return this._prettifyLabel(label);
       };
     },
     getRootLine() {
@@ -1117,9 +1090,15 @@ export const useDmfStore = defineStore('dmf', {
         return state.collapsedMenuPaths[absolutePath];
       };
     },
+    getTriggers() {
+      return (path, currentPath) => {
+        return this.getSchema(path, currentPath, true).triggers || [];
+      };
+    },
     getItem() {
       return (path, currentPath) => {
         const schema = this.getSchema(path, currentPath, true);
+        const immediateSchema = this.getSchema(path, currentPath);
         return {
             path: this.getAbsolutePath(path, currentPath),
             parentPath: this.isRoot(path, currentPath) ? '' : this.getParentPath(path, currentPath),
@@ -1127,6 +1106,8 @@ export const useDmfStore = defineStore('dmf', {
             isRoot: this.isRoot(path, currentPath),
             rootLine: this.getRootLine(path, currentPath),
             schema: schema,
+            immediateSchema: immediateSchema,
+            custom: this.isCustomType(immediateSchema.type),
             level: this.getLevel(path, currentPath),
             currentKey: this.getLeafKey(path, currentPath),
             parentValue: this.getParentValue(path, currentPath),
@@ -1141,7 +1122,8 @@ export const useDmfStore = defineStore('dmf', {
             label: this.getLabel(path, currentPath),
             hasIssues: this.hasIssues(path, currentPath),
             issue: this.getIssue(path, currentPath),
-            rawView: this.isRawView(path, currentPath)
+            rawView: this.isRawView(path, currentPath),
+            triggers: this.getTriggers(path, currentPath)
         };
       };
     },

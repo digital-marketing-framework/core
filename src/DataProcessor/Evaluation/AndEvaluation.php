@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\Evaluation;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
@@ -11,10 +12,13 @@ class AndEvaluation extends Evaluation
 {
     public const WEIGHT = 4;
 
+    public const KEY_EVALUATIONS = 'evaluations';
+
     public function evaluate(): bool
     {
         $result = true;
-        foreach ($this->configuration as $subEvaluationConfig) {
+        $subEvaluations = $this->getConfig(static::KEY_EVALUATIONS);
+        foreach ($subEvaluations as $subEvaluationConfig) {
             if (!$this->dataProcessor->processEvaluation($subEvaluationConfig, $this->context->copy())) {
                 $result = false;
             }
@@ -24,6 +28,9 @@ class AndEvaluation extends Evaluation
 
     public static function getSchema(): SchemaInterface
     {
-        return new ListSchema(new CustomSchema(EvaluationSchema::TYPE));
+        /** @var ContainerSchema $schema */
+        $schema = parent::getSchema();
+        $schema->addProperty(static::KEY_EVALUATIONS, new ListSchema(new CustomSchema(EvaluationSchema::TYPE)));
+        return $schema;
     }
 }
