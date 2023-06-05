@@ -10,12 +10,7 @@ class EvaluationSchema extends SwitchSchema
 
     public function __construct(mixed $defaultValue = null)
     {
-        parent::__construct($defaultValue);
+        parent::__construct('evaluation', $defaultValue);
         $this->getRenderingDefinition()->setNavigationItem(false);
-    }
-
-    protected function getSwitchName(): string
-    {
-        return 'evaluation';
     }
 }

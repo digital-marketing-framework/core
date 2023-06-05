@@ -8,31 +8,34 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\S
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
-abstract class SwitchSchema extends ContainerSchema
+class SwitchSchema extends ContainerSchema
 {
+    public const KEY_TYPE = 'type';
+    public const KEY_CONFIG = 'config';
+
     protected StringSchema $typeSchema;
     protected ContainerSchema $configSchema;
-
-    abstract protected function getSwitchName(): string;
 
     public function getType(): string
     {
         return "SWITCH";
     }
 
-    public function __construct(mixed $defaultValue = null)
-    {
+    public function __construct(
+        protected string $switchName,
+        mixed $defaultValue = null,
+    ) {
         parent::__construct($defaultValue);
         $this->getRenderingDefinition()->setLabel('{type}');
 
         $this->typeSchema = new StringSchema();
         $this->typeSchema->getRenderingDefinition()->setFormat('select');
         $this->typeSchema->getRenderingDefinition()->addTrigger('switch');
-        $this->typeSchema->getAllowedValues()->addValueSet($this->getSwitchName() . '/all');
+        $this->typeSchema->getAllowedValues()->addValueSet($this->switchName . '/all');
 
         $this->configSchema = new ContainerSchema();
-        $this->addProperty('type', $this->typeSchema);
-        $this->addProperty('config', $this->configSchema);
+        $this->addProperty(static::KEY_TYPE, $this->typeSchema);
+        $this->addProperty(static::KEY_CONFIG, $this->configSchema);
     }
 
     public function getTypeSchema(): StringSchema
@@ -50,7 +53,7 @@ abstract class SwitchSchema extends ContainerSchema
 
     public function addItem(string $type, SchemaInterface $schema): void
     {
-        $this->addValueToValueSet($this->getSwitchName() . '/all', $type);
+        $this->addValueToValueSet($this->switchName . '/all', $type);
         $schema->getRenderingDefinition()->setSkipHeader(true);
         $schema->getRenderingDefinition()->setNavigationItem(false);
         $this->configSchema->addProperty($type, $schema);
@@ -73,5 +76,22 @@ abstract class SwitchSchema extends ContainerSchema
                 $type => $config,
             ],
         ];
+    }
+
+    public static function getSwitchType(array $switchConfig): string
+    {
+        if (!isset($switchConfig[static::KEY_TYPE])) {
+            throw new DigitalMarketingFrameworkException('no switch type found');
+        }
+        return $switchConfig[static::KEY_TYPE];
+    }
+
+    public static function getSwitchConfiguration(array $switchConfig): mixed
+    {
+        $type = static::getSwitchType($switchConfig);
+        if (!isset($switchConfig[static::KEY_CONFIG][$type])) {
+            throw new DigitalMarketingFrameworkException(sprintf('config type "%s" not found in switch configuration', $type));
+        }
+        return $switchConfig[static::KEY_CONFIG][$type];
     }
 }
