@@ -90,11 +90,11 @@ async function getSchema(settings) {
 async function setData(textarea, settings, data) {
   const response = await ajaxFetch(settings.urls.split, data);
   textarea.value = response.document;
-  // TODO the t3 form engine does not seem to notice any of these events and triggers
+  textarea.dispatchEvent(new Event('paste'), { bubbles: true});
   textarea.dispatchEvent(new Event('change'), { bubbles: true});
   textarea.dispatchEvent(new Event('input'), { bubbles: true});
-  if (typeof textarea.onChange === 'function') {
-    textarea.onChange();
+  if (typeof textarea.onchange === 'function') {
+    textarea.onchange();
   }
 }
 
