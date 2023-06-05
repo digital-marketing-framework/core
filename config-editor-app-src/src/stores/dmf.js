@@ -994,7 +994,7 @@ export const useDmfStore = defineStore('dmf', {
         let variableFound = true;
         while (variableFound) {
           variableFound = false;
-          label = label.replace(/^\{[^}]+\}$/, match => {
+          label = label.replace(/\{[^}]+\}/, match => {
             variableFound = true;
             const referencePath = match.substring(1, match.length - 1);
             return this.getValue(referencePath, absolutePath);
@@ -1008,6 +1008,7 @@ export const useDmfStore = defineStore('dmf', {
         const ucfirst = s => s.substring(0, 1).toUpperCase() + s.substring(1);
         label = label.replace(/[A-Z]+/g, match => ' ' + match);
         label = label.replace(/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/g, (wholeMatch, match) => ' ' + ucfirst(match));
+        label = label.replace(/[^a-zA-Z0-9]+$/, '');
         return ucfirst(label);
       };
     },
