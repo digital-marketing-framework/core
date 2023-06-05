@@ -303,6 +303,7 @@ final class GeneralUtility
         $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', function(array $matches) {
             return ' ' . ucfirst($matches[1]);
         }, $label);
+        $label = preg_replace('/[^a-zA-Z0-9]$/', '', $label);
         return ucfirst($label);
     }
 }
