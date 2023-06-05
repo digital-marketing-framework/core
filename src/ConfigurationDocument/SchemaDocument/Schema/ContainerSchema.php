@@ -101,7 +101,14 @@ class ContainerSchema extends Schema
             $value = (object)[];
         } else {
             foreach (array_keys($value) as $key) {
-                $this->getProperty($key)->getSchema()->preSaveDataTransform($value[$key], $schemaDocument);
+                $property = $this->getProperty($key);
+                if ($property !== null) {
+                    // TODO unknown data should be allowed due to previous schema versions
+                    //      however, if we can run migrations first, this would be different
+                    //      eventually we do want to cleanup and/or validate a configuration completely
+                    //      but probably not in this method
+                    $property->getSchema()->preSaveDataTransform($value[$key], $schemaDocument);
+                }
             }
         }
     }
