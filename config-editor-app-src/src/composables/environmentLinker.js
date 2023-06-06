@@ -1,59 +1,9 @@
 export const EVENT_INIT = 'dmf-configuration-editor-init';
-export const EVENT_APP_REQUEST = 'dmf-configuration-editor-app-request';
-export const EVENT_APP_START = 'dmf-configuration-editor-app-start';
+export const EVENT_APP_OPEN = 'dmf-configuration-editor-app-open';
+export const EVENT_APP_CLOSE = 'dmf-configuration-editor-app-close';
+export const EVENT_APP_SAVE = 'dmf-configuration-editor-app-save';
 
 const RAW_LANGUAGE = 'YAML';
-
-let appEvent = null;
-document.addEventListener(EVENT_APP_REQUEST, () => {
-  setTimeout(() => {
-    if (appEvent !== null) {
-      document.dispatchEvent(appEvent);
-    }
-  }, 0);
-});
-
-function view(stage, data, inheritedData, schemaDocument, settings, onSave, onIncludeChange) {
-  appEvent = new CustomEvent(EVENT_APP_START, {
-    detail: {
-      stage: stage,
-      data: data,
-      inheritedData: inheritedData,
-      schemaDocument: schemaDocument,
-      settings: settings,
-      onSave: onSave,
-      onIncludeChange: onIncludeChange
-    }
-  });
-  document.dispatchEvent(appEvent);
-
-  // for testing purposes only, to be used in the browser console
-  // update data object by manipulating window.dce.data
-  // save data object to textarea by executing window.dce.save()
-  // update document includes by executing window.dce.updateIncludes()
-  console.log('Hello DCE');
-  window.dce = {
-    stage: stage,
-    data: data,
-    inheritedData: inheritedData,
-    schemaDocument: schemaDocument,
-    settings: settings,
-    onSave: onSave,
-    onIncludeChange: onIncludeChange,
-    save: function() {
-      this.onSave(this.data)
-        .then(() => { console.log('saved'); });
-    },
-    updateIncludes: function() {
-      this.onIncludeChange(this.data)
-        .then(response => {
-          this.data = response.data;
-          this.inheritedData = response.inheritedData;
-          console.log('includes updated');
-        });
-    }
-  };
-}
 
 async function ajaxFetch(url, payload) {
   const options = {
@@ -108,68 +58,40 @@ function getDocumentForm(textarea) {
 
 async function save(textarea, settings, data) {
   await setData(textarea, settings, data);
-  if (settings.mode === 'embedded') {
-    getDocumentForm(textarea)?.submit();
-  }
 }
 
 async function updateIncludes(settings, referenceData, newData) {
-  return await ajaxFetch(settings.urls.updateIncludes, {'referenceData': referenceData, 'newData': newData});
+  const payload = {'referenceData': referenceData, 'newData': newData};
+  return await ajaxFetch(settings.urls.updateIncludes, payload);
 }
 
-function start(textarea, stage, settings) {
-  let data, inheritedData, schema;
-  let referenceData;
-  Promise.all([
-    getSchema(settings).then(response => {
-      schema = response;
-    }),
-    getData(textarea, settings).then(response => {
-      data = response.configuration;
-      inheritedData = response.inheritedConfiguration;
-    })
-  ]).then(() => {
-    referenceData = cloneData(data);
-    view(
-      stage,
-      data,
-      inheritedData,
-      schema,
-      settings,
-      async (newData) => {
-        await save(textarea, settings, newData);
-      },
-      async (newData) => {
-        const response = await updateIncludes(settings, referenceData, newData);
-        data = response.configuration;
-        inheritedData = response.inheritedConfiguration;
-        referenceData = cloneData(data);
-        return {data: data, inheritedData: inheritedData};
-      }
-    );
-  });
+function updateTextArea(textarea, stage, settings, start) {
+  if (settings.mode === 'modal') {
+    const startButton = document.createElement('BUTTON');
+    textarea.parentNode.insertBefore(startButton, textarea.nextSibling);
+    startButton.innerHTML = 'configure';
+    startButton.classList.add('btn', 'btn-default');
+
+    startButton.addEventListener('click', () => {
+      start(textarea, stage, settings);
+    });
+  }
+  textarea.style.display = 'none';
 }
 
-function setupEmbedded(textarea, settings) {
+function setupEmbedded(textarea) {
   const stage = document.createElement('DIV');
-  stage.classList.add('dmf-configuration-document-editor-stage')
-  textarea.parentNode.insertBefore(stage, textarea.nextSibling);
-  start(textarea, stage, settings);
+  stage.classList.add('dmf-configuration-document-editor-stage');
+  const form = getDocumentForm(textarea);
+  form.parentNode.insertBefore(stage, form.nextSibling);
+  return stage;
 }
 
-function setupModal(textarea, settings) {
+function setupModal() {
   const stage = document.createElement('DIV');
   stage.classList.add('dmf-configuration-document-editor-stage');
   document.body.appendChild(stage);
-
-  const startButton = document.createElement('BUTTON');
-  textarea.parentNode.insertBefore(startButton, textarea.nextSibling);
-  startButton.innerHTML = 'configure';
-  startButton.classList.add('btn', 'btn-default');
-
-  startButton.addEventListener('click', () => {
-    start(textarea, stage, settings);
-  });
+  return stage;
 }
 
 function getSettings(textarea) {
@@ -187,28 +109,129 @@ function getSettings(textarea) {
   return settings;
 }
 
-function setup(textarea) {
-  const settings = getSettings(textarea);
-  switch (settings.mode) {
-    case 'embedded':
-      setupEmbedded(textarea, settings);
-      break;
-    case 'modal':
-      setupModal(textarea, settings);
-      break;
-    default:
-      console.error('unknown editor mode "' + settings.mode + '"');
-  }
+async function getInitialTextArea() {
+  return new Promise(resolve => {
+    const textarea = document.querySelector('textarea.dmf-configuration-document');
+    if (textarea !== null && textarea.dataset.app === 'true') {
+      setTimeout(() => {
+        resolve(textarea);
+      }, 0);
+    } else {
+      document.addEventListener(EVENT_INIT, () => {
+        const textarea = document.querySelector('textarea.dmf-configuration-document');
+        resolve(textarea);
+      });
+    }
+  });
 }
 
-export const linkEnvironment = function() {
-  let textarea = document.querySelector('textarea.dmf-configuration-document');
-  if (textarea !== null && textarea.dataset.app === 'true') {
-    setup(textarea);
-  } else {
-    document.addEventListener(EVENT_INIT, () => {
-      textarea = document.querySelector('textarea.dmf-configuration-document');
-      setup(textarea);
-    });
+function getStageSiblings(stage) {
+  const siblings = [];
+  const children = stage.parentNode.children;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (child !== stage) {
+      siblings.push({ element: child, display: child.style.display });
+    }
   }
+  return siblings;
+}
+
+function triggerFormSave(textarea) {
+  getDocumentForm(textarea)?.submit();
+}
+
+function triggerFormDiscard(textarea) {
+  getDocumentForm(textarea)?.querySelector('[data-role="close"]')?.click();
+}
+
+export const linkEnvironment = async () => {
+
+  let textarea, settings, stage, schemaDocument;
+  let data, inheritedData, referenceData;
+  let elementsToHide = null;
+
+  const hideElements = () => {
+    elementsToHide.forEach(e => {
+      e.element.style.display = 'none';
+    });
+  };
+
+  const showElements = () => {
+    elementsToHide.forEach(e => {
+      e.element.style.display = e.display;
+    });
+  };
+
+  const onSave = async (newData) => {
+    await save(textarea, settings, newData);
+    if (settings.mode === 'modal') {
+      document.dispatchEvent(new Event(EVENT_APP_CLOSE));
+    } else {
+      triggerFormSave(textarea);
+    }
+  };
+
+  const onIncludeChange = async (newData) => {
+    const response = await updateIncludes(settings, referenceData, newData);
+    data = response.configuration;
+    inheritedData = response.inheritedConfiguration;
+    referenceData = cloneData(data);
+    return { data: data, inheritedData: inheritedData };
+  };
+
+  const onClose = async () => {
+    if (settings.mode === 'modal') {
+      showElements();
+    } else {
+      triggerFormDiscard(textarea);
+    }
+  };
+
+  textarea = await getInitialTextArea();
+  settings = getSettings(textarea);
+  schemaDocument = await getSchema(settings);
+
+  const start = async () => {
+    const response = await getData(textarea, settings);
+    referenceData = cloneData(response.configuration);
+    const appEvent = new CustomEvent(EVENT_APP_OPEN, {
+      detail: {
+        data: response.configuration,
+        inheritedData: response.inheritedConfiguration
+      }
+    });
+    document.dispatchEvent(appEvent);
+    if (settings.mode === 'modal') {
+      elementsToHide = getStageSiblings(stage);
+    } else {
+      const form = getDocumentForm(textarea);
+      elementsToHide = [{ element: form, display: form.style.display }];
+    }
+    hideElements();
+  };
+
+  if (settings.mode === 'modal') {
+    stage = setupModal();
+    updateTextArea(textarea, stage, settings, start);
+  } else {
+    stage = setupEmbedded(textarea, settings, start);
+    setTimeout(() => {
+      start(textarea, stage, settings);
+    }, 0);
+  }
+
+  document.addEventListener(EVENT_INIT, () => {
+    textarea = document.querySelector('textarea.dmf-configuration-document');
+    updateTextArea(textarea, stage, settings, start);
+  });
+
+  return {
+    settings: settings,
+    stage: stage,
+    schemaDocument: schemaDocument,
+    onSave: onSave,
+    onIncludeChange: onIncludeChange,
+    onClose: onClose
+  };
 };

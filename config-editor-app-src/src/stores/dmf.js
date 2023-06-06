@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia';
-
+// import { nextTick } from 'vue';
 import { cloneValue, mergeValue, valuesEqual } from '../composables/valueHelper';
-
-export const EVENT_APP_REQUEST = 'dmf-configuration-editor-app-request';
-export const EVENT_APP_START = 'dmf-configuration-editor-app-start';
 
 const NATIVE_SCHEMA_TYPES = [
     'SWITCH',
@@ -33,34 +30,6 @@ const WARNINGS = {};
 WARNINGS[WARNING_INCLUDES_CHANGED] = 'Includes have changed';
 WARNINGS[WARNING_DOCUMENT_INVALID] = 'Document validation failed';
 
-// const doFetchData = async function() {
-//   const dataPromise = new Promise(resolve => {
-//     document.addEventListener(EVENT_APP_START, e => {
-//       resolve(e.detail);
-//     });
-//   });
-//   document.dispatchEvent(new Event(EVENT_APP_REQUEST));
-//   return dataPromise;
-// };
-
-// window.DMF_CONFIG_EDITOR = window.DMF_CONFIG_EDITOR || {
-//   data: {},
-//   inheritedData: {},
-//   schemaDocument: {
-//     valueSets: {},
-//     types: {},
-//     schema: {
-//       type: 'CONTAINER',
-//       values: []
-//     }
-//   },
-//   settings: {
-//   },
-//   onSave: null,
-//   onIncludeChange: null,
-//   loaded: false
-// };
-
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
       selectedPath: '/',
@@ -69,27 +38,28 @@ export const useDmfStore = defineStore('dmf', {
       collapsedContainerPaths: {},
 
       referenceIncludes: [],
-      data: window.DMF_CONFIG_EDITOR.data,
-      inheritedData: window.DMF_CONFIG_EDITOR.inheritedData,
-      schemaDocument: window.DMF_CONFIG_EDITOR.schemaDocument,
-      settings: window.DMF_CONFIG_EDITOR.settings,
-      onSave: window.DMF_CONFIG_EDITOR.onSave,
-      onIncludeChange: window.DMF_CONFIG_EDITOR.onIncludeChange,
+      data: {},
+      inheritedData: {},
+      schemaDocument: {},
+      settings: {},
+      onSave: async () => {},
+      onIncludeChange: async () => {},
+      onClose: async () => {},
 
-      loaded: window.DMF_CONFIG_EDITOR.loaded,
+      loaded: false,
+      isOpen: false,
       issues: {},
       warnings: {},
-      messages: [],
-      renderComponent: true
+      messages: []
   }),
   actions: {
     writeMessage(message, type) {
       this.messages.push({text: message, type: type || 'info'});
-      this.triggerRerender();
+      // this.triggerRerender();
     },
     removeMessage(index) {
       this.messages.splice(index, 1);
-      this.triggerRerender();
+      // this.triggerRerender();
     },
     initData() {
       if (typeof this.data.metaData === 'undefined') {
@@ -99,33 +69,34 @@ export const useDmfStore = defineStore('dmf', {
         this.data.metaData.includes = [];
       }
       this.referenceIncludes = cloneValue(this.data.metaData.includes || []),
+      this._updateValue('/');
       // this.evaluate('/');
-      this.triggerRerender();
+      // this.triggerRerender();
     },
-    // _updateData(dataKey, data) {
-    //   Object.keys(data).forEach(key => {
-    //     this[dataKey][key] = data;
-    //   });
-    // },
-    // async fetchData() {
-    //   const response = await doFetchData();
-    //   this._updateData('data', response.data);
-    //   this._updateData('inheritedData', response.inheritedData);
-    //   this._updateData('schemaDocument', response.inheritedDocument);
-    //   this._updateData('settings', response.settings);
-    //   this.onSave = response.onSave;
-    //   this.onIncludeChange = response.onIncludeChange;
-    //   this.loaded = true;
-    //   this._updateValue('/');
-    //   this.evaluate('/');
-    //   this.writeMessage('loaded!');
-    // },
+    async receiveData(response) {
+      this.data = response.data;
+      this.inheritedData = response.inheritedData;
+      this.loaded = true;
+      this.initData();
+      // this.writeMessage('loaded!');
+      // this.triggerRerender();
+    },
+    async open() {
+      this.selectPath('/');
+      this.isOpen = true;
+      // this.triggerRerender();
+    },
+    async close() {
+      this.isOpen = false;
+      await this.onClose();
+      // this.triggerRerender();
+    },
     async save() {
       // TODO purge switch elements > do not delete, but reset the config items that are not selected
       // TODO check if includes have changed, updateIncludes() if they have
       this.finish('/');
       await this.onSave(this.data);
-      this.writeMessage('Document saved!');
+      // this.writeMessage('Document saved!');
     },
     async updateIncludes() {
       const response = await this.onIncludeChange(this.data);
@@ -135,17 +106,20 @@ export const useDmfStore = defineStore('dmf', {
       this.unsetWarning(WARNING_INCLUDES_CHANGED);
       this.writeMessage('Includes updated successfully!');
     },
-    triggerRerender() {
-      // funny things I do that weirdly seem to help in some situations
-      // to update all components when the state is changing
-      window.dmfUpdateFunctionFwegwWfwegwFG = window.dmfUpdateFunctionFwegwWfwegwFG || function() {};
-      window.dmfUpdateFunctionFwegwWfwegwFG(this.$forceUpdate);
-      try {
-        this.$forceUpdate();
-      } catch(e) {
-        // nothing to do here
-      }
-    },
+    // async triggerRerender() {
+    //   // funny things I do that weirdly seem to help in some situations
+    //   // to update all components when the state is changing
+    //   window.dmfUpdateFunctionFwegwWfwegwFG = window.dmfUpdateFunctionFwegwWfwegwFG || function() {};
+    //   window.dmfUpdateFunctionFwegwWfwegwFG(this.$forceUpdate);
+    //   try {
+    //     this.$forceUpdate();
+    //   } catch(e) {
+    //     // nothing to do here
+    //   }
+    //   // this.isOpen = false;
+    //   // await nextTick();
+    //   // this.isOpen = true;
+    // },
     _updateParentValue(path, currentPath) {
       const parentPath = path + '/..';
       const parentValue = this.getValue(parentPath, currentPath);
@@ -283,11 +257,11 @@ export const useDmfStore = defineStore('dmf', {
         }
         this.setValue(path, currentPath, clonedValue);
       }
-      this.triggerRerender();
+      // this.triggerRerender();
     },
     selectPath(path, currentPath) {
       this.selectedPath = this.getAbsolutePath(path, currentPath);
-      this.triggerRerender();
+      // this.triggerRerender();
     },
     selectParentPath() {
       if (!this.isRoot(this.selectedPath)) {

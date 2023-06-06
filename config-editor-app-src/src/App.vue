@@ -1,6 +1,6 @@
 <script setup>
 
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useDmfStore } from './stores/dmf';
 
 import ArrowLeftLongIcon from './components/icons/ArrowLeftLongIcon.vue';
@@ -25,16 +25,11 @@ const warnings = computed(() => {
 
 const documentName = computed(() => store.getDocumentName());
 
-onMounted(() => {
-  store.initData();
-//   if (!window.DMF_CONFIG_EDITOR) {
-//     store.fetchData();
-//   }
-});
+const showApp = computed(() => store.loaded && store.isOpen);
 </script>
 
 <template>
-  <main class="flex flex-col min-h-screen" v-if="store.renderComponent">
+  <main class="flex flex-col min-h-screen" v-if="showApp">
     <div class="flex grow">
       <div class="sticky top-0 z-50 flex h-screen shrink-0 w-96">
         <div class="flex flex-col w-full overflow-y-auto bg-white border-r border-gray-200 grow gap-y-5 overscroll-none">
@@ -63,9 +58,16 @@ onMounted(() => {
           <div class="sticky top-0 z-10 px-4 py-3 text-right bg-gray-100 border-b border-gray-200 sm:px-6">
             <span class="text-2xl leading-none font-caveat">{{ documentName }}</span>
             <button type="button"
+                    @click="store.close()"
+                    class="rounded px-4 text-sm py-1.5 disabled:opacity-50 bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+                    <span v-if="store.settings.mode === 'embedded'">Close</span>
+                    <span v-else-if="store.settings.mode === 'modal'">Discard</span>
+            </button>
+            <button type="button"
                     @click="store.save()"
                     class="rounded px-4 text-sm py-1.5 disabled:opacity-50 bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-              Save
+                    <span v-if="store.settings.mode === 'embedded'">Save</span>
+                    <span v-else-if="store.settings.mode === 'modal'">Confirm</span>
             </button>
           </div>
 
