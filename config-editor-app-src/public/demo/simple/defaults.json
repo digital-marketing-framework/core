@@ -1,0 +1,34 @@
+{
+  "enabled": false,
+  "email": "",
+  "days": 5,
+  "additional_info": {
+    "siblings": 0,
+    "religion": ""
+  },
+  "ideas": [],
+  "translations": {},
+  "switchable_thing": {
+    "type": "here",
+    "config": {
+      "here": {
+        "first_value": "",
+        "second_value": ""
+      }
+    }
+  },
+  "name": {
+    "first_name": "",
+    "last_name": ""
+  },
+  "my_tree": {
+    "value": "",
+    "children": []
+  },
+  "this_or_that": {
+    "type": "this",
+    "config": {
+      "this": ""
+    }
+  }
+}

@@ -1,13 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-gray-50">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
-  </head>
-  <body class="h-full">
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<html lang="en"
+      class="h-full bg-gray-50">
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="icon"
+              href="/favicon.ico">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0">
+        <title>Vite App</title>
+        <link rel="stylesheet"
+              href="styles/type.css">
+    </head>
+
+    <body class="h-full">
+        <form>
+            <textarea class="dmf-configuration-document"
+                      data-app="true"
+                      data-mode="embedded"
+                      data-readonly="false"
+                      data-url-schema="demo/schema.json"
+                      data-url-defaults="demo/defaults.json"
+                      data-url-merge="demo/processed.json"
+                      data-url-split="demo/processed.json"
+                      data-url-update-includes="demo/processed.json"></textarea>
+        </form>
+        <div id="app"></div>
+        <script type="module"
+                src="/src/main.js"></script>
+    </body>
+
 </html>

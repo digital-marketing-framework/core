@@ -1,4 +1,4 @@
-/* @layer base {
+@layer base {
 
   @font-face {
     font-family: "Caveat";
@@ -29,4 +29,4 @@
     src: url("/fonts/caveat/Caveat-Regular.ttf") format("truetype");
   }
 
-} */
+}

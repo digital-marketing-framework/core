@@ -22,11 +22,6 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
-    },
-    isSwitchKey: {
-        type: Boolean,
-        required: false,
-        default: () => false
     }
 });
 

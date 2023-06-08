@@ -55,10 +55,6 @@ const item = computed(() => store.getItem(props.currentPath));
                 <th class="p-1 align-top">Dynamic Item</th>
                 <td class="p-1 align-top">{{ item.isDynamicItem }}</td>
             </tr>
-            <tr v-if="item.isScalar">
-                <th class="p-1 align-top">Switch Key</th>
-                <td class="p-1 align-top">{{ isSwitchKey }}</td>
-            </tr>
             <tr v-if="store.isCustomType(store.getSchema(item.path).type)">
                 <th class="p-1 align-top">Immediate Schema</th>
                 <td class="p-1 align-top">{{ store.getSchema(item.path) }}</td>

@@ -11,11 +11,6 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
-    },
-    isSwitchKey: {
-        type: Boolean,
-        required: false,
-        default: () => false
     }
 });
 
@@ -23,7 +18,7 @@ const item = computed(() => store.getItem(props.currentPath));
 </script>
 <template>
     <slot name="fieldHeader">
-        <ItemHeader :currentPath="currentPath" :isSwitchKey="isSwitchKey" />
+        <ItemHeader :currentPath="currentPath" />
     </slot>
     <slot v-if="!item.rawView" name="fieldUi"></slot>
     <RawItem v-else :currentPath="currentPath" />

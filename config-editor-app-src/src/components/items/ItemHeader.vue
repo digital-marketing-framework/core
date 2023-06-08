@@ -11,11 +11,6 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
-    },
-    isSwitchKey: {
-        type: Boolean,
-        required: false,
-        default: () => false
     }
 });
 
@@ -36,6 +31,6 @@ const parentItem = computed(() => store.getParentItem(props.currentPath));
                 {{ item.label }}
             </label>
         </div>
-        <HeaderActions :currentPath="currentPath" :isSwitchKey="isSwitchKey"/>
+        <HeaderActions :currentPath="currentPath" />
     </header>
 </template>

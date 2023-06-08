@@ -26,8 +26,7 @@ const childPaths = computed(() => store.getChildPaths(props.currentPath).filter(
             <div
                 class="pt-3 pl-5 space-y-3">
                 <GenericItem :currentPath="store.getAbsolutePath('type', currentPath)"
-                    :isSwitchKey="true"
-                    :key="currentPath + '/type'" />
+                    :key="store.getAbsolutePath('type', currentPath)" />
                 <GenericItem v-for="childPath in childPaths"
                     :key="store.getAbsolutePath(childPath, currentPath)"
                     :currentPath="store.getAbsolutePath(childPath, currentPath)" />

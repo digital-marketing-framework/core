@@ -17,7 +17,7 @@ const item = computed(() => store.getItem(props.currentPath));
 </script>
 
 <template>
-    <GenericScalarItem :currentPath="currentPath" :isSwitchKey="isSwitchKey">
+    <GenericScalarItem :currentPath="currentPath">
         <template #fieldUi>
             <div class="mt-2">
                 <select v-if="item.schema.format === 'select'"

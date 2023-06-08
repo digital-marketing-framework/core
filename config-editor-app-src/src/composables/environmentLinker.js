@@ -1,3 +1,5 @@
+import { cloneValue } from "./valueHelper";
+
 export const EVENT_INIT = 'dmf-configuration-editor-init';
 export const EVENT_APP_OPEN = 'dmf-configuration-editor-app-open';
 export const EVENT_APP_CLOSE = 'dmf-configuration-editor-app-close';
@@ -29,6 +31,10 @@ async function getData(textarea, settings) {
     result = await ajaxFetch(settings.urls.merge, {'document': document});
   } else {
     result = await ajaxFetch(settings.urls.defaults);
+    result = {
+      configuration: result,
+      inheritedConfiguration: cloneValue(result)
+    };
   }
   return result;
 }
@@ -46,10 +52,6 @@ async function setData(textarea, settings, data) {
   if (typeof textarea.onchange === 'function') {
     textarea.onchange();
   }
-}
-
-function cloneData(data) {
-  return JSON.parse(JSON.stringify(data));
 }
 
 function getDocumentForm(textarea) {
@@ -176,7 +178,7 @@ export const linkEnvironment = async () => {
     const response = await updateIncludes(settings, referenceData, newData);
     data = response.configuration;
     inheritedData = response.inheritedConfiguration;
-    referenceData = cloneData(data);
+    referenceData = cloneValue(data);
     return { data: data, inheritedData: inheritedData };
   };
 
@@ -194,7 +196,7 @@ export const linkEnvironment = async () => {
 
   const start = async () => {
     const response = await getData(textarea, settings);
-    referenceData = cloneData(response.configuration);
+    referenceData = cloneValue(response.configuration);
     const appEvent = new CustomEvent(EVENT_APP_OPEN, {
       detail: {
         data: response.configuration,

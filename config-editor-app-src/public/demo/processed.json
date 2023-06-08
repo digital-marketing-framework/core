@@ -1,0 +1,506 @@
+{
+  "configuration": {
+    "metaData": {
+      "name": "",
+      "includes": []
+    },
+    "valueMaps": {},
+    "identifier": {
+      "collectors": {
+        "pardot": {
+          "enabled": false
+        }
+      }
+    },
+    "collector": {
+      "collectors": {
+        "pardot": {
+          "enabled": false,
+          "dataMap": {
+            "fields": {
+              "enabled": false,
+              "overwrite": false,
+              "fields": {}
+            },
+            "passthroughFields": {
+              "enabled": false,
+              "overwrite": false
+            },
+            "ignoreEmptyFields": {
+              "enabled": false
+            },
+            "excludeFields": {
+              "enabled": false,
+              "fields": ""
+            }
+          },
+          "outputMode": "simple"
+        }
+      }
+    },
+    "distributor": {
+      "async": false,
+      "disableStorage": false,
+      "routes": [
+        {
+          "type": "pardotCache",
+          "pass": "",
+          "config": {
+            "pardotCache": {
+              "override": false,
+              "overrideConfig": {
+                "enabled": false,
+                "enableDataProviders": {
+                  "type": "all",
+                  "config": {
+                    "all": {}
+                  }
+                },
+                "gate": {
+                  "type": "true",
+                  "config": {
+                    "true": {}
+                  }
+                },
+                "data": {
+                  "fields": {
+                    "enabled": false,
+                    "overwrite": false,
+                    "fields": {}
+                  },
+                  "passthroughFields": {
+                    "enabled": false,
+                    "overwrite": false
+                  },
+                  "ignoreEmptyFields": {
+                    "enabled": false
+                  },
+                  "excludeFields": {
+                    "enabled": false,
+                    "fields": ""
+                  }
+                },
+                "url": "",
+                "cookies": {},
+                "headers": {}
+              }
+            }
+          }
+        },
+        {
+          "type": "pardot",
+          "pass": "",
+          "config": {
+            "pardot": {
+              "enabled": false,
+              "async": "inherit",
+              "disableStorage": "inherit",
+              "enableDataProviders": {
+                "type": "all",
+                "config": {
+                  "all": {}
+                }
+              },
+              "gate": {
+                "type": "true",
+                "config": {
+                  "true": {}
+                }
+              },
+              "data": {
+                "fields": {
+                  "enabled": false,
+                  "overwrite": false,
+                  "fields": {}
+                },
+                "passthroughFields": {
+                  "enabled": false,
+                  "overwrite": false
+                },
+                "ignoreEmptyFields": {
+                  "enabled": false
+                },
+                "excludeFields": {
+                  "enabled": false,
+                  "fields": ""
+                }
+              },
+              "url": "",
+              "cookies": {},
+              "headers": {}
+            }
+          }
+        },
+        {
+          "type": "request",
+          "pass": "",
+          "config": {
+            "request": {
+              "enabled": false,
+              "async": "inherit",
+              "disableStorage": "inherit",
+              "enableDataProviders": {
+                "type": "all",
+                "config": {
+                  "all": {}
+                }
+              },
+              "gate": {
+                "type": "true",
+                "config": {
+                  "true": {}
+                }
+              },
+              "data": {
+                "fields": {
+                  "enabled": false,
+                  "overwrite": false,
+                  "fields": {}
+                },
+                "passthroughFields": {
+                  "enabled": false,
+                  "overwrite": false
+                },
+                "ignoreEmptyFields": {
+                  "enabled": false
+                },
+                "excludeFields": {
+                  "enabled": false,
+                  "fields": ""
+                }
+              },
+              "url": "",
+              "cookies": {},
+              "headers": {}
+            }
+          }
+        }
+      ],
+      "dataProviders": {
+        "collector": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "dataMap": {
+            "fields": {
+              "enabled": false,
+              "overwrite": false,
+              "fields": {}
+            },
+            "passthroughFields": {
+              "enabled": false,
+              "overwrite": false
+            },
+            "ignoreEmptyFields": {
+              "enabled": false
+            },
+            "excludeFields": {
+              "enabled": false,
+              "fields": ""
+            }
+          }
+        },
+        "cookie": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "cookieFieldMap": {}
+        },
+        "ipAddress": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "ip_address"
+        },
+        "requestVariables": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "variableFieldMap": {}
+        },
+        "timestamp": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "timestamp",
+          "format": "c"
+        },
+        "adwordsCampaigns": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true
+        },
+        "adwords": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true
+        },
+        "contentElement": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "",
+          "ttContentUid": 0
+        },
+        "languageCode": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "language"
+        }
+      }
+    }
+  },
+  "inheritedConfiguration": {
+    "metaData": {
+      "name": "",
+      "includes": []
+    },
+    "valueMaps": {},
+    "identifier": {
+      "collectors": {
+        "pardot": {
+          "enabled": false
+        }
+      }
+    },
+    "collector": {
+      "collectors": {
+        "pardot": {
+          "enabled": false,
+          "dataMap": {
+            "fields": {
+              "enabled": false,
+              "overwrite": false,
+              "fields": {}
+            },
+            "passthroughFields": {
+              "enabled": false,
+              "overwrite": false
+            },
+            "ignoreEmptyFields": {
+              "enabled": false
+            },
+            "excludeFields": {
+              "enabled": false,
+              "fields": ""
+            }
+          },
+          "outputMode": "simple"
+        }
+      }
+    },
+    "distributor": {
+      "async": false,
+      "disableStorage": false,
+      "routes": [
+        {
+          "type": "pardotCache",
+          "pass": "",
+          "config": {
+            "pardotCache": {
+              "override": false,
+              "overrideConfig": {
+                "enabled": false,
+                "enableDataProviders": {
+                  "type": "all",
+                  "config": {
+                    "all": {}
+                  }
+                },
+                "gate": {
+                  "type": "true",
+                  "config": {
+                    "true": {}
+                  }
+                },
+                "data": {
+                  "fields": {
+                    "enabled": false,
+                    "overwrite": false,
+                    "fields": {}
+                  },
+                  "passthroughFields": {
+                    "enabled": false,
+                    "overwrite": false
+                  },
+                  "ignoreEmptyFields": {
+                    "enabled": false
+                  },
+                  "excludeFields": {
+                    "enabled": false,
+                    "fields": ""
+                  }
+                },
+                "url": "",
+                "cookies": {},
+                "headers": {}
+              }
+            }
+          }
+        },
+        {
+          "type": "pardot",
+          "pass": "",
+          "config": {
+            "pardot": {
+              "enabled": false,
+              "async": "inherit",
+              "disableStorage": "inherit",
+              "enableDataProviders": {
+                "type": "all",
+                "config": {
+                  "all": {}
+                }
+              },
+              "gate": {
+                "type": "true",
+                "config": {
+                  "true": {}
+                }
+              },
+              "data": {
+                "fields": {
+                  "enabled": false,
+                  "overwrite": false,
+                  "fields": {}
+                },
+                "passthroughFields": {
+                  "enabled": false,
+                  "overwrite": false
+                },
+                "ignoreEmptyFields": {
+                  "enabled": false
+                },
+                "excludeFields": {
+                  "enabled": false,
+                  "fields": ""
+                }
+              },
+              "url": "",
+              "cookies": {},
+              "headers": {}
+            }
+          }
+        },
+        {
+          "type": "request",
+          "pass": "",
+          "config": {
+            "request": {
+              "enabled": false,
+              "async": "inherit",
+              "disableStorage": "inherit",
+              "enableDataProviders": {
+                "type": "all",
+                "config": {
+                  "all": {}
+                }
+              },
+              "gate": {
+                "type": "true",
+                "config": {
+                  "true": {}
+                }
+              },
+              "data": {
+                "fields": {
+                  "enabled": false,
+                  "overwrite": false,
+                  "fields": {}
+                },
+                "passthroughFields": {
+                  "enabled": false,
+                  "overwrite": false
+                },
+                "ignoreEmptyFields": {
+                  "enabled": false
+                },
+                "excludeFields": {
+                  "enabled": false,
+                  "fields": ""
+                }
+              },
+              "url": "",
+              "cookies": {},
+              "headers": {}
+            }
+          }
+        }
+      ],
+      "dataProviders": {
+        "collector": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "dataMap": {
+            "fields": {
+              "enabled": false,
+              "overwrite": false,
+              "fields": {}
+            },
+            "passthroughFields": {
+              "enabled": false,
+              "overwrite": false
+            },
+            "ignoreEmptyFields": {
+              "enabled": false
+            },
+            "excludeFields": {
+              "enabled": false,
+              "fields": ""
+            }
+          }
+        },
+        "cookie": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "cookieFieldMap": {}
+        },
+        "ipAddress": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "ip_address"
+        },
+        "requestVariables": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "variableFieldMap": {}
+        },
+        "timestamp": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "timestamp",
+          "format": "c"
+        },
+        "adwordsCampaigns": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true
+        },
+        "adwords": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true
+        },
+        "contentElement": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "",
+          "ttContentUid": 0
+        },
+        "languageCode": {
+          "enabled": false,
+          "mustExist": false,
+          "mustBeEmpty": true,
+          "field": "language"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "valueSets": {},
+  "types": {
+    "MY_CUSTOM_TYPE": {
+      "type": "CONTAINER",
+      "values": [
+        {
+          "key": "first_name",
+          "type": "STRING"
+        },
+        {
+          "key": "last_name",
+          "type": "STRING"
+        }
+      ]
+    },
+    "MY_RECURSIVE_CUSTOM_TYPE": {
+      "type": "CONTAINER",
+      "values": [
+        {
+          "key": "value",
+          "type": "STRING"
+        },
+        {
+          "key": "children",
+          "type": "LIST",
+          "valueTemplate": {
+            "type": "MY_RECURSIVE_CUSTOM_TYPE"
+          }
+        }
+      ]
+    },
+    "THIS": {
+      "type": "STRING"
+    },
+    "THAT": {
+      "type": "SWITCH",
+      "values": [
+        {
+          "key": "type",
+          "type": "STRING",
+          "allowedValues": { "list": { "this": "This", "that": "That" } },
+          "format": "select",
+          "triggers": ["switch"]
+        },
+        {
+          "key": "config",
+          "type": "CONTAINER",
+          "values": [
+            {
+              "key": "this",
+              "type": "THIS"
+            },
+            {
+              "key": "that",
+              "type": "THAT"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "schema": {
+    "label": "Demo",
+    "type": "CONTAINER",
+    "values": [
+      {
+        "key": "enabled",
+        "type": "BOOLEAN",
+        "default": false
+      },
+      {
+        "key": "email",
+        "type": "STRING"
+      },
+      {
+        "key": "days",
+        "type": "INTEGER",
+        "default": 5
+      },
+      {
+        "key": "additional_info",
+        "type": "CONTAINER",
+        "values": [
+          {
+            "key": "siblings",
+            "type": "INTEGER"
+          },
+          {
+            "key": "religion",
+            "type": "STRING"
+          }
+        ]
+      },
+      {
+        "key": "ideas",
+        "type": "LIST",
+        "valueTemplate": {
+          "type": "STRING"
+        }
+      },
+      {
+        "key": "translations",
+        "type": "MAP",
+        "keyTemplate": {
+          "type": "STRING",
+          "default": "originalTerm"
+        },
+        "valueTemplate": {
+          "type": "STRING",
+          "default": "translatedTerm"
+        }
+      },
+      {
+        "key": "switchable_thing",
+        "type": "SWITCH",
+        "values": [
+          {
+            "key": "type",
+            "type": "STRING",
+            "allowedValues": {
+              "list": { "here": "Here", "there": "There" }
+            },
+            "format": "select",
+            "triggers": ["switch"]
+          },
+          {
+            "key": "config",
+            "type": "CONTAINER",
+            "values": [
+              {
+                "key": "here",
+                "type": "CONTAINER",
+                "values": [
+                  {
+                    "key": "first_value",
+                    "type": "STRING"
+                  },
+                  {
+                    "key": "second_value",
+                    "type": "STRING"
+                  }
+                ]
+              },
+              {
+                "key": "there",
+                "type": "CONTAINER",
+                "values": [
+                  {
+                    "key": "first_value",
+                    "type": "BOOLEAN"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "name",
+        "type": "MY_CUSTOM_TYPE"
+      },
+      {
+        "key": "my_tree",
+        "type": "MY_RECURSIVE_CUSTOM_TYPE"
+      },
+      {
+        "key": "this_or_that",
+        "type": "THAT"
+      }
+    ]
+  }
+}
