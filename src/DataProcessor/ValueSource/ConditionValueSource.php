@@ -44,7 +44,11 @@ class ConditionValueSource extends ValueSource
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_IF, new CustomSchema(EvaluationSchema::TYPE));
+
+        $ifSchema = new CustomSchema(EvaluationSchema::TYPE);
+        $ifSchema->getRenderingDefinition()->setLabel('if');
+        $schema->addProperty(static::KEY_IF, $ifSchema);
+
         $schema->addProperty(static::KEY_THEN, new CustomSchema(ValueSchema::TYPE));
         $schema->addProperty(static::KEY_ELSE, new CustomSchema(ValueSchema::TYPE));
         return $schema;
