@@ -93,19 +93,6 @@ trait DataProcessorRegistryTrait
         return $schema;
     }
 
-    /**
-     * @return array<ValueSchema>
-     */
-    public function getCustomValueSchemata(): array
-    {
-        $schemata = [];
-        foreach (array_keys($this->getAllPluginClasses(ValueSourceInterface::class)) as $keyword) {
-            $schemata[] = new ValueSchema($this, $keyword, false);
-            $schemata[] = new ValueSchema($this, $keyword, true);
-        }
-        return $schemata;
-    }
-
     public function registerEvaluation(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
         $this->registerPlugin(EvaluationInterface::class, $class, $additionalArguments, $keyword);

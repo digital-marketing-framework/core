@@ -71,11 +71,6 @@ trait ConfigurationSchemaRegistryTrait
             $schemaDocument->addValueToValueSet('document/all', $documentIdentifier, $label);
         }
 
-        // TODO do we need these variations of the custom type "value"?
-        // foreach ($this->getCustomValueSchemata() as $schema) {
-        //     $schemaDocument->addCustomType($schema);
-        // }
-
         $mainSchema = $schemaDocument->getMainSchema();
         $mainSchema->getRenderingDefinition()->setLabel('Digital Marketing');
 

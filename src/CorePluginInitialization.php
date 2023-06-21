@@ -12,9 +12,10 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsTrueComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\ExcludeFieldsDataMapper;
-use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldsDataMapper;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PrefixDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\AndEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\ComparisonEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
@@ -98,8 +99,9 @@ class CorePluginInitialization extends PluginInitialization
             RegExpComparison::class,
         ],
         DataMapperInterface::class => [
+            PrefixDataMapper::class,
             ExcludeFieldsDataMapper::class,
-            FieldsDataMapper::class,
+            FieldMapDataMapper::class,
             IgnoreEmptyFieldsDataMapper::class,
             PassthroughFieldsDataMapper::class,
         ],

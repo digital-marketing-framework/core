@@ -4,15 +4,14 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Sc
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
+use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
 
 class ValueSchema extends ContainerSchema
 {
     public const TYPE = 'VALUE';
-
-    public const KEY_VALUE_SOURCE = 'data';
-    public const KEY_VALUE_MODIFIERS = 'modifiers';
 
     public function __construct(mixed $defaultValue = null)
     {
@@ -20,11 +19,10 @@ class ValueSchema extends ContainerSchema
 
         $valueSource = new CustomSchema(ValueSourceSchema::TYPE);
         $valueSource->getRenderingDefinition()->setLabel('Value');
-        $this->addProperty(static::KEY_VALUE_SOURCE, $valueSource);
+        $this->addProperty(DataProcessor::KEY_DATA, $valueSource);
 
-        $valueModifiers = new CustomSchema(ValueModifierSchema::TYPE);
-        $property = $this->addProperty('modifiers', $valueModifiers);
-        $property->getRenderingDefinition()->setVisibilityConditionByValueSet('./data/type', 'valueSource/modifiable');
-        $property->getRenderingDefinition()->setNavigationItem(false);
+        $valueModifier = new CustomSchema(ValueModifierSchema::TYPE);
+        $valueModifiers = new ListSchema($valueModifier);
+        $this->addProperty(DataProcessor::KEY_MODIFIERS, $valueModifiers);
     }
 }

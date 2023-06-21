@@ -19,7 +19,7 @@ abstract class DataMapper extends DataProcessorPlugin implements DataMapperInter
         return $this->getConfig(static::KEY_ENABLED);
     }
 
-    abstract protected function map(DataInterface $target);
+    abstract protected function map(DataInterface $target): void;
 
     public function mapData(DataInterface $target): DataInterface
     {

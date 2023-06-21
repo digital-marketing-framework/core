@@ -13,11 +13,13 @@ abstract class WritingDataMapper extends DataMapper
     public const KEY_OVERWRITE = 'overwrite';
     public const DEFAULT_OVERWRITE = false;
 
-    protected function addField(DataInterface $data, string $fieldName, string|null|ValueInterface $value): void
+    protected function addField(DataInterface $data, string $fieldName, string|null|ValueInterface $value): bool
     {
         if ($value !== null && ($this->getConfig(static::KEY_OVERWRITE) || $data->fieldEmpty($fieldName))) {
             $data[$fieldName] = $value;
+            return true;
         }
+        return false;
     }
 
     public static function getSchema(): SchemaInterface

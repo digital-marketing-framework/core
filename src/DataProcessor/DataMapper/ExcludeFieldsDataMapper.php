@@ -15,7 +15,7 @@ class ExcludeFieldsDataMapper extends DataMapper
     public const KEY_FIELDS = 'fields';
     public const DEFAULT_FIELDS = '';
 
-    protected function map(DataInterface $target)
+    protected function map(DataInterface $target): void
     {
         $excludeFields = GeneralUtility::castValueToArray($this->getConfig(static::KEY_FIELDS));
         foreach ($excludeFields as $excludeField) {

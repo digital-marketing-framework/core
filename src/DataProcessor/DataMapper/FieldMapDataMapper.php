@@ -7,14 +7,15 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 
-class FieldsDataMapper extends WritingDataMapper
+class FieldMapDataMapper extends WritingDataMapper
 {
     public const KEY_FIELDS = 'fields';
     public const DEFAULT_FIELDS = [];
 
-    protected function map(DataInterface $target)
+    protected function map(DataInterface $target): void
     {
         $baseContext = $this->context->copy(false);
         foreach ($this->getConfig(static::KEY_FIELDS) as $fieldName => $valueConfig) {
@@ -30,7 +31,7 @@ class FieldsDataMapper extends WritingDataMapper
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_FIELDS, new MapSchema(new CustomSchema(ValueSchema::TYPE)));
+        $schema->addProperty(static::KEY_FIELDS, new MapSchema(new CustomSchema(ValueSchema::TYPE), new StringSchema('fieldName')));
         return $schema;
     }
 }

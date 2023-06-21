@@ -19,6 +19,18 @@ trait PluginRegistryTrait
     abstract protected function interfaceValidation(string $interface, string $parentInterface): void;
     abstract protected function getConfigurationSchema(): SchemaDocument;
 
+    public function processPluginAwareness(PluginInterface $plugin): void
+    {
+        if ($plugin instanceof ConfigurablePluginInterface) {
+            $schema = $plugin::getSchema();
+            $defaults = $this->getConfigurationSchema()->getDefaultValue($schema);
+            if (!is_array($defaults)) {
+                throw new DigitalMarketingFrameworkException('default configuration has to be an array');
+            }
+            $plugin->setDefaultConfiguration($defaults);
+        }
+    }
+
     public function getPlugin(string $keyword, string $interface, array $arguments = []): ?PluginInterface
     {
         $class = $this->pluginClasses[$interface][$keyword] ?? null;
@@ -38,14 +50,7 @@ trait PluginRegistryTrait
             array_push($constructorArguments, ...$additionalArguments);
             $plugin = $this->createObject($class, $constructorArguments);
 
-            if ($plugin instanceof ConfigurablePluginInterface) {
-                $schema = $plugin::getSchema();
-                $defaults = $this->getConfigurationSchema()->getDefaultValue($schema);
-                if (!is_array($defaults)) {
-                    throw new DigitalMarketingFrameworkException('default configuration has to be an array');
-                }
-                $plugin->setDefaultConfiguration($defaults);
-            }
+            $this->processPLuginAwareness($plugin);
             return $plugin;
         }
 

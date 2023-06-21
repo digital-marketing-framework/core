@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation;
@@ -45,11 +46,11 @@ class DataProcessor extends Plugin implements DataProcessorInterface
     {
         return new DataProcessorContext($data, $configuration);
     }
-    
+
     public function processValueSource(array $config, DataProcessorContextInterface $context): string|ValueInterface|null
     {
-        $keyword = $this->getType($config);
-        $valueSourceConfig = $this->getConfig($config, $keyword);
+        $keyword = SwitchSchema::getSwitchType($config);
+        $valueSourceConfig = SwitchSchema::getSwitchConfiguration($config);
         $valueSource = $this->registry->getValueSource($keyword, $valueSourceConfig, $context);
         if ($valueSource === null) {
             throw new DigitalMarketingFrameworkException(sprintf('ValueSource "%s" not found.', $keyword));
@@ -59,7 +60,9 @@ class DataProcessor extends Plugin implements DataProcessorInterface
 
     public function processValueModifiers(array $config, string|ValueInterface|null $value, DataProcessorContextInterface $context): string|ValueInterface|null
     {
-        foreach ($config as $keyword => $modifierConfig) {
+        foreach ($config as $modifierSwitchConfig) {
+            $keyword = SwitchSchema::getSwitchType($modifierSwitchConfig);
+            $modifierConfig = SwitchSchema::getSwitchConfiguration($modifierSwitchConfig);
             $modifier = $this->registry->getValueModifier($keyword, $modifierConfig, $context);
             if ($modifier === null) {
                 throw new DigitalMarketingFrameworkException(sprintf('ValueModifier "%s" not found.', $keyword));
@@ -113,7 +116,9 @@ class DataProcessor extends Plugin implements DataProcessorInterface
     {
         $context = $this->createContext($data, $configuration);
         $target = new Data();
-        foreach ($config as $keyword => $dataMapperConfig) {
+        foreach ($config as $dataMapperSwtichConfig) {
+            $keyword = SwitchSchema::getSwitchType($dataMapperSwtichConfig);
+            $dataMapperConfig = SwitchSchema::getSwitchConfiguration($dataMapperSwtichConfig);
             $dataMapper = $this->registry->getDataMapper($keyword, $dataMapperConfig, $context);
             if ($dataMapper === null) {
                 throw new DigitalMarketingFrameworkException(sprintf('DataMapper "%s" not found.', $keyword));
@@ -150,7 +155,7 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         return [
             static::KEY_TYPE => $keyword,
             static::KEY_CONFIG => [
-                $keyword => $true 
+                $keyword => $true
                     ? TrueEvaluation::getDefaultConfiguration()
                     : FalseEvaluation::getDefaultConfiguration(),
             ]

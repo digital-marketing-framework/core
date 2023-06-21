@@ -68,7 +68,7 @@ export const useDmfStore = defineStore('dmf', {
       if (typeof this.data.metaData.includes === 'undefined') {
         this.data.metaData.includes = [];
       }
-      this.referenceIncludes = cloneValue(this.data.metaData.includes || []),
+      this.referenceIncludes = cloneValue(this.data.metaData.includes || []);
       this._updateValue('/');
       // this.evaluate('/');
       // this.triggerRerender();
@@ -456,7 +456,8 @@ export const useDmfStore = defineStore('dmf', {
       return type => !this.isContainerType(type);
     },
     isDynamicContainer() {
-      return (path, currentPath) => this.isDynamicContainerType(this.getSchema(path, currentPath).type);
+      return (path, currentPath) =>
+        this.isDynamicContainerType(this.getSchema(path, currentPath, true).type);
     },
     isDynamicChild() {
       return (path, currentPath) => !this.isRoot(path, currentPath) && this.isDynamicContainer(path + '/..', currentPath);

@@ -14,11 +14,11 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
 
     public function __construct(
         string $keyword,
-        protected RegistryInterface $registry,
+        RegistryInterface $registry,
         protected array $configuration,
         protected DataProcessorContextInterface $context,
     ) {
-        parent::__construct($keyword);
+        parent::__construct($keyword, $registry);
     }
 
     protected function fieldExists($key, bool $markAsProcessed = true): bool
@@ -40,12 +40,5 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
     // public function getWeight(): int
     // {
     //     return $this->getConfig(static::KEY_WEIGHT);
-    // }
-
-    // public static function getDefaultConfiguration(): array
-    // {
-    //     return [
-    //         static::KEY_WEIGHT => static::WEIGHT,
-    //     ];
     // }
 }

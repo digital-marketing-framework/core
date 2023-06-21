@@ -9,7 +9,7 @@ class IgnoreEmptyFieldsDataMapper extends DataMapper
 {
     public const WEIGHT = 30;
 
-    protected function map(DataInterface $target)
+    protected function map(DataInterface $target): void
     {
         $toDeleteList = [];
         foreach ($target as $fieldName => $value) {
