@@ -2,27 +2,11 @@ import { defineStore } from 'pinia';
 // import { nextTick } from 'vue';
 import { cloneValue, mergeValue, valuesEqual } from '../composables/valueHelper';
 
-const NATIVE_SCHEMA_TYPES = [
-    'SWITCH',
-    'CONTAINER',
-    'MAP',
-    'LIST',
-    'STRING',
-    'INTEGER',
-    'BOOLEAN',
-];
+const NATIVE_SCHEMA_TYPES = ['SWITCH', 'CONTAINER', 'MAP', 'LIST', 'STRING', 'INTEGER', 'BOOLEAN'];
 
-const CONTAINER_TYPES = [
-    'SWITCH',
-    'CONTAINER',
-    'MAP',
-    'LIST'
-];
+const CONTAINER_TYPES = ['SWITCH', 'CONTAINER', 'MAP', 'LIST'];
 
-const DYNAMIC_CONTAINER_TYPES = [
-  'LIST',
-  'MAP'
-];
+const DYNAMIC_CONTAINER_TYPES = ['LIST', 'MAP'];
 
 const WARNING_INCLUDES_CHANGED = 'includesChanged';
 const WARNING_DOCUMENT_INVALID = 'documentInvalid';
@@ -32,29 +16,29 @@ WARNINGS[WARNING_DOCUMENT_INVALID] = 'Document validation failed';
 
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
-      selectedPath: '/',
-      rawViewPaths: {},
-      collapsedMenuPaths: {},
-      collapsedContainerPaths: {},
+    selectedPath: '/',
+    rawViewPaths: {},
+    collapsedMenuPaths: {},
+    collapsedContainerPaths: {},
 
-      referenceIncludes: [],
-      data: {},
-      inheritedData: {},
-      schemaDocument: {},
-      settings: {},
-      onSave: async () => {},
-      onIncludeChange: async () => {},
-      onClose: async () => {},
+    referenceIncludes: [],
+    data: {},
+    inheritedData: {},
+    schemaDocument: {},
+    settings: {},
+    onSave: async () => {},
+    onIncludeChange: async () => {},
+    onClose: async () => {},
 
-      loaded: false,
-      isOpen: false,
-      issues: {},
-      warnings: {},
-      messages: []
+    loaded: false,
+    isOpen: false,
+    issues: {},
+    warnings: {},
+    messages: []
   }),
   actions: {
     writeMessage(message, type) {
-      this.messages.push({text: message, type: type || 'info'});
+      this.messages.push({ text: message, type: type || 'info' });
       // this.triggerRerender();
     },
     removeMessage(index) {
@@ -124,31 +108,32 @@ export const useDmfStore = defineStore('dmf', {
       const parentPath = path + '/..';
       const parentValue = this.getValue(parentPath, currentPath);
       if (typeof parentValue === 'undefined') {
-          this._updateParentValue(parentPath, currentPath);
-          this.setValue(parentPath, currentPath, this.getDefaultValue(parentPath, currentPath));
+        this._updateParentValue(parentPath, currentPath);
+        this.setValue(parentPath, currentPath, this.getDefaultValue(parentPath, currentPath));
       }
     },
     _updateValue(path, currentPath) {
       const value = this.getValue(path, currentPath);
       if (typeof value === 'undefined') {
-          this.setValue(path, currentPath, this.getDefaultValue(path, currentPath));
+        this.setValue(path, currentPath, this.getDefaultValue(path, currentPath));
       } else {
-          const absolutePath = this.getAbsolutePath(path, currentPath);
-          this.getChildPaths(path, currentPath).forEach(childPath => {
-              this._updateValue(childPath, absolutePath);
-          });
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        this.getChildPaths(path, currentPath).forEach((childPath) => {
+          this._updateValue(childPath, absolutePath);
+        });
       }
     },
     processSwitchChange(path, currentPath, newValue) {
       const lastPathPart = this.getLeafKey(path, currentPath);
       if (lastPathPart !== 'type') {
-          return;
+        return;
       }
       const parentSchema = this.getSchema('.', this.getParentPath(path, currentPath), true);
       if (parentSchema.type !== 'SWITCH') {
-          return;
+        return;
       }
-      const type = typeof newValue === 'undefined' ? this.getValue(path, currentPath, true) : newValue;
+      const type =
+        typeof newValue === 'undefined' ? this.getValue(path, currentPath, true) : newValue;
       this._updateValue(path + '/../config/' + type, currentPath);
     },
     setValue(path, currentPath, value, isSwitchKey) {
@@ -168,7 +153,7 @@ export const useDmfStore = defineStore('dmf', {
       const parentPath = path + '/..';
       const schema = this.getSchema(parentPath, currentPath, true);
       if (schema.type !== 'MAP') {
-          throw new Error('type ' + schema.type + ' does not have dynamic keys');
+        throw new Error('type ' + schema.type + ' does not have dynamic keys');
       }
       const lastPathPart = this.getLeafKey(path, currentPath);
       const map = this.getValue(parentPath, currentPath);
@@ -180,36 +165,36 @@ export const useDmfStore = defineStore('dmf', {
     _addValue(schema, path, currentPath) {
       switch (schema.type) {
         case 'LIST': {
-            const list = this.getValue(path, currentPath, true);
-            const defaultValue = this._getDefaultValue(schema.valueTemplate);
-            const index = list.length;
-            this.setValue(path + '/' + index, currentPath, defaultValue);
-            break;
+          const list = this.getValue(path, currentPath, true);
+          const defaultValue = this._getDefaultValue(schema.valueTemplate);
+          const index = list.length;
+          this.setValue(path + '/' + index, currentPath, defaultValue);
+          break;
         }
         case 'MAP': {
-            const defaultKey = this._getDefaultValue(schema.keyTemplate);
-            const defaultValue = this._getDefaultValue(schema.valueTemplate);
-            let keyCount = 0;
-            let key = defaultKey;
-            while (typeof this.getValue(path + '/' + key, currentPath) !== 'undefined') {
-              keyCount++;
-              key = defaultKey + '-' + keyCount;
-            }
-            this.setValue(path + '/' + key, currentPath, defaultValue);
-            break;
+          const defaultKey = this._getDefaultValue(schema.keyTemplate);
+          const defaultValue = this._getDefaultValue(schema.valueTemplate);
+          let keyCount = 0;
+          let key = defaultKey;
+          while (typeof this.getValue(path + '/' + key, currentPath) !== 'undefined') {
+            keyCount++;
+            key = defaultKey + '-' + keyCount;
+          }
+          this.setValue(path + '/' + key, currentPath, defaultValue);
+          break;
         }
         case 'STRING':
         case 'INTEGER':
         case 'BOOLEAN':
         case 'SWITCH':
         case 'CONTAINER': {
-            throw new Error('type ' + schema.type + ' does not have dynamic sub values');
+          throw new Error('type ' + schema.type + ' does not have dynamic sub values');
         }
         default: {
-            const customSchema = this.getCustomSchema(schema.type);
-            this._addValue(customSchema, path, currentPath);
+          const customSchema = this.getCustomSchema(schema.type);
+          this._addValue(customSchema, path, currentPath);
         }
-    }
+      }
     },
     addValue(path, currentPath) {
       const schema = this.getSchema(path, currentPath);
@@ -220,25 +205,25 @@ export const useDmfStore = defineStore('dmf', {
       const parentSchema = this.getSchema(parentPath, currentPath, true);
       const lastPathPart = this.getLeafKey(path, currentPath);
       switch (parentSchema.type) {
-          case 'SWITCH': {
-              throw new Error('switch container elements can\'t be removed');
-          }
-          case 'CONTAINER': {
-              throw new Error('container elements can\'t be removed');
-          }
-          case 'MAP': {
-              const map = this.getValue(parentPath, currentPath);
-              delete map[lastPathPart];
-              break;
-          }
-          case 'LIST': {
-              const list = this.getValue(parentPath, currentPath);
-              list.splice(lastPathPart, 1);
-              break;
-          }
-          default: {
-              throw new Error('type ' + parentSchema.type + ' does not have sub elements');
-          }
+        case 'SWITCH': {
+          throw new Error("switch container elements can't be removed");
+        }
+        case 'CONTAINER': {
+          throw new Error("container elements can't be removed");
+        }
+        case 'MAP': {
+          const map = this.getValue(parentPath, currentPath);
+          delete map[lastPathPart];
+          break;
+        }
+        case 'LIST': {
+          const list = this.getValue(parentPath, currentPath);
+          list.splice(lastPathPart, 1);
+          break;
+        }
+        default: {
+          throw new Error('type ' + parentSchema.type + ' does not have sub elements');
+        }
       }
       if (this.getAbsolutePath(path, currentPath) === this.selectedPath) {
         this.selectParentPath();
@@ -270,67 +255,67 @@ export const useDmfStore = defineStore('dmf', {
     },
     _evaluateAllowedValues(schema, value) {
       if (this.isScalarType(schema.type) && schema.allowedValues) {
-          const allowedValues = this.getPredefinedValues(schema.allowedValues);
-          if (allowedValues.length > 0 && allowedValues.indexOf(value) === -1) {
-              return 'value "' + value + '" is not allowed';
-          }
+        const allowedValues = this.getPredefinedValues(schema.allowedValues);
+        if (allowedValues.length > 0 && allowedValues.indexOf(value) === -1) {
+          return 'value "' + value + '" is not allowed';
+        }
       }
       return '';
     },
     _evaluateSchemaType(schema, value) {
       switch (schema.type) {
-          case 'SWITCH':
-          case 'CONTAINER':
-          case 'MAP': {
-              if (typeof value !== 'object') {
-                  return schema.type.toLowerCase() + ' value must be an object';
-              }
-              if (Array.isArray(value)) {
-                  return schema.type.toLowerCase() + ' value must not be an array';
-              }
-              break;
+        case 'SWITCH':
+        case 'CONTAINER':
+        case 'MAP': {
+          if (typeof value !== 'object') {
+            return schema.type.toLowerCase() + ' value must be an object';
           }
-          case 'LIST': {
-              if (typeof value !== 'object') {
-                  return schema.type.toLowerCase() + ' value must be an object';
-              }
-              if (!Array.isArray(value)) {
-                  return schema.type.toLowerCase() + ' value must be an array';
-              }
-              break;
+          if (Array.isArray(value)) {
+            return schema.type.toLowerCase() + ' value must not be an array';
           }
-          case 'STRING': {
-              if (typeof value !== 'string') {
-                  return 'string value must be a string';
-              }
-              break;
+          break;
+        }
+        case 'LIST': {
+          if (typeof value !== 'object') {
+            return schema.type.toLowerCase() + ' value must be an object';
           }
-          case 'BOOLEAN': {
-              if (typeof value !== 'boolean') {
-                  return 'boolean value must be a boolean';
-              }
-              break;
+          if (!Array.isArray(value)) {
+            return schema.type.toLowerCase() + ' value must be an array';
           }
-          case 'INTEGER': {
-              if (typeof value !== 'number') {
-                  return 'integer value must be a number';
-              }
-              break;
+          break;
+        }
+        case 'STRING': {
+          if (typeof value !== 'string') {
+            return 'string value must be a string';
           }
-          default: {
-              const customSchema = this.getCustomSchema(schema.type);
-              return this._evaluateSchemaType(customSchema, value);
+          break;
+        }
+        case 'BOOLEAN': {
+          if (typeof value !== 'boolean') {
+            return 'boolean value must be a boolean';
           }
+          break;
+        }
+        case 'INTEGER': {
+          if (typeof value !== 'number') {
+            return 'integer value must be a number';
+          }
+          break;
+        }
+        default: {
+          const customSchema = this.getCustomSchema(schema.type);
+          return this._evaluateSchemaType(customSchema, value);
+        }
       }
       return '';
     },
     _evaluateSchemaWithoutChildren(schema, value) {
       const SCHEMA_EVALUATIONS = ['_evaluateSchemaType', '_evaluateAllowedValues'];
       for (let index = 0; index < SCHEMA_EVALUATIONS.length; index++) {
-          const issue = this[SCHEMA_EVALUATIONS[index]](schema, value);
-          if (issue) {
-              return issue;
-          }
+        const issue = this[SCHEMA_EVALUATIONS[index]](schema, value);
+        if (issue) {
+          return issue;
+        }
       }
       return '';
     },
@@ -364,19 +349,19 @@ export const useDmfStore = defineStore('dmf', {
       const value = this.getValue(path, currentPath);
       const issue = this._evaluateSchemaWithoutChildren(schema, value);
       if (issue) {
-          this.issues[absolutePath] = issue;
+        this.issues[absolutePath] = issue;
       } else if (this.isContainerType(schema.type)) {
-          const childPaths = this.getChildPaths(path, currentPath);
-          childPaths.forEach(key => {
-              if (schema.type === 'MAP') {
-                  const issue = this._evaluateSchemaWithoutChildren(schema.keyTemplate, key);
-                  if (issue) {
-                      const absoluteChildPath = this.getAbsolutePath(key, absolutePath);
-                      this.issues[absoluteChildPath] = issue;
-                  }
-              }
-              this._evaluate(key, absolutePath);
-          });
+        const childPaths = this.getChildPaths(path, currentPath);
+        childPaths.forEach((key) => {
+          if (schema.type === 'MAP') {
+            const issue = this._evaluateSchemaWithoutChildren(schema.keyTemplate, key);
+            if (issue) {
+              const absoluteChildPath = this.getAbsolutePath(key, absolutePath);
+              this.issues[absoluteChildPath] = issue;
+            }
+          }
+          this._evaluate(key, absolutePath);
+        });
       }
     },
     evaluate(path, currentPath) {
@@ -410,13 +395,13 @@ export const useDmfStore = defineStore('dmf', {
       if (schema.type === 'SWITCH') {
         const switchObject = this.getValue(path, currentPath);
         const selectedType = switchObject.type;
-        Object.keys(switchObject.config).forEach(type => {
+        Object.keys(switchObject.config).forEach((type) => {
           if (selectedType !== type && !this.isInherited('config/' + type, absolutePath)) {
             delete switchObject.config[type];
           }
         });
       }
-      this.getChildPaths(path, currentPath).forEach(childPath => {
+      this.getChildPaths(path, currentPath).forEach((childPath) => {
         this.finish(childPath, absolutePath);
       });
     },
@@ -441,26 +426,27 @@ export const useDmfStore = defineStore('dmf', {
       return () => this.getDocumentMetaData().name;
     },
     isNativeType() {
-      return type => NATIVE_SCHEMA_TYPES.indexOf(type) >= 0;
+      return (type) => NATIVE_SCHEMA_TYPES.indexOf(type) >= 0;
     },
     isCustomType() {
-      return type => !this.isNativeType(type);
+      return (type) => !this.isNativeType(type);
     },
     isContainerType() {
-      return type => CONTAINER_TYPES.indexOf(type) >= 0;
+      return (type) => CONTAINER_TYPES.indexOf(type) >= 0;
     },
     isDynamicContainerType() {
-      return type => DYNAMIC_CONTAINER_TYPES.indexOf(type) >= 0;
+      return (type) => DYNAMIC_CONTAINER_TYPES.indexOf(type) >= 0;
     },
     isScalarType() {
-      return type => !this.isContainerType(type);
+      return (type) => !this.isContainerType(type);
     },
     isDynamicContainer() {
       return (path, currentPath) =>
         this.isDynamicContainerType(this.getSchema(path, currentPath, true).type);
     },
     isDynamicChild() {
-      return (path, currentPath) => !this.isRoot(path, currentPath) && this.isDynamicContainer(path + '/..', currentPath);
+      return (path, currentPath) =>
+        !this.isRoot(path, currentPath) && this.isDynamicContainer(path + '/..', currentPath);
     },
     isRoot() {
       return (path, currentPath) => this.getLevel(path, currentPath) === 0;
@@ -469,45 +455,45 @@ export const useDmfStore = defineStore('dmf', {
       return (path, currentPath) => this._getPathParts(path, currentPath).length;
     },
     _pathIsAbsolute() {
-      return path => path.toString().startsWith('/');
+      return (path) => path.toString().startsWith('/');
     },
     _sanitizePath() {
-      return path => {
+      return (path) => {
         path = path.toString();
         if (path !== '/' && path.toString().endsWith('/')) {
-            path = path.slice(0, -1);
+          path = path.slice(0, -1);
         }
         path = path.replace('\\/\\/+', '\\/');
         return path;
       };
     },
     _simplifyPath() {
-      return absolutePath => {
+      return (absolutePath) => {
         absolutePath = this._sanitizePath(absolutePath);
         if (!this._pathIsAbsolute(absolutePath)) {
-            throw new Error('path needs to be absolute');
+          throw new Error('path needs to be absolute');
         }
         const resultPathParts = [];
         const pathParts = absolutePath.substring(1).split('/');
-        pathParts.forEach(pathPart => {
-            switch (pathPart) {
-                case '.': {
-                    // do nothing
-                    break;
-                }
-                case '..': {
-                    // one level up
-                    const previousPathPart = resultPathParts.pop();
-                    if (typeof previousPathPart === 'undefined') {
-                        throw new Error('path seems to go beyond absolute path bounds');
-                    }
-                    break;
-                }
-                default: {
-                    resultPathParts.push(pathPart);
-                    break;
-                }
+        pathParts.forEach((pathPart) => {
+          switch (pathPart) {
+            case '.': {
+              // do nothing
+              break;
             }
+            case '..': {
+              // one level up
+              const previousPathPart = resultPathParts.pop();
+              if (typeof previousPathPart === 'undefined') {
+                throw new Error('path seems to go beyond absolute path bounds');
+              }
+              break;
+            }
+            default: {
+              resultPathParts.push(pathPart);
+              break;
+            }
+          }
         });
         return '/' + resultPathParts.join('/');
       };
@@ -517,10 +503,10 @@ export const useDmfStore = defineStore('dmf', {
         path = this._sanitizePath(path);
         currentPath = this._sanitizePath(currentPath || '/');
         if (!path.startsWith('/')) {
-            if (!this._pathIsAbsolute(currentPath)) {
-                throw new Error('current path needs to be absolute');
-            }
-            path = currentPath === '/' ?  '/' + path : currentPath + '/' + path;
+          if (!this._pathIsAbsolute(currentPath)) {
+            throw new Error('current path needs to be absolute');
+          }
+          path = currentPath === '/' ? '/' + path : currentPath + '/' + path;
         }
         return this._simplifyPath(path);
       };
@@ -529,19 +515,20 @@ export const useDmfStore = defineStore('dmf', {
       return (path, currentPath) => this.getAbsolutePath(path, currentPath).split('/').pop();
     },
     getParentPath() {
-      return (path, currentPath) => this.getAbsolutePath('..', this.getAbsolutePath(path, currentPath));
+      return (path, currentPath) =>
+        this.getAbsolutePath('..', this.getAbsolutePath(path, currentPath));
     },
     _getPathParts() {
       return (path, currentPath) => {
         const pathPartsString = this.getAbsolutePath(path, currentPath).substring(1);
         if (pathPartsString === '') {
-            return [];
+          return [];
         }
         return pathPartsString.split('/');
       };
     },
     getCustomSchema(state) {
-      return type => {
+      return (type) => {
         if (typeof state.schemaDocument.types[type] !== 'undefined') {
           return state.schemaDocument.types[type];
         }
@@ -552,21 +539,21 @@ export const useDmfStore = defineStore('dmf', {
       return (valueConfig) => {
         let values = {};
         if (valueConfig.list) {
-          Object.keys(valueConfig.list).forEach(key => {
+          Object.keys(valueConfig.list).forEach((key) => {
             values[key] = valueConfig.list[key];
           });
         }
         if (valueConfig.sets) {
-          valueConfig.sets.forEach(setName => {
+          valueConfig.sets.forEach((setName) => {
             const set = state.schemaDocument.valueSets[setName] || {};
-            Object.keys(set).forEach(key => {
+            Object.keys(set).forEach((key) => {
               values[key] = set[key];
             });
           });
         }
         if (valueConfig.references) {
-          valueConfig.references.forEach(reference => {
-            this.getChildPaths(reference).forEach(childPath => {
+          valueConfig.references.forEach((reference) => {
+            this.getChildPaths(reference).forEach((childPath) => {
               if (typeof values[childPath] === 'undefined') {
                 values[childPath] = this.getLabel(childPath, reference);
               }
@@ -589,7 +576,7 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     _getAllowedValues() {
-      return schema => this._getValues(schema, 'allowedValues');
+      return (schema) => this._getValues(schema, 'allowedValues');
     },
     getAllowedValues() {
       return (path, currentPath) => this._getAllowedValues(this.getSchema(path, currentPath));
@@ -615,37 +602,39 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     _getFirstAllowedValue() {
-      return schema => this._getFirstValue(schema, 'allowedValues');
+      return (schema) => this._getFirstValue(schema, 'allowedValues');
     },
     getFirstAllowedValue() {
       return (path, currentPath) => this._getFirstAllowedValue(this.getSchema(path, currentPath));
     },
     _getFirstAllowedValueLabel() {
-      return schema => this._getFirstValueLabel(schema, 'allowedValues');
+      return (schema) => this._getFirstValueLabel(schema, 'allowedValues');
     },
     getFirstAllowedValueLabel() {
-      return (path, currentPath) => this._getFirstAllowedValueLabel(this.getSchema(path, currentPath));
+      return (path, currentPath) =>
+        this._getFirstAllowedValueLabel(this.getSchema(path, currentPath));
     },
     _getSuggestedValues() {
-      return schema => this._getValues(schema, 'suggestedValues');
+      return (schema) => this._getValues(schema, 'suggestedValues');
     },
     getSuggestedValues() {
       return (path, currentPath) => this._getSuggestedValues(this.getSchema(path, currentPath));
     },
     _getFirstSuggestedValue() {
-      return schema => this._getFirstValue(schema, 'suggestedValues');
+      return (schema) => this._getFirstValue(schema, 'suggestedValues');
     },
     getFirstSuggestedValue() {
       return (path, currentPath) => this._getFirstSuggestedValue(this.getSchema(path, currentPath));
     },
     _getFirstSuggestedValueLabel() {
-      return schema => this._getFirstValueLabel(schema, 'suggestedValues');
+      return (schema) => this._getFirstValueLabel(schema, 'suggestedValues');
     },
     getFirstSuggestedValueLabel() {
-      return (path, currentPath) => this._getFirstSuggestedValueLabel(this.getSchema(path, currentPath));
+      return (path, currentPath) =>
+        this._getFirstSuggestedValueLabel(this.getSchema(path, currentPath));
     },
     _getDefaultValue() {
-      return schema => {
+      return (schema) => {
         if (typeof schema.default !== 'undefined') {
           return schema.default;
         }
@@ -660,8 +649,8 @@ export const useDmfStore = defineStore('dmf', {
         switch (schema.type) {
           case 'CONTAINER': {
             const defaultValue = {};
-            schema.values.forEach(subSchema => {
-                defaultValue[subSchema.key] = this._getDefaultValue(subSchema);
+            schema.values.forEach((subSchema) => {
+              defaultValue[subSchema.key] = this._getDefaultValue(subSchema);
             });
             return defaultValue;
           }
@@ -669,55 +658,55 @@ export const useDmfStore = defineStore('dmf', {
             const defaultValue = {};
             let defaultType = null;
             let configSchema = null;
-            schema.values.forEach(subSchema => {
-                switch (subSchema.key) {
-                    case 'config': {
-                        configSchema = subSchema;
-                        break;
-                    }
-                    case 'type': {
-                        defaultType = this._getDefaultValue(subSchema);
-                        defaultValue.type = defaultType;
-                        break;
-                    }
-                    default: {
-                        defaultValue[subSchema.key] = this._getDefaultValue(subSchema);
-                        break;
-                    }
+            schema.values.forEach((subSchema) => {
+              switch (subSchema.key) {
+                case 'config': {
+                  configSchema = subSchema;
+                  break;
                 }
-              });
-              if (defaultType === null) {
-                  throw new Error('no "type" property found in switch schema');
-              }
-              if (configSchema === null) {
-                  throw new Error('no "config" property found in switch schema');
-              }
-              defaultValue.config = {};
-              configSchema.values.forEach(subSchema => {
-                if (subSchema.key === defaultType) {
-                  defaultValue.config[defaultType] = this._getDefaultValue(subSchema);
+                case 'type': {
+                  defaultType = this._getDefaultValue(subSchema);
+                  defaultValue.type = defaultType;
+                  break;
                 }
-              });
-              return defaultValue;
+                default: {
+                  defaultValue[subSchema.key] = this._getDefaultValue(subSchema);
+                  break;
+                }
+              }
+            });
+            if (defaultType === null) {
+              throw new Error('no "type" property found in switch schema');
+            }
+            if (configSchema === null) {
+              throw new Error('no "config" property found in switch schema');
+            }
+            defaultValue.config = {};
+            configSchema.values.forEach((subSchema) => {
+              if (subSchema.key === defaultType) {
+                defaultValue.config[defaultType] = this._getDefaultValue(subSchema);
+              }
+            });
+            return defaultValue;
           }
           case 'MAP': {
-              return {};
+            return {};
           }
           case 'LIST': {
-              return [];
+            return [];
           }
           case 'STRING': {
-              return '';
+            return '';
           }
           case 'INTEGER': {
-              return 0;
+            return 0;
           }
           case 'BOOLEAN': {
-              return false;
+            return false;
           }
           default: {
-              const customSchema = this.getCustomSchema(schema.type);
-              return this._getDefaultValue(customSchema);
+            const customSchema = this.getCustomSchema(schema.type);
+            return this._getDefaultValue(customSchema);
           }
         }
       };
@@ -729,7 +718,7 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     resolveSchema() {
-      return schema => {
+      return (schema) => {
         if (this.isNativeType(schema.type)) {
           return schema;
         }
@@ -742,38 +731,38 @@ export const useDmfStore = defineStore('dmf', {
       return (pathParts, currentSchema) => {
         if (pathParts.length === 0) {
           return currentSchema;
-      }
+        }
 
-      const pathPart = pathParts.shift();
-      switch (currentSchema.type) {
+        const pathPart = pathParts.shift();
+        switch (currentSchema.type) {
           case 'SWITCH':
           case 'CONTAINER': {
-              for (let index in currentSchema.values) {
-                  const subSchema = currentSchema.values[index];
-                  if (subSchema.key === pathPart) {
-                      return this._getSchema(pathParts, subSchema);
-                  }
+            for (let index in currentSchema.values) {
+              const subSchema = currentSchema.values[index];
+              if (subSchema.key === pathPart) {
+                return this._getSchema(pathParts, subSchema);
               }
-              throw new Error('key ' + pathPart + ' not found in schema');
+            }
+            throw new Error('key ' + pathPart + ' not found in schema');
           }
           case 'MAP': {
-              return this._getSchema(pathParts, currentSchema.valueTemplate);
+            return this._getSchema(pathParts, currentSchema.valueTemplate);
           }
           case 'LIST': {
-              if (!/^[0-9]+$/.test(pathPart)) {
-                  throw new Error('list key "' + pathPart + '" is not numeric');
-              }
-              return this._getSchema(pathParts, currentSchema.valueTemplate);
+            if (!/^[0-9]+$/.test(pathPart)) {
+              throw new Error('list key "' + pathPart + '" is not numeric');
+            }
+            return this._getSchema(pathParts, currentSchema.valueTemplate);
           }
           case 'STRING':
           case 'INTEGER':
           case 'BOOLEAN': {
-              throw new Error('scalar schema ' + currentSchema.type + ' does not have a sub schema');
+            throw new Error('scalar schema ' + currentSchema.type + ' does not have a sub schema');
           }
           default: {
-              const customSchema = this.getCustomSchema(currentSchema.type);
-              pathParts.unshift(pathPart);
-              return this._getSchema(pathParts, customSchema);
+            const customSchema = this.getCustomSchema(currentSchema.type);
+            pathParts.unshift(pathPart);
+            return this._getSchema(pathParts, customSchema);
           }
         }
       };
@@ -788,11 +777,11 @@ export const useDmfStore = defineStore('dmf', {
     _getValue() {
       return (pathParts, currentValue) => {
         for (let index in pathParts) {
-            const pathPart = pathParts[index];
-            if (typeof currentValue[pathPart] === 'undefined') {
-                return undefined;
-            }
-            currentValue = currentValue[pathPart];
+          const pathPart = pathParts[index];
+          if (typeof currentValue[pathPart] === 'undefined') {
+            return undefined;
+          }
+          currentValue = currentValue[pathPart];
         }
         return currentValue;
       };
@@ -806,16 +795,17 @@ export const useDmfStore = defineStore('dmf', {
         const pathParts = this._getPathParts(path, currentPath);
         const value = this._getValue(pathParts, source);
         if (typeof value !== 'undefined') {
-            return value;
+          return value;
         }
         if (withDefault) {
-            return this.getDefaultValue(path, currentPath);
+          return this.getDefaultValue(path, currentPath);
         }
         return undefined;
       };
     },
     getInheritedValue(state) {
-      return (path, currentPath, withDefault) => this.getValue(path, currentPath, withDefault, state.inheritedData);
+      return (path, currentPath, withDefault) =>
+        this.getValue(path, currentPath, withDefault, state.inheritedData);
     },
     getParentValue() {
       return (path, currentPath, withDefault, source) => {
@@ -826,70 +816,71 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     getInheritedParentValue() {
-      return (path, currentPath, withDefault) => this.getParentValue(path, currentPath, withDefault, this.inheritedData);
+      return (path, currentPath, withDefault) =>
+        this.getParentValue(path, currentPath, withDefault, this.inheritedData);
     },
     _getChildPaths() {
       return (schema, path, currentPath, absolute) => {
         const absolutePath = this.getAbsolutePath(path, currentPath);
         switch (schema.type) {
-            case 'SWITCH': {
-                const paths = [];
-                for (let index in schema.values) {
-                    const childSchema = schema.values[index];
-                    if (childSchema.key === 'config') {
-                        const type = this.getValue(path + '/type', currentPath, true);
-                        paths.push(absolute ? absolutePath + '/config/' + type : 'config/' + type);
-                    } else {
-                        paths.push(absolute ? absolutePath + '/' + childSchema.key : childSchema.key);
-                    }
-                }
-                return paths;
+          case 'SWITCH': {
+            const paths = [];
+            for (let index in schema.values) {
+              const childSchema = schema.values[index];
+              if (childSchema.key === 'config') {
+                const type = this.getValue(path + '/type', currentPath, true);
+                paths.push(absolute ? absolutePath + '/config/' + type : 'config/' + type);
+              } else {
+                paths.push(absolute ? absolutePath + '/' + childSchema.key : childSchema.key);
+              }
             }
-            case 'CONTAINER': {
-                const paths = [];
-                for (let index in schema.values) {
-                    const childSchema = schema.values[index];
-                    paths.push(absolute ? absolutePath + '/' + childSchema.key : childSchema.key);
-                }
-                return paths;
+            return paths;
+          }
+          case 'CONTAINER': {
+            const paths = [];
+            for (let index in schema.values) {
+              const childSchema = schema.values[index];
+              paths.push(absolute ? absolutePath + '/' + childSchema.key : childSchema.key);
             }
-            case 'MAP': {
-                const map = this.getValue(path, currentPath, true);
-                const paths = [];
-                for (let key in map) {
-                    paths.push(absolute ? absolutePath + '/' + key : key);
-                }
-                return paths;
+            return paths;
+          }
+          case 'MAP': {
+            const map = this.getValue(path, currentPath, true);
+            const paths = [];
+            for (let key in map) {
+              paths.push(absolute ? absolutePath + '/' + key : key);
             }
-            case 'LIST': {
-                const list = this.getValue(path, currentPath, true);
-                const paths = [];
-                for (let index = 0; index < list.length; index++) {
-                    paths.push(absolute ? absolutePath + '/' + index : index);
-                }
-                return paths;
+            return paths;
+          }
+          case 'LIST': {
+            const list = this.getValue(path, currentPath, true);
+            const paths = [];
+            for (let index = 0; index < list.length; index++) {
+              paths.push(absolute ? absolutePath + '/' + index : index);
             }
-            case 'STRING':
-            case 'INTEGER':
-            case 'BOOLEAN': {
-                return [];
-            }
-            default: {
-                const customSchema = this.getCustomSchema(schema.type);
-                return this._getChildPaths(customSchema, path, currentPath);
-            }
+            return paths;
+          }
+          case 'STRING':
+          case 'INTEGER':
+          case 'BOOLEAN': {
+            return [];
+          }
+          default: {
+            const customSchema = this.getCustomSchema(schema.type);
+            return this._getChildPaths(customSchema, path, currentPath);
+          }
         }
       };
     },
     getChildPaths() {
       return (path, currentPath, absolute) => {
-          const schema = this.getSchema(path, currentPath, true);
-          const childPaths = this._getChildPaths(schema, path, currentPath, absolute);
-          return childPaths;
+        const schema = this.getSchema(path, currentPath, true);
+        const childPaths = this._getChildPaths(schema, path, currentPath, absolute);
+        return childPaths;
       };
     },
     _isNavigationItem() {
-      return schema => {
+      return (schema) => {
         if (typeof schema.navigationItem !== 'undefined') {
           return !!schema.navigationItem;
         }
@@ -906,7 +897,7 @@ export const useDmfStore = defineStore('dmf', {
       return (path, currentPath, absolute) => {
         const absolutePath = this.getAbsolutePath(path, currentPath);
         const childPaths = this.getChildPaths(path, currentPath, absolute);
-        return childPaths.filter(childPath => this.isNavigationItem(childPath, absolutePath));
+        return childPaths.filter((childPath) => this.isNavigationItem(childPath, absolutePath));
       };
     },
     isSelected(state) {
@@ -923,7 +914,7 @@ export const useDmfStore = defineStore('dmf', {
         const value = cloneValue(this.getValue(path, currentPath));
         const inheritedValue = cloneValue(this.getInheritedValue(path, currentPath));
         if (typeof inheritedValue === 'undefined') {
-            return false;
+          return false;
         }
         if (this.isRoot(path, currentPath)) {
           if (typeof value.metaData !== 'undefined') {
@@ -942,16 +933,19 @@ export const useDmfStore = defineStore('dmf', {
           return false;
         }
         if (this.isInherited(path, currentPath)) {
-            return false;
+          return false;
         }
         if (typeof this.getValue(path, currentPath) === 'undefined') {
-            return false;
+          return false;
         }
         // TODO if the inherited value does not exist at all, we must not count an element as overwritten if it is not dynamic
         //      it will have a parent element that is dynamic and is also overwritten. that's where the option to reset the element should be
         //      right now such a non-dynamic element is considered not overwritten, but it should probably still be marked as overwritten
         //      it should just not be possible to reset that particular element. maybe clicking the reset button should trigger the reset on the first dynamic parent element?
-        if (typeof this.getInheritedValue(path, currentPath) === 'undefined' && !this.isDynamicChild(path, currentPath)) {
+        if (
+          typeof this.getInheritedValue(path, currentPath) === 'undefined' &&
+          !this.isDynamicChild(path, currentPath)
+        ) {
           return false;
         }
         return true;
@@ -969,7 +963,7 @@ export const useDmfStore = defineStore('dmf', {
         let variableFound = true;
         while (variableFound) {
           variableFound = false;
-          label = label.replace(/\{[^}]+\}/, match => {
+          label = label.replace(/\{[^}]+\}/, (match) => {
             variableFound = true;
             const referencePath = match.substring(1, match.length - 1);
             return this.getValue(referencePath, absolutePath);
@@ -979,10 +973,13 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     _prettifyLabel() {
-      return label => {
-        const ucfirst = s => s.substring(0, 1).toUpperCase() + s.substring(1);
-        label = label.replace(/[A-Z]+/g, match => ' ' + match);
-        label = label.replace(/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/g, (wholeMatch, match) => ' ' + ucfirst(match));
+      return (label) => {
+        const ucfirst = (s) => s.substring(0, 1).toUpperCase() + s.substring(1);
+        label = label.replace(/[A-Z]+/g, (match) => ' ' + match);
+        label = label.replace(
+          /[^a-zA-Z0-9]+([a-zA-Z0-9]+)/g,
+          (wholeMatch, match) => ' ' + ucfirst(match)
+        );
         label = label.replace(/[^a-zA-Z0-9]+$/, '');
         return ucfirst(label);
       };
@@ -1012,7 +1009,7 @@ export const useDmfStore = defineStore('dmf', {
         const pathParts = this._getPathParts(path, currentPath);
         let currentRootLinePath = '/';
         const rootLine = ['/'];
-        pathParts.forEach(pathPart => {
+        pathParts.forEach((pathPart) => {
           currentRootLinePath = this.getAbsolutePath(pathPart, currentRootLinePath);
           rootLine.push(currentRootLinePath);
         });
@@ -1030,9 +1027,17 @@ export const useDmfStore = defineStore('dmf', {
     },
     includesChanged(state) {
       return () => {
-        const changed =JSON.stringify(state.data.metaData.includes || []) !== JSON.stringify(state.referenceIncludes || []);
+        const changed =
+          JSON.stringify(state.data.metaData.includes || []) !==
+          JSON.stringify(state.referenceIncludes || []);
         if (changed) {
-          this.setWarning(WARNING_INCLUDES_CHANGED, () => { this.updateIncludes(); }, 'apply changes');
+          this.setWarning(
+            WARNING_INCLUDES_CHANGED,
+            () => {
+              this.updateIncludes();
+            },
+            'apply changes'
+          );
         } else {
           this.unsetWarning(WARNING_INCLUDES_CHANGED);
         }
@@ -1048,7 +1053,8 @@ export const useDmfStore = defineStore('dmf', {
         if (typeof state.collapsedContainerPaths[absolutePath] === 'undefined') {
           const schema = this.getSchema(path, currentPath);
           // TODO setup schema rendering property "closedInitially", also, should it be closed initially or open initially?
-          state.collapsedContainerPaths[absolutePath] = this.getSelectedPath() === absolutePath || (schema.openInitially ? true : false);
+          state.collapsedContainerPaths[absolutePath] =
+            this.getSelectedPath() === absolutePath || (schema.openInitially ? true : false);
         }
         return state.collapsedContainerPaths[absolutePath];
       };
@@ -1076,35 +1082,38 @@ export const useDmfStore = defineStore('dmf', {
         const schema = this.getSchema(path, currentPath, true);
         const immediateSchema = this.getSchema(path, currentPath);
         return {
-            path: this.getAbsolutePath(path, currentPath),
-            parentPath: this.isRoot(path, currentPath) ? '' : this.getParentPath(path, currentPath),
-            value: this.getValue(path, currentPath, true),
-            isRoot: this.isRoot(path, currentPath),
-            rootLine: this.getRootLine(path, currentPath),
-            schema: schema,
-            immediateSchema: immediateSchema,
-            custom: this.isCustomType(immediateSchema.type),
-            level: this.getLevel(path, currentPath),
-            currentKey: this.getLeafKey(path, currentPath),
-            parentValue: this.getParentValue(path, currentPath),
-            selected: this.isSelected(path, currentPath),
-            isOverwritten: this.isOverwritten(path, currentPath),
-            isScalar: this.isScalarType(schema.type),
-            isContainer: this.isContainerType(schema.type),
-            isDynamicContainer: this.isDynamicContainerType(schema.type),
-            isDynamicItem: this.isDynamicChild(path, currentPath),
-            childPaths: this.getChildPaths(path, currentPath),
-            navigationChildPaths: this.getNavigationChildPaths(path, currentPath),
-            label: this.getLabel(path, currentPath),
-            hasIssues: this.hasIssues(path, currentPath),
-            issue: this.getIssue(path, currentPath),
-            rawView: this.isRawView(path, currentPath),
-            triggers: this.getTriggers(path, currentPath)
+          path: this.getAbsolutePath(path, currentPath),
+          parentPath: this.isRoot(path, currentPath) ? '' : this.getParentPath(path, currentPath),
+          value: this.getValue(path, currentPath, true),
+          isRoot: this.isRoot(path, currentPath),
+          rootLine: this.getRootLine(path, currentPath),
+          schema: schema,
+          immediateSchema: immediateSchema,
+          custom: this.isCustomType(immediateSchema.type),
+          level: this.getLevel(path, currentPath),
+          currentKey: this.getLeafKey(path, currentPath),
+          parentValue: this.getParentValue(path, currentPath),
+          selected: this.isSelected(path, currentPath),
+          isOverwritten: this.isOverwritten(path, currentPath),
+          isScalar: this.isScalarType(schema.type),
+          isContainer: this.isContainerType(schema.type),
+          isDynamicContainer: this.isDynamicContainerType(schema.type),
+          isDynamicItem: this.isDynamicChild(path, currentPath),
+          childPaths: this.getChildPaths(path, currentPath),
+          navigationChildPaths: this.getNavigationChildPaths(path, currentPath),
+          label: this.getLabel(path, currentPath),
+          hasIssues: this.hasIssues(path, currentPath),
+          issue: this.getIssue(path, currentPath),
+          rawView: this.isRawView(path, currentPath),
+          triggers: this.getTriggers(path, currentPath)
         };
       };
     },
     getParentItem() {
-      return (path, currentPath) => this.isRoot(path, currentPath) ? undefined : this.getItem(this.getParentPath(path, currentPath));
+      return (path, currentPath) =>
+        this.isRoot(path, currentPath)
+          ? undefined
+          : this.getItem(this.getParentPath(path, currentPath));
     }
   }
 });
