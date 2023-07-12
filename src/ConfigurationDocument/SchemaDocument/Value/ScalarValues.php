@@ -6,6 +6,11 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDo
 
 class ScalarValues
 {
+    public const REFERENCE_TYPE_KEY = 'key';
+    public const REFERENCE_TYPE_VALUE = 'value';
+
+    protected array $values;
+
     protected ValueSet $list;
 
     /**
@@ -13,47 +18,51 @@ class ScalarValues
      * @param array<string> $sets
      * @param array<string> $references
      */
-    public function __construct(
-        array $list = [],
-        protected array $sets = [],
-        protected array $references = [],
-    ) {
-        $this->list = new ValueSet($list);
+    public function __construct() {
+        $this->reset();
     }
 
     public function addValue(string|int|bool $value, ?string $label = null): void
     {
-        $this->list->addValue($value, $label);
+        if (!isset($this->values['list'])) {
+            $this->values['list'] = new ValueSet();
+        }
+        $this->values['list']->addValue($value, $label);
     }
 
     public function addValueSet(string $name): void
     {
-        $this->sets[] = $name;
+        $this->values['sets'][] = $name;
     }
 
-    public function addReference(string $reference): void
+    public function addReference(string $path, string $type = self::REFERENCE_TYPE_KEY): void
     {
-        $this->references[] = $reference;
+        $this->values['references'][] = [
+            'type' => $type,
+            'path' => $path,
+        ];
     }
 
     public function reset(): void
     {
-        $this->list = [];
-        $this->sets = [];
-        $this->references = [];
+        $this->values = [];
+    }
+
+    public function addCustomValue(string $valueType, mixed $value): void
+    {
+        $this->values[$valueType][] = $value;
     }
 
     public function toArray(): ?array
     {
-        $list = $this->list->toArray();
-        if (empty($list) && empty($this->sets) && empty($this->references)) {
-            return null;
+        if (!empty($this->values)) {
+            $values = $this->values;
+            if (isset($values['list'])) {
+                $values['list'] = $values['list']->toArray();
+            }
+            return $values;
         }
-        return [
-            'list' => !empty($list) ? $list : null,
-            'sets' => !empty($this->sets) ? $this->sets : null,
-            'references' => !empty($this->references) ? $this->references : null,
-        ];
+        return null;
     }
 
     public function getFirstValue(SchemaDocument $schemaDocument): string|int|bool|null
@@ -70,14 +79,28 @@ class ScalarValues
      */
     public function getValues(SchemaDocument $schemaDocument): array
     {
-        $values = $this->list;
-        foreach ($this->sets as $setName) {
-            $set = $schemaDocument->getValueSet($setName) ?? new ValueSet();
-            $values->merge($set);
-            // NOTE references can't be calculated without a data object to be referenced, so we do not take those into account
-            // TODO do we need to do something about this? probably, because server-side evaluation is supposed to use the schema
-            //      however, if we evaluate a data object, then we have it to follow the references
-            //      maybe add a second parameter for the data object, optional
+        $values = new ValueSet();
+        foreach ($this->values as $type => $valueConfig) {
+            switch ($type) {
+                case 'list':
+                    $values->merge($valueConfig);
+                    break;
+                case 'sets':
+                    foreach ($valueConfig as $setName) {
+                        $set = $schemaDocument->getValueSet($setName) ?? new ValueSet();
+                        $values->merge($set);
+                    }
+                    break;
+                case 'references':
+                    // NOTE references can't be calculated without a data object to be referenced, so we do not take those into account
+                    // TODO do we need to do something about this? probably, because server-side evaluation is supposed to use the schema
+                    //      however, if we evaluate a data object, then we have it to follow the references
+                    //      maybe add a second parameter for the data object, optional
+                    break;
+                default:
+                    // TODO trigger an event so that other packages have a chance to implement their way of fetching/generating values (e.g. route references for the distributor)
+                    break;
+            }
         }
         return $values->toArray();
     }

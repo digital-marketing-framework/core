@@ -1,7 +1,12 @@
 import './assets/tailwind.css';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 
-import { EVENT_APP_OPEN, EVENT_APP_CLOSE, EVENT_APP_SAVE, linkEnvironment } from './composables/environmentLinker.js';
+import {
+  EVENT_APP_OPEN,
+  EVENT_APP_CLOSE,
+  EVENT_APP_SAVE,
+  linkEnvironment
+} from './composables/environmentLinker.js';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
@@ -38,7 +43,7 @@ const init = async () => {
     store.save();
   });
 
-  document.addEventListener(EVENT_APP_OPEN, e => {
+  document.addEventListener(EVENT_APP_OPEN, (e) => {
     store.receiveData(e.detail);
     store.open();
   });

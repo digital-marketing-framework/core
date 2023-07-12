@@ -35,7 +35,8 @@ const item = computed(() => store.getItem(props.currentPath));
     <div class="w-full max-w-3xl"
          :class="{
              'bg-blue-100 text-blue-800 border border-blue-200 py-2 px-3 rounded': !item.isContainer
-         }">
+         }"
+         v-if="item.isVisible">
 
 <!-- use if needed: -->
 <!--

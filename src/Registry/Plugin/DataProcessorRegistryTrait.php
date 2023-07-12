@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\P
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\BinaryComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;

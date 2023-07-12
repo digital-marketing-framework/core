@@ -2,6 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\AndCondition;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\Condition;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\NotEmptyCondition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
@@ -13,6 +16,12 @@ abstract class Schema implements SchemaInterface
 
     /** @var array<string,ValueSet> $valueSets */
     protected array $valueSets = [];
+
+    /** @var array<array{condition:Condition,message:string}> $strictEvaluations */
+    protected array $strictEvaluations = [];
+
+    /** @var array<array{condition:Condition,message:string}> $evaluations */
+    protected array $evaluations = [];
 
     public function __construct(
         protected mixed $defaultValue = null,
@@ -66,9 +75,26 @@ abstract class Schema implements SchemaInterface
 
     protected function getConfig(): array
     {
-        return [
+        $config = [
             'default' => $this->defaultValue,
         ];
+        if (count($this->strictEvaluations) > 0) {
+            $config['strictEvaluations'] = array_map(function(array $evaluation) {
+                return [
+                    'condition' => $evaluation['condition']->toArray(),
+                    'message' => $evaluation['message'],
+                ];
+            }, $this->strictEvaluations);
+        }
+        if (count($this->evaluations) > 0) {
+            $config['evaluations'] = array_map(function(array $evaluation) {
+                return [
+                    'condition' => $evaluation['condition']->toArray(),
+                    'message' => $evaluation['message'],
+                ];
+            }, $this->evaluations);
+        }
+        return $config;
     }
 
     public function toArray(): array
@@ -94,6 +120,27 @@ abstract class Schema implements SchemaInterface
     public function setDefaultValue(mixed $value): void
     {
         $this->defaultValue = $value;
+    }
+
+    public function setRequired(string $message = 'Required Field'): void
+    {
+        $this->addEvaluation(new NotEmptyCondition(), $message);
+    }
+
+    public function addEvaluation(Condition $condition, string $message): void
+    {
+        $this->evaluations[] = [
+            'condition' => $condition,
+            'message' => $message,
+        ];
+    }
+
+    public function addStrictEvaluation(Condition $condition, string $message): void
+    {
+        $this->strictEvaluations[] = [
+            'condition' => $condition,
+            'message' => $message,
+        ];
     }
 
     public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void

@@ -6,6 +6,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ScalarValues;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 class RestrictedTermsSchema extends SwitchSchema
@@ -16,10 +17,10 @@ class RestrictedTermsSchema extends SwitchSchema
     public const KEY_WHITELIST = 'whitelist';
     public const KEY_LIST = 'list';
 
-    protected function addList(string $name): void
+    protected function addList(string $name, string $referencePath, string $referenceType): void
     {
         $listItemSchema = new StringSchema();
-        $listItemSchema->getAllowedValues()->addReference($this->reference);
+        $listItemSchema->getAllowedValues()->addReference($referencePath, $referenceType);
         $listItemSchema->getRenderingDefinition()->setFormat('select');
         $listItemSchema->getRenderingDefinition()->hideLabel(true);
         $listSchema = new ListSchema($listItemSchema);
@@ -30,14 +31,15 @@ class RestrictedTermsSchema extends SwitchSchema
     }
 
     public function __construct(
-        protected string $reference,
+        string $referencePath,
+        string $referenceType = ScalarValues::REFERENCE_TYPE_KEY,
         mixed $defaultValue = null
     ) {
         parent::__construct('restrictedTerms' , $defaultValue);
         $this->addItem(static::KEY_ALL, new ContainerSchema());
         $this->addItem(static::KEY_NONE, new ContainerSchema());
-        $this->addList(static::KEY_BLACKLIST);
-        $this->addList(static::KEY_WHITELIST);
+        $this->addList(static::KEY_BLACKLIST, $referencePath, $referenceType);
+        $this->addList(static::KEY_WHITELIST, $referencePath, $referenceType);
     }
 
     /**

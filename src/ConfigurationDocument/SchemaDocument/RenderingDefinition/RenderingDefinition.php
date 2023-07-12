@@ -2,15 +2,25 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\AndCondition;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\Condition;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\InCondition;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ScalarValues;
+
 class RenderingDefinition implements RenderingDefinitionInterface
 {
-    protected ?array $visibility = null;
+    protected AndCondition $visibility;
     protected ?string $format = null;
     protected ?bool $hideLabel = null;
     protected ?string $label = null;
     protected ?bool $isNavigationItem = null;
     protected ?bool $skipHeader = null;
     protected array $triggers = [];
+
+    public function __construct()
+    {
+        $this->visibility = new AndCondition();
+    }
 
     public function toArray(): ?array
     {
@@ -21,8 +31,8 @@ class RenderingDefinition implements RenderingDefinitionInterface
         if ($this->hideLabel ?? false) {
             $render['hideLabel'] = true;
         }
-        if ($this->visibility !== null) {
-            $render['visibility'] = $this->visibility;
+        if ($this->visibility->getConditionCount() > 0) {
+            $render['visibility'] = $this->visibility->toArray();
         }
         if ($this->isNavigationItem !== null) {
             $render['navigationItem'] = $this->isNavigationItem;
@@ -76,38 +86,21 @@ class RenderingDefinition implements RenderingDefinitionInterface
         return $this->isNavigationItem;
     }
 
-    public function setVisibilityConditionByString(string $path, string $value): void
+    public function getVisibility(): AndCondition
     {
-        $this->visibility = [
-            'type' => 'string',
-            'path' => $path,
-            'value' => $value,
-        ];
+        return $this->visibility;
     }
 
-    public function setVisibilityConditionByValueSet(string $path, string $set): void
+    public function addVisibilityCondition(Condition $condition): void
     {
-        $this->visibility = [
-            'type' => 'valueSet',
-            'path' => $path,
-            'set' => $set,
-        ];
+        $this->visibility->addCondition($condition);
     }
 
-    public function setVisibilityConditionByBoolean(string $path): void
+    public function addVisibilityConditionByValue(string $path): ScalarValues
     {
-        $this->visibility = [
-            'type' => 'bool',
-            'path' => $path,
-        ];
-    }
-
-    public function setVisibilityConditionByToggle(string $path): void
-    {
-        $this->visibility = [
-            'type' => 'toggle',
-            'path' => $path,
-        ];
+        $values = new ScalarValues();
+        $this->addVisibilityCondition(new InCondition($path, $values));
+        return $values;
     }
 
     public function setFormat(string $format): void

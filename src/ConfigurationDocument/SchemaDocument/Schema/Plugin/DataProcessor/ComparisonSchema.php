@@ -26,9 +26,8 @@ class ComparisonSchema extends ContainerSchema
         $anyAll->getAllowedValues()->addValue(Comparison::VALUE_ANY_ALL_ALL);
         $anyAll->getRenderingDefinition()->setFormat('select');
         $anyAll->getRenderingDefinition()->hideLabel();
-        $anyAll->getRenderingDefinition()->setVisibilityConditionByValueSet(Comparison::KEY_OPERATION, static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS);
-        // TODO it is currently not possible to have more than one condition on visibility
-        // $anyAll->getRenderingDefinition()->setVisibilityConditionByValueSet('../data/type', ValueSourceSchema::VALUE_SET_VALUE_SOURCE_CAN_BE_MULTI_VALUE);
+        $anyAll->getRenderingDefinition()->addVisibilityConditionByValue('../' . Comparison::KEY_OPERATION)->addValueSet(static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS);
+        // $anyAll->getRenderingDefinition()->addVisibilityConditionByValue('../data/type')->addValueSet(ValueSourceSchema::VALUE_SET_VALUE_SOURCE_CAN_BE_MULTI_VALUE);
 
         $operation = new StringSchema();
         $operation->getAllowedValues()->addValueSet(static::VALUE_SET_ALL);
@@ -36,7 +35,7 @@ class ComparisonSchema extends ContainerSchema
         $operation->getRenderingDefinition()->hideLabel();
 
         $secondOperand = new CustomSchema(ValueSchema::TYPE);
-        $secondOperand->getRenderingDefinition()->setVisibilityConditionByValueSet(Comparison::KEY_OPERATION, static::VALUE_SET_BINARY_OPERATIONS);
+        $secondOperand->getRenderingDefinition()->addVisibilityConditionByValue('../' . Comparison::KEY_OPERATION)->addValueSet(static::VALUE_SET_BINARY_OPERATIONS);
 
         $this->addProperty(Comparison::KEY_FIRST_OPERAND, $firstOperand);
         $this->addProperty(Comparison::KEY_ANY_ALL, $anyAll);

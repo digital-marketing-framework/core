@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 // import { nextTick } from 'vue';
-import { cloneValue, mergeValue, valuesEqual } from '../composables/valueHelper';
+import { cloneValue, mergeValue, valuesEqual, EVENT_GET_VALUES } from '../composables/valueHelper';
+import { EVENT_CONDITION_EVALUATION } from '../composables/conditionHelper';
 
 const NATIVE_SCHEMA_TYPES = ['SWITCH', 'CONTAINER', 'MAP', 'LIST', 'STRING', 'INTEGER', 'BOOLEAN'];
 
@@ -147,6 +148,7 @@ export const useDmfStore = defineStore('dmf', {
         const lastPathPart = this.getLeafKey(path, currentPath);
         const parent = this.getValue(parentPath, currentPath);
         parent[lastPathPart] = value;
+        this.evaluate(path, currentPath);
       }
     },
     updateMapKey(path, currentPath, key) {
@@ -253,9 +255,9 @@ export const useDmfStore = defineStore('dmf', {
         this.selectPath('..', this.selectedPath);
       }
     },
-    _evaluateAllowedValues(schema, value) {
+    _evaluateAllowedValues(schema, value, currentPath) {
       if (this.isScalarType(schema.type) && schema.allowedValues) {
-        const allowedValues = this.getPredefinedValues(schema.allowedValues);
+        const allowedValues = this.getPredefinedValues(schema.allowedValues, currentPath);
         if (allowedValues.length > 0 && allowedValues.indexOf(value) === -1) {
           return 'value "' + value + '" is not allowed';
         }
@@ -309,14 +311,48 @@ export const useDmfStore = defineStore('dmf', {
       }
       return '';
     },
-    _evaluateSchemaWithoutChildren(schema, value) {
-      const SCHEMA_EVALUATIONS = ['_evaluateSchemaType', '_evaluateAllowedValues'];
-      for (let index = 0; index < SCHEMA_EVALUATIONS.length; index++) {
-        const issue = this[SCHEMA_EVALUATIONS[index]](schema, value);
+    _processEvaluations(path, evaluations) {
+      if (!evaluations) {
+        return '';
+      }
+      for (let index = 0; index < evaluations.length; index++) {
+        if (!this.evaluateCondition(evaluations[index]['condition'], path)) {
+          return evaluations[index]['message'];
+        }
+      }
+      return '';
+    },
+    _processStrictEvaluations(schema, path) {
+      return this._processEvaluations(path, schema.strictEvaluations);
+    },
+    _processSoftEvaluations(schema, path) {
+      return this._processEvaluations(path, schema.evaluations);
+    },
+    _evaluateSchemaWithoutChildren(schema, value, path) {
+      let issue;
+
+      issue = this._evaluateSchemaType(schema, value);
+      if (issue) {
+        return issue;
+      }
+
+      issue = this._evaluateAllowedValues(schema, value, path);
+      if (issue) {
+        return issue;
+      }
+
+      issue = this._processStrictEvaluations(schema, path);
+      if (issue) {
+        return issue;
+      }
+
+      if (!this.settings.globalDocument) {
+        issue = this._processSoftEvaluations(schema, path);
         if (issue) {
           return issue;
         }
       }
+
       return '';
     },
     setWarning(key, action, actionLabel) {
@@ -347,7 +383,7 @@ export const useDmfStore = defineStore('dmf', {
       const absolutePath = this.getAbsolutePath(path, currentPath);
       const schema = this.getSchema(path, currentPath, true);
       const value = this.getValue(path, currentPath);
-      const issue = this._evaluateSchemaWithoutChildren(schema, value);
+      const issue = this._evaluateSchemaWithoutChildren(schema, value, absolutePath);
       if (issue) {
         this.issues[absolutePath] = issue;
       } else if (this.isContainerType(schema.type)) {
@@ -511,6 +547,34 @@ export const useDmfStore = defineStore('dmf', {
         return this._simplifyPath(path);
       };
     },
+    getAllPaths() {
+      return (pathPattern, currentPath) => {
+        pathPattern = this.getAbsolutePath(pathPattern, currentPath);
+        if (pathPattern === '/') {
+          return [pathPattern];
+        }
+        let paths = [''];
+        pathPattern
+          .substring(1)
+          .split('/')
+          .forEach((pathPart) => {
+            if (pathPart === '*') {
+              const newPaths = [];
+              paths.forEach((path) => {
+                this.getChildPaths(path).forEach((childPath) => {
+                  newPaths.push(path + '/' + childPath);
+                });
+              });
+              paths = newPaths;
+            } else {
+              for (let index = 0; index < paths.length; index++) {
+                paths[index] = paths[index] + '/' + pathPart;
+              }
+            }
+          });
+        return paths;
+      };
+    },
     getLeafKey() {
       return (path, currentPath) => this.getAbsolutePath(path, currentPath).split('/').pop();
     },
@@ -535,38 +599,51 @@ export const useDmfStore = defineStore('dmf', {
         throw new Error('type ' + type + ' is unknown');
       };
     },
-    getPredefinedValues(state) {
-      return (valueConfig) => {
+    evaluateCondition() {
+      return (conditionConfig, currentPath) => {
+        conditionConfig = cloneValue(conditionConfig);
+        let result = false;
+        conditionConfig.store = this;
+        conditionConfig.currentPath = currentPath;
+        conditionConfig.resolve = (_result) => {
+          result = _result;
+        };
+        const e = new CustomEvent(EVENT_CONDITION_EVALUATION, {
+          detail: conditionConfig
+        });
+        document.dispatchEvent(e);
+        return result;
+      };
+    },
+    getPredefinedValues() {
+      return (valueConfig, currentPath) => {
         let values = {};
-        if (valueConfig.list) {
-          Object.keys(valueConfig.list).forEach((key) => {
-            values[key] = valueConfig.list[key];
-          });
-        }
-        if (valueConfig.sets) {
-          valueConfig.sets.forEach((setName) => {
-            const set = state.schemaDocument.valueSets[setName] || {};
-            Object.keys(set).forEach((key) => {
-              values[key] = set[key];
-            });
-          });
-        }
-        if (valueConfig.references) {
-          valueConfig.references.forEach((reference) => {
-            this.getChildPaths(reference).forEach((childPath) => {
-              if (typeof values[childPath] === 'undefined') {
-                values[childPath] = this.getLabel(childPath, reference);
+        Object.keys(valueConfig).forEach((keyword) => {
+          const e = new CustomEvent(EVENT_GET_VALUES, {
+            detail: {
+              type: keyword,
+              config: valueConfig[keyword],
+              store: this,
+              path: currentPath,
+              add: (value, label) => {
+                if (typeof values[value] === 'undefined') {
+                  if (typeof label === 'undefined') {
+                    label = value;
+                  }
+                  values[value] = label;
+                }
               }
-            });
+            }
           });
-        }
+          document.dispatchEvent(e);
+        });
         return values;
       };
     },
     _getValues() {
-      return (schema, field) => {
+      return (schema, field, currentPath) => {
         if (schema[field]) {
-          return this.getPredefinedValues(schema[field]);
+          return this.getPredefinedValues(schema[field], currentPath);
         }
         if (!this.isNativeType(schema.type)) {
           const customSchema = this.getCustomSchema(schema.type);
@@ -576,14 +653,18 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     _getAllowedValues() {
-      return (schema) => this._getValues(schema, 'allowedValues');
+      return (schema, currentPath) => this._getValues(schema, 'allowedValues', currentPath);
     },
     getAllowedValues() {
-      return (path, currentPath) => this._getAllowedValues(this.getSchema(path, currentPath));
+      return (path, currentPath) =>
+        this._getAllowedValues(
+          this.getSchema(path, currentPath),
+          this.getAbsolutePath(path, currentPath)
+        );
     },
     _getFirstValue() {
-      return (schema, field) => {
-        const values = this._getValues(schema, field);
+      return (schema, field, currentPath) => {
+        const values = this._getValues(schema, field, currentPath);
         const keys = Object.keys(values);
         if (keys.length > 0) {
           return keys[0];
@@ -592,8 +673,8 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     _getFirstValueLabel() {
-      return (schema, field) => {
-        const values = this._getValues(schema, field);
+      return (schema, field, currentPath) => {
+        const values = this._getValues(schema, field, currentPath);
         const keys = Object.keys(values);
         if (keys.length > 0) {
           return values[keys[0]];
@@ -602,47 +683,67 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     _getFirstAllowedValue() {
-      return (schema) => this._getFirstValue(schema, 'allowedValues');
+      return (schema, currentPath) => this._getFirstValue(schema, 'allowedValues', currentPath);
     },
     getFirstAllowedValue() {
-      return (path, currentPath) => this._getFirstAllowedValue(this.getSchema(path, currentPath));
+      return (path, currentPath) =>
+        this._getFirstAllowedValue(
+          this.getSchema(path, currentPath),
+          this.getAbsolutePath(path, currentPath)
+        );
     },
     _getFirstAllowedValueLabel() {
-      return (schema) => this._getFirstValueLabel(schema, 'allowedValues');
+      return (schema, currentPath) =>
+        this._getFirstValueLabel(schema, 'allowedValues', currentPath);
     },
     getFirstAllowedValueLabel() {
       return (path, currentPath) =>
-        this._getFirstAllowedValueLabel(this.getSchema(path, currentPath));
+        this._getFirstAllowedValueLabel(
+          this.getSchema(path, currentPath),
+          this.getAbsolutePath(path, currentPath)
+        );
     },
     _getSuggestedValues() {
-      return (schema) => this._getValues(schema, 'suggestedValues');
+      return (schema, currentPath) => this._getValues(schema, 'suggestedValues', currentPath);
     },
     getSuggestedValues() {
-      return (path, currentPath) => this._getSuggestedValues(this.getSchema(path, currentPath));
+      return (path, currentPath) =>
+        this._getSuggestedValues(
+          this.getSchema(path, currentPath),
+          this.getAbsolutePath(path, currentPath)
+        );
     },
     _getFirstSuggestedValue() {
-      return (schema) => this._getFirstValue(schema, 'suggestedValues');
+      return (schema, currentPath) => this._getFirstValue(schema, 'suggestedValues', currentPath);
     },
     getFirstSuggestedValue() {
-      return (path, currentPath) => this._getFirstSuggestedValue(this.getSchema(path, currentPath));
+      return (path, currentPath) =>
+        this._getFirstSuggestedValue(
+          this.getSchema(path, currentPath),
+          this.getAbsolutePath(path, currentPath)
+        );
     },
     _getFirstSuggestedValueLabel() {
-      return (schema) => this._getFirstValueLabel(schema, 'suggestedValues');
+      return (schema, currentPath) =>
+        this._getFirstValueLabel(schema, 'suggestedValues', currentPath);
     },
     getFirstSuggestedValueLabel() {
       return (path, currentPath) =>
-        this._getFirstSuggestedValueLabel(this.getSchema(path, currentPath));
+        this._getFirstSuggestedValueLabel(
+          this.getSchema(path, currentPath),
+          this.getAbsolutePath(path, currentPath)
+        );
     },
     _getDefaultValue() {
-      return (schema) => {
+      return (schema, path) => {
         if (typeof schema.default !== 'undefined') {
           return schema.default;
         }
-        const firstAllowedValue = this._getFirstAllowedValue(schema);
+        const firstAllowedValue = this._getFirstAllowedValue(schema, path);
         if (firstAllowedValue !== null) {
           return firstAllowedValue;
         }
-        const firstSuggestedValue = this._getFirstSuggestedValue(schema);
+        const firstSuggestedValue = this._getFirstSuggestedValue(schema, path);
         if (firstSuggestedValue !== null) {
           return firstSuggestedValue;
         }
@@ -650,7 +751,10 @@ export const useDmfStore = defineStore('dmf', {
           case 'CONTAINER': {
             const defaultValue = {};
             schema.values.forEach((subSchema) => {
-              defaultValue[subSchema.key] = this._getDefaultValue(subSchema);
+              defaultValue[subSchema.key] = this._getDefaultValue(
+                subSchema,
+                this.getAbsolutePath(subSchema.key, path)
+              );
             });
             return defaultValue;
           }
@@ -665,12 +769,18 @@ export const useDmfStore = defineStore('dmf', {
                   break;
                 }
                 case 'type': {
-                  defaultType = this._getDefaultValue(subSchema);
+                  defaultType = this._getDefaultValue(
+                    subSchema,
+                    this.getAbsolutePath('type', path)
+                  );
                   defaultValue.type = defaultType;
                   break;
                 }
                 default: {
-                  defaultValue[subSchema.key] = this._getDefaultValue(subSchema);
+                  defaultValue[subSchema.key] = this._getDefaultValue(
+                    subSchema,
+                    this.getAbsolutePath(subSchema.key, path)
+                  );
                   break;
                 }
               }
@@ -684,7 +794,10 @@ export const useDmfStore = defineStore('dmf', {
             defaultValue.config = {};
             configSchema.values.forEach((subSchema) => {
               if (subSchema.key === defaultType) {
-                defaultValue.config[defaultType] = this._getDefaultValue(subSchema);
+                defaultValue.config[defaultType] = this._getDefaultValue(
+                  subSchema,
+                  this.getAbsolutePath('config/' + defaultType, path)
+                );
               }
             });
             return defaultValue;
@@ -706,7 +819,7 @@ export const useDmfStore = defineStore('dmf', {
           }
           default: {
             const customSchema = this.getCustomSchema(schema.type);
-            return this._getDefaultValue(customSchema);
+            return this._getDefaultValue(customSchema, path);
           }
         }
       };
@@ -714,7 +827,7 @@ export const useDmfStore = defineStore('dmf', {
     getDefaultValue() {
       return (path, currentPath) => {
         const schema = this.getSchema(path, currentPath);
-        return this._getDefaultValue(schema);
+        return this._getDefaultValue(schema, this.getAbsolutePath(path, currentPath));
       };
     },
     resolveSchema() {
@@ -1077,6 +1190,15 @@ export const useDmfStore = defineStore('dmf', {
         return this.getSchema(path, currentPath, true).triggers || [];
       };
     },
+    isVisible() {
+      return (path, currentPath) => {
+        const schema = this.getSchema(path, currentPath, true);
+        if (!schema.visibility) {
+          return true;
+        }
+        return this.evaluateCondition(schema.visibility, this.getAbsolutePath(path, currentPath));
+      };
+    },
     getItem() {
       return (path, currentPath) => {
         const schema = this.getSchema(path, currentPath, true);
@@ -1105,7 +1227,8 @@ export const useDmfStore = defineStore('dmf', {
           hasIssues: this.hasIssues(path, currentPath),
           issue: this.getIssue(path, currentPath),
           rawView: this.isRawView(path, currentPath),
-          triggers: this.getTriggers(path, currentPath)
+          triggers: this.getTriggers(path, currentPath),
+          isVisible: this.isVisible(path, currentPath)
         };
       };
     },

@@ -2,6 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\AndCondition;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\Condition;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ScalarValues;
+
 interface RenderingDefinitionInterface
 {
     public function toArray(): ?array;
@@ -12,10 +16,9 @@ interface RenderingDefinitionInterface
     public function setLabel(?string $label): void;
     public function getLabel(): ?string;
 
-    public function setVisibilityConditionByString(string $path, string $value): void;
-    public function setVisibilityConditionByValueSet(string $path, string $set): void;
-    public function setVisibilityConditionByBoolean(string $path): void;
-    public function setVisibilityConditionByToggle(string $path): void;
+    public function getVisibility(): AndCondition;
+    public function addVisibilityCondition(Condition $condition): void;
+    public function addVisibilityConditionByValue(string $path): ScalarValues;
 
     public function setNavigationItem(bool $value): void;
     public function getNavigationItem(): bool;

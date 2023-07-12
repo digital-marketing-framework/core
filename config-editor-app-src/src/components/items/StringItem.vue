@@ -21,13 +21,15 @@ const item = computed(() => store.getItem(props.currentPath));
         <template #fieldUi>
             <div class="mt-2">
                 <select v-if="item.schema.format === 'select'"
-                    v-model="item.parentValue[item.currentKey]">
+                    v-model="item.parentValue[item.currentKey]"
+                    @change="store.evaluate(currentPath)">
                     <option v-for="(label, value) in store.getAllowedValues(currentPath)" :key="value" :value="value">{{ label }}</option>
                 </select>
                 <input v-else
                     :id="'input_' + currentPath"
                     :name="'input_' + currentPath"
                     v-model="item.parentValue[item.currentKey]"
+                    @change="store.evaluate(currentPath)"
                     type="text"
                     autocomplete="off"
                     placeholder="Enter value"
