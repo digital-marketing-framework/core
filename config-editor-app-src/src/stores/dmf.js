@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 // import { nextTick } from 'vue';
+import { watch } from 'vue';
 import { cloneValue, mergeValue, valuesEqual, EVENT_GET_VALUES } from '../composables/valueHelper';
 import { EVENT_CONDITION_EVALUATION } from '../composables/conditionHelper';
 
@@ -55,7 +56,10 @@ export const useDmfStore = defineStore('dmf', {
       }
       this.referenceIncludes = cloneValue(this.data.metaData.includes || []);
       this._updateValue('/');
-      // this.evaluate('/');
+      this.evaluate('/');
+      watch(this.data, () => {
+        this.evaluate('/');
+      });
       // this.triggerRerender();
     },
     async receiveData(response) {
@@ -311,22 +315,22 @@ export const useDmfStore = defineStore('dmf', {
       }
       return '';
     },
-    _processEvaluations(path, evaluations) {
-      if (!evaluations) {
+    _processValidations(path, validations) {
+      if (!validations) {
         return '';
       }
-      for (let index = 0; index < evaluations.length; index++) {
-        if (!this.evaluateCondition(evaluations[index]['condition'], path)) {
-          return evaluations[index]['message'];
+      for (let index = 0; index < validations.length; index++) {
+        if (!this.evaluateCondition(validations[index]['condition'], path)) {
+          return validations[index]['message'];
         }
       }
       return '';
     },
-    _processStrictEvaluations(schema, path) {
-      return this._processEvaluations(path, schema.strictEvaluations);
+    _processStrictValidations(schema, path) {
+      return this._processValidations(path, schema.strictValidations);
     },
-    _processSoftEvaluations(schema, path) {
-      return this._processEvaluations(path, schema.evaluations);
+    _processSoftValidations(schema, path) {
+      return this._processValidations(path, schema.validations);
     },
     _evaluateSchemaWithoutChildren(schema, value, path) {
       let issue;
@@ -341,13 +345,13 @@ export const useDmfStore = defineStore('dmf', {
         return issue;
       }
 
-      issue = this._processStrictEvaluations(schema, path);
+      issue = this._processStrictValidations(schema, path);
       if (issue) {
         return issue;
       }
 
       if (!this.settings.globalDocument) {
-        issue = this._processSoftEvaluations(schema, path);
+        issue = this._processSoftValidations(schema, path);
         if (issue) {
           return issue;
         }

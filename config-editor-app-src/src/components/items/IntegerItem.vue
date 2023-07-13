@@ -20,7 +20,6 @@ const item = computed(() => store.getItem(props.currentPath));
                 <input :id="'input_' + currentPath"
                     :name="'input_' + currentPath"
                     v-model="item.parentValue[item.currentKey]"
-                    @change="store.evaluate(currentPath)"
                     type="number"
                     autocomplete="off"
                     placeholder="Enter value"

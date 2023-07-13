@@ -75,7 +75,8 @@ trait ConfigurationSchemaRegistryTrait
         $mainSchema->getRenderingDefinition()->setLabel('Digital Marketing');
 
         $metaDataSchema = new ContainerSchema();
-        $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_DOCUMENT_NAME, new StringSchema());
+        $nameSchema = new StringSchema();
+        $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_DOCUMENT_NAME, $nameSchema);
         $includeSchema = new StringSchema();
         $includeSchema->getAllowedValues()->addValueSet('document/all');
         $includeSchema->getRenderingDefinition()->setFormat('select');

@@ -17,11 +17,11 @@ abstract class Schema implements SchemaInterface
     /** @var array<string,ValueSet> $valueSets */
     protected array $valueSets = [];
 
-    /** @var array<array{condition:Condition,message:string}> $strictEvaluations */
-    protected array $strictEvaluations = [];
+    /** @var array<array{condition:Condition,message:string}> $strictValidations */
+    protected array $strictValidations = [];
 
-    /** @var array<array{condition:Condition,message:string}> $evaluations */
-    protected array $evaluations = [];
+    /** @var array<array{condition:Condition,message:string}> $validations */
+    protected array $validations = [];
 
     public function __construct(
         protected mixed $defaultValue = null,
@@ -78,21 +78,21 @@ abstract class Schema implements SchemaInterface
         $config = [
             'default' => $this->defaultValue,
         ];
-        if (count($this->strictEvaluations) > 0) {
-            $config['strictEvaluations'] = array_map(function(array $evaluation) {
+        if (count($this->strictValidations) > 0) {
+            $config['strictValidations'] = array_map(function(array $evaluation) {
                 return [
                     'condition' => $evaluation['condition']->toArray(),
                     'message' => $evaluation['message'],
                 ];
-            }, $this->strictEvaluations);
+            }, $this->strictValidations);
         }
-        if (count($this->evaluations) > 0) {
-            $config['evaluations'] = array_map(function(array $evaluation) {
+        if (count($this->validations) > 0) {
+            $config['validations'] = array_map(function(array $evaluation) {
                 return [
                     'condition' => $evaluation['condition']->toArray(),
                     'message' => $evaluation['message'],
                 ];
-            }, $this->evaluations);
+            }, $this->validations);
         }
         return $config;
     }
@@ -124,23 +124,31 @@ abstract class Schema implements SchemaInterface
 
     public function setRequired(string $message = 'Required Field'): void
     {
-        $this->addEvaluation(new NotEmptyCondition(), $message);
+        // required fields should only be enforced in final documents, not in parent documents
+        $this->addSoftValidation(new NotEmptyCondition(), $message);
     }
 
-    public function addEvaluation(Condition $condition, string $message): void
+    public function addValidation(Condition $condition, string $message, bool $strict = true): void
     {
-        $this->evaluations[] = [
+        $validation = [
             'condition' => $condition,
             'message' => $message,
         ];
+        if ($strict) {
+            $this->strictValidations[] = $validation;
+        } else {
+            $this->validations[] = $validation;
+        }
     }
 
-    public function addStrictEvaluation(Condition $condition, string $message): void
+    public function addStrictValidation(Condition $condition, string $message): void
     {
-        $this->strictEvaluations[] = [
-            'condition' => $condition,
-            'message' => $message,
-        ];
+        $this->addValidation($condition, $message, true);
+    }
+
+    public function addSoftValidation(Condition $condition, string $message): void
+    {
+        $this->addValidation($condition, $message, false);
     }
 
     public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void

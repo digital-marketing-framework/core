@@ -1,4 +1,4 @@
-import { cloneValue } from "./valueHelper";
+import { cloneValue } from './valueHelper';
 
 export const EVENT_INIT = 'dmf-configuration-editor-init';
 export const EVENT_APP_OPEN = 'dmf-configuration-editor-app-open';
@@ -28,7 +28,7 @@ async function getData(textarea, settings) {
   const document = textarea.value;
   let result;
   if (document) {
-    result = await ajaxFetch(settings.urls.merge, {'document': document});
+    result = await ajaxFetch(settings.urls.merge, { document: document });
   } else {
     result = await ajaxFetch(settings.urls.defaults);
     result = {
@@ -46,9 +46,9 @@ async function getSchema(settings) {
 async function setData(textarea, settings, data) {
   const response = await ajaxFetch(settings.urls.split, data);
   textarea.value = response.document;
-  textarea.dispatchEvent(new Event('paste'), { bubbles: true});
-  textarea.dispatchEvent(new Event('change'), { bubbles: true});
-  textarea.dispatchEvent(new Event('input'), { bubbles: true});
+  textarea.dispatchEvent(new Event('paste'), { bubbles: true });
+  textarea.dispatchEvent(new Event('change'), { bubbles: true });
+  textarea.dispatchEvent(new Event('input'), { bubbles: true });
   if (typeof textarea.onchange === 'function') {
     textarea.onchange();
   }
@@ -63,7 +63,7 @@ async function save(textarea, settings, data) {
 }
 
 async function updateIncludes(settings, referenceData, newData) {
-  const payload = {'referenceData': referenceData, 'newData': newData};
+  const payload = { referenceData: referenceData, newData: newData };
   return await ajaxFetch(settings.urls.updateIncludes, payload);
 }
 
@@ -97,22 +97,23 @@ function setupModal() {
 }
 
 function getSettings(textarea) {
-  const ucfirst = s => s.substring(0, 1).toUpperCase() + s.substring(1);
+  const ucfirst = (s) => s.substring(0, 1).toUpperCase() + s.substring(1);
   const urlKeys = ['schema', 'defaults', 'merge', 'split', 'updateIncludes'];
   const settings = {
-    'urls': {},
-    'rawLanguage': RAW_LANGUAGE
+    urls: {},
+    rawLanguage: RAW_LANGUAGE
   };
   settings['mode'] = textarea.dataset.mode;
   settings['readonly'] = textarea.dataset.readonly === 'true';
-  urlKeys.forEach(key => {
+  settings['globalDocument'] = textarea.dataset.globalDocument === 'true';
+  urlKeys.forEach((key) => {
     settings.urls[key] = textarea.dataset['url' + ucfirst(key)];
   });
   return settings;
 }
 
 async function getInitialTextArea() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const textarea = document.querySelector('textarea.dmf-configuration-document');
     if (textarea !== null && textarea.dataset.app === 'true') {
       setTimeout(() => {
@@ -148,19 +149,18 @@ function triggerFormDiscard(textarea) {
 }
 
 export const linkEnvironment = async () => {
-
   let textarea, settings, stage, schemaDocument;
   let data, inheritedData, referenceData;
   let elementsToHide = null;
 
   const hideElements = () => {
-    elementsToHide.forEach(e => {
+    elementsToHide.forEach((e) => {
       e.element.style.display = 'none';
     });
   };
 
   const showElements = () => {
-    elementsToHide.forEach(e => {
+    elementsToHide.forEach((e) => {
       e.element.style.display = e.display;
     });
   };

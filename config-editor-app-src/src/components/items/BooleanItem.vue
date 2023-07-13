@@ -26,7 +26,6 @@ const item = computed(() => store.getItem(props.currentPath));
                     <input :id="'input_' + currentPath"
                         :name="'input_' + currentPath"
                         v-model="item.parentValue[item.currentKey]"
-                        @change="store.evaluate(currentPath)"
                         type="checkbox"
                         autocomplete="off"
                         class="w-4 h-4 text-blue-600 border-blue-200 rounded focus:ring-blue-600">
