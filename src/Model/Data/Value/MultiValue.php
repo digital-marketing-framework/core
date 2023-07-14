@@ -17,7 +17,15 @@ class MultiValue extends ArrayObject implements MultiValueInterface
 
     public function getValue(): array
     {
-        return $this->toArray();
+        $result = [];
+        foreach ($this as $key => $value) {
+            if ($value instanceof ValueInterface) {
+                $result[$key] = $value->getValue();
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 
     public function toArray(): array
