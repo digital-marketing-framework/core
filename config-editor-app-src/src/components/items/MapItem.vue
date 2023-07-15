@@ -22,12 +22,9 @@ const item = computed(() => store.getItem(props.currentPath));
 <template>
     <GenericContainerItem :currentPath="currentPath">
         <template #fieldsUi>
-            <div v-if="item.childPaths.length"
-                    class="pt-3 pl-5 space-y-3">
-                <div v-for="path in item.childPaths" :key="currentPath + '/' + path">
-                    <MapKeyItem :currentPath="store.getAbsolutePath(path, currentPath)" />
-                    <GenericItem :currentPath="store.getAbsolutePath(path, currentPath)" :key="currentPath + '/' + path"/>
-                </div>
+            <div v-for="path in item.childPaths" :key="currentPath + '/' + path">
+                <MapKeyItem :currentPath="store.getAbsolutePath(path, currentPath)" />
+                <GenericItem :currentPath="store.getAbsolutePath(path, currentPath)" :key="currentPath + '/' + path"/>
             </div>
         </template>
     </GenericContainerItem>

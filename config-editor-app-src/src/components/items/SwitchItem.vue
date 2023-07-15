@@ -23,16 +23,13 @@ const childPaths = computed(() => store.getChildPaths(props.currentPath).filter(
 <template>
     <GenericContainerItem :currentPath="currentPath">
         <template #fieldsUi>
-            <div
-                class="pt-3 pl-5 space-y-3">
-                <GenericItem :currentPath="store.getAbsolutePath('type', currentPath)"
-                    :key="store.getAbsolutePath('type', currentPath)" />
-                <GenericItem v-for="childPath in childPaths"
-                    :key="store.getAbsolutePath(childPath, currentPath)"
-                    :currentPath="store.getAbsolutePath(childPath, currentPath)" />
-                <GenericItem :currentPath="store.getAbsolutePath('config/' + type, currentPath)"
-                    :key="store.getAbsolutePath('config/' + type, currentPath)" />
-            </div>
+            <GenericItem :currentPath="store.getAbsolutePath('type', currentPath)"
+                :key="store.getAbsolutePath('type', currentPath)" />
+            <GenericItem v-for="childPath in childPaths"
+                :key="store.getAbsolutePath(childPath, currentPath)"
+                :currentPath="store.getAbsolutePath(childPath, currentPath)" />
+            <GenericItem :currentPath="store.getAbsolutePath('config/' + type, currentPath)"
+                :key="store.getAbsolutePath('config/' + type, currentPath)" />
         </template>
     </GenericContainerItem>
 </template>

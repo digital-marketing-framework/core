@@ -23,11 +23,8 @@ const includesChanged = computed(() => store.includesChanged());
 <template>
     <GenericContainerItem :currentPath="currentPath">
         <template #fieldsUi>
-            <div v-if="item.childPaths.length"
-                    class="pt-3 pl-5 space-y-3">
-                <div v-for="path in item.childPaths" :key="currentPath + '/' + path">
-                    <GenericItem :currentPath="store.getAbsolutePath(path, currentPath)" :key="currentPath + '/' + path"/>
-                </div>
+            <div v-for="path in item.childPaths" :key="currentPath + '/' + path">
+                <GenericItem :currentPath="store.getAbsolutePath(path, currentPath)" :key="currentPath + '/' + path"/>
             </div>
             <button type="button"
                     v-if="isIncludeList && includesChanged"
