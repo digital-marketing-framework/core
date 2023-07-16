@@ -43,16 +43,16 @@ watch(() => item, () => {
 
 <template>
     <div class="flex items-center gap-x-2">
-        <div v-if="item.isDynamicContainer" v-on:click="store.addValue(currentPath)" class="px-8 rounded">
+        <div v-if="!store.settings.readonly && item.isDynamicContainer" v-on:click="store.addValue(currentPath)" class="px-8 rounded">
             <PlusIcon class="w-3 h-3" />
         </div>
-        <div v-if="item.isDynamicItem" v-on:click="store.removeValue(currentPath)">
+        <div v-if="!store.settings.readonly && item.isDynamicItem" v-on:click="store.removeValue(currentPath)">
             <TrashIcon class="w-3 h-3" />
         </div>
         <div @click="store.toggleView(currentPath)" class="p-1 text-indigo-400">
             <button type="button">&lt;/&gt;</button>
         </div>
-        <div v-if="item.canResetOverwrite" v-on:click="store.resetValue(currentPath)" class="p-1 text-indigo-400">
+        <div v-if="!store.settings.readonly && item.canResetOverwrite" v-on:click="store.resetValue(currentPath)" class="p-1 text-indigo-400">
             <button type="button">&lt;&lt;</button>
         </div>
         <div ref="debugToggle"

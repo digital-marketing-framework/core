@@ -22,7 +22,11 @@ const parentItem = computed(() => store.getParentItem(props.currentPath));
             @change="event => store.updateMapKey('.', currentPath, event.target.value)"
             :id="'input_key_' + currentPath"
             :name="'input_key_' + currentPath"
-            :value="item.currentKey">
+            :value="item.currentKey"
+            :class="{
+                'todo-class-readonly bg-neutral-100': store.settings.readonly
+            }"
+            :disabled="store.settings.readonly">
             <option v-for="(label, value) in store.getAllowedValues(currentPath)" :key="value" :value="value">{{ label }}</option>
         </select>
         <input v-else
@@ -33,6 +37,10 @@ const parentItem = computed(() => store.getParentItem(props.currentPath));
             type="text"
             autocomplete="off"
             placeholder="Enter value"
-            class="block w-full rounded border-0 py-1.5 text-gray-900 placeholder:text-blue-800 placeholder:opacity-60 shadow-sm ring-1 ring-inset ring-blue-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+            class="block w-full rounded border-0 py-1.5 text-gray-900 placeholder:text-blue-800 placeholder:opacity-60 shadow-sm ring-1 ring-inset ring-blue-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+            :class="{
+                'todo-class-readonly bg-neutral-100': store.settings.readonly
+            }"
+            :disabled="store.settings.readonly">
     </div>
 </template>

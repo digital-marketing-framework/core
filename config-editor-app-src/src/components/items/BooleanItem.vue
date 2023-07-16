@@ -28,7 +28,11 @@ const item = computed(() => store.getItem(props.currentPath));
                         v-model="item.parentValue[item.currentKey]"
                         type="checkbox"
                         autocomplete="off"
-                        class="w-4 h-4 text-blue-600 border-blue-200 rounded focus:ring-blue-600">
+                        class="w-4 h-4 text-blue-600 border-blue-200 rounded focus:ring-blue-600"
+                        :class="{
+                            'todo-class-readonly bg-neutral-100': store.settings.readonly
+                        }"
+                        :disabled="store.settings.readonly">
                 </div>
                 <div class="flex justify-between ml-3 text-sm leading-6 gap-x-2 grow">
                     <label :for="'input_' + currentPath"

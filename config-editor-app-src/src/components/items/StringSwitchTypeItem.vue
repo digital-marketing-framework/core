@@ -21,7 +21,11 @@ const item = computed(() => store.getItem(props.currentPath));
         <template #fieldUi>
             <div class="mt-2">
                 <select :value="item.value"
-                    @change="store.setValue(currentPath, currentPath, $event.target.value, true)">
+                    @change="store.setValue(currentPath, currentPath, $event.target.value, true)"
+                    :class="{
+                        'todo-class-readonly bg-neutral-100': store.settings.readonly
+                    }"
+                    :disabled="store.settings.readonly">
                     <option v-for="(label, value) in store.getAllowedValues(currentPath)" :key="value" :value="value">{{ label }}</option>
                 </select>
             </div>

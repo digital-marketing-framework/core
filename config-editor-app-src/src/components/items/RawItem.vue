@@ -87,6 +87,7 @@ const rawValue = computed({
     <PrismEditor
             class="flex-1 block w-full p-4 overflow-y-auto font-mono text-sm whitespace-pre-wrap bg-indigo-900 overscroll-none"
             v-model="rawValue"
+            :readonly="store.settings.readonly"
             :highlight="highlighter"
             line-numbers></PrismEditor>
 </template>
