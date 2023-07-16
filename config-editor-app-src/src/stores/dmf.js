@@ -1044,6 +1044,15 @@ export const useDmfStore = defineStore('dmf', {
         return valuesEqual(value, inheritedValue);
       };
     },
+    canResetOverwrite() {
+      return (path, currentPath) => {
+        const isOverwritten = this.isOverwritten(path, currentPath);
+        const inheritedValueExists =
+          typeof this.getInheritedValue(path, currentPath) !== 'undefined';
+        const isDynamicChildElement = this.isDynamicChild(path, currentPath);
+        return isOverwritten && (inheritedValueExists || isDynamicChildElement);
+      };
+    },
     isOverwritten() {
       return (path, currentPath) => {
         if (this.isMetaData(path, currentPath)) {
@@ -1055,16 +1064,16 @@ export const useDmfStore = defineStore('dmf', {
         if (typeof this.getValue(path, currentPath) === 'undefined') {
           return false;
         }
-        // TODO if the inherited value does not exist at all, we must not count an element as overwritten if it is not dynamic
-        //      it will have a parent element that is dynamic and is also overwritten. that's where the option to reset the element should be
-        //      right now such a non-dynamic element is considered not overwritten, but it should probably still be marked as overwritten
-        //      it should just not be possible to reset that particular element. maybe clicking the reset button should trigger the reset on the first dynamic parent element?
-        if (
-          typeof this.getInheritedValue(path, currentPath) === 'undefined' &&
-          !this.isDynamicChild(path, currentPath)
-        ) {
-          return false;
-        }
+        // // TODO if the inherited value does not exist at all, we must not count an element as overwritten if it is not dynamic
+        // //      it will have a parent element that is dynamic and is also overwritten. that's where the option to reset the element should be
+        // //      right now such a non-dynamic element is considered not overwritten, but it should probably still be marked as overwritten
+        // //      it should just not be possible to reset that particular element. maybe clicking the reset button should trigger the reset on the first dynamic parent element?
+        // if (
+        //   typeof this.getInheritedValue(path, currentPath) === 'undefined' &&
+        //   !this.isDynamicChild(path, currentPath)
+        // ) {
+        //   return false;
+        // }
         return true;
       };
     },
@@ -1221,6 +1230,7 @@ export const useDmfStore = defineStore('dmf', {
           parentValue: this.getParentValue(path, currentPath),
           selected: this.isSelected(path, currentPath),
           isOverwritten: this.isOverwritten(path, currentPath),
+          canResetOverwrite: this.canResetOverwrite(path, currentPath),
           isScalar: this.isScalarType(schema.type),
           isContainer: this.isContainerType(schema.type),
           isDynamicContainer: this.isDynamicContainerType(schema.type),

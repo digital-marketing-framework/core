@@ -52,7 +52,7 @@ watch(() => item, () => {
         <div @click="store.toggleView(currentPath)" class="p-1 text-indigo-400">
             <button type="button">&lt;/&gt;</button>
         </div>
-        <div v-if="item.isOverwritten" v-on:click="store.resetValue(currentPath)" class="p-1 text-indigo-400">
+        <div v-if="item.canResetOverwrite" v-on:click="store.resetValue(currentPath)" class="p-1 text-indigo-400">
             <button type="button">&lt;&lt;</button>
         </div>
         <div ref="debugToggle"

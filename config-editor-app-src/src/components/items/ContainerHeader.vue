@@ -19,7 +19,10 @@ const item = computed(() => store.getItem(props.currentPath));
 
 <template>
     <header
-            class="flex items-center justify-between gap-4 px-3 py-2 text-indigo-800 bg-indigo-100 border rounded border-indigo-500/20">
+            class="flex items-center justify-between gap-4 px-3 py-2 text-indigo-800 bg-indigo-100 border rounded border-indigo-500/20"
+            :class="{
+                'border-r-red-400 todo-class-overwritten': item.isOverwritten
+            }">
         <div class="flex items-center gap-x-2">
             <slot name="disclosureButton"></slot>
             <label :for="item.label"

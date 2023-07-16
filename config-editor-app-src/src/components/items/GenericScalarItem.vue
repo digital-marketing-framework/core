@@ -17,7 +17,7 @@ const props = defineProps({
 const item = computed(() => store.getItem(props.currentPath));
 </script>
 <template>
-    <slot name="fieldHeader">
+    <slot name="fieldHeader" v-if="!item.schema.skipHeader">
         <ItemHeader :currentPath="currentPath" />
     </slot>
     <slot v-if="!item.rawView" name="fieldUi"></slot>

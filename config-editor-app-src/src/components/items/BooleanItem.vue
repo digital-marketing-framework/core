@@ -37,7 +37,7 @@ const item = computed(() => store.getItem(props.currentPath));
             </div>
         </template>
         <template #fieldFooter>
-            <HeaderActions :currentPath="currentPath"/>
+            <HeaderActions v-if="!item.schema.skipHeader" :currentPath="currentPath"/>
         </template>
     </GenericScalarItem>
 </template>

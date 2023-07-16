@@ -34,7 +34,8 @@ const item = computed(() => store.getItem(props.currentPath));
 <template>
     <div class="w-full max-w-3xl"
          :class="{
-             'bg-blue-100 text-blue-800 border border-blue-200 py-2 px-3 rounded': !item.isContainer
+             'bg-blue-100 text-blue-800 border border-blue-200 py-2 px-3 rounded': !item.isContainer,
+             'border-r-red-400 todo-class-overwritten': !item.isContainer && item.isOverwritten
          }"
          v-if="item.isVisible">
 
