@@ -2,15 +2,12 @@
 import { computed } from "vue";
 import { useDmfStore } from '../../stores/dmf';
 
+import { getPrismHighlighter } from '../../composables/rawValueHelper';
+
 import 'vue-prism-editor/dist/prismeditor.min.css'; // import the styles somewhere
 import 'prismjs/themes/prism-funky.css';
 
-import YAML from 'yaml';
-
-// import highlighting library (you can use any library you want just return html string)
-import prism from 'prismjs';
-import { PrismEditor } from 'vue-prism-editor'; //
-import "prismjs/components/prism-yaml";
+import { PrismEditor } from 'vue-prism-editor';
 
 const store = useDmfStore();
 
@@ -21,67 +18,23 @@ const props = defineProps({
     }
 });
 
-const rawLanguage = store.settings.rawLanguage;
-
-const highlighter = (code) => {
-    let langKey;
-    switch (rawLanguage) {
-        case 'YAML': {
-            langKey = 'yaml';
-            break;
-        }
-        case 'JSON': {
-            langKey = 'js';
-            break;
-        }
-        default: {
-            throw new Error('unkdnown raw code language: ' + rawLanguage);
-        }
-    }
-    return prism.highlight(code, prism.languages[langKey]);
-};
+const highlighter = getPrismHighlighter(store.settings.rawLanguage);
 
 const rawValue = computed({
   get() {
-    const data = store.getValue('.', props.currentPath, true);
-    let dataAsString;
-    switch (rawLanguage) {
-        case 'YAML': {
-            dataAsString = YAML.stringify(data);
-            break;
-        }
-        case 'JSON': {
-            dataAsString = JSON.stringify(data, null, 2);
-            break;
-        }
-        default: {
-            throw new Error('unknown raw code language: ' + rawLanguage);
-        }
+    let rawData = store.rawValues[props.currentPath];
+    if (typeof rawData !== 'undefined') {
+        return rawData;
     }
-    return dataAsString;
+    return store.getRawValue(props.currentPath);
   },
-  set(value) {
-    try {
-        let dataFromString;
-        switch (rawLanguage) {
-            case 'YAML': {
-                dataFromString = YAML.parse(value);
-                break;
-            }
-            case 'JSON': {
-                dataFromString = JSON.parse(value);
-                break;
-            }
-            default: {
-                throw new Error('unknown raw code language: ' + rawLanguage);
-            }
-        }
-        store.setValue('.', props.currentPath, dataFromString);
-    } catch (e) {
-        console.warn('could not parse raw code', rawLanguage, e);
-    }
+  set(rawData) {
+    store.rawValues[props.currentPath] = rawData;
+    store.setRawValue('.', props.currentPath, rawData);
   }
 });
+
+const rawIssue = computed(() => store.getRawIssue(props.currentPath));
 </script>
 <template>
     <PrismEditor
@@ -90,4 +43,5 @@ const rawValue = computed({
             :readonly="store.settings.readonly"
             :highlight="highlighter"
             line-numbers></PrismEditor>
+    <div v-if="rawIssue">{{ rawIssue }}</div>
 </template>

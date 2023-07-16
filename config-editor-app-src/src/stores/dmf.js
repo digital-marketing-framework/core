@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { watch } from 'vue';
 import { cloneValue, mergeValue, valuesEqual, EVENT_GET_VALUES } from '../composables/valueHelper';
 import { EVENT_CONDITION_EVALUATION } from '../composables/conditionHelper';
+import { rawDataParse, rawDataDump } from '../composables/rawValueHelper';
 
 const NATIVE_SCHEMA_TYPES = ['SWITCH', 'CONTAINER', 'MAP', 'LIST', 'STRING', 'INTEGER', 'BOOLEAN'];
 
@@ -20,6 +21,8 @@ export const useDmfStore = defineStore('dmf', {
   state: () => ({
     selectedPath: '/',
     rawViewPaths: {},
+    rawValues: {},
+    rawIssues: {},
     collapsedMenuPaths: {},
     collapsedContainerPaths: {},
 
@@ -153,6 +156,29 @@ export const useDmfStore = defineStore('dmf', {
         const parent = this.getValue(parentPath, currentPath);
         parent[lastPathPart] = value;
         this.evaluate(path, currentPath);
+      }
+    },
+    setRawValue(path, currentPath, value) {
+      const currentValue = this.getValue(path, currentPath);
+      try {
+        const language = this.settings.rawLanguage;
+        const dataFromString = rawDataParse(language, value);
+        this.setValue(path, currentPath, dataFromString);
+
+        // TODO we should distinguish between diffrent types of errors and not all of them should abort this process
+        //      - soft validation errors for parent documents > should be ignored here
+        //      - strict validation errors for all documents > should be ignored here
+        //      - structure violations > should be taken into account and abort the process
+        this.evaluate(path, currentPath);
+        const issue = this.getIssue(path, currentPath, true);
+        if (issue !== '') {
+          throw new Error(issue);
+        }
+
+        this.unsetRawIssue(path, currentPath);
+      } catch (e) {
+        this.setValue(path, currentPath, currentValue);
+        this.setRawIssue(path, currentPath, e.message);
       }
     },
     updateMapKey(path, currentPath, key) {
@@ -378,9 +404,11 @@ export const useDmfStore = defineStore('dmf', {
     },
     _clearIssues(path, currentPath) {
       const absolutePath = this.getAbsolutePath(path, currentPath);
-      if (typeof this.issues[absolutePath] !== 'undefined') {
-        delete this.issues[absolutePath];
-      }
+      Object.keys(this.issues).forEach((key) => {
+        if (absolutePath.startsWith(key)) {
+          delete this.issues[key];
+        }
+      });
     },
     _evaluate(path, currentPath) {
       this._clearIssues(path, currentPath);
@@ -404,18 +432,20 @@ export const useDmfStore = defineStore('dmf', {
         });
       }
     },
-    evaluate(path, currentPath) {
-      // TODO trigger this action whenever something in the document changed
-      // TODO if there is an issue reported with a path, should the corresponding component go into raw mode automatically?
-      //      probably not a good idea for all issues, like a required field being empty
-      //      but it might be good for issues where the data structure is invalid
-      this._evaluate(path, currentPath);
+    updateValidationWarnings() {
       const issueKeys = Object.keys(this.issues);
       if (issueKeys.length > 0) {
         this.setWarning(WARNING_DOCUMENT_INVALID, null, issueKeys[0]);
       } else {
         this.unsetWarning(WARNING_DOCUMENT_INVALID);
       }
+    },
+    evaluate(path, currentPath) {
+      // TODO if there is an issue reported with a path, should the corresponding component go into raw mode automatically?
+      //      probably not a good idea for all issues, like a required field being empty
+      //      but it might be good for issues where the data structure is invalid
+      this._evaluate(path, currentPath);
+      this.updateValidationWarnings();
     },
     /**
      * This method does document cleanup tasks right before the document is saved.
@@ -445,8 +475,23 @@ export const useDmfStore = defineStore('dmf', {
         this.finish(childPath, absolutePath);
       });
     },
+    getRawIssue(path, currentPath) {
+      return this.rawIssues[this.getAbsolutePath(path, currentPath)] || '';
+    },
+    setRawIssue(path, currentPath, issue) {
+      if (typeof issue === 'undefined') {
+        delete this.rawIssues[this.getAbsolutePath(path, currentPath)];
+      } else {
+        this.rawIssues[this.getAbsolutePath(path, currentPath)] = issue;
+      }
+    },
+    unsetRawIssue(path, currentPath) {
+      this.setRawIssue(path, currentPath, undefined);
+    },
     toggleView(path, currentPath) {
       const absolutePath = this.getAbsolutePath(path, currentPath);
+      this.unsetRawIssue(path, currentPath);
+      delete this.rawValues[absolutePath];
       this.rawViewPaths[absolutePath] = !this.rawViewPaths[absolutePath];
     },
     toggleContainerState(path, currentPath) {
@@ -1078,10 +1123,23 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     getIssue(state) {
-      return (path, currentPath) => state.issues[this.getAbsolutePath(path, currentPath)] || '';
+      return (path, currentPath, recursive) => {
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        if (!recursive) {
+          return state.issues[absolutePath] || '';
+        }
+        const issueKeys = Object.keys(state.issues).sort();
+        for (let index = 0; index < issueKeys.length; index++) {
+          const key = issueKeys[index];
+          if (key.startsWith(absolutePath)) {
+            return state.issues[key];
+          }
+        }
+        return '';
+      };
     },
     hasIssues() {
-      return (path, currentPath) => this.getIssue(path, currentPath) !== '';
+      return (path, currentPath, recursive) => this.getIssue(path, currentPath, recursive) !== '';
     },
     _processLabel() {
       return (label, path, currentPath) => {
@@ -1210,6 +1268,13 @@ export const useDmfStore = defineStore('dmf', {
           return true;
         }
         return this.evaluateCondition(schema.visibility, this.getAbsolutePath(path, currentPath));
+      };
+    },
+    getRawValue() {
+      return (path, currentPath) => {
+        const value = this.getValue(path, currentPath, true);
+        const language = this.settings.rawLanguage;
+        return rawDataDump(language, value);
       };
     },
     getItem() {
