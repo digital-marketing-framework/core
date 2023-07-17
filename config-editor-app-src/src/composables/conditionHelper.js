@@ -46,7 +46,8 @@ document.addEventListener(EVENT_CONDITION_EVALUATION, (e) => {
   const currentPath = e.detail.currentPath;
   const config = e.detail.config;
   const value = store.getValue(config.path, currentPath);
-  resolve(config.value === value);
+  // we use non-strict comparison to not have to deal with type conversion
+  resolve(config.value == value);
 });
 
 /**
@@ -72,7 +73,15 @@ document.addEventListener(EVENT_CONDITION_EVALUATION, (e) => {
   const config = e.detail.config;
   const value = store.getValue(config.path, currentPath);
   const list = store.getPredefinedValues(config.list, currentPath);
-  resolve(Object.keys(list).indexOf(value) > -1);
+  let result = false;
+  for (let key in list) {
+    // we use non-strict comparison to not have to deal with type conversion
+    if (key == value) {
+      result = true;
+      break;
+    }
+  }
+  resolve(result);
 });
 
 /**
