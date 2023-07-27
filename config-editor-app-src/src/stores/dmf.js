@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 // import { nextTick } from 'vue';
 import { watch } from 'vue';
 import { cloneValue, mergeValue, valuesEqual, EVENT_GET_VALUES } from '../composables/valueHelper';
+import { renameInMap } from '../composables/mapValueHelper';
 import { EVENT_CONDITION_EVALUATION } from '../composables/conditionHelper';
 import { rawDataParse, rawDataDump } from '../composables/rawValueHelper';
 
@@ -189,10 +190,7 @@ export const useDmfStore = defineStore('dmf', {
       }
       const lastPathPart = this.getLeafKey(path, currentPath);
       const map = this.getValue(parentPath, currentPath);
-      // TODO this algorithm will change the position of the child element, can we change that?
-      const mapItemValue = map[lastPathPart];
-      delete map[lastPathPart];
-      map[key] = mapItemValue;
+      renameInMap(map, lastPathPart, key);
     },
     _addValue(schema, path, currentPath) {
       switch (schema.type) {
