@@ -45,7 +45,7 @@ const containerState = computed(() => store.getContainerState(props.currentPath)
                     class="pt-3 pl-5 space-y-3">
                     <slot name="fieldsUi"></slot>
                 </div>
-                <RawItem v-else-if="item.childPaths.length > 0" :currentPath="currentPath"/>
+                <RawItem v-else-if="item.rawView" :currentPath="currentPath"/>
             </DisclosurePanel>
         </TransitionExpand>
     </Disclosure>
