@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManager;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
@@ -79,5 +80,10 @@ trait ConfigurationDocumentManagerRegistryTrait
         $this->setStaticConfigurationDocumentStorage($configurationDocumentManager->getStaticStorage());
         $this->setConfigurationDocumentStorage($configurationDocumentManager->getStorage());
         $this->setConfigurationDocumentParser($configurationDocumentManager->getParser());
+    }
+
+    public function addSchemaMigration(ConfigurationDocumentMigrationInterface $migration): void
+    {
+        $this->getConfigurationDocumentManager()->addMigration($migration);
     }
 }

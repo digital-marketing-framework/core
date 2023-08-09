@@ -18,9 +18,15 @@ use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 
 trait ConfigurationSchemaRegistryTrait
 {
+    protected array $schemaVersion = [];
     protected SchemaDocument $schemaDocument;
 
     abstract public function getConfigurationDocumentManager(): ConfigurationDocumentManagerInterface;
+
+    public function addSchemaVersion(string $key, string $version): void
+    {
+        $this->schemaVersion[$key] = $version;
+    }
 
     protected function getIncludeValueSet(): array
     {
@@ -90,6 +96,10 @@ trait ConfigurationSchemaRegistryTrait
 
         $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
         $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $this->getIdentifierCollectorSchema());
+
+        foreach ($this->schemaVersion as $key => $version) {
+            $schemaDocument->addVersion($key, $version);
+        }
     }
 
     /**

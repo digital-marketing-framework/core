@@ -16,6 +16,8 @@ class SchemaDocument
 {
     public const FLATTEN_SCHEMA = true;
 
+    protected array $version = [];
+
     /**
      * @param array<string,SchemaInterface> $customTypes
      * @param array<string,ValueSet> $valueSets
@@ -25,6 +27,16 @@ class SchemaDocument
         protected array $customTypes = [],
         protected array $valueSets = [],
     ) {
+    }
+
+    public function getVersion(?string $key = null): array
+    {
+        return $this->version;
+    }
+
+    public function addVersion(string $key, string $version): void
+    {
+        $this->version[$key] = $version;
     }
 
     public function setMainSchema(ContainerSchema $schema): void

@@ -3,16 +3,22 @@
 namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\MigrationException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\FatalMigrationException;
 
 class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
+
+    /** @var array<string,array<string,ConfigurationDocumentMigrationInterface>> */
+    protected array $migrations = [];
 
     public function __construct(
         protected ConfigurationDocumentStorageInterface $storage,
@@ -59,6 +65,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         }
         $documentConfiguration = $this->getDocumentConfigurationFromDocument($document);
         $this->setName($documentConfiguration, $documentName);
+        $this->setVersion($documentConfiguration, $schemaDocument->getVersion());
         $document = $this->parser->produceDocument($documentConfiguration, $schemaDocument);
         $this->saveDocument($documentIdentifier, $document, $schemaDocument);
     }
@@ -144,6 +151,31 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function setName(array &$configuration, string $name): void
     {
         $configuration[static::KEY_META_DATA][static::KEY_DOCUMENT_NAME] = $name;
+    }
+
+    public function getVersion(array $configuration): array
+    {
+        return $configuration[static::KEY_META_DATA][static::KEY_DOCUMENT_VERSION] ?? [];
+    }
+
+    public function setVersion(array &$configuration, array $version): void
+    {
+        $configuration[static::KEY_META_DATA][static::KEY_DOCUMENT_VERSION] = $version;
+    }
+
+    public function getVersionByKey(array $configuration, string $key): string
+    {
+        return $this->getVersion($configuration)[$key] ?? '';
+    }
+
+    public function setVersionByKey(array &$configuration, string $key, string $version): void
+    {
+        $configuration[static::KEY_META_DATA][static::KEY_DOCUMENT_VERSION][$key] = $version;
+    }
+
+    public function unsetVersionByKey(array &$configuration, string $key): void
+    {
+        unset($configuration[static::KEY_META_DATA][static::KEY_DOCUMENT_VERSION][$key]);
     }
 
     /**
@@ -233,5 +265,79 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
             array_pop($configurationStack);
         }
         return ConfigurationUtility::mergeConfigurationStack($configurationStack);
+    }
+
+    public function addMigration(ConfigurationDocumentMigrationInterface $migration): void
+    {
+        $this->migrations[$migration->getKey()][$migration->getSourceVersion()] = $migration;
+    }
+
+    protected function migrateByKey(array &$configuration, string $key, string $targetVersion): void
+    {
+        $version = $this->getVersionByKey($configuration, $key);
+        while ($version !== $targetVersion) {
+            if (isset($this->migrations[$key][$version])) {
+                // migration found
+                try {
+                    $migration = $this->migrations[$key][$version];
+                    if (!$migration->checkVersions()) {
+                        throw new FatalMigrationException(sprintf('Migration source version "%s" seems to be bigger than or equal to target version "%s".', $migration->getSourceVersion(), $migration->getTargetVersion()));
+                    }
+                    $configuration = $migration->migrate($configuration);
+                    $version = $migration->getTargetVersion();
+                } catch (MigrationException $e) {
+                    // a non fatal migration exception aborts the migration for this key only
+                    // a fatal migration exception is not caught by the migration process at all
+                    $this->logger->warning($e->getMessage());
+                    break;
+                }
+            } else {
+                // no migration found
+                // TODO now what? i guess the version mismatch can be detected at a later point
+                break;
+            }
+        }
+        if ($version === '') {
+            // if there is no initial migration present
+            // assume that none is necessary to get from no verison to the current version
+            $this->setVersionByKey($configuration, $key, $targetVersion);
+        } else {
+            $this->setVersionByKey($configuration, $key, $version);
+        }
+    }
+
+    public function migrate(array $configuration, SchemaDocument $schemaDocument): array
+    {
+        $schemaVersion = $schemaDocument->getVersion();
+        foreach ($schemaVersion as $key => $targetVersion) {
+            if ($this->getVersionByKey($configuration, $key) !== $targetVersion) {
+                // document does not have a version key or the version does not match
+                $this->migrateByKey($configuration, $key, $targetVersion);
+            }
+        }
+        foreach (array_keys($this->getVersion($configuration)) as $key) {
+            if (!isset($schemaVersion[$key])) {
+                // document has a version key that does not exist in the current schema
+                // TODO should the version really be unset in this case?
+                $this->unsetVersionByKey($configuration, $key);
+            }
+        }
+        return $configuration;
+    }
+
+    public function outdated(array $configuration, SchemaDocument $schemaDocument): bool
+    {
+        $schemaVersion = $schemaDocument->getVersion();
+        foreach ($schemaVersion as $key => $targetVersion) {
+            if ($this->getVersionByKey($configuration, $key) !== $targetVersion) {
+                return true;
+            }
+        }
+        foreach (array_keys($this->getVersion($configuration)) as $key) {
+            if (!isset($schemaVersion[$key])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

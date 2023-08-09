@@ -49,61 +49,71 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ListValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
+use DigitalMarketingFramework\Core\Registry\RegistryDomain;
 
-class CorePluginInitialization extends PluginInitialization
+class CoreInitalization extends Initialization
 {
     protected const PLUGINS = [
-        ValueSourceInterface::class => [
-            BooleanValueSource::class,
-            ConcatenationValueSource::class,
-            ConditionValueSource::class,
-            ConstantValueSource::class,
-            FieldCollectorValueSource::class,
-            FieldValueSource::class,
-            FileValueSource::class,
-            FirstOfValueSource::class,
-            IntegerValueSource::class,
-            ListValueSource::class,
-            MultiValueValueSource::class,
-            NullValueSource::class,
-        ],
-        ValueModifierInterface::class => [
-            DefaultValueModifier::class,
-            IndexValueModifier::class,
-            InsertDataValueModifier::class,
-            JoinValueModifier::class,
-            LowerCaseValueModifier::class,
-            MapReferenceValueModifier::class,
-            MapValueModifier::class,
-            NegateValueModifier::class,
-            SpliceValueModifier::class,
-            SprintfValueModifier::class,
-            TrimValueModifier::class,
-            UpperCaseValueModifier::class,
-        ],
-        EvaluationInterface::class => [
-            AndEvaluation::class,
-            ComparisonEvaluation::class,
-            FalseEvaluation::class,
-            NotEvaluation::class,
-            OrEvaluation::class,
-            TrueEvaluation::class,
-        ],
-        ComparisonInterface::class => [
-            EqualsComparison::class,
-            ExistsComparison::class,
-            InComparison::class,
-            IsEmptyComparison::class,
-            IsFalseComparison::class,
-            IsTrueComparison::class,
-            RegExpComparison::class,
-        ],
-        DataMapperInterface::class => [
-            PrefixDataMapper::class,
-            ExcludeFieldsDataMapper::class,
-            FieldMapDataMapper::class,
-            IgnoreEmptyFieldsDataMapper::class,
-            PassthroughFieldsDataMapper::class,
+        RegistryDomain::CORE => [
+            ValueSourceInterface::class => [
+                BooleanValueSource::class,
+                ConcatenationValueSource::class,
+                ConditionValueSource::class,
+                ConstantValueSource::class,
+                FieldCollectorValueSource::class,
+                FieldValueSource::class,
+                FileValueSource::class,
+                FirstOfValueSource::class,
+                IntegerValueSource::class,
+                ListValueSource::class,
+                MultiValueValueSource::class,
+                NullValueSource::class,
+            ],
+            ValueModifierInterface::class => [
+                DefaultValueModifier::class,
+                IndexValueModifier::class,
+                InsertDataValueModifier::class,
+                JoinValueModifier::class,
+                LowerCaseValueModifier::class,
+                MapReferenceValueModifier::class,
+                MapValueModifier::class,
+                NegateValueModifier::class,
+                SpliceValueModifier::class,
+                SprintfValueModifier::class,
+                TrimValueModifier::class,
+                UpperCaseValueModifier::class,
+            ],
+            EvaluationInterface::class => [
+                AndEvaluation::class,
+                ComparisonEvaluation::class,
+                FalseEvaluation::class,
+                NotEvaluation::class,
+                OrEvaluation::class,
+                TrueEvaluation::class,
+            ],
+            ComparisonInterface::class => [
+                EqualsComparison::class,
+                ExistsComparison::class,
+                InComparison::class,
+                IsEmptyComparison::class,
+                IsFalseComparison::class,
+                IsTrueComparison::class,
+                RegExpComparison::class,
+            ],
+            DataMapperInterface::class => [
+                PrefixDataMapper::class,
+                ExcludeFieldsDataMapper::class,
+                FieldMapDataMapper::class,
+                IgnoreEmptyFieldsDataMapper::class,
+                PassthroughFieldsDataMapper::class,
+            ],
         ],
     ];
+
+    protected const SCHEMA_MIGRATIONS = [];
+
+    public function __construct()
+    {
+        parent::__construct('core', '1.0.0');
+    }
 }

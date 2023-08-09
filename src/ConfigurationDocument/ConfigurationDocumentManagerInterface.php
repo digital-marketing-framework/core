@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
@@ -11,6 +12,7 @@ interface ConfigurationDocumentManagerInterface
     public const KEY_META_DATA = 'metaData';
     public const KEY_INCLUDES = 'includes';
     public const KEY_DOCUMENT_NAME = 'name';
+    public const KEY_DOCUMENT_VERSION = 'version';
 
     public function getStorage(): ConfigurationDocumentStorageInterface;
     public function getParser(): ConfigurationDocumentParserInterface;
@@ -30,6 +32,15 @@ interface ConfigurationDocumentManagerInterface
     public function setIncludes(array &$configuration, array $includes): void;
     public function getName(array $configuration): string;
     public function setName(array &$configuration, string $name): void;
+    public function getVersion(array $configuration): array;
+    public function setVersion(array &$configuration, array $version): void;
+    public function getVersionByKey(array $configuration, string $key): string;
+    public function setVersionByKey(array &$configuration, string $key, string $version): void;
+    public function unsetVersionByKey(array &$configuration, string $key): void;
+
+    public function outdated(array $configuration, SchemaDocument $schemaDocument): bool;
+    public function addMigration(ConfigurationDocumentMigrationInterface $migration): void;
+    public function migrate(array $configuration, SchemaDocument $schemaDocument): array;
 
     /**
      * @return array<string>
