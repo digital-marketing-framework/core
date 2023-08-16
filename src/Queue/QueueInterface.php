@@ -32,7 +32,7 @@ interface QueueInterface
     public function markListAsDone(array $jobs, bool $skipped = false): void;
     public function markListAsFailed(array $jobs, string $message = ''): void;
 
-    public function addJob(JobInterface $job): void;
+    public function addJob(JobInterface $job): JobInterface;
     public function removeJob(JobInterface $job): void;
 
     public function removeOldJobs(int $minAgeInSeconds, array $status = []): void;

@@ -46,7 +46,7 @@ class NonPersistentQueue implements QueueInterface
     {
         return $this->fetchWhere([QueueInterface::STATUS_QUEUED], $limit, $offset);
     }
-    
+
     public function fetchPending(int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0): array
     {
         return $this->fetchWhere([QueueInterface::STATUS_PENDING], $limit, $offset, $minTimeSinceChangedInSeconds);
@@ -118,7 +118,7 @@ class NonPersistentQueue implements QueueInterface
             $this->markAsPending($job);
         }
     }
-    
+
     public function markListAsRunning(array $jobs): void
     {
         foreach ($jobs as $job) {
@@ -140,12 +140,13 @@ class NonPersistentQueue implements QueueInterface
         }
     }
 
-    public function addJob(JobInterface $job): void
+    public function addJob(JobInterface $job): JobInterface
     {
         if (array_search($job, $this->queue) === false) {
             $job->setId($this->index++);
             $this->queue[] = $job;
         }
+        return $job;
     }
 
     public function removeJob(JobInterface $job): void
