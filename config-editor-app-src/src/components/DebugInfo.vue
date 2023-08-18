@@ -10,6 +10,11 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
@@ -53,7 +58,7 @@ const item = computed(() => store.getItem(props.currentPath));
             </tr>
             <tr>
                 <th class="p-1 align-top">Dynamic Item</th>
-                <td class="p-1 align-top">{{ item.isDynamicItem }}</td>
+                <td class="p-1 align-top" >{{ !!dynamicItem }}</td>
             </tr>
             <tr v-if="store.isCustomType(store.getSchema(item.path).type)">
                 <th class="p-1 align-top">Immediate Schema</th>

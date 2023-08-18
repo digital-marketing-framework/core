@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Model\Configuration;
 
 use BadMethodCallException;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
+use DigitalMarketingFramework\Core\Utility\MapUtility;
 
 class Configuration implements ConfigurationInterface
 {
@@ -111,9 +112,13 @@ class Configuration implements ConfigurationInterface
         $this->unset((string)$offset);
     }
 
-    public function getValueMapConfiguration(string $key): ?array
+    public function getValueMapConfiguration(string $id): ?array
     {
-        return $this->get(static::KEY_VALUE_MAPS, [])[$key] ?? null;
+        $valueMaps = $this->get(static::KEY_VALUE_MAPS, []);
+        if (isset($valueMaps[$id])) {
+            return MapUtility::getItemValue($valueMaps[$id]);
+        }
+        return null;
     }
 
     protected function getIdentifierConfiguration(bool $resolveNull = true): array

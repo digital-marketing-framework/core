@@ -81,6 +81,7 @@ trait ConfigurationSchemaRegistryTrait
         $mainSchema->getRenderingDefinition()->setLabel('Digital Marketing');
 
         $metaDataSchema = new ContainerSchema();
+        $metaDataSchema->getRenderingDefinition()->setLabel('Document');
         $nameSchema = new StringSchema();
         $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_DOCUMENT_NAME, $nameSchema);
         $includeSchema = new StringSchema();
@@ -89,10 +90,14 @@ trait ConfigurationSchemaRegistryTrait
         $includeSchema->getRenderingDefinition()->setLabel('INCLUDE');
         $includeListSchema = new ListSchema($includeSchema);
         $includeListSchema->getRenderingDefinition()->setNavigationItem(false);
+        $includeListSchema->setDynamicOrder(true);
         $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_INCLUDES, $includeListSchema);
         $mainSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_META_DATA, $metaDataSchema);
 
-        $valueMapsSchema = new MapSchema(new MapSchema(new StringSchema()));
+        $valueMapSchema = new MapSchema(new StringSchema());
+        $valuesMapKeySchema = new StringSchema('mapName');
+        $valuesMapKeySchema->getRenderingDefinition()->setLabel('Value Map Name');
+        $valueMapsSchema = new MapSchema($valueMapSchema, $valuesMapKeySchema);
 
         $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
         $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $this->getIdentifierCollectorSchema());

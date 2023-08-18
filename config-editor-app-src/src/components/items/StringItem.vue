@@ -10,6 +10,11 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
@@ -17,7 +22,7 @@ const item = computed(() => store.getItem(props.currentPath));
 </script>
 
 <template>
-    <GenericScalarItem :currentPath="currentPath">
+    <GenericScalarItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldUi>
             <div class="mt-2">
                 <select v-if="item.schema.format === 'select'"

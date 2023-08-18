@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\Utility\MapUtility;
 
 class MapSchema extends ListSchema
 {
@@ -12,6 +13,10 @@ class MapSchema extends ListSchema
         mixed $defaultValue = null,
     ) {
         parent::__construct($valueSchema, $defaultValue);
+        $this->itemSchema->addProperty(MapUtility::KEY_KEY, $nameSchema);
+        if ($this->valueSchema->getRenderingDefinition()->getLabel() === null) {
+            $this->valueSchema->getRenderingDefinition()->setLabel(sprintf('{../%s}', MapUtility::KEY_KEY));
+        }
     }
 
     public function getType(): string
@@ -27,6 +32,9 @@ class MapSchema extends ListSchema
     public function setNameSchema(StringSchema $nameSchema): void
     {
         $this->nameSchema = $nameSchema;
+        $this->nameSchema->getRenderingDefinition()->setSkipHeader(true);
+        $this->itemSchema->removeProperty(MapUtility::KEY_KEY);
+        $this->itemSchema->addProperty(MapUtility::KEY_KEY, $nameSchema);
     }
 
     public function getValueSets(): array
@@ -34,36 +42,15 @@ class MapSchema extends ListSchema
         return $this->mergeValueSets(parent::getValueSets(), $this->nameSchema->getValueSets());
     }
 
-    protected function getConfig(): array
-    {
-        if (SchemaDocument::FLATTEN_SCHEMA) {
-            return [
-                'keyTemplate' => $this->nameSchema->toArray(),
-            ] + parent::getConfig();
-        } else {
-            return [
-                'key' => $this->nameSchema->toArray(),
-            ] + parent::getConfig();
-        }
-    }
-
     public function getDefaultValue(SchemaDocument $schemaDocument): mixed
     {
-        $defaultValue = parent::getDefaultValue($schemaDocument);
-        if (is_array($defaultValue) && empty($defaultValue)) {
-            $defaultValue = [];
-        }
-        return $defaultValue;
-    }
-
-    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
-    {
-        if (empty($value)) {
-            $value = (object)[];
-        } else {
-            foreach (array_keys($value) as $key) {
-                $this->valueSchema->preSaveDataTransform($value[$key], $schemaDocument);
+        $default = $this->defaultValue ?? [];
+        $map = [];
+        if (!empty($default)) {
+            foreach ($default as $key => $value) {
+                $map = MapUtility::append($map, $key, $value);
             }
         }
+        return $map;
     }
 }

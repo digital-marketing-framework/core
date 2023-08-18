@@ -16,6 +16,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
+use DigitalMarketingFramework\Core\Utility\ListUtility;
 
 class DataProcessor extends Plugin implements DataProcessorInterface
 {
@@ -86,7 +87,8 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         if ($modifierConfig === null) {
             throw new DigitalMarketingFrameworkException('No data for value modifiers configuration found.');
         }
-        $value = $this->processValueModifiers($config[static::KEY_MODIFIERS], $value, $context);
+        $modifierConfig = ListUtility::flatten($modifierConfig);
+        $value = $this->processValueModifiers($modifierConfig, $value, $context);
 
         return $value;
     }

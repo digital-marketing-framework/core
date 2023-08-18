@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 interface PluginRegistryInterface
 {
     public function getPlugin(string $keyword, string $interface, array $arguments = []): ?PluginInterface;
-    
+
     /**
      * @param array<mixed> $arguments
      * @return array<PluginInterface>

@@ -24,7 +24,7 @@ async function ajaxFetch(url, payload) {
   return response.json();
 }
 
-async function getData(textarea, settings) {
+const getData = async (textarea, settings) => {
   const document = textarea.value;
   let result;
   if (document) {
@@ -37,13 +37,13 @@ async function getData(textarea, settings) {
     };
   }
   return result;
-}
+};
 
-async function getSchema(settings) {
+const getSchema = async (settings) => {
   return await ajaxFetch(settings.urls.schema);
-}
+};
 
-async function setData(textarea, settings, data) {
+const setData = async (textarea, settings, data) => {
   const response = await ajaxFetch(settings.urls.split, data);
   textarea.value = response.document;
   textarea.dispatchEvent(new Event('paste'), { bubbles: true });
@@ -52,22 +52,22 @@ async function setData(textarea, settings, data) {
   if (typeof textarea.onchange === 'function') {
     textarea.onchange();
   }
-}
+};
 
-function getDocumentForm(textarea) {
+const getDocumentForm = (textarea) => {
   return textarea.closest('form');
-}
+};
 
-async function save(textarea, settings, data) {
+const save = async (textarea, settings, data) => {
   await setData(textarea, settings, data);
-}
+};
 
-async function updateIncludes(settings, referenceData, newData) {
+const updateIncludes = async (settings, referenceData, newData) => {
   const payload = { referenceData: referenceData, newData: newData };
   return await ajaxFetch(settings.urls.updateIncludes, payload);
-}
+};
 
-function updateTextArea(textarea, stage, settings, start) {
+const updateTextArea = (textarea, stage, settings, start) => {
   if (settings.mode === 'modal') {
     const startButton = document.createElement('BUTTON');
     textarea.parentNode.insertBefore(startButton, textarea.nextSibling);
@@ -79,24 +79,24 @@ function updateTextArea(textarea, stage, settings, start) {
     });
   }
   textarea.style.display = 'none';
-}
+};
 
-function setupEmbedded(textarea) {
+const setupEmbedded = (textarea) => {
   const stage = document.createElement('DIV');
   stage.classList.add('dmf-configuration-document-editor-stage');
   const form = getDocumentForm(textarea);
   form.parentNode.insertBefore(stage, form.nextSibling);
   return stage;
-}
+};
 
-function setupModal() {
+const setupModal = () => {
   const stage = document.createElement('DIV');
   stage.classList.add('dmf-configuration-document-editor-stage');
   document.body.appendChild(stage);
   return stage;
-}
+};
 
-function getSettings(textarea) {
+const getSettings = (textarea) => {
   const ucfirst = (s) => s.substring(0, 1).toUpperCase() + s.substring(1);
   const urlKeys = ['schema', 'defaults', 'merge', 'split', 'updateIncludes'];
   const settings = {
@@ -110,9 +110,9 @@ function getSettings(textarea) {
     settings.urls[key] = textarea.dataset['url' + ucfirst(key)];
   });
   return settings;
-}
+};
 
-async function getInitialTextArea() {
+const getInitialTextArea = async () => {
   return new Promise((resolve) => {
     const textarea = document.querySelector('textarea.dmf-configuration-document');
     if (textarea !== null && textarea.dataset.app === 'true') {
@@ -126,9 +126,9 @@ async function getInitialTextArea() {
       });
     }
   });
-}
+};
 
-function getStageSiblings(stage) {
+const getStageSiblings = (stage) => {
   const siblings = [];
   const children = stage.parentNode.children;
   for (let i = 0; i < children.length; i++) {
@@ -138,15 +138,15 @@ function getStageSiblings(stage) {
     }
   }
   return siblings;
-}
+};
 
-function triggerFormSave(textarea) {
+const triggerFormSave = (textarea) => {
   getDocumentForm(textarea)?.submit();
-}
+};
 
-function triggerFormDiscard(textarea) {
+const triggerFormDiscard = (textarea) => {
   getDocumentForm(textarea)?.querySelector('[data-role="close"]')?.click();
-}
+};
 
 export const linkEnvironment = async () => {
   let textarea, settings, stage, schemaDocument;

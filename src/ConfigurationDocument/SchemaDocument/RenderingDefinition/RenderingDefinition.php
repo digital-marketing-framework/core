@@ -14,6 +14,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
     protected ?bool $hideLabel = null;
     protected ?string $label = null;
     protected ?bool $isNavigationItem = null;
+    protected ?bool $skipInNavigation = null;
     protected ?bool $skipHeader = null;
     protected array $triggers = [];
 
@@ -36,6 +37,9 @@ class RenderingDefinition implements RenderingDefinitionInterface
         }
         if ($this->isNavigationItem !== null) {
             $render['navigationItem'] = $this->isNavigationItem;
+        }
+        if ($this->skipInNavigation !== null) {
+            $render['skipInNavigation'] = $this->skipInNavigation;
         }
         if ($this->label !== null) {
             $render['label'] = $this->label;
@@ -74,6 +78,16 @@ class RenderingDefinition implements RenderingDefinitionInterface
     public function getSkipHeader(): bool
     {
         return $this->skipHeader;
+    }
+
+    public function setSkipInNavigation(bool $skipInNavigation): void
+    {
+        $this->skipInNavigation = $skipInNavigation;
+    }
+
+    public function getSkipInNavigation(): bool
+    {
+        return $this->skipInNavigation;
     }
 
     public function setNavigationItem(bool $value): void

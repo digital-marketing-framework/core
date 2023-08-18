@@ -19,17 +19,23 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
 const item = computed(() => store.getItem(props.currentPath));
 const containerState = computed(() => store.getContainerState(props.currentPath));
+const skipHeader = computed(() => item.value.schema.skipHeader && !item.value.selected);
 </script>
 
 <template>
-    <Disclosure v-if="!item.schema.skipHeader" :default-open="containerState"
+    <Disclosure v-if="!skipHeader" :default-open="containerState"
                     v-slot="{ open }">
-        <ContainerHeader :currentPath="currentPath">
+        <ContainerHeader :currentPath="currentPath" :dynamicItem="dynamicItem">
             <template #disclosureButton>
                 <DisclosureButton v-if="!item.selected" class="p-1" @click="store.toggleContainerState(currentPath)">
                     <AngleDownIcon class="w-3 h-3"

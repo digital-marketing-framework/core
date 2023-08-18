@@ -26,7 +26,7 @@ class ConcatenationValueSource extends ValueSource
         $glue = GeneralUtility::parseSeparatorString($this->getConfig(static::KEY_GLUE));
 
         $values = [];
-        foreach ($this->getConfig(static::KEY_VALUES) as $valueConfig) {
+        foreach ($this->getListConfig(static::KEY_VALUES) as $valueConfig) {
             $value = $this->dataProcessor->processValue($valueConfig, $this->context->copy());
             if ($value !== null) {
                 $values[] = $value;

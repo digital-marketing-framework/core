@@ -17,7 +17,7 @@ class AndEvaluation extends Evaluation
     public function evaluate(): bool
     {
         $result = true;
-        $subEvaluations = $this->getConfig(static::KEY_EVALUATIONS);
+        $subEvaluations = $this->getListConfig(static::KEY_EVALUATIONS);
         foreach ($subEvaluations as $subEvaluationConfig) {
             if (!$this->dataProcessor->processEvaluation($subEvaluationConfig, $this->context->copy())) {
                 $result = false;

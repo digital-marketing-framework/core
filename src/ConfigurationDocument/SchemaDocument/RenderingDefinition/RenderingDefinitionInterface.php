@@ -23,6 +23,9 @@ interface RenderingDefinitionInterface
     public function setNavigationItem(bool $value): void;
     public function getNavigationItem(): bool;
 
+    public function setSkipInNavigation(bool $skipInNavigation): void;
+    public function getSkipInNavigation(): bool;
+
     public function setSkipHeader(bool $skipHeader): void;
     public function getSkipHeader(): bool;
 

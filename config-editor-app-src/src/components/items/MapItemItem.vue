@@ -1,7 +1,7 @@
 <script setup>
 
+import GenericItem from '../GenericItem.vue';
 import GenericContainerItem from './GenericContainerItem.vue';
-import MapItemItem from './MapItemItem.vue';
 
 import { computed } from "vue";
 import { useDmfStore } from '../../stores/dmf';
@@ -12,23 +12,18 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
-    },
-    dynamicItem: {
-        type: Object,
-        required: false,
-        default: null
     }
 });
 
 const item = computed(() => store.getItem(props.currentPath));
+
 </script>
 
 <template>
-    <GenericContainerItem :currentPath="currentPath" :dynamicItem="dynamicItem">
+    <GenericContainerItem :currentPath="currentPath">
         <template #fieldsUi>
-            <div v-for="path in item.childPaths" :key="currentPath + '/' + path">
-                <MapItemItem :currentPath="store.getAbsolutePath(path, currentPath)" />
-            </div>
+            <GenericItem :currentPath="store.getAbsolutePath('key', currentPath)" />
+            <GenericItem :currentPath="store.getAbsolutePath('value', currentPath)" :dynamicItem="item" />
         </template>
     </GenericContainerItem>
 </template>

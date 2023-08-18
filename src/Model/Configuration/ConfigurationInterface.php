@@ -21,7 +21,7 @@ interface ConfigurationInterface extends ArrayAccess
     public function set(string $key, mixed $value): void;
     public function unset(string $key): void;
 
-    public function getValueMapConfiguration(string $key): ?array;
+    public function getValueMapConfiguration(string $id): ?array;
 
     public function getIdentifierCollectorConfiguration(string $identifierCollectorName): array;
     public function identifierCollectorExists(string $identifierCollectorName): bool;

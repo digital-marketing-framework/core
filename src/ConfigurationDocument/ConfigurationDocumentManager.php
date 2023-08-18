@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\FatalMigrationException;
+use DigitalMarketingFramework\Core\Utility\ListUtility;
 
 class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, LoggerAwareInterface
 {
@@ -135,12 +136,15 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function getIncludes(array $configuration): array
     {
-        return $configuration[static::KEY_META_DATA][static::KEY_INCLUDES] ?? [];
+        $includeList = $configuration[static::KEY_META_DATA][static::KEY_INCLUDES] ?? [];
+        return ListUtility::flatten(ListUtility::sort($includeList));
     }
 
     public function setIncludes(array &$configuration, array $includes): void
     {
-        $configuration[static::KEY_META_DATA][static::KEY_INCLUDES] = $includes;
+        $includeList = [];
+        $includeList = ListUtility::appendMultiple($includeList, $includes);
+        $configuration[static::KEY_META_DATA][static::KEY_INCLUDES] = $includeList;
     }
 
     public function getName(array $configuration): string
@@ -208,7 +212,12 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
      */
     public function getConfigurationStackFromConfiguration(array $configuration): array
     {
-        $includedConfigurations = $this->getIncludedConfigurations($this->getIncludes($configuration));
+        // TODO Trigger migrations here?
+        //      Should each configuration be migrated with its parents or on its own?
+        //      What if some version cannot be reached? Distringuish between fatal issues and non-fatal issues?
+        $includes = $this->getIncludes($configuration);
+        array_unshift($includes, 'SYS:defaults');
+        $includedConfigurations = $this->getIncludedConfigurations($includes);
         return [
             ...$includedConfigurations,
             $configuration

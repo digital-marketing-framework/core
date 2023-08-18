@@ -33,6 +33,10 @@ export const mergeValue = (source, target, excludeKeys) => {
   });
 };
 
+export const flip = (map) => {
+  return Object.entries(map).reduce((obj, [key, value]) => ({ ...obj, [value]: key }), {});
+};
+
 export const valuesEqual = (a, b) => {
   if (typeof a === 'object' && typeof b === 'object') {
     for (let key in a) {
@@ -128,11 +132,16 @@ document.addEventListener(EVENT_GET_VALUES, (e) => {
   const add = e.detail.add;
   const currentPath = e.detail.currentPath;
   config.forEach((reference) => {
+    const labelPathPostfix = reference.labelPath ? '/' + reference.labelPath : '';
     const paths = store.getAllPaths(reference.path, currentPath);
     paths.forEach((path) => {
       switch (reference.type) {
         case 'key': {
-          add(store.getLeafKey(path), store.getLabel(path));
+          const value = store.getLeafKey(path);
+          const label = labelPathPostfix
+            ? store._prettifyLabel(store.getValue(path + labelPathPostfix))
+            : value;
+          add(value, label);
           break;
         }
         case 'value': {

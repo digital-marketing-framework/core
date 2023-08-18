@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\Utility\MapUtility;
 
 class MapReferenceValueModifier extends ValueModifier
 {
@@ -25,6 +26,7 @@ class MapReferenceValueModifier extends ValueModifier
         }
         $map = $this->context->getConfiguration()->getValueMapConfiguration($this->getConfig(static::KEY_MAP_NAME));
         if ($map !== null) {
+            $map = MapUtility::flatten($map);
             if ($this->getConfig(static::KEY_INVERT)) {
                 $map = array_flip($map);
             }
@@ -39,7 +41,7 @@ class MapReferenceValueModifier extends ValueModifier
         $schema = parent::getSchema();
         $mapNameSchema = new StringSchema();
         $mapNameSchema->getRenderingDefinition()->setFormat('select');
-        $mapNameSchema->getAllowedValues()->addReference('/valueMaps/*');
+        $mapNameSchema->getAllowedValues()->addReference('/valueMaps/*', labelPath:'key');
         $schema->addProperty(static::KEY_MAP_NAME, $mapNameSchema);
         $schema->addProperty(static::KEY_INVERT, new BooleanSchema(false));
         return $schema;

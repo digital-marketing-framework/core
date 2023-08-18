@@ -18,7 +18,7 @@ class FieldMapDataMapper extends WritingDataMapper
     protected function map(DataInterface $target): void
     {
         $baseContext = $this->context->copy(false);
-        foreach ($this->getConfig(static::KEY_FIELDS) as $fieldName => $valueConfig) {
+        foreach ($this->getMapConfig(static::KEY_FIELDS) as $fieldName => $valueConfig) {
             $context = $baseContext->copy();
             $value = $this->dataProcessor->processValue($valueConfig, $context);
             if ($value !== null) {

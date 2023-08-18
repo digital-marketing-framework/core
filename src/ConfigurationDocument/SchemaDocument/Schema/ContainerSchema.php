@@ -17,6 +17,20 @@ class ContainerSchema extends Schema
         return "CONTAINER";
     }
 
+    /**
+     * Set a property regardless of whether or not a property with that name already existed.
+     * Might overwrite an existing property.
+     */
+    public function setProperty(string $name, SchemaInterface $schema): ContainerProperty
+    {
+        $this->properties[$name] = new ContainerProperty($name, $schema);
+        return $this->properties[$name];
+    }
+
+    /**
+     * Add a property to the container. If a property with that name already exists, the schema type has to match, everything else is counted as a conflict.
+     * The $overwrite flag must be set in order to overwrite an existing property.
+     */
     public function addProperty(string $name, SchemaInterface $schema, bool $overwrite = false): ContainerProperty
     {
         if (!isset($this->properties[$name])) {
@@ -66,12 +80,16 @@ class ContainerSchema extends Schema
         $properties = [];
         foreach ($this->properties as $property) {
             if (SchemaDocument::FLATTEN_SCHEMA) {
-                $properties[] = ['key' => $property->getName()]
+                $properties[] = [
+                        'key' => $property->getName(),
+                        'weight' => $property->getWeight(),
+                    ]
                     + $property->getSchema()->toArray()
                     + ($property->getRenderingDefinition()->toArray() ?? []);
             } else {
                 $properties[] = [
                     'key' => $property->getName(),
+                    'weigth' => $property->getWeight(),
                     'value' => $property->getSchema()->toArray(),
                     'render' => $property->getRenderingDefinition()->toArray(),
                 ];
@@ -97,6 +115,9 @@ class ContainerSchema extends Schema
 
     public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
     {
+        if ($value === null) {
+            return;
+        }
         if (!is_array($value) || empty($value)) {
             $value = (object)[];
         } else {

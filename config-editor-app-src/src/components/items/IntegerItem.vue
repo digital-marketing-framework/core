@@ -2,19 +2,26 @@
 import { computed } from 'vue';
 import { useDmfStore } from '../../stores/dmf';
 
+import GenericScalarItem from './GenericScalarItem.vue';
+
 const store = useDmfStore();
 
 const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
 const item = computed(() => store.getItem(props.currentPath));
 </script>
 <template>
-    <GenericScalarItem :currentPath="currentPath">
+    <GenericScalarItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldUi>
             <div class="mt-2">
                 <input :id="'input_' + currentPath"

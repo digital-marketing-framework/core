@@ -23,7 +23,7 @@ class MultiValueValueSource extends ValueSource
     public function build(): null|string|ValueInterface
     {
         $multiValue = $this->getMultiValue();
-        $values = $this->getConfig(static::KEY_VALUES);
+        $values = $this->getListConfig(static::KEY_VALUES);
         foreach ($values as $valueConfig) {
             $value = $this->dataProcessor->processValue($valueConfig, $this->context->copy());
             if ($value !== null) {

@@ -11,6 +11,11 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
@@ -32,6 +37,6 @@ const item = computed(() => store.getItem(props.currentPath));
                 <span>{{ item.label }}</span>
             </label>
         </div>
-        <HeaderActions :currentPath="currentPath" />
+        <HeaderActions :currentPath="currentPath" :dynamicItem="dynamicItem" />
     </header>
 </template>

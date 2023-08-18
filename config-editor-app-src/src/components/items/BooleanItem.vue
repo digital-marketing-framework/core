@@ -11,6 +11,11 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
@@ -18,7 +23,7 @@ const item = computed(() => store.getItem(props.currentPath));
 </script>
 
 <template>
-    <GenericScalarItem :currentPath="currentPath">
+    <GenericScalarItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldHeader><span><!-- a slot cannot be overwritten with empty content --></span></template>
         <template #fieldUi>
             <div class="relative flex items-start">
@@ -41,7 +46,7 @@ const item = computed(() => store.getItem(props.currentPath));
             </div>
         </template>
         <template #fieldFooter>
-            <HeaderActions v-if="!item.schema.skipHeader" :currentPath="currentPath"/>
+            <HeaderActions v-if="!item.schema.skipHeader" :currentPath="currentPath" :dynamicItem="dynamicItem"/>
         </template>
     </GenericScalarItem>
 </template>

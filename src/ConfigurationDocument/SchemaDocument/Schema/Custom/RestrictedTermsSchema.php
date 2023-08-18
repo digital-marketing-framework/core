@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\S
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ScalarValues;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Utility\ListUtility;
 
 class RestrictedTermsSchema extends SwitchSchema
 {
@@ -26,7 +27,7 @@ class RestrictedTermsSchema extends SwitchSchema
         $listSchema = new ListSchema($listItemSchema);
         $listSchema->getRenderingDefinition()->setLabel($name);
         $container = new ContainerSchema();
-        $container->addProperty($name, $listSchema);
+        $container->addProperty(static::KEY_LIST, $listSchema);
         $this->addItem($name, $container);
     }
 
@@ -49,7 +50,7 @@ class RestrictedTermsSchema extends SwitchSchema
     public static function getAllowedTerms(array $config): array
     {
         $type = static::getSwitchType($config);
-        $list = static::getSwitchConfiguration($config)[static::KEY_LIST] ?? [];
+        $list = ListUtility::flatten(static::getSwitchConfiguration($config)[static::KEY_LIST] ?? []);
         switch ($type) {
             case static::KEY_ALL:
                 return ['*'];

@@ -12,6 +12,11 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
@@ -21,7 +26,7 @@ const childPaths = computed(() => store.getChildPaths(props.currentPath).filter(
 </script>
 
 <template>
-    <GenericContainerItem :currentPath="currentPath">
+    <GenericContainerItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldsUi>
             <GenericItem :currentPath="store.getAbsolutePath('type', currentPath)"
                 :key="store.getAbsolutePath('type', currentPath)" />

@@ -10,8 +10,9 @@ class ContainerProperty
     protected RenderingDefinitionInterface $renderingDefinition;
 
     public function __construct(
-        protected string $name, 
-        protected SchemaInterface $schema
+        protected string $name,
+        protected SchemaInterface $schema,
+        protected int $weight = 100,
     ) {
         $this->renderingDefinition = new RenderingDefinition();
     }
@@ -39,5 +40,15 @@ class ContainerProperty
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getWeight(): int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(int $weight): void
+    {
+        $this->weight = $weight;
     }
 }

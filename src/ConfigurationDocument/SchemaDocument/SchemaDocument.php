@@ -2,15 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\IntegerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ValueSet;
-use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 class SchemaDocument
 {

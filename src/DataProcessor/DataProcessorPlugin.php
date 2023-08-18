@@ -10,8 +10,6 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
 {
     use DataProcessorAwareTrait;
 
-    // protected const KEY_WEIGHT = 'weight';
-
     public function __construct(
         string $keyword,
         RegistryInterface $registry,
@@ -36,9 +34,4 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
             : null;
         return $fieldValue;
     }
-
-    // public function getWeight(): int
-    // {
-    //     return $this->getConfig(static::KEY_WEIGHT);
-    // }
 }

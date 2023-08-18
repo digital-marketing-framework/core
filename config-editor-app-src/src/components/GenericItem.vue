@@ -26,6 +26,11 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
@@ -41,23 +46,23 @@ const item = computed(() => store.getItem(props.currentPath));
 
 <!-- use if needed: -->
 <!--
-        <DataMapperItem v-if="item.immediateSchema.type === 'DATA_MAPPER'" :currentPath="currentPath" />
-        <ValueSourceItem v-else-if="item.immediateSchema.type === 'VALUE_SOURCE'" :currentPath="currentPath" />
-        <ValueModifierItem v-else-if="item.immediateSchema.type === 'VALUE_MODIFIER'" :currentPath="currentPath" />
-        <ValueItem v-else-if="item.immediateSchema.type === 'VALUE'" :currentPath="currentPath" />
-        <RouteItem v-else-if="item.immediateSchema.type === 'ROUTE'" :currentPath="currentPath" />
-        <EvaluationItem v-else-if="item.immediateSchema.type === 'EVALUATION'" :currentPath="currentPath" />
-        <ComparisonItem v-else-if="item.immediateSchema.type === 'COMPARISON'" :currentPath="currentPath" />
+        <DataMapperItem v-if="item.immediateSchema.type === 'DATA_MAPPER'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <ValueSourceItem v-else-if="item.immediateSchema.type === 'VALUE_SOURCE'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <ValueModifierItem v-else-if="item.immediateSchema.type === 'VALUE_MODIFIER'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <ValueItem v-else-if="item.immediateSchema.type === 'VALUE'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <RouteItem v-else-if="item.immediateSchema.type === 'ROUTE'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <EvaluationItem v-else-if="item.immediateSchema.type === 'EVALUATION'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <ComparisonItem v-else-if="item.immediateSchema.type === 'COMPARISON'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
 -->
 
-        <ContainerItem v-if="item.schema.type === 'CONTAINER'" :currentPath="currentPath" />
-        <ListItem v-else-if="item.schema.type === 'LIST'" :currentPath="currentPath" />
-        <MapItem v-else-if="item.schema.type === 'MAP'" :currentPath="currentPath" />
-        <SwitchItem v-else-if="item.schema.type === 'SWITCH'" :currentPath="currentPath" />
+        <ContainerItem v-if="item.schema.type === 'CONTAINER'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <ListItem v-else-if="item.schema.type === 'LIST'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <MapItem v-else-if="item.schema.type === 'MAP'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <SwitchItem v-else-if="item.schema.type === 'SWITCH'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
         <StringSwitchTypeItem v-else-if="item.schema.type === 'STRING' && item.triggers.indexOf('switch') >= 0" :currentPath="currentPath" />
-        <StringItem v-else-if="item.schema.type === 'STRING'" :currentPath="currentPath"/>
-        <IntegerItem v-else-if="item.schema.type === 'INTEGER'" :currentPath="currentPath"/>
-        <BooleanItem v-else-if="item.schema.type === 'BOOLEAN'" :currentPath="currentPath" />
+        <StringItem v-else-if="item.schema.type === 'STRING'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <IntegerItem v-else-if="item.schema.type === 'INTEGER'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
+        <BooleanItem v-else-if="item.schema.type === 'BOOLEAN'" :currentPath="currentPath" :dynamicItem="dynamicItem" />
 
         <div v-if="item.hasIssues">{{ item.issue }}</div>
     </div>

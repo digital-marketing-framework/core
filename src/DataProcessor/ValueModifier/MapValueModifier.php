@@ -20,7 +20,7 @@ class MapValueModifier extends ValueModifier
         if ($value === null) {
             return null;
         }
-        return $this->getConfig(static::KEY_MAP)[(string) $value] ?? $value;
+        return $this->getMapConfig(static::KEY_MAP)[(string) $value] ?? $value;
     }
 
     public static function getSchema(): SchemaInterface

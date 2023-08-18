@@ -21,7 +21,7 @@ abstract class Plugin implements PluginInterface, LoggerAwareInterface
         return $this->keyword;
     }
 
-    public function getWeight(): int
+    public static function getWeight(): int
     {
         return static::WEIGHT;
     }

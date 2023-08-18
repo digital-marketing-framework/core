@@ -71,8 +71,8 @@ class SwitchSchema extends ContainerSchema
         }
         $config = $configProperty->getSchema()->getDefaultValue($schemaDocument);
         return [
-            'type' => $type,
-            'config' => [
+            static::KEY_TYPE => $type,
+            static::KEY_CONFIG => [
                 $type => $config,
             ],
         ];
@@ -93,5 +93,20 @@ class SwitchSchema extends ContainerSchema
             throw new DigitalMarketingFrameworkException(sprintf('config type "%s" not found in switch configuration', $type));
         }
         return $switchConfig[static::KEY_CONFIG][$type];
+    }
+
+    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
+    {
+        if ($value === null) {
+            return;
+        }
+        if (isset($value[static::KEY_TYPE])) {
+            $this->typeSchema->preSaveDataTransform($value[static::KEY_TYPE], $schemaDocument);
+        }
+        foreach ($this->configSchema->getProperties() as $property) {
+            if (isset($value[static::KEY_CONFIG][$property->getName()])) {
+                $property->getSchema()->preSaveDataTransform($value[static::KEY_CONFIG][$property->getName()], $schemaDocument);
+            }
+        }
     }
 }

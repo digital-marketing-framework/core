@@ -40,7 +40,7 @@ trait IdentifierCollectorRegistryTrait
         $schema = new ContainerSchema();
 
         $collectorSchema = new IdentifierCollectorSchema();
-        foreach ($this->pluginClasses[IdentifierCollectorInterface::class] ?? [] as $key => $class) {
+        foreach ($this->getAllPluginClasses(IdentifierCollectorInterface::class) as $key => $class) {
             $collectorSchema->addItem($key, $class::getSchema());
         }
 

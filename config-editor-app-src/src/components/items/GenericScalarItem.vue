@@ -11,6 +11,11 @@ const props = defineProps({
     currentPath: {
         type: String,
         required: true
+    },
+    dynamicItem: {
+        type: Object,
+        required: false,
+        default: null
     }
 });
 
@@ -18,7 +23,7 @@ const item = computed(() => store.getItem(props.currentPath));
 </script>
 <template>
     <slot name="fieldHeader" v-if="!item.schema.skipHeader">
-        <ItemHeader :currentPath="currentPath" />
+        <ItemHeader :currentPath="currentPath" :dynamicItem="dynamicItem" />
     </slot>
     <slot v-if="!item.rawView" name="fieldUi"></slot>
     <RawItem v-else :currentPath="currentPath" />

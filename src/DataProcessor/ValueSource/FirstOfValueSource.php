@@ -17,7 +17,7 @@ class FirstOfValueSource extends ValueSource
 
     public function build(): null|string|ValueInterface
     {
-        $valueList = $this->getConfig(static::KEY_VALUE_LIST);
+        $valueList = $this->getListConfig(static::KEY_VALUE_LIST);
         foreach ($valueList as $valueConfig) {
             $value = $this->dataProcessor->processValue($valueConfig, $this->context->copy());
             if ($value !== null) {

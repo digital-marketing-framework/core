@@ -33,7 +33,7 @@ trait PluginRegistryTrait
 
     public function getPlugin(string $keyword, string $interface, array $arguments = []): ?PluginInterface
     {
-        $class = $this->pluginClasses[$interface][$keyword] ?? null;
+        $class = $this->getPluginClass($interface, $keyword);
         $additionalArguments = $this->pluginAdditionalArguments[$interface][$keyword] ?? [];
 
         if ($class === null) {
@@ -60,10 +60,9 @@ trait PluginRegistryTrait
     public function getAllPlugins(string $interface, array $arguments = []): array
     {
         $result = [];
-        foreach (array_keys($this->pluginClasses[$interface] ?? []) as $keyword) {
+        foreach (array_keys($this->getAllPluginClasses($interface)) as $keyword) {
             $result[$keyword] = $this->getPlugin($keyword, $interface, $arguments);
         }
-        $this->sortPlugins($result);
         return $result;
     }
 
@@ -71,9 +70,16 @@ trait PluginRegistryTrait
     {
         $classes = $this->pluginClasses[$interface] ?? [];
         uasort($classes, function(string $a, string $b) {
-            return $a::WEIGHT <=> $b::WEIGHT;
+            return $a::getWeight() <=> $b::getWeight();
         });
         return $classes;
+    }
+
+    public function sortPlugins(array &$plugins): void
+    {
+        uasort($plugins, function(PluginInterface $a, PluginInterface $b) {
+            return $a::getWeight() <=> $b::getWeight();
+        });
     }
 
     public function getPluginClass(string $interface, string $keyword): ?string
@@ -83,7 +89,7 @@ trait PluginRegistryTrait
 
     public function registerPlugin(string $interface, string $class, array $additionalArguments = [], string $keyword = ''): void
     {
-        if (!$keyword || is_numeric($keyword)) {
+        if ($keyword === '' || is_numeric($keyword)) {
             $keyword = GeneralUtility::getPluginKeyword($class, $interface) ?: $keyword;
         }
         $this->interfaceValidation($interface, PluginInterface::class);
@@ -114,12 +120,5 @@ trait PluginRegistryTrait
             }
         }
         return $result;
-    }
-
-    public function sortPlugins(array &$plugins): void
-    {
-        uasort($plugins, function (PluginInterface $a, PluginInterface $b) {
-            return $a->getWeight() <=> $b->getWeight();
-        });
     }
 }

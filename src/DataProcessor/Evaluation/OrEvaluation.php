@@ -20,7 +20,7 @@ class OrEvaluation extends Evaluation
             return true;
         }
         $result = false;
-        $subEvaluations = $this->getConfig(static::KEY_EVALUATIONS);
+        $subEvaluations = $this->getListConfig(static::KEY_EVALUATIONS);
         foreach ($subEvaluations as $subEvaluationConfig) {
             if ($this->dataProcessor->processEvaluation($subEvaluationConfig, $this->context->copy())) {
                 $result = true;
