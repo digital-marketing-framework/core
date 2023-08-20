@@ -8,8 +8,10 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\S
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 
-class PrefixDataMapper extends WritingDataMapper
+class PrefixDataMapper extends DataMapper
 {
+    public const WEIGHT = 100;
+
     public const KEY_PREFIX = 'prefix';
     public const DEFAULT_PREFIX = '';
 
@@ -34,26 +36,36 @@ class PrefixDataMapper extends WritingDataMapper
         }
     }
 
-    protected function map(DataInterface $target): void
+    public function mapData(DataInterface $target): DataInterface
     {
         $prefix = $this->getConfig(static::KEY_PREFIX);
         $action = $this->getConfig(static::KEY_ACTION);
+
+        if ($prefix === '') {
+            return $target;
+        }
+
         $newData = [];
+        // remove all values first to avoid name conflicts
         foreach ($target as $fieldName => $value) {
-            // remove all values first to avoid name conflicts
             $newFieldName = $this->processFieldName($fieldName, $action, $prefix);
             $newData[$newFieldName] = $value;
             unset($target[$fieldName]);
         }
+
+        // then add all values with updated prefix
         foreach ($newData as $fieldName => $value) {
             $this->addField($target, $fieldName, $value);
         }
+
+        return $target;
     }
 
     public static function getSchema(): SchemaInterface
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
+        $schema->getRenderingDefinition()->setLabel('Field Name Prefix');
 
         $schema->addProperty(static::KEY_PREFIX, new StringSchema(static::DEFAULT_PREFIX));
 
@@ -62,9 +74,6 @@ class PrefixDataMapper extends WritingDataMapper
         $action->getAllowedValues()->addValue(static::ACTION_REMOVE);
         $action->getRenderingDefinition()->setFormat('select');
         $schema->addProperty(static::KEY_ACTION, $action);
-
-        // we are overwriting all fields, so there is no point in having the overwrite option
-        $schema->removeProperty(static::KEY_OVERWRITE);
 
         return $schema;
     }

@@ -3,10 +3,15 @@
 namespace DigitalMarketingFramework\Core\DataProcessor;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValueSource;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
@@ -28,19 +33,6 @@ class DataProcessor extends Plugin implements DataProcessorInterface
     public function __construct(
         protected RegistryInterface $registry
     ) {
-    }
-
-    protected function getType(array $config): string
-    {
-        if (!isset($config[static::KEY_TYPE])) {
-            throw new DigitalMarketingFrameworkException('No type given.');
-        }
-        return $config[static::KEY_TYPE];
-    }
-
-    protected function getConfig(array $config, string $keyword): array
-    {
-        return $config[static::KEY_CONFIG][$keyword] ?? [];
     }
 
     public function createContext(DataInterface $data, ConfigurationInterface $configuration): DataProcessorContextInterface
@@ -95,7 +87,10 @@ class DataProcessor extends Plugin implements DataProcessorInterface
 
     public function processComparison(array $config, DataProcessorContextInterface $context): bool
     {
-        $keyword = $this->getType($config);
+        $keyword = $config[Comparison::KEY_OPERATION] ?? null;
+        if ($keyword === null) {
+            throw new DigitalMarketingFrameworkException('no comparison operation given');
+        }
         $comparison = $this->registry->getComparison($keyword, $config, $context);
         if ($comparison === null) {
             throw new DigitalMarketingFrameworkException(sprintf('Comparison "%s" not found.', $keyword));
@@ -105,8 +100,8 @@ class DataProcessor extends Plugin implements DataProcessorInterface
 
     public function processEvaluation(array $config, DataProcessorContextInterface $context): bool
     {
-        $keyword = $this->getType($config);
-        $evaluationConfig = $this->getConfig($config, $keyword);
+        $keyword = SwitchSchema::getSwitchType($config);
+        $evaluationConfig = SwitchSchema::getSwitchConfiguration($config);
         $evaluation = $this->registry->getEvaluation($keyword, $evaluationConfig, $context);
         if ($evaluation === null) {
             throw new DigitalMarketingFrameworkException(sprintf('Evaluation "%s" not found.', $keyword));
@@ -118,9 +113,7 @@ class DataProcessor extends Plugin implements DataProcessorInterface
     {
         $context = $this->createContext($data, $configuration);
         $target = new Data();
-        foreach ($config as $dataMapperSwtichConfig) {
-            $keyword = SwitchSchema::getSwitchType($dataMapperSwtichConfig);
-            $dataMapperConfig = SwitchSchema::getSwitchConfiguration($dataMapperSwtichConfig);
+        foreach ($config as $keyword => $dataMapperConfig) {
             $dataMapper = $this->registry->getDataMapper($keyword, $dataMapperConfig, $context);
             if ($dataMapper === null) {
                 throw new DigitalMarketingFrameworkException(sprintf('DataMapper "%s" not found.', $keyword));
@@ -130,44 +123,73 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         return $target;
     }
 
-    public static function getDefaultValueSourceConfiguration(string $class = ConstantValueSource::class, ?string $keyword = null, ?array $config = null): array
+    public static function dataMapperSchemaDefaultValuePassthroughFields(array $dataMapperConfig = []): array
     {
-        if ($keyword === null) {
-            $keyword = GeneralUtility::getPluginKeyword($class, ValueSourceInterface::class);
-        }
+        $keyword = GeneralUtility::getPluginKeyword(PassthroughFieldsDataMapper::class, DataMapperInterface::class);
+        $dataMapperConfig[$keyword] = [
+            PassthroughFieldsDataMapper::KEY_ENABLED => true,
+        ];
+        return $dataMapperConfig;
+    }
+
+    public static function dataMapperSchemaDefaultValueFieldMap(array $fields, array $dataMapperConfig = []): array
+    {
+        $keyword = GeneralUtility::getPluginKeyword(FieldMapDataMapper::class, DataMapperInterface::class);
+        $dataMapperConfig[$keyword] = [
+            FieldMapDataMapper::KEY_FIELDS => $fields,
+        ];
+        return $dataMapperConfig;
+    }
+
+    public static function valueSchemaDefaultValueField(string $fieldName): array
+    {
+        $keyword = GeneralUtility::getPluginKeyword(FieldValueSource::class, ValueSourceInterface::class);
         return [
-            static::KEY_TYPE => $keyword,
-            static::KEY_CONFIG => [
-                $keyword => $config ?? $class::getDefaultConfiguration(),
+            static::KEY_DATA => [
+                SwitchSchema::KEY_TYPE => $keyword,
+                SwitchSchema::KEY_CONFIG => [
+                    $keyword => [
+                        FieldValueSource::KEY_FIELD_NAME => $fieldName,
+                    ],
+                ],
             ],
         ];
     }
 
-    public static function getDefaultValueConfiguration(string $sourceClass = ConstantValueSource::class, ?string $sourceKeyword = null, ?array $sourceConfig = null): array
+    public static function valueSchemaDefaultValueConstant(string $constantValue): array
     {
+        $keyword = GeneralUtility::getPluginKeyword(ConstantValueSource::class, ValueSourceInterface::class);
         return [
-            static::KEY_DATA => static::getDefaultValueSourceConfiguration($sourceClass, $sourceKeyword, $sourceConfig),
-            static::KEY_MODIFIERS => [],
+            static::KEY_DATA => [
+                SwitchSchema::KEY_TYPE => $keyword,
+                SwitchSchema::KEY_CONFIG => [
+                    $keyword => [
+                        ConstantValueSource::KEY_VALUE => $constantValue,
+                    ],
+                ],
+            ],
         ];
     }
 
-    public static function getDefaultEvaluationConfiguration(bool $true = true): array
+    public static function valueSchemaDefaultValueFieldCollector(): array
     {
-        $keyword = $true ? 'true' : 'false';
+        $keyword = GeneralUtility::getPluginKeyword(FieldCollectorValueSource::class, ValueSourceInterface::class);
         return [
-            static::KEY_TYPE => $keyword,
-            static::KEY_CONFIG => [
-                $keyword => $true
-                    ? TrueEvaluation::getDefaultConfiguration()
-                    : FalseEvaluation::getDefaultConfiguration(),
-            ]
-        ];
-    }
-
-    public static function getDefaultDataMapperConfiguration(string $keyword = 'passthroughFields', string $class = PassthroughFieldsDataMapper::class): array
-    {
-        return [
-            $keyword => $class::getDefaultConfiguration(true),
+            static::KEY_DATA => [
+                SwitchSchema::KEY_TYPE => $keyword,
+                SwitchSchema::KEY_CONFIG => [
+                    $keyword => [
+                        // TODO setting this variable to its default value is currently necessary, just so that the array is not empty.
+                        //      empty arrays in schema default values are currently not processed before translated to YAML or JSON,
+                        //      so this config as empty array would become "[]" instead of "{}".
+                        //      the big challenge is that the default value is part of the schema,
+                        //      not part of an actual configuration, which does get processed correctly.
+                        //      we might need an equivalent of Schema::preSaveDataTransform() for schema defaults
+                        //      preSaveSchemaDefaultDataTransform()?
+                        FieldCollectorValueSource::KEY_UNPROCESSED_ONLY => FieldCollectorValueSource::DEFAULT_UNPROCESSED_ONLY,
+                    ],
+                ],
+            ],
         ];
     }
 }

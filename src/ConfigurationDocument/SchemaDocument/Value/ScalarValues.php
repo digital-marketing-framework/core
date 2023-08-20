@@ -35,12 +35,12 @@ class ScalarValues
         $this->values['sets'][] = $name;
     }
 
-    public function addReference(string $path, string $type = self::REFERENCE_TYPE_KEY, string $labelPath = ''): void
+    public function addReference(string $path, string $type = self::REFERENCE_TYPE_KEY, string $label = ''): void
     {
         $this->values['references'][] = [
             'type' => $type,
             'path' => $path,
-            'labelPath' => $labelPath,
+            'label' => $label,
         ];
     }
 

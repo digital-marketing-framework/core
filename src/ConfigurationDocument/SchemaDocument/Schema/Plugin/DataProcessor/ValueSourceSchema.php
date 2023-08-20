@@ -12,6 +12,7 @@ class ValueSourceSchema extends SwitchSchema
     {
         parent::__construct('valueSource', $defaultValue);
         $this->getRenderingDefinition()->setNavigationItem(false);
+        $this->getRenderingDefinition()->setSkipHeader(true);
     }
 
     public function addModifiableKeyword(string $keyword): void

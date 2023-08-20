@@ -2,38 +2,29 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorPlugin;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 abstract class DataMapper extends DataProcessorPlugin implements DataMapperInterface
 {
+    abstract public function mapData(DataInterface $target): DataInterface;
 
-    public const KEY_ENABLED = 'enabled';
-    public const DEFAULT_ENABLED = false;
-
-    protected function proceed(): bool
+    protected function addField(DataInterface $data, string $fieldName, string|null|ValueInterface $value, bool $overwrite = false): bool
     {
-        return $this->getConfig(static::KEY_ENABLED);
-    }
-
-    abstract protected function map(DataInterface $target): void;
-
-    public function mapData(DataInterface $target): DataInterface
-    {
-        if ($this->proceed()) {
-            $this->map($target);
+        if ($value !== null && ($overwrite || $data->fieldEmpty($fieldName))) {
+            $data[$fieldName] = $value;
+            return true;
         }
-        return $target;
+        return false;
     }
 
     public static function getSchema(): SchemaInterface
     {
         $schema = new ContainerSchema();
         $schema->getRenderingDefinition()->setNavigationItem(false);
-        $schema->addProperty(static::KEY_ENABLED, new BooleanSchema(false));
         return $schema;
     }
 }

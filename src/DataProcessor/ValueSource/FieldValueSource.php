@@ -28,7 +28,11 @@ class FieldValueSource extends ValueSource
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_FIELD_NAME, new StringSchema());
+
+        $fieldName = new StringSchema();
+        $fieldName->getRenderingDefinition()->setLabel('Source Field Name');
+        $schema->addProperty(static::KEY_FIELD_NAME, $fieldName);
+
         return $schema;
     }
 }

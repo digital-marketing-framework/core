@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
-// import { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import { watch } from 'vue';
 import { cloneValue, mergeValue, valuesEqual, EVENT_GET_VALUES } from '../composables/valueHelper';
 import { EVENT_CONDITION_EVALUATION } from '../composables/conditionHelper';
 import { rawDataParse, rawDataDump } from '../composables/rawValueHelper';
 import { ListUtility } from '../composables/listValueHelper';
 import { MapUtility } from '../composables/mapValueHelper';
+
+const UUID_PLACEHOLDER = 'NEW';
 
 const NATIVE_SCHEMA_TYPES = ['SWITCH', 'CONTAINER', 'MAP', 'LIST', 'STRING', 'INTEGER', 'BOOLEAN'];
 
@@ -100,20 +102,11 @@ export const useDmfStore = defineStore('dmf', {
       this.unsetWarning(WARNING_INCLUDES_CHANGED);
       this.writeMessage('Includes updated successfully!');
     },
-    // async triggerRerender() {
-    //   // funny things I do that weirdly seem to help in some situations
-    //   // to update all components when the state is changing
-    //   window.dmfUpdateFunctionFwegwWfwegwFG = window.dmfUpdateFunctionFwegwWfwegwFG || function() {};
-    //   window.dmfUpdateFunctionFwegwWfwegwFG(this.$forceUpdate);
-    //   try {
-    //     this.$forceUpdate();
-    //   } catch(e) {
-    //     // nothing to do here
-    //   }
-    //   // this.isOpen = false;
-    //   // await nextTick();
-    //   // this.isOpen = true;
-    // },
+    async triggerRerender() {
+      this.isOpen = false;
+      await nextTick();
+      this.isOpen = true;
+    },
     _updateParentValue(path, currentPath) {
       const parentPath = path + '/..';
       const parentValue = this.getValue(parentPath, currentPath);
@@ -224,20 +217,24 @@ export const useDmfStore = defineStore('dmf', {
       const container = this.getValue(path, currentPath, true);
       if (schema.type === 'LIST') {
         const defaultValue = this.getDefaultValue(
-          'NEW/' + ListUtility.KEY_VALUE,
+          UUID_PLACEHOLDER + '/' + ListUtility.KEY_VALUE,
           absolutePath,
           true
         );
         ListUtility.append(container, defaultValue);
       } else if (schema.type === 'MAP') {
         const defaultValue = this.getDefaultValue(
-          'NEW/' + MapUtility.KEY_VALUE,
+          UUID_PLACEHOLDER + '/' + MapUtility.KEY_VALUE,
           absolutePath,
           true
         );
-        const defaultKey = this.getDefaultValue('NEW/' + MapUtility.KEY_KEY, absolutePath);
+        const defaultKey = this.getDefaultValue(
+          UUID_PLACEHOLDER + '/' + MapUtility.KEY_KEY,
+          absolutePath
+        );
         MapUtility.append(container, defaultKey, defaultValue);
       }
+      this.expandContainer(path, currentPath);
     },
     removeValue(path, currentPath) {
       if (!this.isDynamicChild(path, currentPath)) {
@@ -496,9 +493,21 @@ export const useDmfStore = defineStore('dmf', {
       delete this.rawValues[absolutePath];
       this.rawViewPaths[absolutePath] = !this.rawViewPaths[absolutePath];
     },
-    toggleContainerState(path, currentPath) {
+    expandContainer(path, currentPath) {
+      // TODO a changed container state is not taken into account immediately
+      //      it is only read when the component is re-rendered
+      //      that is also why the opening animation is missing
+      //      how to open the Disclosure thingy properly?
+      this.setContainerState(path, currentPath, true);
+      this.triggerRerender();
+    },
+    setContainerState(path, currentPath, open) {
       const absolutePath = this.getAbsolutePath(path, currentPath);
-      this.collapsedContainerPaths[absolutePath] = !this.collapsedContainerPaths[absolutePath];
+      this.collapsedContainerPaths[absolutePath] = open;
+    },
+    toggleContainerState(path, currentPath) {
+      const open = this.getContainerState(path, currentPath);
+      this.setContainerState(path, currentPath, !open);
     },
     toggleContainerNavigationState(path, currentPath) {
       const absolutePath = this.getAbsolutePath(path, currentPath);
@@ -807,12 +816,16 @@ export const useDmfStore = defineStore('dmf', {
         );
     },
     _getDefaultValue() {
-      return (schema, path) => {
+      return (schema, path, staticDefault) => {
         schema = this.resolveSchema(schema);
 
-        let staticDefault = null;
-        if (typeof schema.default !== 'undefined') {
-          staticDefault = schema.default;
+        if (typeof staticDefault === 'undefined') {
+          staticDefault = null;
+        }
+        if (staticDefault === null) {
+          if (typeof schema.default !== 'undefined') {
+            staticDefault = cloneValue(schema.default);
+          }
         }
         if (staticDefault === null) {
           const firstAllowedValue = this._getFirstAllowedValue(schema, path);
@@ -832,9 +845,25 @@ export const useDmfStore = defineStore('dmf', {
             if (staticDefault === null) {
               return {};
             }
+            let valueSchema = null;
+            schema.itemTemplate.values.forEach((itemSubSchema) => {
+              if (itemSubSchema.key === ListUtility.KEY_VALUE) {
+                valueSchema = itemSubSchema;
+              }
+            });
+            if (valueSchema === null) {
+              throw new Error('no list item value schema found');
+            }
             const list = {};
             for (let index in staticDefault) {
-              ListUtility.append(list, staticDefault[index]);
+              ListUtility.append(
+                list,
+                this._getDefaultValue(
+                  valueSchema,
+                  this.getAbsolutePath(UUID_PLACEHOLDER + '/' + ListUtility.KEY_VALUE, path),
+                  staticDefault[index]
+                )
+              );
             }
             return list;
           }
@@ -842,30 +871,48 @@ export const useDmfStore = defineStore('dmf', {
             if (staticDefault === null) {
               return {};
             }
+            let valueSchema = null;
+            schema.itemTemplate.values.forEach((itemSubSchema) => {
+              if (itemSubSchema.key === MapUtility.KEY_VALUE) {
+                valueSchema = itemSubSchema;
+              }
+            });
+            if (valueSchema === null) {
+              throw new Error('no map item value schema found');
+            }
             const map = {};
             for (let key in staticDefault) {
-              MapUtility.append(map, key, staticDefault[key]);
+              MapUtility.append(
+                map,
+                key,
+                this._getDefaultValue(
+                  valueSchema,
+                  this.getAbsolutePath(UUID_PLACEHOLDER + '/' + MapUtility.KEY_VALUE, path),
+                  staticDefault[key]
+                )
+              );
             }
             return map;
           }
           case 'CONTAINER': {
+            let defaultValue = {};
             if (staticDefault !== null) {
-              return staticDefault;
+              defaultValue = staticDefault;
             }
-            const defaultValue = {};
             schema.values.forEach((subSchema) => {
               defaultValue[subSchema.key] = this._getDefaultValue(
                 subSchema,
-                this.getAbsolutePath(subSchema.key, path)
+                this.getAbsolutePath(subSchema.key, path),
+                defaultValue[subSchema.key]
               );
             });
             return defaultValue;
           }
           case 'SWITCH': {
+            let defaultValue = {};
             if (staticDefault !== null) {
-              return staticDefault;
+              defaultValue = staticDefault;
             }
-            const defaultValue = {};
             let defaultType = null;
             let configSchema = null;
             schema.values.forEach((subSchema) => {
@@ -877,7 +924,8 @@ export const useDmfStore = defineStore('dmf', {
                 case 'type': {
                   defaultType = this._getDefaultValue(
                     subSchema,
-                    this.getAbsolutePath('type', path)
+                    this.getAbsolutePath('type', path),
+                    defaultValue.type
                   );
                   defaultValue.type = defaultType;
                   break;
@@ -885,7 +933,8 @@ export const useDmfStore = defineStore('dmf', {
                 default: {
                   defaultValue[subSchema.key] = this._getDefaultValue(
                     subSchema,
-                    this.getAbsolutePath(subSchema.key, path)
+                    this.getAbsolutePath(subSchema.key, path),
+                    defaultValue[subSchema.key]
                   );
                   break;
                 }
@@ -897,12 +946,13 @@ export const useDmfStore = defineStore('dmf', {
             if (configSchema === null) {
               throw new Error('no "config" property found in switch schema');
             }
-            defaultValue.config = {};
+            defaultValue.config = defaultValue.config || {};
             configSchema.values.forEach((subSchema) => {
               if (subSchema.key === defaultType) {
                 defaultValue.config[defaultType] = this._getDefaultValue(
                   subSchema,
-                  this.getAbsolutePath('config/' + defaultType, path)
+                  this.getAbsolutePath('config/' + defaultType, path),
+                  defaultValue.config[defaultType]
                 );
               }
             });

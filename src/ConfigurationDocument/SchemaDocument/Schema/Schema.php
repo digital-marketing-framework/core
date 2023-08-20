@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\AndCondition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\Condition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\NotEmptyCondition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinition;

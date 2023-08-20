@@ -8,8 +8,9 @@ class CustomSchema extends Schema
 {
     public function __construct(
         protected string $type,
+        mixed $defaultValue = null
     ) {
-        parent::__construct();
+        parent::__construct($defaultValue);
     }
 
     public function getType(): string

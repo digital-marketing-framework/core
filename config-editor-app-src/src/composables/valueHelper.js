@@ -117,9 +117,9 @@ document.addEventListener(EVENT_GET_VALUES, (e) => {
  *   type: 'references',
  *   currentPath: '/some/path',
  *   config: [
- *     '/foo/bar',
- *     '/foo/* /bar',
- *     '../foo/bar/*'
+ *     {path: '/foo/bar', label:'foo-bar'},
+ *     {'/foo/* /bar'},
+ *     {'../foo/bar/*', label:'{baz}'}
  *   ]
  * }
  */
@@ -132,20 +132,17 @@ document.addEventListener(EVENT_GET_VALUES, (e) => {
   const add = e.detail.add;
   const currentPath = e.detail.currentPath;
   config.forEach((reference) => {
-    const labelPathPostfix = reference.labelPath ? '/' + reference.labelPath : '';
     const paths = store.getAllPaths(reference.path, currentPath);
     paths.forEach((path) => {
       switch (reference.type) {
         case 'key': {
           const value = store.getLeafKey(path);
-          const label = labelPathPostfix
-            ? store._prettifyLabel(store.getValue(path + labelPathPostfix))
-            : value;
+          const label = reference.label ? store._processLabel(reference.label, path) : value;
           add(value, label);
           break;
         }
         case 'value': {
-          add(store.getValue(path)); // TODO find label, may be in suggested or allowed values
+          add(store.getValue(path));
           break;
         }
         default: {
