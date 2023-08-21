@@ -6,9 +6,11 @@ use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 class ListUtility extends AbstractListUtility
 {
-    public static function flatten(array $list): array
+    public static function flatten(array $list, bool $sort = true): array
     {
-        $list = static::sort($list);
+        if ($sort) {
+            $list = static::sort($list);
+        }
         $result = [];
         foreach ($list as $item) {
             $result[] = $item[static::KEY_VALUE];

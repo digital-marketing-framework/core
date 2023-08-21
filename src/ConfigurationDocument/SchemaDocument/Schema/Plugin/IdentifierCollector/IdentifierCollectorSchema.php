@@ -9,6 +9,7 @@ class IdentifierCollectorSchema extends ContainerSchema
 {
     public function addItem(string $keyword, SchemaInterface $schema): void
     {
+        $this->addValueToValueSet('identifierCollector/all', $keyword);
         $this->addProperty($keyword, $schema);
     }
 }

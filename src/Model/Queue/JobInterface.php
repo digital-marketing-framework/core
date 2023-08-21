@@ -6,8 +6,8 @@ use DateTime;
 
 interface JobInterface
 {
-    public function getId(): int;
-    public function setId(int $id): void;
+    public function getRouteId(): string;
+    public function setRouteId(string $routeId): void;
 
     public function getCreated(): DateTime;
     public function setCreated(DateTime $created): void;

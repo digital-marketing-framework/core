@@ -7,7 +7,8 @@ use DigitalMarketingFramework\Core\Queue\QueueInterface;
 
 class Job implements JobInterface
 {
-    protected int $id;
+    protected string $routeId;
+
     public function __construct(
         protected DateTime $created = new DateTime(),
         protected DateTime $changed = new DateTime(),
@@ -20,14 +21,14 @@ class Job implements JobInterface
     ) {
     }
 
-    public function getId(): int
+    public function getRouteId(): string
     {
-        return $this->id;
+        return $this->routeId;
     }
 
-    public function setId(int $id): void
+    public function setRouteId(string $routeId): void
     {
-        $this->id = $id;
+        $this->routeId = $routeId;
     }
 
     public function getCreated(): DateTime

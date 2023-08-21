@@ -13,9 +13,11 @@ class MapUtility extends AbstractListUtility
         return $item[static::KEY_KEY];
     }
 
-    public static function flatten(array $list): array
+    public static function flatten(array $list, bool $sort = true): array
     {
-        $list = static::sort($list);
+        if ($sort) {
+            $list = static::sort($list);
+        }
         $result = [];
         foreach ($list as $item) {
             $result[$item[static::KEY_KEY]] = $item[static::KEY_VALUE];
