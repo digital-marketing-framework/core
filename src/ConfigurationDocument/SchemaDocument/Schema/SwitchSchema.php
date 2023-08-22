@@ -34,6 +34,8 @@ class SwitchSchema extends ContainerSchema
         $this->typeSchema->getAllowedValues()->addValueSet($this->switchName . '/all');
 
         $this->configSchema = new ContainerSchema();
+        $this->configSchema->getRenderingDefinition()->setSkipInNavigation(true);
+
         $this->addProperty(static::KEY_TYPE, $this->typeSchema);
         $this->addProperty(static::KEY_CONFIG, $this->configSchema);
     }
