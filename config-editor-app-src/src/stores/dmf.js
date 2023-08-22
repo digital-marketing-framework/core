@@ -412,7 +412,7 @@ export const useDmfStore = defineStore('dmf', {
     _clearIssues(path, currentPath) {
       const absolutePath = this.getAbsolutePath(path, currentPath);
       Object.keys(this.issues).forEach((key) => {
-        if (absolutePath.startsWith(key)) {
+        if (key.startsWith(absolutePath)) {
           delete this.issues[key];
         }
       });
@@ -1460,11 +1460,20 @@ export const useDmfStore = defineStore('dmf', {
     },
     getClosestSelectablePath() {
       return (path, currentPath) => {
-        let possiblePath = this.getAbsolutePath(path, currentPath);
-        while (!this.isRoot(possiblePath) && !this.isPathSelectable(possiblePath)) {
-          possiblePath = this.getAbsolutePath('..', possiblePath);
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        const pathParts = absolutePath === '/' ? [] : absolutePath.split('/');
+        let resultPath = '/';
+        let nextPath = '/';
+        while (pathParts.length > 0) {
+          nextPath = this.getAbsolutePath(pathParts.shift(), nextPath);
+          if (!this.isNavigationItem(nextPath)) {
+            break;
+          }
+          if (!this.skipInNavigation(nextPath)) {
+            resultPath = nextPath;
+          }
         }
-        return possiblePath;
+        return resultPath;
       };
     },
     getItem() {
