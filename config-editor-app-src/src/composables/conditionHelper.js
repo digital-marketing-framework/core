@@ -30,6 +30,31 @@ document.addEventListener(EVENT_CONDITION_EVALUATION, (e) => {
  *   store: STORE_OBJECT,
  *   resolve: RESOLVE_FUNCTION,
  *   currentPath: '/some/path',
+ *   type: 'empty',
+ *   config: {
+ *     'path': '/foo/bar'
+ *   }
+ * }
+ */
+document.addEventListener(EVENT_CONDITION_EVALUATION, (e) => {
+  if (e.detail.type !== 'empty') {
+    return;
+  }
+  const store = e.detail.store;
+  const resolve = e.detail.resolve;
+  const currentPath = e.detail.currentPath;
+  const config = e.detail.config;
+  const value = store.getValue(config.path, currentPath);
+  const result = value === '';
+  resolve(result);
+});
+
+/**
+ * example detail object:
+ * {
+ *   store: STORE_OBJECT,
+ *   resolve: RESOLVE_FUNCTION,
+ *   currentPath: '/some/path',
  *   type: 'equals',
  *   config: {
  *     'path': '/foo/bar',
@@ -102,7 +127,8 @@ document.addEventListener(EVENT_CONDITION_EVALUATION, (e) => {
   const resolve = e.detail.resolve;
   const currentPath = e.detail.currentPath;
   const config = e.detail.config;
-  resolve(!store.evaluateCondition(config, currentPath));
+  const result = store.evaluateCondition(config, currentPath);
+  resolve(!result);
 });
 
 /**
@@ -161,8 +187,44 @@ document.addEventListener(EVENT_CONDITION_EVALUATION, (e) => {
   const config = e.detail.config;
   let result = false;
   for (let index = 0; index < config.length; index++) {
-    if (!store.evaluateCondition(config[index], currentPath)) {
+    if (store.evaluateCondition(config[index], currentPath)) {
       result = true;
+      break;
+    }
+  }
+  resolve(result);
+});
+
+/**
+ * example detail object (space between * and / is necessary to not close the block comment and should be ignored):
+ * {
+ *   store: STORE_OBJECT,
+ *   resolve: RESOLVE_FUNCTION,
+ *   currentPath: '/some/path',
+ *   type: 'unique',
+ *   config: {
+ *     valuePath: 'foo',
+ *     pathPattern: '../* /foo',
+ *   }
+ * }
+ */
+document.addEventListener(EVENT_CONDITION_EVALUATION, (e) => {
+  if (e.detail.type !== 'unique') {
+    return;
+  }
+  const store = e.detail.store;
+  const resolve = e.detail.resolve;
+  const currentPath = e.detail.currentPath;
+  const config = e.detail.config;
+  const valuePath = store.getAbsolutePath(config.valuePath, currentPath);
+  const value = store.getValue(valuePath);
+  const pathPattern = config.pathPattern;
+  let paths = store.getAllPaths(pathPattern, currentPath);
+  let result = true;
+  for (let index = 0; index < paths.length; index++) {
+    const path = paths[index];
+    if (path !== valuePath && store.getValue(path) === value) {
+      result = false;
       break;
     }
   }

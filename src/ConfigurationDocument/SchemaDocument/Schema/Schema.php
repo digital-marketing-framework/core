@@ -22,6 +22,8 @@ abstract class Schema implements SchemaInterface
     /** @var array<array{condition:Condition,message:string}> $validations */
     protected array $validations = [];
 
+    protected bool $required = false;
+
     public function __construct(
         protected mixed $defaultValue = null,
     ) {
@@ -77,6 +79,9 @@ abstract class Schema implements SchemaInterface
         $config = [
             'default' => $this->defaultValue,
         ];
+        if ($this->required) {
+            $config['required'] = true;
+        }
         if (count($this->strictValidations) > 0) {
             $config['strictValidations'] = array_map(function(array $evaluation) {
                 return [
@@ -125,6 +130,7 @@ abstract class Schema implements SchemaInterface
     {
         // required fields should only be enforced in final documents, not in parent documents
         $this->addSoftValidation(new NotEmptyCondition(), $message);
+        $this->required = true;
     }
 
     public function addValidation(Condition $condition, string $message, bool $strict = true): void
