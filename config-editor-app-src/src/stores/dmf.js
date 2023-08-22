@@ -264,7 +264,8 @@ export const useDmfStore = defineStore('dmf', {
       // this.triggerRerender();
     },
     selectPath(path, currentPath) {
-      this.selectedPath = this.getAbsolutePath(path, currentPath);
+      this.selectedPath = this.getClosestSelectablePath(path, currentPath);
+      // TODO if requested path is not the selected path, scroll to the corresponding field. how?
       // this.triggerRerender();
     },
     selectParentPath() {
@@ -434,7 +435,14 @@ export const useDmfStore = defineStore('dmf', {
     updateValidationWarnings() {
       const issueKeys = Object.keys(this.issues);
       if (issueKeys.length > 0) {
-        this.setWarning(WARNING_DOCUMENT_INVALID, null, issueKeys[0]);
+        const issueKey = issueKeys[0];
+        this.setWarning(
+          WARNING_DOCUMENT_INVALID,
+          () => {
+            this.selectPath(issueKey);
+          },
+          '[' + this.getLabel(issueKey) + '] ' + this.issues[issueKey]
+        );
       } else {
         this.unsetWarning(WARNING_DOCUMENT_INVALID);
       }
@@ -1445,6 +1453,19 @@ export const useDmfStore = defineStore('dmf', {
     },
     getContainerUtility() {
       return (path, currentPath) => this._getContainerUtility(this.getSchema(path, currentPath));
+    },
+    isPathSelectable() {
+      return (path, currentPath) =>
+        this.isNavigationItem(path, currentPath) && !this.skipInNavigation(path, currentPath);
+    },
+    getClosestSelectablePath() {
+      return (path, currentPath) => {
+        let possiblePath = this.getAbsolutePath(path, currentPath);
+        while (!this.isRoot(possiblePath) && !this.isPathSelectable(possiblePath)) {
+          possiblePath = this.getAbsolutePath('..', possiblePath);
+        }
+        return possiblePath;
+      };
     },
     getItem() {
       return (path, currentPath) => {
