@@ -8,6 +8,10 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\Sc
 
 interface RenderingDefinitionInterface
 {
+    public const FORMAT_SELECT = 'select';
+
+    public const GROUP_SECONDARY = 'secondary';
+
     public function toArray(): ?array;
 
     public function setFormat(string $format): void;
@@ -15,6 +19,9 @@ interface RenderingDefinitionInterface
 
     public function setLabel(?string $label): void;
     public function getLabel(): ?string;
+
+    public function setGroup(string $group): void;
+    public function getGroup(): ?string;
 
     public function getVisibility(): AndCondition;
     public function addVisibilityCondition(Condition $condition): void;

@@ -1167,6 +1167,22 @@ export const useDmfStore = defineStore('dmf', {
         return childPaths;
       };
     },
+    getChildPathsGrouped() {
+      return (path, currentPath, absolute) => {
+        const absolutePath = this.getAbsolutePath(path, currentPath);
+        const childPaths = this.getChildPaths(path, currentPath, absolute);
+        const result = {};
+        childPaths.forEach((childPath) => {
+          const schema = this.getSchema(childPath, absolutePath, true);
+          const group = typeof schema.group !== 'undefined' ? schema.group : 'global';
+          if (typeof result[group] === 'undefined') {
+            result[group] = [];
+          }
+          result[group].push(childPath);
+        });
+        return result;
+      };
+    },
     _skipHeader() {
       return (schema) => {
         if (schema.skipHeader) {
@@ -1500,6 +1516,7 @@ export const useDmfStore = defineStore('dmf', {
           isDynamicContainer: this.isDynamicContainerType(schema.type),
           isDynamicItem: this.isDynamicChild(path, currentPath),
           childPaths: this.getChildPaths(path, currentPath),
+          groupedChildPaths: this.getChildPathsGrouped(path, currentPath),
           navigationChildPaths: this.getNavigationChildPaths(path, currentPath),
           label: this.getLabel(path, currentPath),
           hasIssues: this.hasIssues(path, currentPath),

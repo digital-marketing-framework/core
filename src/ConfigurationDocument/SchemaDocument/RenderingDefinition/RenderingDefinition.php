@@ -16,6 +16,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
     protected ?bool $isNavigationItem = null;
     protected ?bool $skipInNavigation = null;
     protected ?bool $skipHeader = null;
+    protected ?string $group = null;
     protected array $triggers = [];
 
     public function __construct()
@@ -50,6 +51,9 @@ class RenderingDefinition implements RenderingDefinitionInterface
         if (!empty($this->triggers)) {
             $render['triggers'] = $this->triggers;
         }
+        if ($this->group !== null) {
+            $render['group'] = $this->group;
+        }
         return !empty($render) ? $render : null;
     }
 
@@ -61,6 +65,16 @@ class RenderingDefinition implements RenderingDefinitionInterface
     public function getLabel(): ?string
     {
         return $this->label;
+    }
+
+    public function setGroup(string $group): void
+    {
+        $this->group = $group;
+    }
+
+    public function getGroup(): ?string
+    {
+        return $this->group;
     }
 
     public function addTrigger(string $triggerName): void
