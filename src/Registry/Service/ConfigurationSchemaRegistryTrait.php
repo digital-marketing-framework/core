@@ -13,7 +13,6 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\P
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
-use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 
 trait ConfigurationSchemaRegistryTrait

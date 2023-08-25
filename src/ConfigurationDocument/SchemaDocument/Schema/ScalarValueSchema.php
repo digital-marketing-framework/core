@@ -53,7 +53,8 @@ abstract class ScalarValueSchema extends Schema
         }
         $allowedValues = $this->allowedValues->getValues($schemaDocument);
         if (!empty($allowedValues)) {
-            return reset(array_keys($allowedValues));
+            $rawValues = array_keys($allowedValues);
+            return reset($rawValues);
         }
         return null;
     }

@@ -25,9 +25,7 @@ use DigitalMarketingFramework\Core\Utility\ListUtility;
 
 class DataProcessor extends Plugin implements DataProcessorInterface
 {
-    public const KEY_TYPE = 'type';
     public const KEY_DATA = 'data';
-    public const KEY_CONFIG = 'config';
     public const KEY_MODIFIERS = 'modifiers';
 
     public function __construct(
@@ -53,6 +51,7 @@ class DataProcessor extends Plugin implements DataProcessorInterface
 
     public function processValueModifiers(array $config, string|ValueInterface|null $value, DataProcessorContextInterface $context): string|ValueInterface|null
     {
+        $config = ListUtility::flatten($config);
         foreach ($config as $modifierSwitchConfig) {
             $keyword = SwitchSchema::getSwitchType($modifierSwitchConfig);
             $modifierConfig = SwitchSchema::getSwitchConfiguration($modifierSwitchConfig);
@@ -79,7 +78,6 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         if ($modifierConfig === null) {
             throw new DigitalMarketingFrameworkException('No data for value modifiers configuration found.');
         }
-        $modifierConfig = ListUtility::flatten($modifierConfig);
         $value = $this->processValueModifiers($modifierConfig, $value, $context);
 
         return $value;

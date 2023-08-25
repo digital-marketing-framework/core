@@ -16,11 +16,11 @@ class OrEvaluation extends Evaluation
 
     public function evaluate(): bool
     {
-        if (empty($this->configuration)) {
+        $subEvaluations = $this->getListConfig(static::KEY_EVALUATIONS);
+        if (empty($subEvaluations)) {
             return true;
         }
         $result = false;
-        $subEvaluations = $this->getListConfig(static::KEY_EVALUATIONS);
         foreach ($subEvaluations as $subEvaluationConfig) {
             if ($this->dataProcessor->processEvaluation($subEvaluationConfig, $this->context->copy())) {
                 $result = true;

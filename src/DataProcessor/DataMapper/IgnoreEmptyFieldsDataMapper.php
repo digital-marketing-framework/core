@@ -17,6 +17,9 @@ class IgnoreEmptyFieldsDataMapper extends DataMapper
 
     public function mapData(DataInterface $target): DataInterface
     {
+        if (!$this->getConfig(static::KEY_ENABLED)) {
+            return $target;
+        }
         $toDeleteList = [];
         foreach ($target as $fieldName => $value) {
             if (GeneralUtility::isEmpty($value)) {
