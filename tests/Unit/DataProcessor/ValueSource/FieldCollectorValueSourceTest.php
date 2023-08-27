@@ -14,6 +14,14 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     protected const KEYWORD = 'fieldCollector';
     protected const CLASS_NAME = FieldCollectorValueSource::class;
 
+    protected const DEFAULT_CONFIG = [
+        FieldCollectorValueSource::KEY_IGNORE_IF_EMPTY => FieldCollectorValueSource::DEFAULT_IGNORE_IF_EMPTY,
+        FieldCollectorValueSource::KEY_UNPROCESSED_ONLY => FieldCollectorValueSource::DEFAULT_UNPROCESSED_ONLY,
+        FieldCollectorValueSource::KEY_EXCLUDE => FieldCollectorValueSource::DEFAULT_EXCLUDE,
+        FieldCollectorValueSource::KEY_INCLUDE => FieldCollectorValueSource::DEFAULT_INCLUDE,
+        FieldCollectorValueSource::KEY_TEMPLATE => FieldCollectorValueSource::DEFAULT_TEMPLATE,
+    ];
+
     public function setUp(): void
     {
         parent::setUp();
@@ -29,7 +37,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
             FieldCollectorValueSource::KEY_IGNORE_IF_EMPTY => false,
         ];
     }
-    
+
     /** @test */
     public function noData(): void
     {
@@ -56,7 +64,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
             [['field2'], false, false, "field1 = value1\nfield2 = value2\nfield3 = value3\n"],
         ];
     }
-    
+
     /**
      * @dataProvider skipProcessedProvider
      * @test
@@ -73,7 +81,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         $output = $this->processValueSource($config);
         $this->assertEquals($expected, (string) $output);
     }
-    
+
     public function ignoreIfEmptyProvider(): array
     {
         return [

@@ -15,23 +15,99 @@ class AndEvaluationTest extends EvaluationTest
     {
         return [
             [true, []],
-            
-            [true, [$this->getEvaluationConfiguration([], 'true')]],
-            [false, [$this->getEvaluationConfiguration([], 'false')]],
 
-            [true, [$this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'true')]],
-            [false, [$this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'false')]],
-            [false, [$this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'true')]],
-            [false, [$this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'false')]],
+            [true, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id1', 10),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id1', 10),
+                ],
+            ]],
 
-            [false, [$this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'false')]],
-            [false, [$this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'true')]],
-            [false, [$this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'false')]],
-            [false, [$this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'true')]],
-            [false, [$this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'false')]],
-            [false, [$this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'false'), $this->getEvaluationConfiguration([], 'true')]],
-            [false, [$this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'false')]],
-            [true, [$this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'true'), $this->getEvaluationConfiguration([], 'true')]],
+            [true, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id2', 20),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id2', 20),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id2', 20),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id2', 20),
+                ],
+            ]],
+
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id3', 30),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id3', 30),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id3', 30),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id3', 30),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id3', 30),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id3', 30),
+                ],
+            ]],
+            [false, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'false'), 'id3', 30),
+                ],
+            ]],
+            [true, [
+                AndEvaluation::KEY_EVALUATIONS => [
+                    'id1' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id1', 10),
+                    'id2' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id2', 20),
+                    'id3' => $this->createListItem($this->getEvaluationConfiguration([], 'true'), 'id3', 30),
+                ],
+            ]],
         ];
     }
 

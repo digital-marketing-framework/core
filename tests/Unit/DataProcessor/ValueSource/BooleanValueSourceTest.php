@@ -11,6 +11,12 @@ class BooleanValueSourceTest extends ValueSourceTest
     protected const KEYWORD = 'boolean';
     protected const CLASS_NAME = BooleanValueSource::class;
 
+    protected const DEFAULT_CONFIG = [
+        BooleanValueSource::KEY_VALUE => BooleanValueSource::DEFAULT_VALUE,
+        BooleanValueSource::KEY_TRUE => BooleanValueSource::DEFAULT_TRUE,
+        BooleanValueSource::KEY_FALSE => BooleanValueSource::DEFAULT_FALSE,
+    ];
+
     /** @test */
     public function emptyConfigurationReturnsNull(): void
     {

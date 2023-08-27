@@ -19,9 +19,9 @@ class BooleanValue extends Value implements BooleanValueInterface
         return $this->value ? $this->true : $this->false;
     }
 
-    public function negated(): string
+    public function negated(): BooleanValueInterface
     {
-        return $this->value ? $this->false : $this->true;
+        return new BooleanValue(!$this->value, $this->true, $this->false);
     }
 
     public function getTrueValue(): string

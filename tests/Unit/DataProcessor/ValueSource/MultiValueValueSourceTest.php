@@ -15,7 +15,9 @@ class MultiValueValueSourceTest extends ValueSourceTest
     /** @test */
     public function emptyConfigurationReturnsEmptyMultiValue(): void
     {
-        $output = $this->processValueSource([]);
+        $output = $this->processValueSource([
+            MultiValueValueSource::KEY_VALUES => [],
+        ]);
         $this->assertMultiValue($output, static::MULTI_VALUE_CLASS_NAME);
         $this->assertMultiValueEmpty($output);
     }
@@ -82,9 +84,16 @@ class MultiValueValueSourceTest extends ValueSourceTest
      * @test
      * @dataProvider multiValueDataProvider
      */
-    public function multiValue(array $expectedResult, array $config, array $subResults): void
+    public function multiValue(array $expectedResult, array $subConfigurations, array $subResults): void
     {
-        $with = array_map(function(array $subConfigItem) { return [$subConfigItem]; }, $config);
+        $with = array_map(function(array $subConfigItem) { return [$subConfigItem]; }, $subConfigurations);
+        $listConfig = [];
+        foreach ($subConfigurations as $index => $subConfig) {
+            $listConfig[$index] = $this->createListItem($subConfig, $index, $index * 10);
+        }
+        $config = [
+            MultiValueValueSource::KEY_VALUES => $listConfig,
+        ];
         $this->dataProcessor->method('processValue')->withConsecutive(...$with)->willReturnOnConsecutiveCalls(...$subResults);
         $output = $this->processValueSource($config);
         $this->assertMultiValue($output, static::MULTI_VALUE_CLASS_NAME);

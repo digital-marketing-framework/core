@@ -17,7 +17,7 @@ class DefaultValueModifierTest extends ValueModifierTest
         [[],          'default_value_x', [DefaultValueModifier::KEY_VALUE => 'default_value_x']],
         [['value_y'], ['value_y'],       [DefaultValueModifier::KEY_VALUE => 'default_value_x']],
     ];
-    
+
     public function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;

@@ -13,10 +13,10 @@ class AndEvaluationTest extends EvaluationTest
     {
         return [
             [true, [], []],
-            
+
             [true, [['a' => 'b']], [true]],
             [false, [['a' => 'b']], [false]],
-            
+
             [true, [['a' => 'b'], ['c' => 'd']], [true, true]],
             [false, [['a' => 'b'], ['c' => 'd']], [true, false]],
             [false, [['a' => 'b'], ['c' => 'd']], [false, true]],
@@ -37,11 +37,19 @@ class AndEvaluationTest extends EvaluationTest
      * @test
      * @dataProvider andDataProvider
      */
-    public function and(bool $expectedResult, array $config, array $subResults): void
+    public function and(bool $expectedResult, array $subConfigList, array $subResults): void
     {
-        $with = array_map(function(array $subConfigItem) { return [$subConfigItem]; }, $config);
-        if (!empty($config)) {
-            $this->dataProcessor->expects($this->exactly(count($config)))->method('processEvaluation')->withConsecutive(...$with)->willReturn(...$subResults);
+        $with = array_map(function(array $subConfigItem) { return [$subConfigItem]; }, $subConfigList);
+        if (!empty($subConfigList)) {
+            $this->dataProcessor->expects($this->exactly(count($subConfigList)))->method('processEvaluation')->withConsecutive(...$with)->willReturn(...$subResults);
+        }
+        $config = [
+            AndEvaluation::KEY_EVALUATIONS => [],
+        ];
+        $id = 1;
+        foreach ($subConfigList as $subConfigItem) {
+            $config[AndEvaluation::KEY_EVALUATIONS]['id' . $id] = $this->createListItem($subConfigItem, 'id' . $id, $id * 10);
+            $id++;
         }
         $result = $this->processEvaluation($config);
         $this->assertEquals($expectedResult, $result);

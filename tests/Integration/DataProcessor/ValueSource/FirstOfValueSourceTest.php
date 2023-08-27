@@ -12,46 +12,56 @@ class FirstOfValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'firstOf';
 
-    /** @test */
-    public function emptyConfigurationLeadsToNullValue(): void
-    {
-        $output = $this->processValueSource($this->getValueSourceConfiguration([]));
-        $this->assertNull($output);
-    }
-
     public function firstOfDataProvider(): array
     {
         return [
             [
                 null,
                 [
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([], 'null'),
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id2', 20),
+                    ],
                 ],
             ],
             [
                 'foo',
                 [
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'),
-                    $this->getValueConfiguration([], 'null'),
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
+                        'id3' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id3', 30),
+                    ],
                 ],
             ],
             [
                 '',
                 [
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'),
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
+                        'id3' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
+                    ],
                 ],
             ],
             [
                 'a',
                 [
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'),
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
+                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
+                        'id3' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                    ],
+                ],
+            ],
+            [
+                'b',
+                [
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 20),
+                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 10),
+                        'id3' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                    ],
                 ],
             ],
         ];
@@ -63,7 +73,7 @@ class FirstOfValueSourceTest extends ValueSourceTest
      */
     public function firstOf(mixed $expectedResult, array $config): void
     {
-        
+
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
         $this->assertEquals($expectedResult, $output);
     }

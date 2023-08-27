@@ -11,6 +11,11 @@ class ConcatenationValueSourceTest extends ValueSourceTest
     protected const KEYWORD = 'concatenation';
     protected const CLASS_NAME = ConcatenationValueSource::class;
 
+    protected const DEFAULT_CONFIG = [
+        ConcatenationValueSource::KEY_GLUE => ConcatenationValueSource::DEFAULT_GLUE,
+        ConcatenationValueSource::KEY_VALUES => ConcatenationValueSource::DEFAULT_VALUES,
+    ];
+
     /** @test */
     public function emptyConfigurationLeadsToNullValue(): void
     {
@@ -24,7 +29,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $subConfig1 = ['configKey1' => 'configValue1'];
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $subConfig1,
+                $this->createListItem($subConfig1, 'id1', 10),
             ],
         ];
         $this->dataProcessor->method('processValue')->with($subConfig1)->willReturn(null);
@@ -38,7 +43,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $subConfig1 = ['configKey1' => 'configValue1'];
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $subConfig1,
+                $this->createListItem($subConfig1, 'id1', 10),
             ],
         ];
         $this->dataProcessor->method('processValue')->with($subConfig1)->willReturn('');
@@ -52,7 +57,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $subConfig1 = ['configKey1' => 'configValue1'];
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $subConfig1,
+                $this->createListItem($subConfig1, 'id1', 10),
             ],
         ];
         $this->dataProcessor->method('processValue')->with($subConfig1)->willReturn(new MultiValue(['foo','bar']));
@@ -69,8 +74,8 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $subConfig2 = ['configKey2' => 'configValue2'];
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $subConfig1,
-                $subConfig2,
+                $this->createListItem($subConfig1, 'id1', 10),
+                $this->createListItem($subConfig2, 'id2', 20),
             ],
         ];
         $this->dataProcessor->method('processValue')
@@ -87,8 +92,8 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $subConfig2 = ['configKey2' => 'configValue2'];
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $subConfig1,
-                $subConfig2,
+                $this->createListItem($subConfig1, 'id1', 10),
+                $this->createListItem($subConfig2, 'id2', 20),
             ],
         ];
         $this->dataProcessor->method('processValue')
@@ -105,8 +110,8 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $subConfig2 = ['configKey2' => 'configValue2'];
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $subConfig1,
-                $subConfig2,
+                $this->createListItem($subConfig1, 'id1', 10),
+                $this->createListItem($subConfig2, 'id2', 20),
             ],
             ConcatenationValueSource::KEY_GLUE => '-',
         ];

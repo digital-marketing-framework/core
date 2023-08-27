@@ -9,6 +9,10 @@ class JoinValueModifierTest extends ValueModifierTest
     protected const KEYWORD = 'join';
     protected const CLASS_NAME = JoinValueModifier::class;
 
+    protected const DEFAULT_CONFIG = [
+        JoinValueModifier::KEY_GLUE => JoinValueModifier::DEFAULT_GLUE,
+    ];
+
     public const MODIFY_TEST_CASES = [
         [null, null],
         ["", ""],
@@ -20,7 +24,7 @@ class JoinValueModifierTest extends ValueModifierTest
         [['a',['ba', 'bb'], 'c'], 'a,ba,bb,c'],
         [['a',['ba', 'bb'], 'c'], 'a;ba,bb;c', [JoinValueModifier::KEY_GLUE => ';']],
     ];
-    
+
     public function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;

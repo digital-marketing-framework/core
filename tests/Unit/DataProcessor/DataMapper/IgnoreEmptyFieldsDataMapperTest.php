@@ -10,6 +10,10 @@ class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
     protected const CLASS_NAME = IgnoreEmptyFieldsDataMapper::class;
     protected const KEYWORD = 'ignoreEmptyFields';
 
+    protected const DEFAULT_CONFIG = [
+        IgnoreEmptyFieldsDataMapper::KEY_ENABLED => IgnoreEmptyFieldsDataMapper::DEFAULT_ENABLED,
+    ];
+
     public function mapDataDataProvider(): array
     {
         return [
@@ -47,6 +51,18 @@ class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
                 [],
                 ['field2' => new MultiValue(['']), 'field3' => new MultiValue(['value2'])],
                 [],
+                ['field1' => new MultiValue(), 'field2' => new MultiValue(['']), 'field3' => new MultiValue(['value2'])],
+            ],
+            [
+                [],
+                ['field1' => '', 'field2' => 'value2'],
+                [IgnoreEmptyFieldsDataMapper::KEY_ENABLED => false],
+                ['field1' => '', 'field2' => 'value2'],
+            ],
+            [
+                [],
+                ['field1' => new MultiValue(), 'field2' => new MultiValue(['']), 'field3' => new MultiValue(['value2'])],
+                [IgnoreEmptyFieldsDataMapper::KEY_ENABLED => false],
                 ['field1' => new MultiValue(), 'field2' => new MultiValue(['']), 'field3' => new MultiValue(['value2'])],
             ],
         ];

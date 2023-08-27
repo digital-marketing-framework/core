@@ -29,33 +29,41 @@ class MultiValueValueSourceTest extends ValueSourceTest
             [
                 [],
                 [
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([], 'null'),
+                    MultiValueValueSource::KEY_VALUES => [
+                        'id1' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id2', 20),
+                        'id3' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id3', 30),
+                    ],
                 ],
             ],
             [
                 ['foo'],
                 [
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'),
-                    $this->getValueConfiguration([], 'null'),
+                    MultiValueValueSource::KEY_VALUES => [
+                        'id1' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
+                        'id3' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id3', 30),
+                    ],
                 ],
             ],
             [
                 ['', 'a'],
                 [
-                    $this->getValueConfiguration([], 'null'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'),
+                    MultiValueValueSource::KEY_VALUES => [
+                        'id1' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
+                        'id3' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
+                    ],
                 ],
             ],
             [
                 ['a', 'b', 'c'],
                 [
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'),
-                    $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'),
+                    MultiValueValueSource::KEY_VALUES => [
+                        'id1' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
+                        'id2' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
+                        'id3' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                    ],
                 ],
             ],
         ];

@@ -78,8 +78,14 @@ class EqualsComparisonTest extends ComparisonTest
      * @test
      * @dataProvider comparisonDataProvider
      */
-    public function equals(bool $expectedResult, array $firstOperand, mixed $firstOperandResult, ?array $secondOperand = null, mixed $secondOperandResult = null, ?string $anyAll = null): void
-    {
+    public function equals(
+        bool $expectedResult,
+        array $firstOperand,
+        mixed $firstOperandResult,
+        ?array $secondOperand = null,
+        mixed $secondOperandResult = null,
+        ?string $anyAll = null
+    ): void {
         $this->runComparisonTest($expectedResult, $firstOperand, $firstOperandResult, $secondOperand, $secondOperandResult, $anyAll);
     }
 }

@@ -9,16 +9,32 @@ class PassthroughFieldsDataMapperTest extends DataMapperTest
     protected const CLASS_NAME = PassthroughFieldsDataMapper::class;
     protected const KEYWORD = 'passthroughFields';
 
+    protected const DEFAULT_CONFIG = [
+        PassthroughFieldsDataMapper::KEY_ENABLED => PassthroughFieldsDataMapper::DEFAULT_ENABLED,
+    ];
+
     public function mapDataDataProvider(): array
     {
         return [
             [
                 [],
                 [],
+                [PassthroughFieldsDataMapper::KEY_ENABLED => true],
             ],
             [
                 ['field1' => 'value1', 'field2' => 'value2'],
                 ['field1' => 'value1', 'field2' => 'value2'],
+                [PassthroughFieldsDataMapper::KEY_ENABLED => true],
+            ],
+            [
+                [],
+                [],
+                [PassthroughFieldsDataMapper::KEY_ENABLED => false],
+            ],
+            [
+                ['field1' => 'value1', 'field2' => 'value2'],
+                [],
+                [PassthroughFieldsDataMapper::KEY_ENABLED => false],
             ],
         ];
     }

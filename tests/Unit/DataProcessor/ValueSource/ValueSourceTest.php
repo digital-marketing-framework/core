@@ -8,13 +8,19 @@ use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginT
 
 abstract class ValueSourceTest extends DataProcessorPluginTest
 {
+    protected const DEFAULT_CONFIG = [];
+
     protected ValueSourceInterface $subject;
 
-    protected function processValueSource(array $config): string|null|ValueInterface
+    protected function processValueSource(array $config, ?array $defaultConfig = null): string|null|ValueInterface
     {
+        if ($defaultConfig === null) {
+            $defaultConfig = static::DEFAULT_CONFIG;
+        }
         $class = static::CLASS_NAME;
         $this->subject = new $class(static::KEYWORD, $this->registry, $config, $this->getContext());
         $this->subject->setDataProcessor($this->dataProcessor);
+        $this->subject->setDefaultConfiguration($defaultConfig);
         return $this->subject->build();
     }
 }

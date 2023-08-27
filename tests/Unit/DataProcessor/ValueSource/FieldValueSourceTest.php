@@ -9,6 +9,10 @@ class FieldValueSourceTest extends ValueSourceTest
     protected const KEYWORD = 'field';
     protected const CLASS_NAME = FieldValueSource::class;
 
+    protected const DEFAULT_CONFIG = [
+        FieldValueSource::KEY_FIELD_NAME => FieldValueSource::DEFAULT_FIELD_NAME,
+    ];
+
     /** @test */
     public function emptyConfigurationThrowsException(): void
     {

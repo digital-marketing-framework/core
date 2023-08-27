@@ -12,16 +12,6 @@ class ConditionValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'condition';
 
-    /** @test */
-    public function emptyConfigurationThrowsException(): void
-    {
-        $this->data['field1'] = 'value1';
-        $this->data['field2'] = 'value2';
-        $config = $this->getValueSourceConfiguration([]);
-        $this->expectExceptionMessage('Condition value source - no condition given.');
-        $this->processValueSource($config);
-    }
-
     public function conditionValueSourceDataProvider(): array
     {
         return [

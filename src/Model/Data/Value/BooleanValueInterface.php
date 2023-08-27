@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
 interface BooleanValueInterface extends ValueInterface
 {
-    public function negated(): string;
+    public function negated(): BooleanValueInterface;
     public function getTrueValue(): string;
     public function setTrueValue(string $then): void;
     public function getFalseValue(): string;

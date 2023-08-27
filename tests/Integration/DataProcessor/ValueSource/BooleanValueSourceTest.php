@@ -14,13 +14,6 @@ class BooleanValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'boolean';
 
-    /** @test */
-    public function emptyConfigurationReturnsNull(): void
-    {
-        $output = $this->processValueSource($this->getValueSourceConfiguration([]));
-        $this->assertNull($output);
-    }
-
     /**
      * @return array<array<mixed>>
      */

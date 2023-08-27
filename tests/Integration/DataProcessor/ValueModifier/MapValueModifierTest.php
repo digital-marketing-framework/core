@@ -14,6 +14,6 @@ class MapValueModifierTest extends ValueModifierTest
 
     public function modifyProvider(): array
     {
-        return MapValueModifierUnitTest::MODIFY_TEST_CASES;
+        return MapValueModifierUnitTest::modifyTestCases();
     }
 }

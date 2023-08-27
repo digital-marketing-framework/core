@@ -77,10 +77,17 @@ class FirstOfValueSourceTest extends ValueSourceTest
      * @test
      * @dataProvider firstOfDataProvider
      */
-    public function firstOf(mixed $expectedResult, array $config, array $subResults): void
+    public function firstOf(mixed $expectedResult, array $subConfigurations, array $subResults): void
     {
-        $with = array_map(function(array $subConfigItem) { return [$subConfigItem]; }, $config);
+        $with = array_map(function(array $subConfigItem) { return [$subConfigItem]; }, $subConfigurations);
         $with = array_splice($with, 0, count($subResults));
+        $listConfig = [];
+        foreach ($subConfigurations as $index => $subConfig) {
+            $listConfig[$index] = $this->createListItem($subConfig, $index, $index * 10);
+        }
+        $config = [
+            FirstOfValueSource::KEY_VALUE_LIST => $listConfig,
+        ];
         $this->dataProcessor->method('processValue')->withConsecutive(...$with)->willReturnOnConsecutiveCalls(...$subResults);
         $output = $this->processValueSource($config);
         $this->assertEquals($expectedResult, $output);

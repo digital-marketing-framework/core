@@ -10,13 +10,19 @@ use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginT
 
 abstract class ValueModifierTest extends DataProcessorPluginTest
 {
+    protected const DEFAULT_CONFIG = [];
+
     protected ValueModifierInterface $subject;
 
-    protected function processValueModifier(array $config, string|null|ValueInterface $value): string|null|ValueInterface
+    protected function processValueModifier(array $config, string|null|ValueInterface $value, ?array $defaultConfig = null): string|null|ValueInterface
     {
+        if ($defaultConfig === null) {
+            $defaultConfig = static::DEFAULT_CONFIG;
+        }
         $class = static::CLASS_NAME;
         $this->subject = new $class(static::KEYWORD, $this->registry, $config, $this->getContext());
         $this->subject->setDataProcessor($this->dataProcessor);
+        $this->subject->setDefaultConfiguration($defaultConfig);
         return $this->subject->modify($value);
     }
     abstract public function modifyProvider(): array;

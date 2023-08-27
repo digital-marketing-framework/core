@@ -15,25 +15,19 @@ class ConcatenationValueSourceTest extends ValueSourceTest
     protected const KEYWORD = 'concatenation';
 
     /** @test */
-    public function emptyConfigurationLeadsToNullValue(): void
-    {
-        $this->data['field1'] = 'value1';
-        $this->data['field2'] = 'value2';
-        $config = $this->getValueSourceConfiguration([]);
-        $output = $this->processValueSource($config);
-        $this->assertNull($output);
-    }
-
-    /** @test */
     public function nonExistentFieldWillReturnNull(): void
     {
         $this->data['field1'] = 'value1';
         $this->data['field2'] = 'value2';
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field3',
-                ], 'field'),
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field3',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
             ],
         ];
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
@@ -46,9 +40,13 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->data['field1'] = '';
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field1',
-                ], 'field'),
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field1',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
             ],
         ];
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
@@ -61,9 +59,13 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->data['field1'] = new MultiValue(['foo','bar']);
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field1',
-                ], 'field'),
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field1',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
             ],
         ];
         /** @var MultiValueInterface $output */
@@ -79,12 +81,20 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->data['field2'] = 'value2';
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field1',
-                ], 'field'),
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field2',
-                ], 'field'),
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field1',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
+                'id2' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field2',
+                    ], 'field'),
+                    'id2',
+                    20
+                ),
             ],
         ];
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
@@ -98,12 +108,20 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->data['field2'] = 'value2';
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field1',
-                ], 'field'),
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field2',
-                ], 'field'),
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field1',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
+                'id2' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field2',
+                    ], 'field'),
+                    'id2',
+                    20
+                ),
             ],
         ];
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
@@ -117,12 +135,20 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->data['field2'] = 'value2';
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field1',
-                ], 'field'),
-                $this->getValueConfiguration([
-                    FieldValueSource::KEY_FIELD_NAME => 'field2',
-                ], 'field'),
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field1',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
+                'id2' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field2',
+                    ], 'field'),
+                    'id2',
+                    29
+                ),
             ],
             ConcatenationValueSource::KEY_GLUE => '-',
         ];

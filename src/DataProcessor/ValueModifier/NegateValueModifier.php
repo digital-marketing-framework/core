@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
@@ -12,13 +13,14 @@ class NegateValueModifier extends ValueModifier
 {
     public const WEIGHT = 6;
 
+    public const KEY_CUSTOM_VALUES = 'useCustomValues';
+    public const DEFAULT_CUSTOM_VALUES = false;
+
     public const KEY_TRUE = 'true';
-    public const DEFAULT_TRUE = null;
-    public const FALLBACK_TRUE = '1';
+    public const DEFAULT_TRUE = '1';
 
     public const KEY_FALSE = 'false';
-    public const DEFAULT_FALSE = null;
-    public const FALLBACK_FALSE = '0';
+    public const DEFAULT_FALSE = '0';
 
     protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
     {
@@ -26,22 +28,20 @@ class NegateValueModifier extends ValueModifier
             return null;
         }
 
-        $true = $this->getConfig(static::KEY_TRUE);
-        $false = $this->getConfig(static::KEY_FALSE);
+        $useCustomValues = $this->getConfig(static::KEY_CUSTOM_VALUES);
+        $true = $useCustomValues ? $this->getConfig(static::KEY_TRUE) : static::DEFAULT_TRUE;
+        $false = $useCustomValues ? $this->getConfig(static::KEY_FALSE) : static::DEFAULT_FALSE;
         if ($value instanceof BooleanValueInterface) {
-            if ((bool)$value->getValue() && $false !== null) {
-                return $false;
-            } elseif (!$value->getValue() && $true !== null) {
-                return $true;
+            if ($useCustomValues) {
+                if ((bool)$value->getValue()) {
+                    return $false;
+                } else {
+                    return $true;
+                }
+            } else {
+                return $value->negated();
             }
-            return $value->negated();
         } else {
-            if ($true === null) {
-                $true = static::FALLBACK_TRUE;
-            }
-            if ($false === null) {
-                $false = static::FALLBACK_FALSE;
-            }
             if ($value === $true) {
                 return $false;
             } elseif ($value === $false) {
@@ -55,8 +55,17 @@ class NegateValueModifier extends ValueModifier
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_TRUE, new StringSchema(static::FALLBACK_TRUE));
-        $schema->addProperty(static::KEY_FALSE, new StringSchema(static::FALLBACK_FALSE));
+
+        $schema->addProperty(static::KEY_CUSTOM_VALUES, new BooleanSchema(static::DEFAULT_CUSTOM_VALUES));
+
+        $trueSchema = new StringSchema(static::DEFAULT_TRUE);
+        $trueSchema->getRenderingDefinition()->addVisibilityConditionByValue('../' . static::KEY_CUSTOM_VALUES)->addValue(true);
+        $schema->addProperty(static::KEY_TRUE, $trueSchema);
+
+        $falseSchema = new StringSchema(static::DEFAULT_FALSE);
+        $falseSchema->getRenderingDefinition()->addVisibilityConditionByValue('../' . static::KEY_CUSTOM_VALUES)->addValue(true);
+        $schema->addProperty(static::KEY_FALSE, $falseSchema);
+
         return $schema;
     }
 }

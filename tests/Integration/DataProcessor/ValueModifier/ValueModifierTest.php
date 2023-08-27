@@ -27,7 +27,13 @@ abstract class ValueModifierTest extends DataProcessorPluginTest
     {
         $dataProcessor = $this->registry->getDataProcessor();
         $context = new DataProcessorContext(new Data($this->data), new Configuration($this->configuration), $this->fieldTracker);
-        return $dataProcessor->processValueModifiers($this->getValueModifierConfiguration($config), $value, $context);
+        return $dataProcessor->processValueModifiers(
+            [
+                'id1' => $this->createListItem($this->getValueModifierConfiguration($config), 'id1', 10),
+            ],
+            $value,
+            $context
+        );
     }
 
     abstract public function modifyProvider(): array;

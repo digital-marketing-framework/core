@@ -9,6 +9,11 @@ class SpliceValueModifierTest extends ValueModifierTest
     protected const KEYWORD = 'splice';
     protected const CLASS_NAME = SpliceValueModifier::class;
 
+    protected const DEFAULT_CONFIG = [
+        SpliceValueModifier::KEY_TOKEN => SpliceValueModifier::DEFAULT_TOKEN,
+        SpliceValueModifier::KEY_INDEX => SpliceValueModifier::DEFAULT_INDEX,
+    ];
+
     public const MODIFY_TEST_CASES = [
         [null,          null],
         ["",            ""],
@@ -44,7 +49,7 @@ class SpliceValueModifierTest extends ValueModifierTest
         ['first second third', 'first second', [SpliceValueModifier::KEY_INDEX => ':-1']],
         ['first second third', 'first', [SpliceValueModifier::KEY_INDEX => ':-2']],
     ];
-    
+
     public function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;

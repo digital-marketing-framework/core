@@ -15,11 +15,14 @@ use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use DigitalMarketingFramework\Core\Tests\DataProcessorTestTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DataProcessorTest extends TestCase
 {
+    use DataProcessorTestTrait;
+
     protected RegistryInterface&MockObject $registry;
 
     /**
@@ -56,7 +59,7 @@ class DataProcessorTest extends TestCase
         parent::setUp();
 
         $this->registry = $this->createMock(RegistryInterface::class);
-        
+
         $this->registry->method('getValueSource')->will($this->returnCallback(function(string $keyword, array $config) {
             if (!isset($this->valueSources[$keyword])) {
                 return null;
@@ -76,7 +79,7 @@ class DataProcessorTest extends TestCase
             }
             return $this->comparisons[$keyword]['object'];
         }));
-        
+
         $this->registry->method('getEvaluation')->will($this->returnCallback(function(string $keyword, array $config) {
             if (!isset($this->evaluations[$keyword])) {
                 return null;
@@ -256,7 +259,7 @@ class DataProcessorTest extends TestCase
     {
         $this->addValueSource('testSource', 'foo');
         $config = [];
-        $this->expectExceptionMessage('No type given');
+        $this->expectExceptionMessage('no switch type found');
         $this->subject->processValueSource($config, $this->context);
     }
 
@@ -266,6 +269,9 @@ class DataProcessorTest extends TestCase
         $this->addValueSource('testSource', 'foo');
         $config = [
             'type' => 'nonExistentSource',
+            'config' => [
+                'nonExistentSource' => [],
+            ],
         ];
         $this->expectExceptionMessage('ValueSource "nonExistentSource" not found.');
         $this->subject->processValueSource($config, $this->context);
@@ -277,6 +283,9 @@ class DataProcessorTest extends TestCase
         $this->addValueSource('testSource', 'foo');
         $config = [
             'type' => 'testSource',
+            'config' => [
+                'testSource' => [],
+            ],
         ];
         $output = $this->subject->processValueSource($config, $this->context);
         $this->assertEquals('foo', $output);
@@ -296,7 +305,16 @@ class DataProcessorTest extends TestCase
     {
         $this->addValueModifier('testModifier', 'testModifierValue');
         $config = [
-            'nonExistentModifier' => ['modifierConfigKey' => 'modifierConfigValue'],
+            'id1' => $this->createListItem(
+                [
+                    'type' => 'nonExistentModifier',
+                    'config' => [
+                        'nonExistentModifier' => ['modifierConfigKey' => 'modifierConfigValue'],
+                    ],
+                ],
+                'id1',
+                10
+            ),
         ];
         $this->expectExceptionMessage('ValueModifier "nonExistentModifier" not found.');
         $this->subject->processValueModifiers($config, 'foo', $this->context);
@@ -307,7 +325,16 @@ class DataProcessorTest extends TestCase
     {
         $this->addValueModifier('testModifier', 'testModifierValue');
         $config = [
-            'testModifier' => ['modifierConfigKey' => 'modifierConfigValue'],
+            'id1' => $this->createListItem(
+                [
+                    'type' => 'testModifier',
+                    'config' => [
+                        'testModifier' => ['modifierConfigKey' => 'modifierConfigValue'],
+                    ],
+                ],
+                'id1',
+                10
+            ),
         ];
         $output = $this->subject->processValueModifiers($config, 'foo', $this->context);
         $this->assertEquals('testModifierValue', $output);
@@ -325,10 +352,28 @@ class DataProcessorTest extends TestCase
 
         $this->addValueModifier('modifier1', $value1, $modifierConfig1, $value0);
         $this->addValueModifier('modifier2', $value2, $modifierConfig2, $value1);
-        
+
         $config = [
-            'modifier1' => $modifierConfig1,
-            'modifier2' => $modifierConfig2,
+            'id1' => $this->createListItem(
+                [
+                    'type' => 'modifier1',
+                    'config' => [
+                        'modifier1' => $modifierConfig1,
+                    ],
+                ],
+                'id1',
+                10
+            ),
+            'id2' => $this->createListItem(
+                [
+                    'type' => 'modifier2',
+                    'config' => [
+                        'modifier2' => $modifierConfig2,
+                    ],
+                ],
+                'id2',
+                20
+            ),
         ];
         $output = $this->subject->processValueModifiers($config, $value0, $this->context);
         $this->assertEquals('baz', $output);
@@ -351,8 +396,8 @@ class DataProcessorTest extends TestCase
         $this->addValueModifier('testModifier', 'bar');
         $config = [
             DataProcessor::KEY_DATA => [
-                DataProcessor::KEY_TYPE => 'testSource',
-                DataProcessor::KEY_CONFIG => [
+                'type' => 'testSource',
+                'config' => [
                     'testSource' => [
                         'testSourceConfigKey' => 'testSourceConfigValue',
                     ],
@@ -372,20 +417,26 @@ class DataProcessorTest extends TestCase
         $this->addValueModifier('testModifier2', 'baz', ['testModifier2ConfigKey' => 'testModifier2ConfigValue'], 'bar');
         $config = [
             DataProcessor::KEY_DATA => [
-                DataProcessor::KEY_TYPE => 'testSource',
-                DataProcessor::KEY_CONFIG => [
+                'type' => 'testSource',
+                'config' => [
                     'testSource' => [
                         'testSourceConfigKey' => 'testSourceConfigValue',
                     ],
                 ],
             ],
             DataProcessor::KEY_MODIFIERS => [
-                'testModifier1' => [
-                    'testModifier1ConfigKey' => 'testModifier1ConfigValue',
-                ],
-                'testModifier2' => [
-                    'testModifier2ConfigKey' => 'testModifier2ConfigValue',
-                ],
+                'id1' => $this->createListItem([
+                    'type' => 'testModifier1',
+                    'config' => [
+                        'testModifier1' => ['testModifier1ConfigKey' => 'testModifier1ConfigValue'],
+                    ]
+                ], 'id1', 10),
+                'id2' => $this->createListItem([
+                    'type' => 'testModifier2',
+                    'config' => [
+                        'testModifier2' => ['testModifier2ConfigKey' => 'testModifier2ConfigValue'],
+                    ]
+                ], 'id2', 20),
             ],
         ];
         $output = $this->subject->processValue($config, $this->context);
@@ -396,7 +447,7 @@ class DataProcessorTest extends TestCase
     public function evaluationEmptyConfigurationWillThrowException(): void
     {
         $config = [];
-        $this->expectExceptionMessage('No type given.');
+        $this->expectExceptionMessage('no switch type found');
         $this->subject->processEvaluation($config, $this->context);
     }
 
@@ -405,7 +456,10 @@ class DataProcessorTest extends TestCase
     {
         $this->addEvaluation('testEvaluation', true);
         $config = [
-            DataProcessor::KEY_TYPE => 'nonExistentEvaluation',
+            'type' => 'nonExistentEvaluation',
+            'config' => [
+                'nonExistentEvaluation' => [],
+            ],
         ];
         $this->expectExceptionMessage('Evaluation "nonExistentEvaluation" not found.');
         $this->subject->processEvaluation($config, $this->context);
@@ -419,8 +473,8 @@ class DataProcessorTest extends TestCase
     {
         $this->addEvaluation('testEvaluation', $expectedResult, ['evaluationConfigKey' => 'evaluationConfigValue']);
         $config = [
-            DataProcessor::KEY_TYPE => 'testEvaluation',
-            DataProcessor::KEY_CONFIG => [
+            'type' => 'testEvaluation',
+            'config' => [
                 'testEvaluation' => ['evaluationConfigKey' => 'evaluationConfigValue'],
             ],
         ];
@@ -433,7 +487,7 @@ class DataProcessorTest extends TestCase
     {
         $this->addComparison('testComparison', true);
         $config = [];
-        $this->expectExceptionMessage('No type given.');
+        $this->expectExceptionMessage('no comparison operation given');
         $this->subject->processComparison($config, $this->context);
     }
 
@@ -442,7 +496,7 @@ class DataProcessorTest extends TestCase
     {
         $this->addComparison('testComparison', true);
         $config = [
-            DataProcessor::KEY_TYPE => 'nonExistentComparison',
+            'type' => 'nonExistentComparison',
         ];
         $this->expectExceptionMessage('Comparison "nonExistentComparison" not found.');
         $this->subject->processComparison($config, $this->context);
@@ -456,7 +510,7 @@ class DataProcessorTest extends TestCase
     {
         $this->addComparison('testComparison', $expectedResult, ['comparisonConfigKey' => 'comparisonConfigValue']);
         $config = [
-            DataProcessor::KEY_TYPE => 'testComparison',
+            'type' => 'testComparison',
             'comparisonConfigKey' => 'comparisonConfigValue',
         ];
         $output = $this->subject->processComparison($config, $this->context);
