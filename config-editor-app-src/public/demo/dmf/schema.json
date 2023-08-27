@@ -3,9 +3,14 @@
     "document/all": {
       "SYS:defaults": "Defaults [SYS:defaults]",
       "SYS:reset": "Reset [SYS:reset]",
-      "EXT:digitalmarketingframework/Resources/Private/ConfigurationDocuments/reset.config.yaml": "Reset [EXT:digitalmarketingframework/Resources/Private/ConfigurationDocuments/reset.config.yaml]",
-      "1:/digital_marketing_framework/configuration/foo.config.yaml": "Foo [1:/digital_marketing_framework/configuration/foo.config.yaml]",
-      "1:/digital_marketing_framework/configuration/main.config.yaml": "Main [1:/digital_marketing_framework/configuration/main.config.yaml]"
+      "EXT:digitalmarketingframework_distributor_json_request/Resources/Private/ConfigurationDocuments/route-defaults.config.yaml": "JSON Request Route [EXT:digitalmarketingframework_distributor_json_request/Resources/Private/ConfigurationDocuments/route-defaults.config.yaml]",
+      "EXT:digitalmarketingframework_distributor_pardot/Resources/Private/ConfigurationDocuments/route-defaults.config.yaml": "Pardot Route [EXT:digitalmarketingframework_distributor_pardot/Resources/Private/ConfigurationDocuments/route-defaults.config.yaml]",
+      "EXT:digitalmarketingframework_distributor_request/Resources/Private/ConfigurationDocuments/route-defaults.config.yaml": "Request Route [EXT:digitalmarketingframework_distributor_request/Resources/Private/ConfigurationDocuments/route-defaults.config.yaml]",
+      "1:/digital_marketing_framework/configuration/main.config.yaml": "Main [1:/digital_marketing_framework/configuration/main.config.yaml]",
+      "1:/digital_marketing_framework/configuration/test.config.yaml": "Test [1:/digital_marketing_framework/configuration/test.config.yaml]"
+    },
+    "identifierCollector/all": {
+      "pardot": "Pardot"
     },
     "dataProvider/all": {
       "collector": "Collector",
@@ -87,6 +92,11 @@
       "isTrue": "Is True",
       "regExp": "Reg Exp"
     },
+    "comparison/binaryOperations": {
+      "equals": "Equals",
+      "in": "In",
+      "regExp": "Reg Exp"
+    },
     "comparison/multiValueHandlingOperations": {
       "equals": "Equals",
       "in": "In",
@@ -95,9 +105,10 @@
       "regExp": "Reg Exp"
     },
     "route/all": {
-      "pardotCache": "Pardot Cache",
+      "jsonRequest": "Json Request",
       "pardot": "Pardot",
-      "request": "Request"
+      "request": "Request",
+      "cache": "Cache"
     },
     "restrictedTerms/all": {
       "all": "All",
@@ -111,91 +122,152 @@
       "type": "CONTAINER",
       "values": [
         {
-          "key": "fields",
+          "key": "fieldMap",
+          "weight": 100,
           "type": "CONTAINER",
           "values": [
             {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "overwrite",
-              "type": "BOOLEAN"
-            },
-            {
               "key": "fields",
+              "weight": 100,
               "type": "MAP",
-              "keyTemplate": {
-                "type": "STRING",
-                "default": "mapKey"
+              "dynamicOrder": false,
+              "itemTemplate": {
+                "type": "CONTAINER",
+                "values": [
+                  {
+                    "key": "uuid",
+                    "weight": 100,
+                    "type": "STRING"
+                  },
+                  {
+                    "key": "weight",
+                    "weight": 100,
+                    "type": "INTEGER",
+                    "default": 0
+                  },
+                  {
+                    "key": "value",
+                    "weight": 100,
+                    "type": "VALUE",
+                    "label": "{../key}"
+                  },
+                  {
+                    "key": "key",
+                    "weight": 100,
+                    "type": "STRING",
+                    "default": "fieldName",
+                    "label": "Target Field Name"
+                  }
+                ],
+                "skipInNavigation": true,
+                "skipHeader": true
               },
-              "valueTemplate": {
-                "type": "VALUE"
-              }
+              "label": "Field Map"
             }
           ],
           "navigationItem": false,
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
+          "skipHeader": true
         },
         {
           "key": "passthroughFields",
+          "weight": 100,
           "type": "CONTAINER",
           "values": [
             {
               "key": "enabled",
+              "weight": 100,
               "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "overwrite",
-              "type": "BOOLEAN"
+              "default": false,
+              "label": "Passthrough Fields"
             }
           ],
           "navigationItem": false,
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
+          "skipHeader": true
         },
         {
           "key": "ignoreEmptyFields",
+          "weight": 100,
           "type": "CONTAINER",
           "values": [
             {
               "key": "enabled",
+              "weight": 100,
               "type": "BOOLEAN",
-              "default": false
+              "default": true,
+              "label": "Ignore Empty Fields"
             }
           ],
           "navigationItem": false,
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
+          "skipHeader": true
         },
         {
           "key": "excludeFields",
+          "weight": 100,
           "type": "CONTAINER",
           "values": [
             {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
               "key": "fields",
-              "type": "STRING"
+              "weight": 100,
+              "type": "LIST",
+              "dynamicOrder": false,
+              "itemTemplate": {
+                "type": "CONTAINER",
+                "values": [
+                  {
+                    "key": "uuid",
+                    "weight": 100,
+                    "type": "STRING"
+                  },
+                  {
+                    "key": "weight",
+                    "weight": 100,
+                    "type": "INTEGER",
+                    "default": 0
+                  },
+                  {
+                    "key": "value",
+                    "weight": 100,
+                    "type": "STRING",
+                    "default": "fieldName",
+                    "label": "Field Name"
+                  }
+                ],
+                "skipInNavigation": true,
+                "skipHeader": true
+              },
+              "label": "Exclude Fields"
             }
           ],
           "navigationItem": false,
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
+          "skipHeader": true
+        },
+        {
+          "key": "prefix",
+          "weight": 100,
+          "type": "CONTAINER",
+          "values": [
+            {
+              "key": "prefix",
+              "weight": 100,
+              "type": "STRING",
+              "default": ""
+            },
+            {
+              "key": "action",
+              "weight": 100,
+              "type": "STRING",
+              "default": "add",
+              "allowedValues": {
+                "list": {
+                  "add": "Add",
+                  "remove": "Remove"
+                }
+              },
+              "format": "select"
+            }
+          ],
+          "navigationItem": false,
+          "label": "Field Name Prefix"
         }
       ],
       "navigationItem": false
@@ -205,18 +277,38 @@
       "values": [
         {
           "key": "data",
+          "weight": 100,
           "type": "VALUE_SOURCE",
           "label": "Value"
         },
         {
           "key": "modifiers",
-          "type": "VALUE_MODIFIER",
-          "visibility": {
-            "type": "valueSet",
-            "path": "./data/type",
-            "set": "valueSource/modifiable"
-          },
-          "navigationItem": false
+          "weight": 100,
+          "type": "LIST",
+          "dynamicOrder": false,
+          "itemTemplate": {
+            "type": "CONTAINER",
+            "values": [
+              {
+                "key": "uuid",
+                "weight": 100,
+                "type": "STRING"
+              },
+              {
+                "key": "weight",
+                "weight": 100,
+                "type": "INTEGER",
+                "default": 0
+              },
+              {
+                "key": "value",
+                "weight": 100,
+                "type": "VALUE_MODIFIER"
+              }
+            ],
+            "skipInNavigation": true,
+            "skipHeader": true
+          }
         }
       ]
     },
@@ -225,6 +317,7 @@
       "values": [
         {
           "key": "type",
+          "weight": 100,
           "type": "STRING",
           "allowedValues": {
             "sets": ["valueSource/all"]
@@ -234,14 +327,17 @@
         },
         {
           "key": "config",
+          "weight": 100,
           "type": "CONTAINER",
           "values": [
             {
               "key": "constant",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "value",
+                  "weight": 100,
                   "type": "STRING",
                   "default": ""
                 }
@@ -251,11 +347,14 @@
             },
             {
               "key": "field",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "fieldName",
-                  "type": "STRING"
+                  "weight": 100,
+                  "type": "STRING",
+                  "label": "Source Field Name"
                 }
               ],
               "navigationItem": false,
@@ -263,18 +362,42 @@
             },
             {
               "key": "concatenation",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "glue",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "\\s"
                 },
                 {
                   "key": "values",
+                  "weight": 100,
                   "type": "LIST",
-                  "valueTemplate": {
-                    "type": "VALUE"
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "VALUE"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   }
                 }
               ],
@@ -283,18 +406,23 @@
             },
             {
               "key": "condition",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "if",
-                  "type": "EVALUATION"
+                  "weight": 100,
+                  "type": "EVALUATION",
+                  "label": "if"
                 },
                 {
                   "key": "then",
+                  "weight": 100,
                   "type": "VALUE"
                 },
                 {
                   "key": "else",
+                  "weight": 100,
                   "type": "VALUE"
                 }
               ],
@@ -303,13 +431,36 @@
             },
             {
               "key": "list",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "values",
+                  "weight": 100,
                   "type": "LIST",
-                  "valueTemplate": {
-                    "type": "VALUE"
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "VALUE"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   }
                 }
               ],
@@ -318,13 +469,36 @@
             },
             {
               "key": "firstOf",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "listValues",
+                  "weight": 100,
                   "type": "LIST",
-                  "valueTemplate": {
-                    "type": "VALUE"
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "VALUE"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   }
                 }
               ],
@@ -333,19 +507,23 @@
             },
             {
               "key": "boolean",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "value",
+                  "weight": 100,
                   "type": "VALUE"
                 },
                 {
                   "key": "true",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "1"
                 },
                 {
                   "key": "false",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "0"
                 }
@@ -355,22 +533,27 @@
             },
             {
               "key": "file",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "name",
+                  "weight": 100,
                   "type": "VALUE"
                 },
                 {
                   "key": "path",
+                  "weight": 100,
                   "type": "VALUE"
                 },
                 {
                   "key": "url",
+                  "weight": 100,
                   "type": "VALUE"
                 },
                 {
                   "key": "mimetype",
+                  "weight": 100,
                   "type": "VALUE"
                 }
               ],
@@ -379,10 +562,12 @@
             },
             {
               "key": "integer",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "value",
+                  "weight": 100,
                   "type": "VALUE"
                 }
               ],
@@ -391,13 +576,36 @@
             },
             {
               "key": "multiValue",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "values",
+                  "weight": 100,
                   "type": "LIST",
-                  "valueTemplate": {
-                    "type": "VALUE"
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "VALUE"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   }
                 }
               ],
@@ -406,13 +614,36 @@
             },
             {
               "key": "discreteMultiValue",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "values",
+                  "weight": 100,
                   "type": "LIST",
-                  "valueTemplate": {
-                    "type": "VALUE"
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "VALUE"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   }
                 }
               ],
@@ -421,28 +652,34 @@
             },
             {
               "key": "fieldCollector",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "ignoreIfEmpty",
+                  "weight": 100,
                   "type": "BOOLEAN",
                   "default": true
                 },
                 {
                   "key": "unprocessedOnly",
+                  "weight": 100,
                   "type": "BOOLEAN",
                   "default": true
                 },
                 {
                   "key": "exclude",
+                  "weight": 100,
                   "type": "STRING"
                 },
                 {
                   "key": "include",
+                  "weight": 100,
                   "type": "STRING"
                 },
                 {
                   "key": "template",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "{key}\\s=\\s{value}\\n"
                 }
@@ -452,304 +689,392 @@
             },
             {
               "key": "null",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [],
               "navigationItem": false,
               "skipHeader": true
             }
-          ]
+          ],
+          "skipInNavigation": true
+        }
+      ],
+      "navigationItem": false,
+      "label": "{type}",
+      "skipHeader": true
+    },
+    "VALUE_MODIFIER": {
+      "type": "SWITCH",
+      "values": [
+        {
+          "key": "type",
+          "weight": 100,
+          "type": "STRING",
+          "allowedValues": {
+            "sets": ["valueModifier/all"]
+          },
+          "format": "select",
+          "triggers": ["switch"]
+        },
+        {
+          "key": "config",
+          "weight": 100,
+          "type": "CONTAINER",
+          "values": [
+            {
+              "key": "insertData",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "trim",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "upperCase",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "lowerCase",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "negate",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "useCustomValues",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "true",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "1",
+                  "visibility": {
+                    "type": "and",
+                    "config": [
+                      {
+                        "type": "in",
+                        "config": {
+                          "path": "../useCustomValues",
+                          "list": {
+                            "list": {
+                              "1": "1"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "key": "false",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "0",
+                  "visibility": {
+                    "type": "and",
+                    "config": [
+                      {
+                        "type": "in",
+                        "config": {
+                          "path": "../useCustomValues",
+                          "list": {
+                            "list": {
+                              "1": "1"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "masked",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "join",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "glue",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": ","
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "splice",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "token",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "\\s"
+                },
+                {
+                  "key": "index",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "1"
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "sprintf",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "format",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "%s"
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "index",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "index",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": ""
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "mapReference",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "reference",
+                  "weight": 100,
+                  "type": "STRING",
+                  "allowedValues": {
+                    "references": [
+                      {
+                        "type": "key",
+                        "path": "/valueMaps/*",
+                        "label": "{key}"
+                      }
+                    ]
+                  },
+                  "format": "select"
+                },
+                {
+                  "key": "invert",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "map",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "map",
+                  "weight": 100,
+                  "type": "MAP",
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "mappedValue",
+                        "label": "{../key}"
+                      },
+                      {
+                        "key": "key",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "value"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
+                  }
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "default",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 100,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "value",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": ""
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            }
+          ],
+          "skipInNavigation": true
         }
       ],
       "navigationItem": false,
       "label": "{type}"
-    },
-    "VALUE_MODIFIER": {
-      "type": "CONTAINER",
-      "values": [
-        {
-          "key": "insertData",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "trim",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "upperCase",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "lowerCase",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "negate",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "true",
-              "type": "STRING",
-              "default": "1"
-            },
-            {
-              "key": "false",
-              "type": "STRING",
-              "default": "0"
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "masked",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "join",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "glue",
-              "type": "STRING",
-              "default": ","
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "splice",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "token",
-              "type": "STRING",
-              "default": "\\s"
-            },
-            {
-              "key": "index",
-              "type": "STRING",
-              "default": "1"
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "sprintf",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "format",
-              "type": "STRING",
-              "default": "%s"
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "index",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "index",
-              "type": "STRING",
-              "default": ""
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "mapReference",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "reference",
-              "type": "STRING",
-              "allowedValues": {
-                "references": ["/valueMaps"]
-              },
-              "format": "select"
-            },
-            {
-              "key": "invert",
-              "type": "BOOLEAN",
-              "default": false
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "map",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "map",
-              "type": "MAP",
-              "keyTemplate": {
-                "type": "STRING",
-                "default": "value"
-              },
-              "valueTemplate": {
-                "type": "STRING",
-                "default": "mappedValue"
-              }
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        },
-        {
-          "key": "default",
-          "type": "CONTAINER",
-          "values": [
-            {
-              "key": "enabled",
-              "type": "BOOLEAN",
-              "default": false
-            },
-            {
-              "key": "value",
-              "type": "STRING",
-              "default": ""
-            }
-          ],
-          "visibility": {
-            "type": "toggle",
-            "path": "./enabled"
-          }
-        }
-      ],
-      "visibility": {
-        "type": "valueSet",
-        "path": "../data/type",
-        "set": "valueModifier/modifiable"
-      },
-      "navigationItem": false
     },
     "EVALUATION": {
       "type": "SWITCH",
       "values": [
         {
           "key": "type",
+          "weight": 100,
           "type": "STRING",
           "allowedValues": {
-            "list": {
-              "true": "True",
-              "false": "False",
-              "comparison": "Comparison",
-              "not": "Not",
-              "and": "And",
-              "or": "Or",
-              "gate": "Gate"
-            },
             "sets": ["evaluation/all"]
           },
           "format": "select",
@@ -757,10 +1082,12 @@
         },
         {
           "key": "config",
+          "weight": 100,
           "type": "CONTAINER",
           "values": [
             {
               "key": "true",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [],
               "navigationItem": false,
@@ -768,6 +1095,7 @@
             },
             {
               "key": "false",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [],
               "navigationItem": false,
@@ -775,25 +1103,50 @@
             },
             {
               "key": "comparison",
+              "weight": 100,
               "type": "COMPARISON",
               "navigationItem": false,
               "skipHeader": true
             },
             {
               "key": "not",
+              "weight": 100,
               "type": "EVALUATION",
               "navigationItem": false,
               "skipHeader": true
             },
             {
               "key": "and",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "evaluations",
+                  "weight": 100,
                   "type": "LIST",
-                  "valueTemplate": {
-                    "type": "EVALUATION"
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "EVALUATION"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   }
                 }
               ],
@@ -802,13 +1155,36 @@
             },
             {
               "key": "or",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "evaluations",
+                  "weight": 100,
                   "type": "LIST",
-                  "valueTemplate": {
-                    "type": "EVALUATION"
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "EVALUATION"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   }
                 }
               ],
@@ -817,23 +1193,30 @@
             },
             {
               "key": "gate",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
-                  "key": "key",
+                  "key": "routeId",
+                  "weight": 100,
                   "type": "STRING",
-                  "default": ""
-                },
-                {
-                  "key": "pass",
-                  "type": "STRING",
-                  "default": "any"
+                  "allowedValues": {
+                    "references": [
+                      {
+                        "type": "key",
+                        "path": "/distributor/routes/*",
+                        "label": "{value/type} {value/pass}"
+                      }
+                    ]
+                  },
+                  "format": "select"
                 }
               ],
               "navigationItem": false,
               "skipHeader": true
             }
-          ]
+          ],
+          "skipInNavigation": true
         }
       ],
       "navigationItem": false,
@@ -844,10 +1227,12 @@
       "values": [
         {
           "key": "firstOperand",
+          "weight": 100,
           "type": "VALUE"
         },
         {
           "key": "anyAll",
+          "weight": 100,
           "type": "STRING",
           "allowedValues": {
             "list": {
@@ -856,29 +1241,49 @@
             }
           },
           "format": "select",
-          "hideLabel": true,
           "visibility": {
-            "type": "valueSet",
-            "path": "type",
-            "set": "comparison/multiValueHandlingOperations"
-          }
+            "type": "and",
+            "config": [
+              {
+                "type": "in",
+                "config": {
+                  "path": "../type",
+                  "list": {
+                    "sets": ["comparison/multiValueHandlingOperations"]
+                  }
+                }
+              }
+            ]
+          },
+          "skipHeader": true
         },
         {
           "key": "type",
+          "weight": 100,
           "type": "STRING",
           "allowedValues": {
             "sets": ["comparison/all"]
           },
           "format": "select",
-          "hideLabel": true
+          "skipHeader": true
         },
         {
           "key": "secondOperand",
+          "weight": 100,
           "type": "VALUE",
           "visibility": {
-            "type": "valueSet",
-            "path": "type",
-            "set": "comparison/binaryOperations"
+            "type": "and",
+            "config": [
+              {
+                "type": "in",
+                "config": {
+                  "path": "../type",
+                  "list": {
+                    "sets": ["comparison/binaryOperations"]
+                  }
+                }
+              }
+            ]
           }
         }
       ]
@@ -888,6 +1293,7 @@
       "values": [
         {
           "key": "type",
+          "weight": 100,
           "type": "STRING",
           "allowedValues": {
             "sets": ["route/all"]
@@ -897,179 +1303,23 @@
         },
         {
           "key": "config",
+          "weight": 100,
           "type": "CONTAINER",
           "values": [
             {
-              "key": "pardotCache",
-              "type": "CONTAINER",
-              "values": [
-                {
-                  "key": "override",
-                  "type": "BOOLEAN",
-                  "default": false
-                },
-                {
-                  "key": "overrideConfig",
-                  "type": "CONTAINER",
-                  "values": [
-                    {
-                      "key": "enabled",
-                      "type": "BOOLEAN",
-                      "default": false
-                    },
-                    {
-                      "key": "enableDataProviders",
-                      "type": "SWITCH",
-                      "values": [
-                        {
-                          "key": "type",
-                          "type": "STRING",
-                          "allowedValues": {
-                            "sets": ["restrictedTerms/all"]
-                          },
-                          "format": "select",
-                          "label": "enableDataProviders",
-                          "triggers": ["switch"]
-                        },
-                        {
-                          "key": "config",
-                          "type": "CONTAINER",
-                          "values": [
-                            {
-                              "key": "all",
-                              "type": "CONTAINER",
-                              "values": [],
-                              "navigationItem": false,
-                              "skipHeader": true
-                            },
-                            {
-                              "key": "none",
-                              "type": "CONTAINER",
-                              "values": [],
-                              "navigationItem": false,
-                              "skipHeader": true
-                            },
-                            {
-                              "key": "blacklist",
-                              "type": "CONTAINER",
-                              "values": [
-                                {
-                                  "key": "blacklist",
-                                  "type": "LIST",
-                                  "valueTemplate": {
-                                    "type": "STRING",
-                                    "allowedValues": {
-                                      "references": ["/distributor/dataProviders"]
-                                    },
-                                    "format": "select",
-                                    "hideLabel": true
-                                  },
-                                  "label": "blacklist"
-                                }
-                              ],
-                              "navigationItem": false,
-                              "skipHeader": true
-                            },
-                            {
-                              "key": "whitelist",
-                              "type": "CONTAINER",
-                              "values": [
-                                {
-                                  "key": "whitelist",
-                                  "type": "LIST",
-                                  "valueTemplate": {
-                                    "type": "STRING",
-                                    "allowedValues": {
-                                      "references": ["/distributor/dataProviders"]
-                                    },
-                                    "format": "select",
-                                    "hideLabel": true
-                                  },
-                                  "label": "whitelist"
-                                }
-                              ],
-                              "navigationItem": false,
-                              "skipHeader": true
-                            }
-                          ]
-                        }
-                      ],
-                      "label": "{type}",
-                      "skipHeader": true
-                    },
-                    {
-                      "key": "gate",
-                      "type": "EVALUATION",
-                      "label": "Gate"
-                    },
-                    {
-                      "key": "data",
-                      "type": "DATA_MAPPER"
-                    },
-                    {
-                      "key": "url",
-                      "type": "STRING"
-                    },
-                    {
-                      "key": "cookies",
-                      "type": "MAP",
-                      "keyTemplate": {
-                        "type": "STRING",
-                        "default": "cookieName"
-                      },
-                      "valueTemplate": {
-                        "type": "STRING",
-                        "default": "{value}",
-                        "suggestedValues": {
-                          "list": {
-                            "{value}": " Value",
-                            "{null}": " Null"
-                          }
-                        }
-                      },
-                      "navigationItem": false
-                    },
-                    {
-                      "key": "headers",
-                      "type": "MAP",
-                      "keyTemplate": {
-                        "type": "STRING",
-                        "default": "headerName"
-                      },
-                      "valueTemplate": {
-                        "type": "STRING",
-                        "default": "{value}",
-                        "suggestedValues": {
-                          "list": {
-                            "{value}": " Value",
-                            "{null}": " Null"
-                          }
-                        }
-                      },
-                      "navigationItem": false
-                    }
-                  ],
-                  "navigationItem": false,
-                  "visibility": {
-                    "type": "bool",
-                    "path": "./override"
-                  }
-                }
-              ],
-              "navigationItem": false,
-              "skipHeader": true
-            },
-            {
-              "key": "pardot",
+              "key": "jsonRequest",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "enabled",
+                  "weight": 10,
                   "type": "BOOLEAN",
                   "default": false
                 },
                 {
                   "key": "async",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "inherit",
                   "allowedValues": {
@@ -1079,10 +1329,12 @@
                       "no": "No"
                     }
                   },
-                  "format": "select"
+                  "format": "select",
+                  "group": "secondary"
                 },
                 {
                   "key": "disableStorage",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "inherit",
                   "allowedValues": {
@@ -1092,28 +1344,33 @@
                       "no": "No"
                     }
                   },
-                  "format": "select"
+                  "format": "select",
+                  "group": "secondary"
                 },
                 {
                   "key": "enableDataProviders",
+                  "weight": 100,
                   "type": "SWITCH",
                   "values": [
                     {
                       "key": "type",
+                      "weight": 100,
                       "type": "STRING",
                       "allowedValues": {
                         "sets": ["restrictedTerms/all"]
                       },
                       "format": "select",
-                      "label": "enableDataProviders",
+                      "label": "Enable Data Providers",
                       "triggers": ["switch"]
                     },
                     {
                       "key": "config",
+                      "weight": 100,
                       "type": "CONTAINER",
                       "values": [
                         {
                           "key": "all",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [],
                           "navigationItem": false,
@@ -1121,6 +1378,7 @@
                         },
                         {
                           "key": "none",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [],
                           "navigationItem": false,
@@ -1128,18 +1386,47 @@
                         },
                         {
                           "key": "blacklist",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [
                             {
-                              "key": "blacklist",
+                              "key": "list",
+                              "weight": 100,
                               "type": "LIST",
-                              "valueTemplate": {
-                                "type": "STRING",
-                                "allowedValues": {
-                                  "references": ["/distributor/dataProviders"]
-                                },
-                                "format": "select",
-                                "hideLabel": true
+                              "dynamicOrder": false,
+                              "itemTemplate": {
+                                "type": "CONTAINER",
+                                "values": [
+                                  {
+                                    "key": "uuid",
+                                    "weight": 100,
+                                    "type": "STRING"
+                                  },
+                                  {
+                                    "key": "weight",
+                                    "weight": 100,
+                                    "type": "INTEGER",
+                                    "default": 0
+                                  },
+                                  {
+                                    "key": "value",
+                                    "weight": 100,
+                                    "type": "STRING",
+                                    "allowedValues": {
+                                      "references": [
+                                        {
+                                          "type": "key",
+                                          "path": "/distributor/dataProviders/*",
+                                          "label": ""
+                                        }
+                                      ]
+                                    },
+                                    "format": "select",
+                                    "hideLabel": true
+                                  }
+                                ],
+                                "skipInNavigation": true,
+                                "skipHeader": true
                               },
                               "label": "blacklist"
                             }
@@ -1149,18 +1436,47 @@
                         },
                         {
                           "key": "whitelist",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [
                             {
-                              "key": "whitelist",
+                              "key": "list",
+                              "weight": 100,
                               "type": "LIST",
-                              "valueTemplate": {
-                                "type": "STRING",
-                                "allowedValues": {
-                                  "references": ["/distributor/dataProviders"]
-                                },
-                                "format": "select",
-                                "hideLabel": true
+                              "dynamicOrder": false,
+                              "itemTemplate": {
+                                "type": "CONTAINER",
+                                "values": [
+                                  {
+                                    "key": "uuid",
+                                    "weight": 100,
+                                    "type": "STRING"
+                                  },
+                                  {
+                                    "key": "weight",
+                                    "weight": 100,
+                                    "type": "INTEGER",
+                                    "default": 0
+                                  },
+                                  {
+                                    "key": "value",
+                                    "weight": 100,
+                                    "type": "STRING",
+                                    "allowedValues": {
+                                      "references": [
+                                        {
+                                          "type": "key",
+                                          "path": "/distributor/dataProviders/*",
+                                          "label": ""
+                                        }
+                                      ]
+                                    },
+                                    "format": "select",
+                                    "hideLabel": true
+                                  }
+                                ],
+                                "skipInNavigation": true,
+                                "skipHeader": true
                               },
                               "label": "whitelist"
                             }
@@ -1168,60 +1484,713 @@
                           "navigationItem": false,
                           "skipHeader": true
                         }
-                      ]
+                      ],
+                      "skipInNavigation": true
                     }
                   ],
                   "label": "{type}",
-                  "skipHeader": true
+                  "skipHeader": true,
+                  "group": "secondary"
                 },
                 {
                   "key": "gate",
+                  "weight": 100,
                   "type": "EVALUATION",
                   "label": "Gate"
                 },
                 {
                   "key": "data",
+                  "weight": 100,
                   "type": "DATA_MAPPER"
                 },
                 {
                   "key": "url",
-                  "type": "STRING"
+                  "weight": 50,
+                  "type": "STRING",
+                  "required": true,
+                  "validations": [
+                    {
+                      "condition": {
+                        "type": "not-empty",
+                        "config": {
+                          "path": "."
+                        }
+                      },
+                      "message": "Required Field"
+                    }
+                  ],
+                  "label": "URL"
                 },
                 {
                   "key": "cookies",
+                  "weight": 100,
                   "type": "MAP",
-                  "keyTemplate": {
-                    "type": "STRING",
-                    "default": "cookieName"
-                  },
-                  "valueTemplate": {
-                    "type": "STRING",
-                    "default": "{value}",
-                    "suggestedValues": {
-                      "list": {
-                        "{value}": " Value",
-                        "{null}": " Null"
+                  "default": [],
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "{value}",
+                        "suggestedValues": {
+                          "list": {
+                            "{value}": " Value",
+                            "{null}": " Null"
+                          }
+                        },
+                        "label": "Cookie Value"
+                      },
+                      {
+                        "key": "key",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "cookieName",
+                        "label": "Cookie Name/Pattern"
                       }
-                    }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   },
                   "navigationItem": false
                 },
                 {
                   "key": "headers",
+                  "weight": 100,
                   "type": "MAP",
-                  "keyTemplate": {
-                    "type": "STRING",
-                    "default": "headerName"
+                  "default": [],
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "{value}",
+                        "suggestedValues": {
+                          "list": {
+                            "{value}": " Value",
+                            "{null}": " Null"
+                          }
+                        },
+                        "label": "Header Value"
+                      },
+                      {
+                        "key": "key",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "headerName",
+                        "label": "Header Name/Pattern"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   },
-                  "valueTemplate": {
-                    "type": "STRING",
-                    "default": "{value}",
-                    "suggestedValues": {
-                      "list": {
-                        "{value}": " Value",
-                        "{null}": " Null"
+                  "navigationItem": false
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
+            },
+            {
+              "key": "pardot",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "enabled",
+                  "weight": 10,
+                  "type": "BOOLEAN",
+                  "default": false
+                },
+                {
+                  "key": "async",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "inherit",
+                  "allowedValues": {
+                    "list": {
+                      "inherit": "Inherit",
+                      "yes": "Yes",
+                      "no": "No"
+                    }
+                  },
+                  "format": "select",
+                  "group": "secondary"
+                },
+                {
+                  "key": "disableStorage",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "inherit",
+                  "allowedValues": {
+                    "list": {
+                      "inherit": "Inherit",
+                      "yes": "Yes",
+                      "no": "No"
+                    }
+                  },
+                  "format": "select",
+                  "group": "secondary"
+                },
+                {
+                  "key": "enableDataProviders",
+                  "weight": 100,
+                  "type": "SWITCH",
+                  "values": [
+                    {
+                      "key": "type",
+                      "weight": 100,
+                      "type": "STRING",
+                      "allowedValues": {
+                        "sets": ["restrictedTerms/all"]
+                      },
+                      "format": "select",
+                      "label": "Enable Data Providers",
+                      "triggers": ["switch"]
+                    },
+                    {
+                      "key": "config",
+                      "weight": 100,
+                      "type": "CONTAINER",
+                      "values": [
+                        {
+                          "key": "all",
+                          "weight": 100,
+                          "type": "CONTAINER",
+                          "values": [],
+                          "navigationItem": false,
+                          "skipHeader": true
+                        },
+                        {
+                          "key": "none",
+                          "weight": 100,
+                          "type": "CONTAINER",
+                          "values": [],
+                          "navigationItem": false,
+                          "skipHeader": true
+                        },
+                        {
+                          "key": "blacklist",
+                          "weight": 100,
+                          "type": "CONTAINER",
+                          "values": [
+                            {
+                              "key": "list",
+                              "weight": 100,
+                              "type": "LIST",
+                              "dynamicOrder": false,
+                              "itemTemplate": {
+                                "type": "CONTAINER",
+                                "values": [
+                                  {
+                                    "key": "uuid",
+                                    "weight": 100,
+                                    "type": "STRING"
+                                  },
+                                  {
+                                    "key": "weight",
+                                    "weight": 100,
+                                    "type": "INTEGER",
+                                    "default": 0
+                                  },
+                                  {
+                                    "key": "value",
+                                    "weight": 100,
+                                    "type": "STRING",
+                                    "allowedValues": {
+                                      "references": [
+                                        {
+                                          "type": "key",
+                                          "path": "/distributor/dataProviders/*",
+                                          "label": ""
+                                        }
+                                      ]
+                                    },
+                                    "format": "select",
+                                    "hideLabel": true
+                                  }
+                                ],
+                                "skipInNavigation": true,
+                                "skipHeader": true
+                              },
+                              "label": "blacklist"
+                            }
+                          ],
+                          "navigationItem": false,
+                          "skipHeader": true
+                        },
+                        {
+                          "key": "whitelist",
+                          "weight": 100,
+                          "type": "CONTAINER",
+                          "values": [
+                            {
+                              "key": "list",
+                              "weight": 100,
+                              "type": "LIST",
+                              "dynamicOrder": false,
+                              "itemTemplate": {
+                                "type": "CONTAINER",
+                                "values": [
+                                  {
+                                    "key": "uuid",
+                                    "weight": 100,
+                                    "type": "STRING"
+                                  },
+                                  {
+                                    "key": "weight",
+                                    "weight": 100,
+                                    "type": "INTEGER",
+                                    "default": 0
+                                  },
+                                  {
+                                    "key": "value",
+                                    "weight": 100,
+                                    "type": "STRING",
+                                    "allowedValues": {
+                                      "references": [
+                                        {
+                                          "type": "key",
+                                          "path": "/distributor/dataProviders/*",
+                                          "label": ""
+                                        }
+                                      ]
+                                    },
+                                    "format": "select",
+                                    "hideLabel": true
+                                  }
+                                ],
+                                "skipInNavigation": true,
+                                "skipHeader": true
+                              },
+                              "label": "whitelist"
+                            }
+                          ],
+                          "navigationItem": false,
+                          "skipHeader": true
+                        }
+                      ],
+                      "skipInNavigation": true
+                    }
+                  ],
+                  "label": "{type}",
+                  "skipHeader": true,
+                  "group": "secondary"
+                },
+                {
+                  "key": "gate",
+                  "weight": 100,
+                  "type": "EVALUATION",
+                  "label": "Gate"
+                },
+                {
+                  "key": "data",
+                  "weight": 100,
+                  "type": "DATA_MAPPER",
+                  "default": {
+                    "fieldMap": {
+                      "fields": {
+                        "source": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "source"
+                              }
+                            }
+                          }
+                        },
+                        "salutation": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "salutation"
+                              }
+                            }
+                          }
+                        },
+                        "first_name": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "first_name"
+                              }
+                            }
+                          }
+                        },
+                        "last_name": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "last_name"
+                              }
+                            }
+                          }
+                        },
+                        "email": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "email"
+                              }
+                            }
+                          }
+                        },
+                        "phone": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "phone"
+                              }
+                            }
+                          }
+                        },
+                        "fax": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "fax"
+                              }
+                            }
+                          }
+                        },
+                        "company": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "company"
+                              }
+                            }
+                          }
+                        },
+                        "industry": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "industry"
+                              }
+                            }
+                          }
+                        },
+                        "department": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "department"
+                              }
+                            }
+                          }
+                        },
+                        "job_title": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "job_title"
+                              }
+                            }
+                          }
+                        },
+                        "website": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "website"
+                              }
+                            }
+                          }
+                        },
+                        "annual_revenue": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "annual_revenue"
+                              }
+                            }
+                          }
+                        },
+                        "years_in_business": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "years_in_business"
+                              }
+                            }
+                          }
+                        },
+                        "employees": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "employees"
+                              }
+                            }
+                          }
+                        },
+                        "address_one": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "address_one"
+                              }
+                            }
+                          }
+                        },
+                        "address_two": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "address_two"
+                              }
+                            }
+                          }
+                        },
+                        "zip": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "zip"
+                              }
+                            }
+                          }
+                        },
+                        "city": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "city"
+                              }
+                            }
+                          }
+                        },
+                        "state": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "state"
+                              }
+                            }
+                          }
+                        },
+                        "country": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "country"
+                              }
+                            }
+                          }
+                        },
+                        "territory": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "territory"
+                              }
+                            }
+                          }
+                        },
+                        "is_do_not_call": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "is_do_not_call"
+                              }
+                            }
+                          }
+                        },
+                        "is_do_not_email": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "is_do_not_email"
+                              }
+                            }
+                          }
+                        },
+                        "opted_out": {
+                          "data": {
+                            "type": "field",
+                            "config": {
+                              "field": {
+                                "fieldName": "opted_out"
+                              }
+                            }
+                          }
+                        },
+                        "comments": {
+                          "data": {
+                            "type": "fieldCollector",
+                            "config": {
+                              "fieldCollector": {
+                                "unprocessedOnly": true
+                              }
+                            }
+                          }
+                        }
                       }
                     }
+                  }
+                },
+                {
+                  "key": "url",
+                  "weight": 50,
+                  "type": "STRING",
+                  "required": true,
+                  "validations": [
+                    {
+                      "condition": {
+                        "type": "not-empty",
+                        "config": {
+                          "path": "."
+                        }
+                      },
+                      "message": "Required Field"
+                    }
+                  ],
+                  "label": "URL"
+                },
+                {
+                  "key": "cookies",
+                  "weight": 100,
+                  "type": "MAP",
+                  "default": {
+                    "visitor_id[0-9]+(-hash)?": "{value}"
+                  },
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "{value}",
+                        "suggestedValues": {
+                          "list": {
+                            "{value}": " Value",
+                            "{null}": " Null"
+                          }
+                        },
+                        "label": "Cookie Value"
+                      },
+                      {
+                        "key": "key",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "cookieName",
+                        "label": "Cookie Name/Pattern"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
+                  },
+                  "navigationItem": false
+                },
+                {
+                  "key": "headers",
+                  "weight": 100,
+                  "type": "MAP",
+                  "default": {
+                    "User-Agent": "{value}"
+                  },
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "{value}",
+                        "suggestedValues": {
+                          "list": {
+                            "{value}": " Value",
+                            "{null}": " Null"
+                          }
+                        },
+                        "label": "Header Value"
+                      },
+                      {
+                        "key": "key",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "headerName",
+                        "label": "Header Name/Pattern"
+                      }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   },
                   "navigationItem": false
                 }
@@ -1231,15 +2200,18 @@
             },
             {
               "key": "request",
+              "weight": 100,
               "type": "CONTAINER",
               "values": [
                 {
                   "key": "enabled",
+                  "weight": 10,
                   "type": "BOOLEAN",
                   "default": false
                 },
                 {
                   "key": "async",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "inherit",
                   "allowedValues": {
@@ -1249,10 +2221,12 @@
                       "no": "No"
                     }
                   },
-                  "format": "select"
+                  "format": "select",
+                  "group": "secondary"
                 },
                 {
                   "key": "disableStorage",
+                  "weight": 100,
                   "type": "STRING",
                   "default": "inherit",
                   "allowedValues": {
@@ -1262,28 +2236,33 @@
                       "no": "No"
                     }
                   },
-                  "format": "select"
+                  "format": "select",
+                  "group": "secondary"
                 },
                 {
                   "key": "enableDataProviders",
+                  "weight": 100,
                   "type": "SWITCH",
                   "values": [
                     {
                       "key": "type",
+                      "weight": 100,
                       "type": "STRING",
                       "allowedValues": {
                         "sets": ["restrictedTerms/all"]
                       },
                       "format": "select",
-                      "label": "enableDataProviders",
+                      "label": "Enable Data Providers",
                       "triggers": ["switch"]
                     },
                     {
                       "key": "config",
+                      "weight": 100,
                       "type": "CONTAINER",
                       "values": [
                         {
                           "key": "all",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [],
                           "navigationItem": false,
@@ -1291,6 +2270,7 @@
                         },
                         {
                           "key": "none",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [],
                           "navigationItem": false,
@@ -1298,18 +2278,47 @@
                         },
                         {
                           "key": "blacklist",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [
                             {
-                              "key": "blacklist",
+                              "key": "list",
+                              "weight": 100,
                               "type": "LIST",
-                              "valueTemplate": {
-                                "type": "STRING",
-                                "allowedValues": {
-                                  "references": ["/distributor/dataProviders"]
-                                },
-                                "format": "select",
-                                "hideLabel": true
+                              "dynamicOrder": false,
+                              "itemTemplate": {
+                                "type": "CONTAINER",
+                                "values": [
+                                  {
+                                    "key": "uuid",
+                                    "weight": 100,
+                                    "type": "STRING"
+                                  },
+                                  {
+                                    "key": "weight",
+                                    "weight": 100,
+                                    "type": "INTEGER",
+                                    "default": 0
+                                  },
+                                  {
+                                    "key": "value",
+                                    "weight": 100,
+                                    "type": "STRING",
+                                    "allowedValues": {
+                                      "references": [
+                                        {
+                                          "type": "key",
+                                          "path": "/distributor/dataProviders/*",
+                                          "label": ""
+                                        }
+                                      ]
+                                    },
+                                    "format": "select",
+                                    "hideLabel": true
+                                  }
+                                ],
+                                "skipInNavigation": true,
+                                "skipHeader": true
                               },
                               "label": "blacklist"
                             }
@@ -1319,18 +2328,47 @@
                         },
                         {
                           "key": "whitelist",
+                          "weight": 100,
                           "type": "CONTAINER",
                           "values": [
                             {
-                              "key": "whitelist",
+                              "key": "list",
+                              "weight": 100,
                               "type": "LIST",
-                              "valueTemplate": {
-                                "type": "STRING",
-                                "allowedValues": {
-                                  "references": ["/distributor/dataProviders"]
-                                },
-                                "format": "select",
-                                "hideLabel": true
+                              "dynamicOrder": false,
+                              "itemTemplate": {
+                                "type": "CONTAINER",
+                                "values": [
+                                  {
+                                    "key": "uuid",
+                                    "weight": 100,
+                                    "type": "STRING"
+                                  },
+                                  {
+                                    "key": "weight",
+                                    "weight": 100,
+                                    "type": "INTEGER",
+                                    "default": 0
+                                  },
+                                  {
+                                    "key": "value",
+                                    "weight": 100,
+                                    "type": "STRING",
+                                    "allowedValues": {
+                                      "references": [
+                                        {
+                                          "type": "key",
+                                          "path": "/distributor/dataProviders/*",
+                                          "label": ""
+                                        }
+                                      ]
+                                    },
+                                    "format": "select",
+                                    "hideLabel": true
+                                  }
+                                ],
+                                "skipInNavigation": true,
+                                "skipHeader": true
                               },
                               "label": "whitelist"
                             }
@@ -1338,75 +2376,438 @@
                           "navigationItem": false,
                           "skipHeader": true
                         }
-                      ]
+                      ],
+                      "skipInNavigation": true
                     }
                   ],
                   "label": "{type}",
-                  "skipHeader": true
+                  "skipHeader": true,
+                  "group": "secondary"
                 },
                 {
                   "key": "gate",
+                  "weight": 100,
                   "type": "EVALUATION",
                   "label": "Gate"
                 },
                 {
                   "key": "data",
+                  "weight": 100,
                   "type": "DATA_MAPPER"
                 },
                 {
                   "key": "url",
-                  "type": "STRING"
+                  "weight": 50,
+                  "type": "STRING",
+                  "required": true,
+                  "validations": [
+                    {
+                      "condition": {
+                        "type": "not-empty",
+                        "config": {
+                          "path": "."
+                        }
+                      },
+                      "message": "Required Field"
+                    }
+                  ],
+                  "label": "URL"
                 },
                 {
                   "key": "cookies",
+                  "weight": 100,
                   "type": "MAP",
-                  "keyTemplate": {
-                    "type": "STRING",
-                    "default": "cookieName"
-                  },
-                  "valueTemplate": {
-                    "type": "STRING",
-                    "default": "{value}",
-                    "suggestedValues": {
-                      "list": {
-                        "{value}": " Value",
-                        "{null}": " Null"
+                  "default": [],
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "{value}",
+                        "suggestedValues": {
+                          "list": {
+                            "{value}": " Value",
+                            "{null}": " Null"
+                          }
+                        },
+                        "label": "Cookie Value"
+                      },
+                      {
+                        "key": "key",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "cookieName",
+                        "label": "Cookie Name/Pattern"
                       }
-                    }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   },
                   "navigationItem": false
                 },
                 {
                   "key": "headers",
+                  "weight": 100,
                   "type": "MAP",
-                  "keyTemplate": {
-                    "type": "STRING",
-                    "default": "headerName"
-                  },
-                  "valueTemplate": {
-                    "type": "STRING",
-                    "default": "{value}",
-                    "suggestedValues": {
-                      "list": {
-                        "{value}": " Value",
-                        "{null}": " Null"
+                  "default": [],
+                  "dynamicOrder": false,
+                  "itemTemplate": {
+                    "type": "CONTAINER",
+                    "values": [
+                      {
+                        "key": "uuid",
+                        "weight": 100,
+                        "type": "STRING"
+                      },
+                      {
+                        "key": "weight",
+                        "weight": 100,
+                        "type": "INTEGER",
+                        "default": 0
+                      },
+                      {
+                        "key": "value",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "{value}",
+                        "suggestedValues": {
+                          "list": {
+                            "{value}": " Value",
+                            "{null}": " Null"
+                          }
+                        },
+                        "label": "Header Value"
+                      },
+                      {
+                        "key": "key",
+                        "weight": 100,
+                        "type": "STRING",
+                        "default": "headerName",
+                        "label": "Header Name/Pattern"
                       }
-                    }
+                    ],
+                    "skipInNavigation": true,
+                    "skipHeader": true
                   },
                   "navigationItem": false
                 }
               ],
               "navigationItem": false,
               "skipHeader": true
+            },
+            {
+              "key": "cache",
+              "weight": 100,
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "type",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "route",
+                  "allowedValues": {
+                    "list": {
+                      "route": "Inherit from Route",
+                      "custom": "Custom"
+                    }
+                  },
+                  "format": "select"
+                },
+                {
+                  "key": "routeId",
+                  "weight": 100,
+                  "type": "STRING",
+                  "allowedValues": {
+                    "references": [
+                      {
+                        "type": "key",
+                        "path": "/distributor/routes/*",
+                        "label": "{value/type} {value/pass}"
+                      }
+                    ]
+                  },
+                  "format": "select",
+                  "visibility": {
+                    "type": "and",
+                    "config": [
+                      {
+                        "type": "in",
+                        "config": {
+                          "path": "../type",
+                          "list": {
+                            "list": {
+                              "route": "Route"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "label": "Route"
+                },
+                {
+                  "key": "custom",
+                  "weight": 100,
+                  "type": "CONTAINER",
+                  "values": [
+                    {
+                      "key": "enabled",
+                      "weight": 10,
+                      "type": "BOOLEAN",
+                      "default": false
+                    },
+                    {
+                      "key": "enableDataProviders",
+                      "weight": 100,
+                      "type": "SWITCH",
+                      "values": [
+                        {
+                          "key": "type",
+                          "weight": 100,
+                          "type": "STRING",
+                          "allowedValues": {
+                            "sets": ["restrictedTerms/all"]
+                          },
+                          "format": "select",
+                          "label": "Enable Data Providers",
+                          "triggers": ["switch"]
+                        },
+                        {
+                          "key": "config",
+                          "weight": 100,
+                          "type": "CONTAINER",
+                          "values": [
+                            {
+                              "key": "all",
+                              "weight": 100,
+                              "type": "CONTAINER",
+                              "values": [],
+                              "navigationItem": false,
+                              "skipHeader": true
+                            },
+                            {
+                              "key": "none",
+                              "weight": 100,
+                              "type": "CONTAINER",
+                              "values": [],
+                              "navigationItem": false,
+                              "skipHeader": true
+                            },
+                            {
+                              "key": "blacklist",
+                              "weight": 100,
+                              "type": "CONTAINER",
+                              "values": [
+                                {
+                                  "key": "list",
+                                  "weight": 100,
+                                  "type": "LIST",
+                                  "dynamicOrder": false,
+                                  "itemTemplate": {
+                                    "type": "CONTAINER",
+                                    "values": [
+                                      {
+                                        "key": "uuid",
+                                        "weight": 100,
+                                        "type": "STRING"
+                                      },
+                                      {
+                                        "key": "weight",
+                                        "weight": 100,
+                                        "type": "INTEGER",
+                                        "default": 0
+                                      },
+                                      {
+                                        "key": "value",
+                                        "weight": 100,
+                                        "type": "STRING",
+                                        "allowedValues": {
+                                          "references": [
+                                            {
+                                              "type": "key",
+                                              "path": "/distributor/dataProviders/*",
+                                              "label": ""
+                                            }
+                                          ]
+                                        },
+                                        "format": "select",
+                                        "hideLabel": true
+                                      }
+                                    ],
+                                    "skipInNavigation": true,
+                                    "skipHeader": true
+                                  },
+                                  "label": "blacklist"
+                                }
+                              ],
+                              "navigationItem": false,
+                              "skipHeader": true
+                            },
+                            {
+                              "key": "whitelist",
+                              "weight": 100,
+                              "type": "CONTAINER",
+                              "values": [
+                                {
+                                  "key": "list",
+                                  "weight": 100,
+                                  "type": "LIST",
+                                  "dynamicOrder": false,
+                                  "itemTemplate": {
+                                    "type": "CONTAINER",
+                                    "values": [
+                                      {
+                                        "key": "uuid",
+                                        "weight": 100,
+                                        "type": "STRING"
+                                      },
+                                      {
+                                        "key": "weight",
+                                        "weight": 100,
+                                        "type": "INTEGER",
+                                        "default": 0
+                                      },
+                                      {
+                                        "key": "value",
+                                        "weight": 100,
+                                        "type": "STRING",
+                                        "allowedValues": {
+                                          "references": [
+                                            {
+                                              "type": "key",
+                                              "path": "/distributor/dataProviders/*",
+                                              "label": ""
+                                            }
+                                          ]
+                                        },
+                                        "format": "select",
+                                        "hideLabel": true
+                                      }
+                                    ],
+                                    "skipInNavigation": true,
+                                    "skipHeader": true
+                                  },
+                                  "label": "whitelist"
+                                }
+                              ],
+                              "navigationItem": false,
+                              "skipHeader": true
+                            }
+                          ],
+                          "skipInNavigation": true
+                        }
+                      ],
+                      "label": "{type}",
+                      "skipHeader": true,
+                      "group": "secondary"
+                    },
+                    {
+                      "key": "gate",
+                      "weight": 100,
+                      "type": "EVALUATION",
+                      "label": "Gate"
+                    },
+                    {
+                      "key": "data",
+                      "weight": 100,
+                      "type": "DATA_MAPPER"
+                    },
+                    {
+                      "key": "identifierCollectorId",
+                      "weight": 90,
+                      "type": "STRING",
+                      "allowedValues": {
+                        "sets": ["identifierCollector/all"]
+                      },
+                      "format": "select",
+                      "label": "IdentifierCollector"
+                    }
+                  ],
+                  "visibility": {
+                    "type": "and",
+                    "config": [
+                      {
+                        "type": "in",
+                        "config": {
+                          "path": "../type",
+                          "list": {
+                            "list": {
+                              "custom": "Custom"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "navigationItem": false,
+                  "skipHeader": true
+                }
+              ],
+              "navigationItem": false,
+              "skipHeader": true
             }
-          ]
+          ],
+          "skipInNavigation": true
         },
         {
           "key": "pass",
-          "type": "STRING"
+          "weight": 100,
+          "type": "STRING",
+          "strictValidations": [
+            {
+              "condition": {
+                "type": "or",
+                "config": [
+                  {
+                    "type": "unique",
+                    "config": {
+                      "valuePath": ".",
+                      "pathPattern": "../../../*/value/pass"
+                    }
+                  },
+                  {
+                    "type": "empty",
+                    "config": {
+                      "path": "."
+                    }
+                  }
+                ]
+              },
+              "message": "Route pass name must be unique"
+            }
+          ],
+          "visibility": {
+            "type": "and",
+            "config": [
+              {
+                "type": "not",
+                "config": {
+                  "type": "unique",
+                  "config": {
+                    "valuePath": "../type",
+                    "pathPattern": "../../../*/value/type"
+                  }
+                }
+              }
+            ]
+          }
         }
       ],
-      "label": "{type}"
+      "label": "{type} {pass}"
     }
   },
   "schema": {
@@ -1414,59 +2815,138 @@
     "values": [
       {
         "key": "metaData",
+        "weight": 100,
         "type": "CONTAINER",
         "values": [
           {
             "key": "name",
+            "weight": 100,
             "type": "STRING"
           },
           {
             "key": "includes",
+            "weight": 100,
             "type": "LIST",
-            "valueTemplate": {
-              "type": "STRING",
-              "allowedValues": {
-                "sets": ["document/all"]
-              },
-              "format": "select",
-              "label": "INCLUDE"
+            "dynamicOrder": true,
+            "itemTemplate": {
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "uuid",
+                  "weight": 100,
+                  "type": "STRING"
+                },
+                {
+                  "key": "weight",
+                  "weight": 100,
+                  "type": "INTEGER",
+                  "default": 0
+                },
+                {
+                  "key": "value",
+                  "weight": 100,
+                  "type": "STRING",
+                  "allowedValues": {
+                    "sets": ["document/all"]
+                  },
+                  "format": "select",
+                  "label": "INCLUDE"
+                }
+              ],
+              "skipInNavigation": true,
+              "skipHeader": true
             },
             "navigationItem": false
           }
-        ]
+        ],
+        "label": "Document"
       },
       {
         "key": "valueMaps",
+        "weight": 100,
         "type": "MAP",
-        "keyTemplate": {
-          "type": "STRING",
-          "default": "mapKey"
-        },
-        "valueTemplate": {
-          "type": "MAP",
-          "keyTemplate": {
-            "type": "STRING",
-            "default": "mapKey"
-          },
-          "valueTemplate": {
-            "type": "STRING"
-          }
+        "dynamicOrder": false,
+        "itemTemplate": {
+          "type": "CONTAINER",
+          "values": [
+            {
+              "key": "uuid",
+              "weight": 100,
+              "type": "STRING"
+            },
+            {
+              "key": "weight",
+              "weight": 100,
+              "type": "INTEGER",
+              "default": 0
+            },
+            {
+              "key": "value",
+              "weight": 100,
+              "type": "MAP",
+              "dynamicOrder": false,
+              "itemTemplate": {
+                "type": "CONTAINER",
+                "values": [
+                  {
+                    "key": "uuid",
+                    "weight": 100,
+                    "type": "STRING"
+                  },
+                  {
+                    "key": "weight",
+                    "weight": 100,
+                    "type": "INTEGER",
+                    "default": 0
+                  },
+                  {
+                    "key": "value",
+                    "weight": 100,
+                    "type": "STRING",
+                    "label": "{../key}"
+                  },
+                  {
+                    "key": "key",
+                    "weight": 100,
+                    "type": "STRING",
+                    "default": "mapKey"
+                  }
+                ],
+                "skipInNavigation": true,
+                "skipHeader": true
+              },
+              "label": "{../key}"
+            },
+            {
+              "key": "key",
+              "weight": 100,
+              "type": "STRING",
+              "default": "mapName",
+              "label": "Value Map Name"
+            }
+          ],
+          "skipInNavigation": true,
+          "skipHeader": true
         }
       },
       {
         "key": "identifier",
+        "weight": 100,
         "type": "CONTAINER",
         "values": [
           {
             "key": "collectors",
+            "weight": 100,
             "type": "CONTAINER",
             "values": [
               {
                 "key": "pardot",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   }
@@ -1478,27 +2958,33 @@
       },
       {
         "key": "collector",
+        "weight": 100,
         "type": "CONTAINER",
         "values": [
           {
             "key": "collectors",
+            "weight": 100,
             "type": "CONTAINER",
             "values": [
               {
                 "key": "pardot",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "dataMap",
+                    "weight": 100,
                     "type": "DATA_MAPPER"
                   },
                   {
                     "key": "outputMode",
+                    "weight": 100,
                     "type": "STRING",
                     "default": "simple",
                     "allowedValues": {
@@ -1506,227 +2992,214 @@
                         "simple": "Simple",
                         "full": "Full"
                       }
-                    }
+                    },
+                    "format": "select"
                   }
                 ]
               }
             ]
+          },
+          {
+            "key": "dataTransformations",
+            "weight": 100,
+            "type": "MAP",
+            "dynamicOrder": false,
+            "itemTemplate": {
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "uuid",
+                  "weight": 100,
+                  "type": "STRING"
+                },
+                {
+                  "key": "weight",
+                  "weight": 100,
+                  "type": "INTEGER",
+                  "default": 0
+                },
+                {
+                  "key": "value",
+                  "weight": 100,
+                  "type": "CONTAINER",
+                  "values": [
+                    {
+                      "key": "visibility",
+                      "weight": 100,
+                      "type": "STRING",
+                      "default": "disabled",
+                      "allowedValues": {
+                        "list": {
+                          "disabled": "Disabled",
+                          "private": "Private",
+                          "public": "Public"
+                        }
+                      },
+                      "format": "select"
+                    },
+                    {
+                      "key": "dataMap",
+                      "weight": 100,
+                      "type": "DATA_MAPPER"
+                    }
+                  ],
+                  "label": "{../key}"
+                },
+                {
+                  "key": "key",
+                  "weight": 100,
+                  "type": "STRING",
+                  "default": "transformationName"
+                }
+              ],
+              "skipInNavigation": true,
+              "skipHeader": true
+            }
           }
         ]
       },
       {
         "key": "distributor",
+        "weight": 100,
         "type": "CONTAINER",
         "values": [
           {
             "key": "async",
+            "weight": 100,
             "type": "BOOLEAN",
             "default": false
           },
           {
             "key": "disableStorage",
+            "weight": 100,
             "type": "BOOLEAN",
             "default": false
           },
           {
             "key": "routes",
+            "weight": 100,
             "type": "LIST",
-            "default": [
-              {
-                "type": "pardotCache",
-                "pass": "",
-                "config": {
-                  "pardotCache": {
-                    "override": false,
-                    "overrideConfig": {
-                      "enabled": false,
-                      "enableDataProviders": {
-                        "type": "all",
-                        "config": {
-                          "all": []
-                        }
-                      },
-                      "gate": {
-                        "type": "true",
-                        "config": {
-                          "true": []
-                        }
-                      },
-                      "data": {
-                        "fields": {
-                          "enabled": false,
-                          "overwrite": false,
-                          "fields": []
-                        },
-                        "passthroughFields": {
-                          "enabled": false,
-                          "overwrite": false
-                        },
-                        "ignoreEmptyFields": {
-                          "enabled": false
-                        },
-                        "excludeFields": {
-                          "enabled": false,
-                          "fields": ""
-                        }
-                      },
-                      "url": "",
-                      "cookies": [],
-                      "headers": []
-                    }
-                  }
+            "dynamicOrder": true,
+            "itemTemplate": {
+              "type": "CONTAINER",
+              "values": [
+                {
+                  "key": "uuid",
+                  "weight": 100,
+                  "type": "STRING"
+                },
+                {
+                  "key": "weight",
+                  "weight": 100,
+                  "type": "INTEGER",
+                  "default": 0
+                },
+                {
+                  "key": "value",
+                  "weight": 100,
+                  "type": "ROUTE"
                 }
-              },
-              {
-                "type": "pardot",
-                "pass": "",
-                "config": {
-                  "pardot": {
-                    "enabled": false,
-                    "async": "inherit",
-                    "disableStorage": "inherit",
-                    "enableDataProviders": {
-                      "type": "all",
-                      "config": {
-                        "all": []
-                      }
-                    },
-                    "gate": {
-                      "type": "true",
-                      "config": {
-                        "true": []
-                      }
-                    },
-                    "data": {
-                      "fields": {
-                        "enabled": false,
-                        "overwrite": false,
-                        "fields": []
-                      },
-                      "passthroughFields": {
-                        "enabled": false,
-                        "overwrite": false
-                      },
-                      "ignoreEmptyFields": {
-                        "enabled": false
-                      },
-                      "excludeFields": {
-                        "enabled": false,
-                        "fields": ""
-                      }
-                    },
-                    "url": "",
-                    "cookies": [],
-                    "headers": []
-                  }
-                }
-              },
-              {
-                "type": "request",
-                "pass": "",
-                "config": {
-                  "request": {
-                    "enabled": false,
-                    "async": "inherit",
-                    "disableStorage": "inherit",
-                    "enableDataProviders": {
-                      "type": "all",
-                      "config": {
-                        "all": []
-                      }
-                    },
-                    "gate": {
-                      "type": "true",
-                      "config": {
-                        "true": []
-                      }
-                    },
-                    "data": {
-                      "fields": {
-                        "enabled": false,
-                        "overwrite": false,
-                        "fields": []
-                      },
-                      "passthroughFields": {
-                        "enabled": false,
-                        "overwrite": false
-                      },
-                      "ignoreEmptyFields": {
-                        "enabled": false
-                      },
-                      "excludeFields": {
-                        "enabled": false,
-                        "fields": ""
-                      }
-                    },
-                    "url": "",
-                    "cookies": [],
-                    "headers": []
-                  }
-                }
-              }
-            ],
-            "valueTemplate": {
-              "type": "ROUTE"
+              ],
+              "skipInNavigation": true,
+              "skipHeader": true
             }
           },
           {
             "key": "dataProviders",
+            "weight": 100,
             "type": "CONTAINER",
             "values": [
               {
                 "key": "collector",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   },
                   {
                     "key": "dataMap",
+                    "weight": 100,
                     "type": "DATA_MAPPER"
                   }
                 ]
               },
               {
                 "key": "cookie",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   },
                   {
                     "key": "cookieFieldMap",
+                    "weight": 100,
                     "type": "MAP",
-                    "keyTemplate": {
-                      "type": "STRING",
-                      "default": "mapKey"
-                    },
-                    "valueTemplate": {
-                      "type": "STRING"
+                    "dynamicOrder": false,
+                    "itemTemplate": {
+                      "type": "CONTAINER",
+                      "values": [
+                        {
+                          "key": "uuid",
+                          "weight": 100,
+                          "type": "STRING"
+                        },
+                        {
+                          "key": "weight",
+                          "weight": 100,
+                          "type": "INTEGER",
+                          "default": 0
+                        },
+                        {
+                          "key": "value",
+                          "weight": 100,
+                          "type": "STRING",
+                          "label": "{../key}"
+                        },
+                        {
+                          "key": "key",
+                          "weight": 100,
+                          "type": "STRING",
+                          "default": "mapKey"
+                        }
+                      ],
+                      "skipInNavigation": true,
+                      "skipHeader": true
                     },
                     "navigationItem": false
                   }
@@ -1734,25 +3207,32 @@
               },
               {
                 "key": "ipAddress",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   },
                   {
                     "key": "field",
+                    "weight": 100,
                     "type": "STRING",
                     "default": "ip_address"
                   }
@@ -1760,33 +3240,64 @@
               },
               {
                 "key": "requestVariables",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   },
                   {
                     "key": "variableFieldMap",
+                    "weight": 100,
                     "type": "MAP",
-                    "keyTemplate": {
-                      "type": "STRING",
-                      "default": "variableName"
-                    },
-                    "valueTemplate": {
-                      "type": "STRING",
-                      "default": "fieldName"
+                    "dynamicOrder": false,
+                    "itemTemplate": {
+                      "type": "CONTAINER",
+                      "values": [
+                        {
+                          "key": "uuid",
+                          "weight": 100,
+                          "type": "STRING"
+                        },
+                        {
+                          "key": "weight",
+                          "weight": 100,
+                          "type": "INTEGER",
+                          "default": 0
+                        },
+                        {
+                          "key": "value",
+                          "weight": 100,
+                          "type": "STRING",
+                          "default": "fieldName",
+                          "label": "{../key}"
+                        },
+                        {
+                          "key": "key",
+                          "weight": 100,
+                          "type": "STRING",
+                          "default": "variableName"
+                        }
+                      ],
+                      "skipInNavigation": true,
+                      "skipHeader": true
                     },
                     "navigationItem": false
                   }
@@ -1794,30 +3305,38 @@
               },
               {
                 "key": "timestamp",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   },
                   {
                     "key": "field",
+                    "weight": 100,
                     "type": "STRING",
                     "default": "timestamp"
                   },
                   {
                     "key": "format",
+                    "weight": 100,
                     "type": "STRING",
                     "default": "c"
                   }
@@ -1825,72 +3344,92 @@
               },
               {
                 "key": "adwordsCampaigns",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   }
                 ]
               },
               {
                 "key": "adwords",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   }
                 ]
               },
               {
                 "key": "contentElement",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   },
                   {
                     "key": "field",
+                    "weight": 100,
                     "type": "STRING",
                     "default": ""
                   },
                   {
                     "key": "ttContentUid",
+                    "weight": 100,
                     "type": "INTEGER",
                     "default": 0
                   }
@@ -1898,25 +3437,32 @@
               },
               {
                 "key": "languageCode",
+                "weight": 100,
                 "type": "CONTAINER",
                 "values": [
                   {
                     "key": "enabled",
+                    "weight": 100,
                     "type": "BOOLEAN",
                     "default": false
                   },
                   {
                     "key": "mustExist",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": false
+                    "default": false,
+                    "group": "secondary"
                   },
                   {
                     "key": "mustBeEmpty",
+                    "weight": 100,
                     "type": "BOOLEAN",
-                    "default": true
+                    "default": true,
+                    "group": "secondary"
                   },
                   {
                     "key": "field",
+                    "weight": 100,
                     "type": "STRING",
                     "default": "language"
                   }

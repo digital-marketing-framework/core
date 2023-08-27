@@ -6,7 +6,7 @@
     "siblings": 0,
     "religion": ""
   },
-  "ideas": [],
+  "ideas": {},
   "translations": {},
   "switchable_thing": {
     "type": "here",
@@ -23,7 +23,7 @@
   },
   "my_tree": {
     "value": "",
-    "children": []
+    "children": {}
   },
   "this_or_that": {
     "type": "this",

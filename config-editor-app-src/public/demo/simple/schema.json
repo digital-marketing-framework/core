@@ -24,8 +24,24 @@
         {
           "key": "children",
           "type": "LIST",
-          "valueTemplate": {
-            "type": "MY_RECURSIVE_CUSTOM_TYPE"
+          "itemTemplate": {
+            "type": "CONTAINER",
+            "values": [
+              {
+                "key": "uuid",
+                "type": "STRING"
+              },
+              {
+                "key": "weight",
+                "type": "INTEGER"
+              },
+              {
+                "key": "value",
+                "type": "MY_RECURSIVE_CUSTOM_TYPE"
+              }
+            ],
+            "skipInNavigation": true,
+            "skipHeader": true
           }
         }
       ]
@@ -95,8 +111,24 @@
       {
         "key": "ideas",
         "type": "LIST",
-        "valueTemplate": {
-          "type": "STRING"
+        "itemTemplate": {
+          "type": "CONTAINER",
+          "values": [
+            {
+              "key": "uuid",
+              "type": "STRING"
+            },
+            {
+              "key": "weight",
+              "type": "INTEGER"
+            },
+            {
+              "key": "value",
+              "type": "STRING"
+            }
+          ],
+          "skipInNavigation": true,
+          "skipHeader": true
         }
       },
       {
