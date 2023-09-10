@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\Tests;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 use DigitalMarketingFramework\Core\Utility\MapUtility;
 
-trait DataProcessorTestTrait
+trait ListMapTestTrait
 {
     protected static function createListItem(mixed $value, string $id, int $weight = 10): array
     {

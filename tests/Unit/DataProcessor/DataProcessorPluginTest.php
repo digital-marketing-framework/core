@@ -10,14 +10,14 @@ use DigitalMarketingFramework\Core\DataProcessor\FieldTrackerInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
-use DigitalMarketingFramework\Core\Tests\DataProcessorTestTrait;
+use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 abstract class DataProcessorPluginTest extends TestCase
 {
-    use DataProcessorTestTrait;
+    use ListMapTestTrait;
     use MultiValueTestTrait;
 
     protected const KEYWORD = '';

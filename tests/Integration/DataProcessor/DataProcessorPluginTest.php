@@ -2,49 +2,26 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
-use DigitalMarketingFramework\Core\CoreInitalization;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\BinaryComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
-use DigitalMarketingFramework\Core\Registry\Registry;
-use DigitalMarketingFramework\Core\Registry\RegistryDomain;
-use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
-use DigitalMarketingFramework\Core\Tests\DataProcessorTestTrait;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+
+use DigitalMarketingFramework\Core\Tests\Integration\CoreRegistryTestTrait;
 
 abstract class DataProcessorPluginTest extends TestCase
 {
+    use CoreRegistryTestTrait;
     use MultiValueTestTrait;
-    use DataProcessorTestTrait;
+    use ListMapTestTrait;
 
     protected const KEYWORD = '';
-
-    protected RegistryInterface $registry;
-
-    protected ConfigurationDocumentStorageInterface&MockObject $configurationDocumentStorage;
-    protected ConfigurationDocumentParserInterface&MockObject $configurationDocumentParser;
 
     public function setUp(): void
     {
         $this->initRegistry();
-    }
-
-    protected function initRegistry(): void
-    {
-        $this->registry = new Registry();
-
-        $this->configurationDocumentStorage = $this->createMock(ConfigurationDocumentStorageInterface::class);
-        $this->registry->setConfigurationDocumentStorage($this->configurationDocumentStorage);
-
-        $this->configurationDocumentParser = $this->createMock(ConfigurationDocumentParserInterface::class);
-        $this->registry->setConfigurationDocumentParser($this->configurationDocumentParser);
-
-        $initialization = new CoreInitalization();
-        $initialization->init(RegistryDomain::CORE, $this->registry);
     }
 
     protected function getValueSourceConfiguration(array $config, ?string $keyword = null): array

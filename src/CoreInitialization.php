@@ -51,7 +51,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryDomain;
 
-class CoreInitalization extends Initialization
+class CoreInitialization extends Initialization
 {
     protected const PLUGINS = [
         RegistryDomain::CORE => [

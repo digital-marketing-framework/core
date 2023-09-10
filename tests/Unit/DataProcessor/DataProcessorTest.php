@@ -15,13 +15,13 @@ use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
-use DigitalMarketingFramework\Core\Tests\DataProcessorTestTrait;
+use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DataProcessorTest extends TestCase
 {
-    use DataProcessorTestTrait;
+    use ListMapTestTrait;
 
     protected RegistryInterface&MockObject $registry;
 

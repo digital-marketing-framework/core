@@ -8,13 +8,19 @@ use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginT
 
 abstract class EvaluationTest extends DataProcessorPluginTest
 {
+    protected const DEFAULT_CONFIG = [];
+
     protected EvaluationInterface $subject;
 
-    protected function processEvaluation(array $config, ?DataProcessorContextInterface $context = null): bool
+    protected function processEvaluation(array $config, ?DataProcessorContextInterface $context = null, ?array $defaultConfig = null): bool
     {
+        if ($defaultConfig === null) {
+            $defaultConfig = static::DEFAULT_CONFIG;
+        }
         $class = static::CLASS_NAME;
         $this->subject = new $class(static::KEYWORD, $this->registry, $config, $context ?? $this->getContext());
         $this->subject->setDataProcessor($this->dataProcessor);
+        $this->subject->setDefaultConfiguration($defaultConfig);
         return $this->subject->evaluate();
     }
 }

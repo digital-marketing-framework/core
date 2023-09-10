@@ -12,11 +12,11 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
 
     public function __construct(
         string $keyword,
-        RegistryInterface $registry,
+        protected RegistryInterface $registry,
         protected array $configuration,
         protected DataProcessorContextInterface $context,
     ) {
-        parent::__construct($keyword, $registry);
+        parent::__construct($keyword);
     }
 
     protected function fieldExists($key, bool $markAsProcessed = true): bool
