@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
 
 class ValueSchema extends ContainerSchema
@@ -24,5 +25,18 @@ class ValueSchema extends ContainerSchema
         $valueModifier = new CustomSchema(ValueModifierSchema::TYPE);
         $valueModifiers = new ListSchema($valueModifier);
         $this->addProperty(DataProcessor::KEY_MODIFIERS, $valueModifiers);
+    }
+
+    public static function createStandardValueConfiguration(string $type, array $config = []): array
+    {
+        $valueConfiguration = [
+            DataProcessor::KEY_DATA => [
+                SwitchSchema::KEY_TYPE => $type,
+            ],
+        ];
+        if (!empty($config)) {
+            $valueConfiguration[DataProcessor::KEY_DATA][SwitchSchema::KEY_CONFIG][$type] = $config;
+        }
+        return $valueConfiguration;
     }
 }

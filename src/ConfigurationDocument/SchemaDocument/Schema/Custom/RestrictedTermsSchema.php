@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
@@ -22,7 +23,7 @@ class RestrictedTermsSchema extends SwitchSchema
     {
         $listItemSchema = new StringSchema();
         $listItemSchema->getAllowedValues()->addReference($referencePath, $referenceType);
-        $listItemSchema->getRenderingDefinition()->setFormat('select');
+        $listItemSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $listItemSchema->getRenderingDefinition()->hideLabel(true);
         $listSchema = new ListSchema($listItemSchema);
         $listSchema->getRenderingDefinition()->setLabel($name);

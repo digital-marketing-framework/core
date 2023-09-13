@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
@@ -24,14 +25,14 @@ class ComparisonSchema extends ContainerSchema
         $anyAll = new StringSchema();
         $anyAll->getAllowedValues()->addValue(Comparison::VALUE_ANY_ALL_ANY);
         $anyAll->getAllowedValues()->addValue(Comparison::VALUE_ANY_ALL_ALL);
-        $anyAll->getRenderingDefinition()->setFormat('select');
+        $anyAll->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $anyAll->getRenderingDefinition()->setSkipHeader(true);
         $anyAll->getRenderingDefinition()->addVisibilityConditionByValue('../' . Comparison::KEY_OPERATION)->addValueSet(static::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS);
         // $anyAll->getRenderingDefinition()->addVisibilityConditionByValue('../data/type')->addValueSet(ValueSourceSchema::VALUE_SET_VALUE_SOURCE_CAN_BE_MULTI_VALUE);
 
         $operation = new StringSchema();
         $operation->getAllowedValues()->addValueSet(static::VALUE_SET_ALL);
-        $operation->getRenderingDefinition()->setFormat('select');
+        $operation->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $operation->getRenderingDefinition()->setSkipHeader(true);
 
         $secondOperand = new CustomSchema(ValueSchema::TYPE);

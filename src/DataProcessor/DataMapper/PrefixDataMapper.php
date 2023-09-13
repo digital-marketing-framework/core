@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapper;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
@@ -72,7 +73,7 @@ class PrefixDataMapper extends DataMapper
         $action = new StringSchema(static::DEFAULT_ACTION);
         $action->getAllowedValues()->addValue(static::ACTION_ADD);
         $action->getAllowedValues()->addValue(static::ACTION_REMOVE);
-        $action->getRenderingDefinition()->setFormat('select');
+        $action->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $schema->addProperty(static::KEY_ACTION, $action);
 
         return $schema;

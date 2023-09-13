@@ -9,6 +9,10 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\Sc
 interface RenderingDefinitionInterface
 {
     public const FORMAT_SELECT = 'select';
+    public const FORMAT_TEXT = 'text';
+    public const FORMAT_HIDDEN = 'hidden';
+
+    public const TRIGGER_SWITCH = 'switch';
 
     public const GROUP_SECONDARY = 'secondary';
 

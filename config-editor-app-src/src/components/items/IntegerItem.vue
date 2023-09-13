@@ -24,7 +24,13 @@ const item = computed(() => store.getItem(props.currentPath));
     <GenericScalarItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldUi>
             <div class="mt-2">
-                <input :id="'input_' + currentPath"
+                <input v-if="item.schema.format === 'hidden'"
+                    :id="'input_' + currentPath"
+                    :name="'input_' + currentPath"
+                    v-model="item.parentValue[item.currentKey]"
+                    type="hidden" />
+                <input v-else
+                    :id="'input_' + currentPath"
                     :name="'input_' + currentPath"
                     v-model="item.parentValue[item.currentKey]"
                     type="number"
@@ -34,7 +40,7 @@ const item = computed(() => store.getItem(props.currentPath));
                     :class="{
                         'todo-class-readonly bg-neutral-100': store.settings.readonly
                     }"
-                    :disabled="store.settings.readonly">
+                    :disabled="store.settings.readonly" />
             </div>
         </template>
     </GenericScalarItem>

@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 
 class InheritableBooleanSchema extends StringSchema
@@ -17,7 +18,7 @@ class InheritableBooleanSchema extends StringSchema
         $this->getAllowedValues()->addValue(static::VALUE_TRUE);
         $this->getAllowedValues()->addValue(static::VALUE_FALSE);
         $this->setDefaultValue(static::VALUE_INHERIT);
-        $this->getRenderingDefinition()->setFormat('select');
+        $this->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
     }
 
     /**

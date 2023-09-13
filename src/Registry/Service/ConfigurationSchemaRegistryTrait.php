@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
@@ -85,8 +86,8 @@ trait ConfigurationSchemaRegistryTrait
         $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_DOCUMENT_NAME, $nameSchema);
         $includeSchema = new StringSchema();
         $includeSchema->getAllowedValues()->addValueSet('document/all');
-        $includeSchema->getRenderingDefinition()->setFormat('select');
-        $includeSchema->getRenderingDefinition()->setLabel('INCLUDE');
+        $includeSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
+        $includeSchema->getRenderingDefinition()->setLabel('Document');
         $includeListSchema = new ListSchema($includeSchema);
         $includeListSchema->getRenderingDefinition()->setNavigationItem(false);
         $includeListSchema->setDynamicOrder(true);

@@ -39,6 +39,11 @@ const item = computed(() => store.getItem(props.currentPath));
                     :class="{
                         'todo-class-readonly bg-neutral-100': store.settings.readonly
                     }" />
+                <input v-else-if="item.schema.format === 'hidden'"
+                    :id="'input_' + currentPath"
+                    :name="'input_' + currentPath"
+                    v-model="item.parentValue[item.currentKey]"
+                    type="hidden" />
                 <input v-else
                     :id="'input_' + currentPath"
                     :name="'input_' + currentPath"

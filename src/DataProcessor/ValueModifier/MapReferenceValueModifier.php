@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
@@ -40,7 +41,7 @@ class MapReferenceValueModifier extends ValueModifier
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $mapNameSchema = new StringSchema();
-        $mapNameSchema->getRenderingDefinition()->setFormat('select');
+        $mapNameSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $mapNameSchema->getAllowedValues()->addReference('/valueMaps/*', label:'{key}');
         $schema->addProperty(static::KEY_MAP_NAME, $mapNameSchema);
         $schema->addProperty(static::KEY_INVERT, new BooleanSchema(false));

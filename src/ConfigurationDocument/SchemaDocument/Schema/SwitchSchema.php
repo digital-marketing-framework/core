@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
@@ -29,8 +30,8 @@ class SwitchSchema extends ContainerSchema
         $this->getRenderingDefinition()->setLabel('{type}');
 
         $this->typeSchema = new StringSchema();
-        $this->typeSchema->getRenderingDefinition()->setFormat('select');
-        $this->typeSchema->getRenderingDefinition()->addTrigger('switch');
+        $this->typeSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
+        $this->typeSchema->getRenderingDefinition()->addTrigger(RenderingDefinitionInterface::TRIGGER_SWITCH);
         $this->typeSchema->getAllowedValues()->addValueSet($this->switchName . '/all');
 
         $this->configSchema = new ContainerSchema();
