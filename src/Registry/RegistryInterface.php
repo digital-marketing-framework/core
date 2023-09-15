@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryInterface;
 
 interface RegistryInterface extends
     GlobalConfigurationRegistryInterface,
@@ -22,6 +23,7 @@ interface RegistryInterface extends
     ConfigurationSchemaRegistryInterface,
     ConfigurationDocumentManagerRegistryInterface,
     FileStorageRegistryInterface,
+    TemplateEngineRegistryInterface,
 
     DataProcessorRegistryInterface,
     IdentifierCollectorRegistryInterface

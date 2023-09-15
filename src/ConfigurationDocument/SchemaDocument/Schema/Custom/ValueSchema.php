@@ -24,6 +24,7 @@ class ValueSchema extends ContainerSchema
 
         $valueModifier = new CustomSchema(ValueModifierSchema::TYPE);
         $valueModifiers = new ListSchema($valueModifier);
+        $valueModifiers->getRenderingDefinition()->addVisibilityConditionByValue('../' . DataProcessor::KEY_DATA . '/' . SwitchSchema::KEY_TYPE)->addValueSet('valueSource/modifiable');
         $this->addProperty(DataProcessor::KEY_MODIFIERS, $valueModifiers);
     }
 

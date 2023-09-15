@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
@@ -15,9 +16,14 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\P
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
+use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineInterface;
 
 trait ConfigurationSchemaRegistryTrait
 {
+    use DataProcessorRegistryTrait;
+    use TemplateEngineRegistryTrait;
+
     protected array $schemaVersion = [];
     protected SchemaDocument $schemaDocument;
 
@@ -71,7 +77,10 @@ trait ConfigurationSchemaRegistryTrait
         $schemaDocument->addCustomType($this->getValueSourceSchema(), ValueSourceSchema::TYPE);
         $schemaDocument->addCustomType($this->getValueModifierSchema(), ValueModifierSchema::TYPE);
         $schemaDocument->addCustomType($this->getEvaluationSchema(), EvaluationSchema::TYPE);
-        $schemaDocument->addCustomType($this->getComparisonSchema(), 'COMPARISON');
+        $schemaDocument->addCustomType($this->getComparisonSchema(), ComparisonSchema::TYPE);
+
+        $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_PLAIN_TEXT), TemplateEngineInterface::TYPE_PLAIN_TEXT);
+        $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_HTML), TemplateEngineInterface::TYPE_HTML);
 
         foreach ($this->getIncludeValueSet() as $documentIdentifier => $label) {
             $schemaDocument->addValueToValueSet('document/all', $documentIdentifier, $label);

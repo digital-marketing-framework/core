@@ -26,14 +26,4 @@ class ConstantValueSource extends ValueSource
         $schema->addProperty(static::KEY_VALUE, new StringSchema(static::DEFAULT_VALUE));
         return $schema;
     }
-
-    public static function modifiable(): bool
-    {
-        return false;
-    }
-
-    public static function canBeMultiValue(): bool
-    {
-        return false;
-    }
 }

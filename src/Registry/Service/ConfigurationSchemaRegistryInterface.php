@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 
 interface ConfigurationSchemaRegistryInterface

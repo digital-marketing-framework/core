@@ -17,6 +17,8 @@ use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
+use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
 
 class Registry implements RegistryInterface
 {
@@ -28,6 +30,7 @@ class Registry implements RegistryInterface
     use ConfigurationSchemaRegistryTrait;
     use ConfigurationDocumentManagerRegistryTrait;
     use FileStorageRegistryTrait;
+    use TemplateEngineRegistryTrait;
 
     use DataProcessorRegistryTrait;
     use IdentifierCollectorRegistryTrait;
@@ -52,6 +55,9 @@ class Registry implements RegistryInterface
         }
         if ($object instanceof FileStorageAwareInterface) {
             $object->setFileStorage($this->getFileStorage());
+        }
+        if ($object instanceof TemplateEngineAwareInterface) {
+            $object->setTemplateEngine($this->getTemplateEngine());
         }
     }
 

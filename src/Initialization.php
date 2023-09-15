@@ -37,7 +37,15 @@ abstract class Initialization
         }
     }
 
-    protected function initMetaData(RegistryInterface $registry): void
+    public function initServices(string $domain, RegistryInterface $registry): void
+    {
+    }
+
+    public function initGlobalConfiguration(string $domain, RegistryInterface $registry): void
+    {
+    }
+
+    public function initMetaData(RegistryInterface $registry): void
     {
         $registry->addSchemaVersion($this->packageName, $this->schemaVersion);
 
@@ -50,7 +58,6 @@ abstract class Initialization
 
     public function init(string $domain, RegistryInterface $registry): void
     {
-        $this->initMetaData($registry);
         $this->initPlugins($domain, $registry);
     }
 }
