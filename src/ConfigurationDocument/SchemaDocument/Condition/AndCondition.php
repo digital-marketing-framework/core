@@ -6,6 +6,9 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDo
 
 class AndCondition extends Condition
 {
+    /**
+     * @param array<Condition> $subConditions
+     */
     public function __construct(
         protected array $subConditions = [],
     ) {
@@ -22,9 +25,12 @@ class AndCondition extends Condition
         $this->subConditions[] = $condition;
     }
 
+    /**
+     * @return array<array{type:string,config:array<mixed>}>
+     */
     protected function getConfig(): array
     {
-        return array_map(function(Condition $condition) {
+        return array_map(static function (Condition $condition) {
             return $condition->toArray();
         }, $this->subConditions);
     }

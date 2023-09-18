@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 abstract class UnaryComparison extends Comparison
 {
     public const KEY_VALUE = 'firstOperand';
+
     public const DEFAULT_VALUE = null;
 
     protected function compareValue(string|null|ValueInterface $value): bool
@@ -21,11 +22,13 @@ abstract class UnaryComparison extends Comparison
         if (GeneralUtility::isEmpty($value)) {
             return $this->compareAnyEmpty();
         }
+
         foreach ($value as $subValue) {
             if ($this->compareValue($subValue)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -34,11 +37,13 @@ abstract class UnaryComparison extends Comparison
         if (GeneralUtility::isEmpty($value)) {
             return $this->compareAllEmpty();
         }
+
         foreach ($value as $subValue) {
             if (!$this->compareValue($subValue)) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -47,12 +52,10 @@ abstract class UnaryComparison extends Comparison
         $value = $this->dataProcessor->processValue($this->getConfig(static::KEY_VALUE), $this->context->copy());
         if (!static::handleMultiValuesIndividually() || !$value instanceof MultiValueInterface) {
             return $this->compareValue($value);
+        } elseif ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
+            return $this->compareAny($value);
         } else {
-            if ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
-                return $this->compareAny($value);
-            } else {
-                return $this->compareAll($value);
-            }
+            return $this->compareAll($value);
         }
     }
 }

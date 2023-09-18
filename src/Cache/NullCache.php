@@ -23,6 +23,7 @@ class NullCache implements NonTaggableCacheInterface
 
     /**
      * @param array<string> $keys
+     *
      * @return array<array<mixed>>
      */
     public function fetchMultiple(array $keys): array
@@ -36,7 +37,7 @@ class NullCache implements NonTaggableCacheInterface
     public function store(string $key, array $data): void
     {
     }
-    
+
     public function purge(string $key): void
     {
     }
@@ -47,11 +48,11 @@ class NullCache implements NonTaggableCacheInterface
     public function purgeMultiple(array $keys): void
     {
     }
-    
+
     public function purgeExpired(): void
     {
     }
-    
+
     public function purgeAll(): void
     {
     }

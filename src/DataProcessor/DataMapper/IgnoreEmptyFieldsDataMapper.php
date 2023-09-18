@@ -13,6 +13,7 @@ class IgnoreEmptyFieldsDataMapper extends DataMapper
     public const WEIGHT = 30;
 
     public const KEY_ENABLED = 'enabled';
+
     public const DEFAULT_ENABLED = true;
 
     public function mapData(DataInterface $target): DataInterface
@@ -20,15 +21,18 @@ class IgnoreEmptyFieldsDataMapper extends DataMapper
         if (!$this->getConfig(static::KEY_ENABLED)) {
             return $target;
         }
+
         $toDeleteList = [];
         foreach ($target as $fieldName => $value) {
             if (GeneralUtility::isEmpty($value)) {
                 $toDeleteList[] = $fieldName;
             }
         }
+
         foreach ($toDeleteList as $toDelete) {
             unset($target[$toDelete]);
         }
+
         return $target;
     }
 
@@ -41,6 +45,7 @@ class IgnoreEmptyFieldsDataMapper extends DataMapper
         $enabledSchema = new BooleanSchema(static::DEFAULT_ENABLED);
         $enabledSchema->getRenderingDefinition()->setLabel('Ignore Empty Fields');
         $schema->addProperty(static::KEY_ENABLED, $enabledSchema);
+
         return $schema;
     }
 }

@@ -16,9 +16,11 @@ class ConcatenationValueSource extends ValueSource
     public const WEIGHT = 3;
 
     public const KEY_GLUE = 'glue';
+
     public const DEFAULT_GLUE = '\\s';
 
     public const KEY_VALUES = 'values';
+
     public const DEFAULT_VALUES = [];
 
     public function build(): null|string|ValueInterface
@@ -32,12 +34,15 @@ class ConcatenationValueSource extends ValueSource
                 $values[] = $value;
             }
         }
-        if (empty($values)) {
+
+        if ($values === []) {
             return null;
         }
+
         if (count($values) === 1) {
             return reset($values);
         }
+
         return implode($glue, $values);
     }
 
@@ -47,6 +52,7 @@ class ConcatenationValueSource extends ValueSource
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_GLUE, new StringSchema(static::DEFAULT_GLUE));
         $schema->addProperty(static::KEY_VALUES, new ListSchema(new CustomSchema(ValueSchema::TYPE)));
+
         return $schema;
     }
 

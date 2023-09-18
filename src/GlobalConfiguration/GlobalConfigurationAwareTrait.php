@@ -2,13 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\GlobalConfiguration;
 
-use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
-
 trait GlobalConfigurationAwareTrait
 {
-    protected ConfigurationInterface $globalConfiguration;
+    protected GlobalConfigurationInterface $globalConfiguration;
 
-    public function setGlobalConfiguration(ConfigurationInterface $globalConfiguration): void
+    public function setGlobalConfiguration(GlobalConfigurationInterface $globalConfiguration): void
     {
         $this->globalConfiguration = $globalConfiguration;
     }

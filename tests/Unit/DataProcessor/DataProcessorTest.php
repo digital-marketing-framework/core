@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
@@ -26,27 +25,27 @@ class DataProcessorTest extends TestCase
     protected RegistryInterface&MockObject $registry;
 
     /**
-     * @var array<ValueSourceInterface&MockObject> $valueSources
+     * @var array<ValueSourceInterface&MockObject>
      */
     protected array $valueSources = [];
 
     /**
-     * @var array<ValueModifierInterface&MockObject> $valueModifiers
+     * @var array<ValueModifierInterface&MockObject>
      */
     protected array $valueModifiers = [];
 
     /**
-     * @var array<ComparisonInterface&MockObject> $comparisons
+     * @var array<ComparisonInterface&MockObject>
      */
     protected array $comparisons = [];
 
     /**
-     * @var array<EvaluationInterface&MockObject> $evaluations
+     * @var array<EvaluationInterface&MockObject>
      */
     protected array $evaluations = [];
 
     /**
-     * @var array<DataMapperInterface&MockObject> $dataMappers
+     * @var array<DataMapperInterface&MockObject>
      */
     protected array $dataMappers = [];
 
@@ -54,59 +53,69 @@ class DataProcessorTest extends TestCase
 
     protected DataProcessor $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->registry = $this->createMock(RegistryInterface::class);
 
-        $this->registry->method('getValueSource')->will($this->returnCallback(function(string $keyword, array $config) {
+        $this->registry->method('getValueSource')->will($this->returnCallback(function (string $keyword, array $config) {
             if (!isset($this->valueSources[$keyword])) {
                 return null;
             }
+
             if (isset($this->valueSources[$keyword]['config'])) {
                 $this->assertEquals($this->valueSources[$keyword]['config'], $config);
             }
+
             return $this->valueSources[$keyword]['object'];
         }));
 
-        $this->registry->method('getComparison')->will($this->returnCallback(function(string $keyword, array $config) {
+        $this->registry->method('getComparison')->will($this->returnCallback(function (string $keyword, array $config) {
             if (!isset($this->comparisons[$keyword])) {
                 return null;
             }
+
             if (isset($this->comparisons[$keyword]['config'])) {
                 $this->assertEquals($this->comparisons[$keyword]['config'], $config);
             }
+
             return $this->comparisons[$keyword]['object'];
         }));
 
-        $this->registry->method('getEvaluation')->will($this->returnCallback(function(string $keyword, array $config) {
+        $this->registry->method('getEvaluation')->will($this->returnCallback(function (string $keyword, array $config) {
             if (!isset($this->evaluations[$keyword])) {
                 return null;
             }
+
             if (isset($this->evaluations[$keyword]['config'])) {
                 $this->assertEquals($this->evaluations[$keyword]['confgig'], $config);
             }
+
             return $this->evaluations[$keyword]['object'];
         }));
 
-        $this->registry->method('getDataMapper')->will($this->returnCallback(function(string $keyword, array $config) {
+        $this->registry->method('getDataMapper')->will($this->returnCallback(function (string $keyword, array $config) {
             if (!isset($this->dataMappers[$keyword])) {
                 return null;
             }
+
             if (isset($this->dataMappers[$keyword]['config'])) {
                 $this->assertEquals($this->dataMappers[$keyword]['config'], $config);
             }
+
             return $this->dataMappers[$keyword]['object'];
         }));
 
-        $this->registry->method('getValueModifier')->will($this->returnCallback(function(string $keyword, array $config) {
+        $this->registry->method('getValueModifier')->will($this->returnCallback(function (string $keyword, array $config) {
             if (!isset($this->valueModifiers[$keyword])) {
                 return null;
             }
+
             if (isset($this->valueModifiers[$keyword]['config'])) {
                 $this->assertEquals($this->valueModifiers[$keyword]['config'], $config);
             }
+
             return $this->valueModifiers[$keyword]['object'];
         }));
 
@@ -115,6 +124,9 @@ class DataProcessorTest extends TestCase
         $this->subject = new DataProcessor($this->registry);
     }
 
+    /**
+     * @param ?array<string,mixed> $config
+     */
     protected function addDataMapper(string $keyword, DataInterface $return, ?array $config = null, mixed $with = null): DataMapperInterface&MockObject
     {
         $dataMapper = $this->createMock(DataMapperInterface::class);
@@ -123,13 +135,18 @@ class DataProcessorTest extends TestCase
         } else {
             $dataMapper->method('mapData')->willReturn($return);
         }
+
         $this->dataMappers[$keyword]['object'] = $dataMapper;
         if ($config !== null) {
             $this->dataMappers[$keyword]['config'] = $config;
         }
+
         return $dataMapper;
     }
 
+    /**
+     * @param ?array<string,mixed> $config
+     */
     protected function addValueSource(string $keyword, string|null|ValueInterface $return, ?array $config = null, mixed $with = null): ValueSourceInterface&MockObject
     {
         $valueSource = $this->createMock(ValueSourceInterface::class);
@@ -138,13 +155,18 @@ class DataProcessorTest extends TestCase
         } else {
             $valueSource->method('build')->willReturn($return);
         }
+
         $this->valueSources[$keyword]['object'] = $valueSource;
         if ($config !== null) {
             $this->valueSources[$keyword]['config'] = $config;
         }
+
         return $valueSource;
     }
 
+    /**
+     * @param ?array<string,mixed> $config
+     */
     protected function addValueModifier(string $keyword, string|null|ValueInterface $return, ?array $config = null, mixed $with = null): ValueModifierInterface&MockObject
     {
         $valueModifier = $this->createMock(ValueModifierInterface::class);
@@ -153,13 +175,18 @@ class DataProcessorTest extends TestCase
         } else {
             $valueModifier->method('modify')->willReturn($return);
         }
+
         $this->valueModifiers[$keyword]['object'] = $valueModifier;
         if ($config !== null) {
             $this->valueModifiers[$keyword]['config'] = $config;
         }
+
         return $valueModifier;
     }
 
+    /**
+     * @param ?array<string,mixed> $config
+     */
     protected function addComparison(string $keyword, bool $return, ?array $config = null, mixed $with = null): ComparisonInterface&MockObject
     {
         $comparison = $this->createMock(ComparisonInterface::class);
@@ -168,13 +195,18 @@ class DataProcessorTest extends TestCase
         } else {
             $comparison->method('compare')->willReturn($return);
         }
+
         $this->comparisons[$keyword]['object'] = $comparison;
         if ($config !== null) {
             $this->comparisons['config'] = $config;
         }
+
         return $comparison;
     }
 
+    /**
+     * @param ?array<string,mixed> $config
+     */
     protected function addEvaluation(string $keyword, bool $return, ?array $config = null, mixed $with = null): EvaluationInterface&MockObject
     {
         $evaluation = $this->createMock(EvaluationInterface::class);
@@ -183,10 +215,12 @@ class DataProcessorTest extends TestCase
         } else {
             $evaluation->method('evaluate')->willReturn($return);
         }
+
         $this->evaluations[$keyword]['object'] = $evaluation;
         if ($config !== null) {
             $this->evaluations['config'] = $config;
         }
+
         return $evaluation;
     }
 
@@ -216,7 +250,7 @@ class DataProcessorTest extends TestCase
     {
         $this->addDataMapper('testMapper', new Data(['foo' => 'bar']));
         $config = [
-            'notExistent' => ['configKeyA' => 'configValueA']
+            'notExistent' => ['configKeyA' => 'configValueA'],
         ];
         $this->expectExceptionMessage('DataMapper "notExistent" not found.');
         $this->subject->processDataMapper($config, new Data(), new Configuration([[]]));
@@ -227,7 +261,7 @@ class DataProcessorTest extends TestCase
     {
         $this->addDataMapper('testMapper', new Data(['foo' => 'bar']));
         $config = [
-            'testMapper' => ['configKeyA' => 'configKeyB']
+            'testMapper' => ['configKeyA' => 'configKeyB'],
         ];
         $output = $this->subject->processDataMapper($config, new Data(), new Configuration([[]]));
         $this->assertEquals(['foo' => 'bar'], $output->toArray());
@@ -238,7 +272,7 @@ class DataProcessorTest extends TestCase
     {
         $data0 = new Data(['field_x' => 'value_x']);
         $data1 = new Data(['foo' => 'bar']);
-        $data2 = new Data((['abc' => 'xyz']));
+        $data2 = new Data(['abc' => 'xyz']);
 
         $mapperConfig1 = [];
         $mapperConfig2 = [];
@@ -429,13 +463,13 @@ class DataProcessorTest extends TestCase
                     'type' => 'testModifier1',
                     'config' => [
                         'testModifier1' => ['testModifier1ConfigKey' => 'testModifier1ConfigValue'],
-                    ]
+                    ],
                 ], 'id1', 10),
                 'id2' => $this->createListItem([
                     'type' => 'testModifier2',
                     'config' => [
                         'testModifier2' => ['testModifier2ConfigKey' => 'testModifier2ConfigValue'],
-                    ]
+                    ],
                 ], 'id2', 20),
             ],
         ];
@@ -467,6 +501,7 @@ class DataProcessorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider trueFalseDataProvider
      */
     public function existentEvaluationWillBeUsed(bool $expectedResult): void
@@ -504,6 +539,7 @@ class DataProcessorTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider trueFalseDataProvider
      */
     public function existingComparisonWillBeUsed(bool $expectedResult): void

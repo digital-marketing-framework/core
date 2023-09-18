@@ -6,5 +6,4 @@ use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 
 interface DataProcessorPluginInterface extends PluginInterface
 {
-
 }

@@ -2,18 +2,17 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
-use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapReferenceValueModifier;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\MapReferenceValueModifierTest as MapReferenceValueModifierUnitTest;
 
 /**
- * @covers MapReferenceValueModifier
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapReferenceValueModifier
  */
 class MapReferenceValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'mapReference';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $map1 = [
@@ -25,8 +24,8 @@ class MapReferenceValueModifierTest extends ValueModifierTest
             'id.m2.2' => $this->createMapItem('c1', 'c3', 'id.m2.2', 20),
         ];
         $this->configuration[0][ConfigurationInterface::KEY_VALUE_MAPS] = [
-            'id.m1' => $this->createMapItem('map1', $map1, 'id.m1', 10,),
-            'id.m2' => $this->createMapItem('map2', $map2, 'id.m2', 20,),
+            'id.m1' => $this->createMapItem('map1', $map1, 'id.m1', 10),
+            'id.m2' => $this->createMapItem('map2', $map2, 'id.m2', 20),
         ];
     }
 

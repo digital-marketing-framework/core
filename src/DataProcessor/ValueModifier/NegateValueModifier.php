@@ -14,12 +14,15 @@ class NegateValueModifier extends ValueModifier
     public const WEIGHT = 6;
 
     public const KEY_CUSTOM_VALUES = 'useCustomValues';
+
     public const DEFAULT_CUSTOM_VALUES = false;
 
     public const KEY_TRUE = 'true';
+
     public const DEFAULT_TRUE = '1';
 
     public const KEY_FALSE = 'false';
+
     public const DEFAULT_FALSE = '0';
 
     protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
@@ -33,7 +36,7 @@ class NegateValueModifier extends ValueModifier
         $false = $useCustomValues ? $this->getConfig(static::KEY_FALSE) : static::DEFAULT_FALSE;
         if ($value instanceof BooleanValueInterface) {
             if ($useCustomValues) {
-                if ((bool)$value->getValue()) {
+                if ($value->getValue()) {
                     return $false;
                 } else {
                     return $true;
@@ -47,7 +50,8 @@ class NegateValueModifier extends ValueModifier
             } elseif ($value === $false) {
                 return $true;
             }
-            return (bool)$value ? $false : $true;
+
+            return (bool) $value ? $false : $true;
         }
     }
 
@@ -59,11 +63,11 @@ class NegateValueModifier extends ValueModifier
         $schema->addProperty(static::KEY_CUSTOM_VALUES, new BooleanSchema(static::DEFAULT_CUSTOM_VALUES));
 
         $trueSchema = new StringSchema(static::DEFAULT_TRUE);
-        $trueSchema->getRenderingDefinition()->addVisibilityConditionByValue('../' . static::KEY_CUSTOM_VALUES)->addValue(true);
+        $trueSchema->getRenderingDefinition()->addVisibilityConditionByValue('../'.static::KEY_CUSTOM_VALUES)->addValue(true);
         $schema->addProperty(static::KEY_TRUE, $trueSchema);
 
         $falseSchema = new StringSchema(static::DEFAULT_FALSE);
-        $falseSchema->getRenderingDefinition()->addVisibilityConditionByValue('../' . static::KEY_CUSTOM_VALUES)->addValue(true);
+        $falseSchema->getRenderingDefinition()->addVisibilityConditionByValue('../'.static::KEY_CUSTOM_VALUES)->addValue(true);
         $schema->addProperty(static::KEY_FALSE, $falseSchema);
 
         return $schema;

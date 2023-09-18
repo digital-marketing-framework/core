@@ -15,6 +15,7 @@ trait TemplateEngineRegistryTrait
         if (!isset($this->templateEngine)) {
             $this->templateEngine = new DefaultTemplateEngine();
         }
+
         return $this->templateEngine;
     }
 

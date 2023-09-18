@@ -2,22 +2,23 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
-use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\DefaultGlobalConfiguration;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterface;
 
 trait GlobalConfigurationRegistryTrait
 {
-    protected ConfigurationInterface $globalConfiguration;
+    protected GlobalConfigurationInterface $globalConfiguration;
 
-    public function getGlobalConfiguration(): ConfigurationInterface
+    public function getGlobalConfiguration(): GlobalConfigurationInterface
     {
         if (!isset($this->globalConfiguration)) {
-            $this->globalConfiguration = new Configuration([]);
+            $this->globalConfiguration = new DefaultGlobalConfiguration();
         }
+
         return $this->globalConfiguration;
     }
 
-    public function setGlobalConfiguration(ConfigurationInterface $globalConfiguration): void
+    public function setGlobalConfiguration(GlobalConfigurationInterface $globalConfiguration): void
     {
         $this->globalConfiguration = $globalConfiguration;
     }

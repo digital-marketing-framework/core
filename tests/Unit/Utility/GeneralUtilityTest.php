@@ -6,6 +6,7 @@ use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 use PHPUnit\Framework\TestCase;
@@ -14,6 +15,9 @@ class GeneralUtilityTest extends TestCase
 {
     use MultiValueTestTrait;
 
+    /**
+     * @return array<array{0:mixed,1:bool}>
+     */
     public function valueIsEmptyProvider(): array
     {
         return [
@@ -26,8 +30,6 @@ class GeneralUtilityTest extends TestCase
             ['value1', false],
             [new MultiValue(['']), false],
             [new MultiValue([]), true],
-            [new MultiValue([0]), false],
-            [new MultiValue([1]), false],
             [new MultiValue(['0']), false],
             [new MultiValue(['1']), false],
             [new MultiValue(['value1']), false],
@@ -35,12 +37,11 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $expected
      * @dataProvider valueIsEmptyProvider
+     *
      * @test
      */
-    public function valueIsEmpty($value, $expected): void
+    public function valueIsEmpty(mixed $value, bool $expected): void
     {
         $result = GeneralUtility::isEmpty($value);
         if ($expected) {
@@ -49,6 +50,10 @@ class GeneralUtilityTest extends TestCase
             $this->assertFalse($result);
         }
     }
+
+    /**
+     * @return array<array{0:mixed,1:bool}>
+     */
     public function valueIsTrueProvider(): array
     {
         return [
@@ -60,21 +65,20 @@ class GeneralUtilityTest extends TestCase
             ['1', true],
             ['value1', true],
             [new MultiValue([]), false],
-            [new MultiValue([0]), true],
-            [new MultiValue([1]), true],
-            [new MultiValue([5]), true],
+            [new MultiValue(['0']), true],
+            [new MultiValue(['1']), true],
+            [new MultiValue(['5']), true],
             [new MultiValue(['']), true],
             [new MultiValue(['value1']), true],
         ];
     }
 
     /**
-     * @param $value
-     * @param $expected
      * @dataProvider valueIsTrueProvider
+     *
      * @test
      */
-    public function valueIsTrue($value, $expected): void
+    public function valueIsTrue(mixed $value, bool $expected): void
     {
         $result = GeneralUtility::isTrue($value);
         if ($expected) {
@@ -85,12 +89,11 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $notExpected
      * @dataProvider valueIsTrueProvider
+     *
      * @test
      */
-    public function valueIsFalse($value, $notExpected): void
+    public function valueIsFalse(mixed $value, bool $notExpected): void
     {
         $result = GeneralUtility::isFalse($value);
         if ($notExpected) {
@@ -100,13 +103,16 @@ class GeneralUtilityTest extends TestCase
         }
     }
 
+    /**
+     * @return array<array{0:string,1:string}>
+     */
     public function parseSeparatorStringProvider(): array
     {
         return [
-            ['', ""],
-            [' ', ""],
-            [' value1 ', "value1"],
-            ['\\s', " "],
+            ['', ''],
+            [' ', ''],
+            [' value1 ', 'value1'],
+            ['\\s', ' '],
             ['\\t', "\t"],
             ['\\n', "\n"],
             ['\\s\\t\\n\\t\\s', " \t\n\t "],
@@ -114,17 +120,19 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $expected
      * @dataProvider parseSeparatorStringProvider
+     *
      * @test
      */
-    public function parseSeparatorString($value, $expected): void
+    public function parseSeparatorString(string $value, string $expected): void
     {
         $result = GeneralUtility::parseSeparatorString($value);
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:mixed,1:bool}>
+     */
     public function isListProvider(): array
     {
         return [
@@ -144,12 +152,11 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $expected
      * @dataProvider isListProvider
+     *
      * @test
      */
-    public function isList($value, $expected): void
+    public function testIsList(mixed $value, bool $expected): void
     {
         $result = GeneralUtility::isList($value);
         if ($expected) {
@@ -159,6 +166,9 @@ class GeneralUtilityTest extends TestCase
         }
     }
 
+    /**
+     * @return array<array{0:mixed,1:string|null,2:bool,3:mixed}>
+     */
     public function castValueToArrayProvider(): array
     {
         return [
@@ -181,14 +191,11 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $token
-     * @param $trim
-     * @param $expected
      * @dataProvider castValueToArrayProvider
+     *
      * @test
      */
-    public function castValueToArray($value, $token, $trim, $expected): void
+    public function castValueToArray(mixed $value, string|null $token, bool|null $trim, mixed $expected): void
     {
         if ($token === null && $trim === null) {
             $result = GeneralUtility::castValueToArray($value);
@@ -197,9 +204,13 @@ class GeneralUtilityTest extends TestCase
         } else {
             $result = GeneralUtility::castValueToArray($value, $token, $trim);
         }
+
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:array<string,string|ValueInterface>,1:bool,2:string}>
+     */
     public function calculateHashProvider(): array
     {
         return [
@@ -211,18 +222,21 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $submission
-     * @param $short
-     * @param $expected
+     * @param array<string,string|ValueInterface> $submission
+     *
      * @dataProvider calculateHashProvider
+     *
      * @test
      */
-    public function calculateHash($submission, $short, $expected): void
+    public function calculateHash(array $submission, bool $short, string $expected): void
     {
         $result = GeneralUtility::calculateHash($submission, $short);
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:string,1:string}>
+     */
     public function shortenHashProvider(): array
     {
         return [
@@ -235,27 +249,29 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $hash
-     * @param $expected
      * @dataProvider shortenHashProvider
+     *
      * @test
      */
-    public function shortenHash($hash, $expected): void
+    public function shortenHash(string $hash, string $expected): void
     {
         $result = GeneralUtility::shortenHash($hash);
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:mixed,1:mixed,2:bool}>
+     */
     public function compareValueProvider(): array
     {
         // values in one group are considered to be equal
         $valueGroups = [
-            [null, '',],
-            [0, '0',],
-            [1, '1',],
-            [5, '5',],
-            ['value1',],
-            ['value2']
+            [null, ''],
+            [0, '0'],
+            [1, '1'],
+            [5, '5'],
+            ['value1'],
+            ['value2'],
         ];
         $provided = [];
         foreach ($valueGroups as $groupIndex => $valueGroup) {
@@ -267,17 +283,16 @@ class GeneralUtilityTest extends TestCase
                 }
             }
         }
+
         return $provided;
     }
 
     /**
-     * @param $fieldValue
-     * @param $compareValue
-     * @param bool $expected
      * @dataProvider compareValueProvider
+     *
      * @test
      */
-    public function compareValue($fieldValue, $compareValue, bool $expected): void
+    public function compareValue(mixed $fieldValue, mixed $compareValue, bool $expected): void
     {
         $result = GeneralUtility::compareValue($fieldValue, $compareValue);
         if ($expected) {
@@ -287,6 +302,11 @@ class GeneralUtilityTest extends TestCase
         }
     }
 
+    /**
+     * @param array<array<mixed>> $valueGroups
+     *
+     * @return array<array{0:mixed,1:mixed,2:bool}>
+     */
     protected function generateComparisonPairs(array $valueGroups): array
     {
         // values in one group are considered to be equal
@@ -300,30 +320,33 @@ class GeneralUtilityTest extends TestCase
                 }
             }
         }
+
         return $provided;
     }
 
+    /**
+     * @return array<array{0:mixed,1:mixed,2:bool}>
+     */
     public function compareListsProvider(): array
     {
         // values in one group are considered to be equal
         $valueGroups = [
-            [new MultiValue(), '',],
+            [new MultiValue(), ''],
             [new MultiValue(['value1'])],
             [new MultiValue(['value2'])],
             [new MultiValue(['value1', 'value2']), new MultiValue(['value2', 'value1']), 'value1,value2'],
-            [new MultiValue([5,7,13]), new MultiValue([13,7,5]), '5,7,13',],
+            [new MultiValue(['5', '7', '13']), new MultiValue(['13', '7', '5']), '5,7,13'],
         ];
+
         return $this->generateComparisonPairs($valueGroups);
     }
 
     /**
-     * @param $fieldValue
-     * @param $compareValue
-     * @param bool $expected
      * @dataProvider compareListsProvider
+     *
      * @test
      */
-    public function compareLists($fieldValue, $compareValue, bool $expected): void
+    public function compareLists(mixed $fieldValue, mixed $compareValue, bool $expected): void
     {
         $result = GeneralUtility::compareLists($fieldValue, $compareValue);
         if ($expected) {
@@ -334,14 +357,12 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $fieldValue
-     * @param $compareValue
-     * @param bool $expected
      * @dataProvider compareValueProvider
      * @dataProvider compareListsProvider
+     *
      * @test
      */
-    public function compare($fieldValue, $compareValue, bool $expected): void
+    public function compare(mixed $fieldValue, mixed $compareValue, bool $expected): void
     {
         $result = GeneralUtility::compare($fieldValue, $compareValue);
         if ($expected) {
@@ -351,6 +372,9 @@ class GeneralUtilityTest extends TestCase
         }
     }
 
+    /**
+     * @return array<array{0:mixed,1:array<mixed>,2:string|int|false}>
+     */
     public function findInListProvider(): array
     {
         return [
@@ -361,26 +385,26 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @param $fieldValue
-     * @param $list
-     * @param $expected
+     * @param array<mixed> $list
+     *
      * @dataProvider findInListProvider
+     *
      * @test
      */
-    public function findInList($fieldValue, $list, $expected): void
+    public function findInList(mixed $fieldValue, array $list, string|int|false $expected): void
     {
         $result = GeneralUtility::findInList($fieldValue, $list);
         $this->assertEquals($expected, $result);
     }
 
     /**
-     * @param $fieldValue
-     * @param $list
-     * @param $expected
+     * @param array<mixed> $list
+     *
      * @dataProvider findInListProvider
+     *
      * @test
      */
-    public function isInList($fieldValue, $list, $expected): void
+    public function isInList(mixed $fieldValue, array $list, string|int|false $expected): void
     {
         $result = GeneralUtility::isInList($fieldValue, $list);
         if ($expected === false) {
@@ -390,6 +414,9 @@ class GeneralUtilityTest extends TestCase
         }
     }
 
+    /**
+     * @return array<array{0:string,1:string,2:string}>
+     */
     public function getPluginKeywordProvider(): array
     {
         return [
@@ -407,6 +434,7 @@ class GeneralUtilityTest extends TestCase
 
     /**
      * @dataProvider getPluginKeywordProvider
+     *
      * @test
      */
     public function getPluginKeyword(string $class, string $interface, string $expected): void
@@ -415,6 +443,9 @@ class GeneralUtilityTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:array<mixed>,1:MultiValueInterface}>
+     */
     public function castArrayToMultiValueProvider(): array
     {
         return [
@@ -430,7 +461,10 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
+     * @param array<mixed> $array
+     *
      * @dataProvider castArrayToMultiValueProvider
+     *
      * @test
      */
     public function castArrayToMultiValue(array $array, MultiValueInterface $expected): void
@@ -439,6 +473,9 @@ class GeneralUtilityTest extends TestCase
         $this->assertMultiValueEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:array<mixed>,1:DataInterface}>
+     */
     public function castArrayToDataProvider(): array
     {
         return [
@@ -458,7 +495,10 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
+     * @param array<mixed> $array
+     *
      * @dataProvider castArrayToDataProvider
+     *
      * @test
      */
     public function castArrayToData(array $array, DataInterface $expected): void

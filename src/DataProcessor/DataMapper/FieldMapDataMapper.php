@@ -15,6 +15,7 @@ class FieldMapDataMapper extends DataMapper
     public const WEIGHT = 10;
 
     public const KEY_FIELDS = 'fields';
+
     public const DEFAULT_FIELDS = [];
 
     public function mapData(DataInterface $target): DataInterface
@@ -27,6 +28,7 @@ class FieldMapDataMapper extends DataMapper
                 $this->addField($target, $fieldName, $value);
             }
         }
+
         return $target;
     }
 

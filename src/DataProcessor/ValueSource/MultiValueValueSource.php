@@ -30,6 +30,7 @@ class MultiValueValueSource extends ValueSource
                 $multiValue[] = $value;
             }
         }
+
         return $multiValue;
     }
 
@@ -38,6 +39,7 @@ class MultiValueValueSource extends ValueSource
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_VALUES, new ListSchema(new CustomSchema(ValueSchema::TYPE)));
+
         return $schema;
     }
 }

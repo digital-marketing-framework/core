@@ -8,7 +8,9 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\S
 class InheritableBooleanSchema extends StringSchema
 {
     public const VALUE_INHERIT = 'inherit';
+
     public const VALUE_TRUE = 'yes';
+
     public const VALUE_FALSE = 'no';
 
     public function __construct()
@@ -27,13 +29,10 @@ class InheritableBooleanSchema extends StringSchema
      */
     public static function convert(string $value): ?bool
     {
-        switch ($value) {
-            case static::VALUE_TRUE:
-                return true;
-            case static::VALUE_FALSE:
-                return false;
-            default:
-                return null;
-        }
+        return match ($value) {
+            static::VALUE_TRUE => true,
+            static::VALUE_FALSE => false,
+            default => null,
+        };
     }
 }

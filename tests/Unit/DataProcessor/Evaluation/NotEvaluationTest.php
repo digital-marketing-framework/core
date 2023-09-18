@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\Evaluation\NotEvaluation;
 class NotEvaluationTest extends EvaluationTest
 {
     protected const CLASS_NAME = NotEvaluation::class;
+
     protected const KEYWORD = 'not';
 
     /** @test */

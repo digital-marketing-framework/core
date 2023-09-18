@@ -7,7 +7,6 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\L
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
-use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class ExcludeFieldsDataMapper extends DataMapper
 {
@@ -23,6 +22,7 @@ class ExcludeFieldsDataMapper extends DataMapper
                 unset($target[$excludeField]);
             }
         }
+
         return $target;
     }
 

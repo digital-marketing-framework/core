@@ -11,7 +11,8 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 class SprintfValueModifier extends ValueModifier
 {
     public const KEY_FORMAT = 'format';
-    public const DEFAULT_FORMAT= '%s';
+
+    public const DEFAULT_FORMAT = '%s';
 
     public function modify(null|string|ValueInterface $value): null|string|ValueInterface
     {
@@ -24,11 +25,8 @@ class SprintfValueModifier extends ValueModifier
         }
 
         $format = $this->getConfig(static::KEY_FORMAT);
-        if ($value instanceof MultiValueInterface) {
-            $values = $value->toArray();
-        } else {
-            $values = [$value];
-        }
+        $values = $value instanceof MultiValueInterface ? $value->toArray() : [$value];
+
         return sprintf($format, ...$values);
     }
 
@@ -37,6 +35,7 @@ class SprintfValueModifier extends ValueModifier
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_FORMAT, new StringSchema(static::DEFAULT_FORMAT));
+
         return $schema;
     }
 }

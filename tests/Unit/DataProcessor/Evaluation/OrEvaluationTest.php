@@ -7,8 +7,12 @@ use DigitalMarketingFramework\Core\DataProcessor\Evaluation\OrEvaluation;
 class OrEvaluationTest extends EvaluationTest
 {
     protected const CLASS_NAME = OrEvaluation::class;
+
     protected const KEYWORD = 'or';
 
+    /**
+     * @return array<array{0:bool,1:array<array<string,mixed>>,2:array<mixed>}>
+     */
     public function orDataProvider(): array
     {
         return [
@@ -34,23 +38,31 @@ class OrEvaluationTest extends EvaluationTest
     }
 
     /**
+     * @param array<array<string,mixed>> $subConfigList
+     * @param array<mixed> $subResults
+     *
      * @test
+     *
      * @dataProvider orDataProvider
      */
     public function or(bool $expectedResult, array $subConfigList, array $subResults): void
     {
-        $with = array_map(function(array $subConfigItem) { return [$subConfigItem]; }, $subConfigList);
-        if (!empty($subConfigList)) {
+        $with = array_map(static function (array $subConfigItem) {
+            return [$subConfigItem];
+        }, $subConfigList);
+        if ($subConfigList !== []) {
             $this->dataProcessor->expects($this->exactly(count($subConfigList)))->method('processEvaluation')->withConsecutive(...$with)->willReturn(...$subResults);
         }
+
         $config = [
             OrEvaluation::KEY_EVALUATIONS => [],
         ];
         $id = 1;
         foreach ($subConfigList as $subConfigItem) {
-            $config[OrEvaluation::KEY_EVALUATIONS]['id' . $id] = $this->createListItem($subConfigItem, 'id' . $id, $id * 10);
-            $id++;
+            $config[OrEvaluation::KEY_EVALUATIONS]['id'.$id] = $this->createListItem($subConfigItem, 'id'.$id, $id * 10);
+            ++$id;
         }
+
         $result = $this->processEvaluation($config);
         $this->assertEquals($expectedResult, $result);
     }

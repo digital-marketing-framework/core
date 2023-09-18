@@ -10,6 +10,7 @@ class SchemaDocument
 {
     public const FLATTEN_SCHEMA = true;
 
+    /** @var array<string,string> */
     protected array $version = [];
 
     /**
@@ -23,7 +24,10 @@ class SchemaDocument
     ) {
     }
 
-    public function getVersion(?string $key = null): array
+    /**
+     * @return array<string,string>
+     */
+    public function getVersion(): array
     {
         return $this->version;
     }
@@ -61,6 +65,9 @@ class SchemaDocument
         return $this->customTypes;
     }
 
+    /**
+     * @return array<string,ValueSet>
+     */
     public function getValueSets(): array
     {
         return $this->valueSets;
@@ -71,7 +78,7 @@ class SchemaDocument
         return $this->getAllValueSets()[$name] ?? null;
     }
 
-    public function setValueSet(string $name, array $valueSet): void
+    public function setValueSet(string $name, ValueSet $valueSet): void
     {
         $this->valueSets[$name] = $valueSet;
     }
@@ -88,9 +95,13 @@ class SchemaDocument
         if (!isset($this->valueSets[$name])) {
             $this->valueSets[$name] = new ValueSet();
         }
+
         $this->valueSets[$name]->addValue($value, $label);
     }
 
+    /**
+     * @param array<string,mixed> $schemaDocument
+     */
     protected function filterSchemaDocument(array &$schemaDocument): void
     {
         foreach ($schemaDocument as $key => $value) {
@@ -102,6 +113,9 @@ class SchemaDocument
         }
     }
 
+    /**
+     * @return array<string,ValueSet>
+     */
     protected function getAllValueSets(): array
     {
         $valueSets = $this->valueSets;
@@ -109,21 +123,26 @@ class SchemaDocument
             if (!isset($valueSets[$name])) {
                 $valueSets[$name] = $set;
             } else {
-                $valuesSets[$name] = $valueSets[$name]->merge($set);
+                $valueSets[$name]->merge($set);
             }
         }
+
         foreach ($this->customTypes as $customTypeSchema) {
             foreach ($customTypeSchema->getValueSets() as $name => $set) {
                 if (!isset($valueSets[$name])) {
                     $valueSets[$name] = $set;
                 } else {
-                    $valueSets[$name] = $valueSets[$name]->merge($set);
+                    $valueSets[$name]->merge($set);
                 }
             }
         }
+
         return $valueSets;
     }
 
+    /**
+     * @return array{valueSets:array<string,array<string,string>>,types:array<string,array<string,mixed>>,schema:array<string,mixed>}
+     */
     public function toArray(): array
     {
         $schemaDocument = [
@@ -134,26 +153,34 @@ class SchemaDocument
         foreach ($this->getAllValueSets() as $name => $set) {
             $schemaDocument['valueSets'][$name] = $set->toArray();
         }
+
         foreach ($this->customTypes as $type => $customTypeSchema) {
             $schemaDocument['types'][$type] = $customTypeSchema->toArray();
         }
+
         $this->filterSchemaDocument($schemaDocument);
+
         return $schemaDocument;
     }
 
     public function getDefaultValue(?SchemaInterface $schema = null): mixed
     {
-        if ($schema === null) {
+        if (!$schema instanceof SchemaInterface) {
             $schema = $this->mainSchema;
         }
+
         return $schema->getDefaultValue($this);
     }
 
+    /**
+     * @param array<string,mixed> $data
+     */
     public function preSaveDataTransform(array &$data, ?SchemaInterface $schema = null): void
     {
-        if ($schema === null) {
+        if (!$schema instanceof SchemaInterface) {
             $schema = $this->mainSchema;
         }
+
         $schema->preSaveDataTransform($data, $this);
     }
 }

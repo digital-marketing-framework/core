@@ -2,13 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 class FieldMapDataMapperTest extends DataMapperTest
 {
     protected const CLASS_NAME = FieldMapDataMapper::class;
+
     protected const KEYWORD = 'fields';
 
     /** @test */

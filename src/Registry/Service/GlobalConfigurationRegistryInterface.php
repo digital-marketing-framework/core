@@ -2,10 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterface;
 
 interface GlobalConfigurationRegistryInterface
 {
-    public function getGlobalConfiguration(): ConfigurationInterface;
-    public function setGlobalConfiguration(ConfigurationInterface $globalConfiguration): void;
+    public function getGlobalConfiguration(): GlobalConfigurationInterface;
+
+    public function setGlobalConfiguration(GlobalConfigurationInterface $globalConfiguration): void;
 }

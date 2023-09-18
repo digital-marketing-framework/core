@@ -4,5 +4,5 @@ namespace DigitalMarketingFramework\Core\TemplateEngine;
 
 interface TemplateEngineAwareInterface
 {
-    public function setTemplateEngine(TemplateEngineInterface $templateEngine);
+    public function setTemplateEngine(TemplateEngineInterface $templateEngine): void;
 }

@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
 class NegateValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'negate';
+
     protected const CLASS_NAME = NegateValueModifier::class;
 
     protected const DEFAULT_CONFIG = [
@@ -16,6 +17,9 @@ class NegateValueModifierTest extends ValueModifierTest
         NegateValueModifier::KEY_FALSE => NegateValueModifier::DEFAULT_FALSE,
     ];
 
+    /**
+     * @return array<array{0:mixed,1:mixed,2:?array<string,mixed>}>
+     */
     public static function modifyTestCases(): array
     {
         return [
@@ -55,9 +59,9 @@ class NegateValueModifierTest extends ValueModifierTest
             [new BooleanValue(false, 'a', 'b'), '1', [NegateValueModifier::KEY_CUSTOM_VALUES => true, NegateValueModifier::KEY_TRUE => '1', NegateValueModifier::KEY_FALSE => '0']],
             [new BooleanValue(false, 'a', 'b'), 'x', [NegateValueModifier::KEY_CUSTOM_VALUES => true, NegateValueModifier::KEY_TRUE => 'x', NegateValueModifier::KEY_FALSE => 'y']],
 
-            [['1','0'], ['0', '1']],
-            [['1','0'], ['0', '1'], [NegateValueModifier::KEY_CUSTOM_VALUES => true, NegateValueModifier::KEY_TRUE => '1', NegateValueModifier::KEY_FALSE => '0']],
-            [['1','0'], ['b', 'a'], [NegateValueModifier::KEY_CUSTOM_VALUES => true, NegateValueModifier::KEY_TRUE => 'a', NegateValueModifier::KEY_FALSE => 'b']],
+            [['1', '0'], ['0', '1']],
+            [['1', '0'], ['0', '1'], [NegateValueModifier::KEY_CUSTOM_VALUES => true, NegateValueModifier::KEY_TRUE => '1', NegateValueModifier::KEY_FALSE => '0']],
+            [['1', '0'], ['b', 'a'], [NegateValueModifier::KEY_CUSTOM_VALUES => true, NegateValueModifier::KEY_TRUE => 'a', NegateValueModifier::KEY_FALSE => 'b']],
         ];
     }
 

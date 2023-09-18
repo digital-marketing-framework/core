@@ -13,6 +13,7 @@ class MapValueModifier extends ValueModifier
     public const WEIGHT = 50;
 
     public const KEY_MAP = 'map';
+
     public const DEFAULT_MAP = [];
 
     protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
@@ -20,6 +21,7 @@ class MapValueModifier extends ValueModifier
         if ($value === null) {
             return null;
         }
+
         return $this->getMapConfig(static::KEY_MAP)[(string) $value] ?? $value;
     }
 
@@ -28,6 +30,7 @@ class MapValueModifier extends ValueModifier
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_MAP, new MapSchema(new StringSchema('mappedValue'), new StringSchema('value')));
+
         return $schema;
     }
 }

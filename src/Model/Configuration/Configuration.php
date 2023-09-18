@@ -8,9 +8,13 @@ use DigitalMarketingFramework\Core\Utility\MapUtility;
 
 class Configuration implements ConfigurationInterface
 {
+    /** @var ?array<string,mixed> */
     protected ?array $manualOverride = null;
 
-    public function __construct(
+    /**
+     * @param array<array<string,mixed>> $configurationList
+     */
+    final public function __construct(
         protected array $configurationList,
         protected bool $readonly = true,
     ) {
@@ -44,9 +48,10 @@ class Configuration implements ConfigurationInterface
     public function getRootConfiguration(): array
     {
         $asArray = $this->toArray();
-        if (empty($asArray)) {
+        if ($asArray === []) {
             return [];
         }
+
         return $asArray[count($asArray) - 1];
     }
 
@@ -55,15 +60,20 @@ class Configuration implements ConfigurationInterface
         return $this->configurationList;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function getMergedConfiguration(bool $resolveNull = true): array
     {
         $result = [];
         foreach ($this->configurationList as $configuration) {
             $result = ConfigurationUtility::mergeConfiguration($result, $configuration, false);
         }
+
         if ($resolveNull) {
             $result = ConfigurationUtility::resolveNullInMergedConfiguration($result);
         }
+
         return $result;
     }
 
@@ -73,6 +83,7 @@ class Configuration implements ConfigurationInterface
         if ($key === '') {
             return $configuration;
         }
+
         return $configuration[$key] ?? $default;
     }
 
@@ -83,6 +94,7 @@ class Configuration implements ConfigurationInterface
             $this->configurationList[] = [];
             $this->manualOverride = &$this->configurationList[count($this->configurationList) - 1];
         }
+
         $this->manualOverride[$key] = $value;
     }
 
@@ -104,12 +116,12 @@ class Configuration implements ConfigurationInterface
 
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->set((string)$offset, $value);
+        $this->set((string) $offset, $value);
     }
 
     public function offsetUnset(mixed $offset): void
     {
-        $this->unset((string)$offset);
+        $this->unset($offset);
     }
 
     public function getValueMapConfiguration(string $id): ?array
@@ -118,9 +130,13 @@ class Configuration implements ConfigurationInterface
         if (isset($valueMaps[$id])) {
             return MapUtility::getItemValue($valueMaps[$id]);
         }
+
         return null;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function getIdentifierConfiguration(bool $resolveNull = true): array
     {
         return $this->getMergedConfiguration($resolveNull)[static::KEY_IDENTIFIER] ?? [];

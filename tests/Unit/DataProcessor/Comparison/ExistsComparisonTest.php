@@ -7,8 +7,12 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\ExistsComparison;
 class ExistsComparisonTest extends ComparisonTest
 {
     protected const CLASS_NAME = ExistsComparison::class;
+
     protected const KEYWORD = 'exists';
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2:mixed}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -36,7 +40,10 @@ class ExistsComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function exists(bool $expectedResult, array $firstOperand, mixed $firstOperandResult): void

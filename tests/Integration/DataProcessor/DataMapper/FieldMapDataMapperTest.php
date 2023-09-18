@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers FieldMapDataMapper
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper
  */
 class FieldMapDataMapperTest extends DataMapperTest
 {

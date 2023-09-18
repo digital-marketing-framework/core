@@ -14,13 +14,18 @@ abstract class ConfigurationDocumentParser implements ConfigurationDocumentParse
     use LoggerAwareTrait;
 
     abstract public function parseDocument(string $document): array;
+
+    /**
+     * @param array<mixed> $configuration
+     */
     abstract protected function doProduceDocument(array $configuration): string;
 
     public function produceDocument(array $configuration, ?SchemaDocument $schemaDocument = null): string
     {
-        if ($schemaDocument !== null) {
+        if ($schemaDocument instanceof SchemaDocument) {
             $schemaDocument->preSaveDataTransform($configuration);
         }
+
         return $this->doProduceDocument($configuration);
     }
 

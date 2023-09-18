@@ -7,6 +7,9 @@ use DigitalMarketingFramework\Core\Utility\MapUtility;
 
 trait ListMapTestTrait
 {
+    /**
+     * @return array<string,array{uuid:string,weight:int,value:mixed}>
+     */
     protected static function createListItem(mixed $value, string $id, int $weight = 10): array
     {
         return [
@@ -16,6 +19,9 @@ trait ListMapTestTrait
         ];
     }
 
+    /**
+     * @return array<string,array{uuid:string,weight:int,key:string,value:mixed}>
+     */
     protected static function createMapItem(string $key, mixed $value, string $id, int $weight = 10): array
     {
         return [

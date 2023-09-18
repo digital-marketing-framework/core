@@ -2,21 +2,19 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
-use DigitalMarketingFramework\Core\DataProcessor\Comparison\InComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers InComparison
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\InComparison
  */
 class InComparisonTest extends ComparisonTest
 {
     protected const KEYWORD = 'in';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        InComparison::class;
         parent::setUp();
         $this->data['field1'] = 'value1';
         $this->data['field2'] = new MultiValue(['value1', 'value2']);
@@ -24,6 +22,9 @@ class InComparisonTest extends ComparisonTest
         $this->data['field4'] = new MultiValue(['value1', 'value3']);
     }
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2?:?array<string,mixed>,3?:?string}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -73,7 +74,11 @@ class InComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     * @param ?array<string,mixed> $secondOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function in(bool $expectedResult, array $firstOperand, ?array $secondOperand = null, ?string $anyAll = null): void

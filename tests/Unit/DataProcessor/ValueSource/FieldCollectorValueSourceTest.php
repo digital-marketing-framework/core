@@ -12,6 +12,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     use MultiValueTestTrait;
 
     protected const KEYWORD = 'fieldCollector';
+
     protected const CLASS_NAME = FieldCollectorValueSource::class;
 
     protected const DEFAULT_CONFIG = [
@@ -22,7 +23,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         FieldCollectorValueSource::KEY_TEMPLATE => FieldCollectorValueSource::DEFAULT_TEMPLATE,
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->data['field1'] = 'value1';
@@ -30,6 +31,9 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         $this->data['field3'] = 'value3';
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function getNeutralConfig(): array
     {
         return [
@@ -54,6 +58,9 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         $this->assertEquals("field1 = value1\nfield2 = value2\nfield3 = value3\n", (string) $output);
     }
 
+    /**
+     * @return array<array{0:array<string>,1:bool,2:?bool,3:string}>
+     */
     public function skipProcessedProvider(): array
     {
         return [
@@ -66,22 +73,30 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     }
 
     /**
+     * @param array<string> $processed
+     *
      * @dataProvider skipProcessedProvider
+     *
      * @test
      */
-    public function skipProcessed(array $processed, bool $useDefaultConfig, ?bool $unprocessedOnly, mixed $expected): void
+    public function skipProcessed(array $processed, bool $useDefaultConfig, ?bool $unprocessedOnly, string $expected): void
     {
         foreach ($processed as $field) {
             $this->fieldTracker->markAsProcessed($field);
         }
+
         $config = $useDefaultConfig ? [] : $this->getNeutralConfig();
         if ($unprocessedOnly !== null) {
             $config[FieldCollectorValueSource::KEY_UNPROCESSED_ONLY] = $unprocessedOnly;
         }
+
         $output = $this->processValueSource($config);
         $this->assertEquals($expected, (string) $output);
     }
 
+    /**
+     * @return array<array{0:mixed,1:bool,2:?bool,3:string}>
+     */
     public function ignoreIfEmptyProvider(): array
     {
         return [
@@ -95,9 +110,10 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
 
     /**
      * @dataProvider ignoreIfEmptyProvider
+     *
      * @test
      */
-    public function ignoreIfEmpty(mixed $value2, bool $useDefaultConfig, ?bool $ignoreIfEmpty, mixed $expected): void
+    public function ignoreIfEmpty(mixed $value2, bool $useDefaultConfig, ?bool $ignoreIfEmpty, string $expected): void
     {
         $this->data['field2'] = $value2;
         $config = $useDefaultConfig ? [] : $this->getNeutralConfig();
@@ -108,35 +124,44 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
                 $config['ignoreIfEmpty'] = $ignoreIfEmpty;
             }
         }
+
         $output = $this->processValueSource($config);
         $this->assertEquals($expected, (string) $output);
     }
 
+    /**
+     * @return array<array{0:?string,1:string}>
+     */
     public function templateProvider(): array
     {
         return [
             [null,                     "field1 = value1\nfield2 = value2\nfield3 = value3\n"],
             ['{key}\\s=\\s{value}\\n', "field1 = value1\nfield2 = value2\nfield3 = value3\n"],
-            ['{key},{value};',         "field1,value1;field2,value2;field3,value3;"],
-            ['{key}',                  "field1field2field3"],
-            ['{value}',                "value1value2value3"],
+            ['{key},{value};',         'field1,value1;field2,value2;field3,value3;'],
+            ['{key}',                  'field1field2field3'],
+            ['{value}',                'value1value2value3'],
         ];
     }
 
     /**
      * @dataProvider templateProvider
+     *
      * @test
      */
-    public function template(?string $template, mixed $expected): void
+    public function template(?string $template, string $expected): void
     {
         $config = $this->getNeutralConfig();
         if ($template !== null) {
             $config[FieldCollectorValueSource::KEY_TEMPLATE] = $template;
         }
+
         $output = $this->processValueSource($config);
         $this->assertEquals($expected, (string) $output);
     }
 
+    /**
+     * @return array<array{0:?string,1:string}>
+     */
     public function excludeProvider(): array
     {
         return [
@@ -148,18 +173,23 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
 
     /**
      * @dataProvider excludeProvider
+     *
      * @test
      */
-    public function exclude(mixed $exclude, mixed $expected): void
+    public function exclude(?string $exclude, string $expected): void
     {
         $config = $this->getNeutralConfig();
         if ($exclude !== null) {
             $config[FieldCollectorValueSource::KEY_EXCLUDE] = $exclude;
         }
+
         $output = $this->processValueSource($config);
         $this->assertEquals($expected, (string) $output);
     }
 
+    /**
+     * @return array<array{0:array<string>,1:bool,2:?string,3:string}>
+     */
     public function includeProvider(): array
     {
         return [
@@ -185,19 +215,24 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     }
 
     /**
+     * @param array<string> $processed
+     *
      * @dataProvider includeProvider
+     *
      * @test
      */
-    public function include(array $processed, bool $processedOnly, mixed $include, mixed $expected): void
+    public function include(array $processed, bool $processedOnly, ?string $include, string $expected): void
     {
         foreach ($processed as $field) {
             $this->fieldTracker->markAsProcessed($field);
         }
+
         $config = $this->getNeutralConfig();
         $config[FieldCollectorValueSource::KEY_UNPROCESSED_ONLY] = $processedOnly;
         if ($include !== null) {
             $config[FieldCollectorValueSource::KEY_INCLUDE] = $include;
         }
+
         $output = $this->processValueSource($config);
         $this->assertEquals($expected, (string) $output);
     }

@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
 
 /**
- * @covers FileValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource
  */
 class FileValueSourceTest extends ValueSourceTest
 {
@@ -22,7 +22,7 @@ class FileValueSourceTest extends ValueSourceTest
             FileValueSource::KEY_URL => $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'),
             FileValueSource::KEY_MIMETYPE => $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'd'], 'constant'),
         ];
-        
+
         /** @var FileValueInterface $output */
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
         $this->assertInstanceOf(FileValueInterface::class, $output);

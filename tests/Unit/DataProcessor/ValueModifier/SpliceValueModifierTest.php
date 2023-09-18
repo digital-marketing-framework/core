@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\SpliceValueModifi
 class SpliceValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'splice';
+
     protected const CLASS_NAME = SpliceValueModifier::class;
 
     protected const DEFAULT_CONFIG = [
@@ -16,7 +17,7 @@ class SpliceValueModifierTest extends ValueModifierTest
 
     public const MODIFY_TEST_CASES = [
         [null,          null],
-        ["",            ""],
+        ['',            ''],
         ['first second third', 'first', [SpliceValueModifier::KEY_INDEX => '1']],
         ['first second third', 'second', [SpliceValueModifier::KEY_INDEX => '2']],
         ['first second third', '', [SpliceValueModifier::KEY_INDEX => '4']],

@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 class JoinValueModifier extends ValueModifier
 {
     public const KEY_GLUE = 'glue';
+
     public const DEFAULT_GLUE = ',';
 
     public function modify(null|string|ValueInterface $value): null|string|ValueInterface
@@ -19,11 +20,13 @@ class JoinValueModifier extends ValueModifier
         if (!$this->proceed()) {
             return $value;
         }
+
         if ($value instanceof MultiValueInterface) {
             $glue = GeneralUtility::parseSeparatorString($this->getConfig(static::KEY_GLUE));
             $value->setGlue($glue);
-            $value = (string)$value;
+            $value = (string) $value;
         }
+
         return $value;
     }
 
@@ -32,6 +35,7 @@ class JoinValueModifier extends ValueModifier
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_GLUE, new StringSchema(static::DEFAULT_GLUE));
+
         return $schema;
     }
 }

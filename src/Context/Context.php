@@ -4,8 +4,14 @@ namespace DigitalMarketingFramework\Core\Context;
 
 use ArrayObject;
 
+/**
+ * @extends ArrayObject<string,mixed>
+ */
 abstract class Context extends ArrayObject implements ContextInterface
 {
+    /**
+     * @param array<string,mixed> $data
+     */
     public function __construct(array $data = [])
     {
         parent::__construct($data);

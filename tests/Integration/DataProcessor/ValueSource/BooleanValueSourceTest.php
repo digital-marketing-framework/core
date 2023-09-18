@@ -8,7 +8,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers BooleanValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\BooleanValueSource
  */
 class BooleanValueSourceTest extends ValueSourceTest
 {
@@ -35,6 +35,7 @@ class BooleanValueSourceTest extends ValueSourceTest
 
     /**
      * @test
+     *
      * @dataProvider valuesDataProvider
      */
     public function booleanValue(mixed $value, ?bool $expectedResult, mixed $true = null, mixed $false = null): void
@@ -48,16 +49,18 @@ class BooleanValueSourceTest extends ValueSourceTest
         if ($true !== null) {
             $config[BooleanValueSource::KEY_TRUE] = $true;
         }
+
         if ($false !== null) {
             $config[BooleanValueSource::KEY_FALSE] = $false;
         }
+
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
         if ($expectedResult === null) {
             $this->assertNull($output);
         } else {
             $this->assertInstanceOf(BooleanValueInterface::class, $output);
             $this->assertEquals($expectedResult, $output->getValue());
-            if ($expectedResult === true) {
+            if ($expectedResult) {
                 $this->assertEquals($true ?? '1', (string) $output);
             } else {
                 $this->assertEquals($false ?? '0', (string) $output);

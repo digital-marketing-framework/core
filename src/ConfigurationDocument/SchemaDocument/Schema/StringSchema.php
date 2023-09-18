@@ -8,7 +8,7 @@ class StringSchema extends ScalarValueSchema
 {
     public function getType(): string
     {
-        return "STRING";
+        return 'STRING';
     }
 
     public function getDefaultValue(SchemaDocument $schemaDocument): mixed

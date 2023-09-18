@@ -23,6 +23,7 @@ class AndEvaluation extends Evaluation
                 $result = false;
             }
         }
+
         return $result;
     }
 
@@ -31,6 +32,7 @@ class AndEvaluation extends Evaluation
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_EVALUATIONS, new ListSchema(new CustomSchema(EvaluationSchema::TYPE)));
+
         return $schema;
     }
 }

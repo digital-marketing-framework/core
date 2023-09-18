@@ -17,15 +17,17 @@ class OrEvaluation extends Evaluation
     public function evaluate(): bool
     {
         $subEvaluations = $this->getListConfig(static::KEY_EVALUATIONS);
-        if (empty($subEvaluations)) {
+        if ($subEvaluations === []) {
             return true;
         }
+
         $result = false;
         foreach ($subEvaluations as $subEvaluationConfig) {
             if ($this->dataProcessor->processEvaluation($subEvaluationConfig, $this->context->copy())) {
                 $result = true;
             }
         }
+
         return $result;
     }
 
@@ -34,6 +36,7 @@ class OrEvaluation extends Evaluation
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_EVALUATIONS, new ListSchema(new CustomSchema(EvaluationSchema::TYPE)));
+
         return $schema;
     }
 }

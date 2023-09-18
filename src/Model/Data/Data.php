@@ -19,6 +19,7 @@ class Data extends MultiValue implements DataInterface
 
     public function getFieldNames(): array
     {
+        /** @var array<string> */
         return array_keys($this->toArray());
     }
 
@@ -26,6 +27,7 @@ class Data extends MultiValue implements DataInterface
     {
         /** @var Data */
         $unpacked = parent::unpack($packed);
+
         return $unpacked;
     }
 }

@@ -2,10 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Evaluation;
 
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation;
-
 /**
- * @covers FalseEvaluation
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation
  */
 class FalseEvaluationTest extends EvaluationTest
 {

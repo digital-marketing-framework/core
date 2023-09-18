@@ -5,9 +5,10 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSo
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 /**
- * @covers MultiValueValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSource
  */
 class MultiValueValueSourceTest extends ValueSourceTest
 {
@@ -23,6 +24,9 @@ class MultiValueValueSourceTest extends ValueSourceTest
         $this->assertMultiValueEmpty($output);
     }
 
+    /**
+     * @return array<array{0:array<string|ValueInterface|null>,1:array<string,mixed>}>
+     */
     public function multiValueDataProvider(): array
     {
         return [
@@ -70,7 +74,11 @@ class MultiValueValueSourceTest extends ValueSourceTest
     }
 
     /**
+     * @param array<string|ValueInterface|null> $expectedResult
+     * @param array<string,mixed> $config
+     *
      * @test
+     *
      * @dataProvider multiValueDataProvider
      */
     public function multiValue(array $expectedResult, array $config): void

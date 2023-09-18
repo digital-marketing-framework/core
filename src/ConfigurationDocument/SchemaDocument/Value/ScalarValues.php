@@ -7,18 +7,14 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDo
 class ScalarValues
 {
     public const REFERENCE_TYPE_KEY = 'key';
+
     public const REFERENCE_TYPE_VALUE = 'value';
 
+    /** @var array<string,mixed> */
     protected array $values;
 
-    protected ValueSet $list;
-
-    /**
-     * @param array<string|int|bool,string> $list
-     * @param array<string> $sets
-     * @param array<string> $references
-     */
-    public function __construct() {
+    public function __construct()
+    {
         $this->reset();
     }
 
@@ -27,6 +23,7 @@ class ScalarValues
         if (!isset($this->values['list'])) {
             $this->values['list'] = new ValueSet();
         }
+
         $this->values['list']->addValue($value, $label);
     }
 
@@ -54,25 +51,33 @@ class ScalarValues
         $this->values[$valueType][] = $value;
     }
 
+    /**
+     * @return ?array<string,mixed>
+     */
     public function toArray(): ?array
     {
-        if (!empty($this->values)) {
+        if ($this->values !== []) {
             $values = $this->values;
             if (isset($values['list'])) {
                 $values['list'] = $values['list']->toArray();
             }
+
             return $values;
         }
+
         return null;
     }
 
     public function getFirstValue(SchemaDocument $schemaDocument): string|int|bool|null
     {
         $values = $this->getValues($schemaDocument);
-        if (empty($values)) {
+        if ($values === []) {
             return null;
         }
-        return reset(array_keys($values));
+
+        $keys = array_keys($values);
+
+        return reset($keys);
     }
 
     /**
@@ -91,18 +96,19 @@ class ScalarValues
                         $set = $schemaDocument->getValueSet($setName) ?? new ValueSet();
                         $values->merge($set);
                     }
+
                     break;
                 case 'references':
                     // NOTE references can't be calculated without a data object to be referenced, so we do not take those into account
                     // TODO do we need to do something about this? probably, because server-side evaluation is supposed to use the schema
                     //      however, if we evaluate a data object, then we have it to follow the references
                     //      maybe add a second parameter for the data object, optional
-                    break;
                 default:
                     // TODO trigger an event so that other packages have a chance to implement their way of fetching/generating values (e.g. route references for the distributor)
                     break;
             }
         }
+
         return $values->toArray();
     }
 }

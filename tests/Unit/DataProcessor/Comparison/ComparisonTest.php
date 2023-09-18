@@ -5,7 +5,6 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Comparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\BinaryComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
-use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTest;
 
 abstract class ComparisonTest extends DataProcessorPluginTest
@@ -16,15 +15,25 @@ abstract class ComparisonTest extends DataProcessorPluginTest
 
     protected ComparisonInterface $subject;
 
+    /**
+     * @param array<string,mixed> $config
+     * @param array<string,mixed> $defaultConfig
+     */
     protected function processComparison(array $config, array $defaultConfig): bool
     {
         $class = static::CLASS_NAME;
         $this->subject = new $class(static::KEYWORD, $this->registry, $config, $this->getContext());
         $this->subject->setDataProcessor($this->dataProcessor);
         $this->subject->setDefaultConfiguration($defaultConfig);
+
         return $this->subject->compare();
     }
 
+    /**
+     * @param array<string,mixed> $firstOperand
+     * @param ?array<string,mixed> $secondOperand
+     * @param ?array<string,mixed> $defaultConfig
+     */
     protected function runComparisonTest(
         bool $expectedResult,
         array $firstOperand,
@@ -37,6 +46,7 @@ abstract class ComparisonTest extends DataProcessorPluginTest
         if ($defaultConfig === null) {
             $defaultConfig = static::DEFAULT_CONFIG;
         }
+
         $with = [
             [$firstOperand],
         ];
@@ -47,6 +57,7 @@ abstract class ComparisonTest extends DataProcessorPluginTest
             $with[] = [$secondOperand];
             $results[] = $this->convertMultiValues($secondOperandResult);
         }
+
         $this->dataProcessor->method('processValue')->withConsecutive(...$with)->willReturnOnConsecutiveCalls(...$results);
         $config = [
             Comparison::KEY_OPERATION => static::KEYWORD,
@@ -55,9 +66,11 @@ abstract class ComparisonTest extends DataProcessorPluginTest
         if ($secondOperand !== null) {
             $config[BinaryComparison::KEY_SECOND_OPERAND] = $secondOperand;
         }
+
         if ($anyAll !== null) {
             $config[Comparison::KEY_ANY_ALL] = $anyAll;
         }
+
         $result = $this->processComparison($config, $defaultConfig);
         $this->assertEquals($expectedResult, $result);
     }

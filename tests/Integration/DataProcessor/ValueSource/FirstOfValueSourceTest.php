@@ -6,12 +6,15 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FirstOfValueSource;
 
 /**
- * @covers FirstOfValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\FirstOfValueSource
  */
 class FirstOfValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'firstOf';
 
+    /**
+     * @return array<array{0:mixed,1:array<string,mixed>}>
+     */
     public function firstOfDataProvider(): array
     {
         return [
@@ -68,12 +71,15 @@ class FirstOfValueSourceTest extends ValueSourceTest
     }
 
     /**
+     * @param array<string,mixed> $expectedResult
+     * @param array<string,mixed> $config
+     *
      * @test
+     *
      * @dataProvider firstOfDataProvider
      */
     public function firstOf(mixed $expectedResult, array $config): void
     {
-
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
         $this->assertEquals($expectedResult, $output);
     }

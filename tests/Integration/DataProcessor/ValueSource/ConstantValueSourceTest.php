@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSo
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 
 /**
- * @covers ConstantValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource
  */
 class ConstantValueSourceTest extends ValueSourceTest
 {

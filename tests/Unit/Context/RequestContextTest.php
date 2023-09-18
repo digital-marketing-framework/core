@@ -14,7 +14,7 @@ class RequestContextTest extends TestCase
     protected RequestContext $subject;
 
     /** @test */
-    public function toArray(): void
+    public function toArray(): never
     {
         $this->subject = new RequestContext();
         $this->expectException(BadMethodCallException::class);
@@ -26,7 +26,6 @@ class RequestContextTest extends TestCase
     {
         $this->subject = new RequestContext();
         $this->expectException(BadMethodCallException::class);
-        $this->subject->toArray();
         $this->subject['key1'] = 'value1';
     }
 }

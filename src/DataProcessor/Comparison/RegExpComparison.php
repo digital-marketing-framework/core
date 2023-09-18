@@ -8,6 +8,6 @@ class RegExpComparison extends BinaryComparison
 {
     protected function compareValues(string|null|ValueInterface $a, string|null|ValueInterface $b): bool
     {
-        return preg_match('/'  . trim((string)$b, '/') . '/', (string)$a);
+        return preg_match('/'.trim((string) $b, '/').'/', (string) $a);
     }
 }

@@ -4,16 +4,26 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataMapper;
 
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
 {
     protected const CLASS_NAME = IgnoreEmptyFieldsDataMapper::class;
+
     protected const KEYWORD = 'ignoreEmptyFields';
 
     protected const DEFAULT_CONFIG = [
         IgnoreEmptyFieldsDataMapper::KEY_ENABLED => IgnoreEmptyFieldsDataMapper::DEFAULT_ENABLED,
     ];
 
+    /**
+     * @return array<array{
+     *  0:array<string,string|ValueInterface|null>,
+     *  1:array<string,string|ValueInterface|null>,
+     *  2?:?array<string,mixed>,
+     *  3?:array<string,string|ValueInterface|null>
+     * }>
+     */
     public function mapDataDataProvider(): array
     {
         return [
@@ -69,7 +79,13 @@ class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
     }
 
     /**
+     * @param array<string,string|ValueInterface|null> $inputData
+     * @param array<string,string|ValueInterface|null> $expectedOutputData
+     * @param ?array<string,mixed> $config
+     * @param array<string,string|ValueInterface|null> $target
+     *
      * @test
+     *
      * @dataProvider mapDataDataProvider
      */
     public function mapDataTest(array $inputData, array $expectedOutputData, ?array $config = null, ?array $target = null): void

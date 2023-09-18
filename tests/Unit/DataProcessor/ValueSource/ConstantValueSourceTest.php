@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource
 class ConstantValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'constant';
+
     protected const CLASS_NAME = ConstantValueSource::class;
 
     /** @test */

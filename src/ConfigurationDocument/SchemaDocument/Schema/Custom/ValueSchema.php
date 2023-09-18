@@ -24,10 +24,15 @@ class ValueSchema extends ContainerSchema
 
         $valueModifier = new CustomSchema(ValueModifierSchema::TYPE);
         $valueModifiers = new ListSchema($valueModifier);
-        $valueModifiers->getRenderingDefinition()->addVisibilityConditionByValue('../' . DataProcessor::KEY_DATA . '/' . SwitchSchema::KEY_TYPE)->addValueSet('valueSource/modifiable');
+        $valueModifiers->getRenderingDefinition()->addVisibilityConditionByValue('../'.DataProcessor::KEY_DATA.'/'.SwitchSchema::KEY_TYPE)->addValueSet('valueSource/modifiable');
         $this->addProperty(DataProcessor::KEY_MODIFIERS, $valueModifiers);
     }
 
+    /**
+     * @param array<string,mixed> $config
+     *
+     * @return array{data:array{type:string,config?:array<string,array<string,mixed>>}}
+     */
     public static function createStandardValueConfiguration(string $type, array $config = []): array
     {
         $valueConfiguration = [
@@ -35,9 +40,10 @@ class ValueSchema extends ContainerSchema
                 SwitchSchema::KEY_TYPE => $type,
             ],
         ];
-        if (!empty($config)) {
+        if ($config !== []) {
             $valueConfiguration[DataProcessor::KEY_DATA][SwitchSchema::KEY_CONFIG][$type] = $config;
         }
+
         return $valueConfiguration;
     }
 }

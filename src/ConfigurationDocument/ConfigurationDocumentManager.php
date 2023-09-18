@@ -3,6 +3,8 @@
 namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\FatalMigrationException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\MigrationException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
@@ -10,8 +12,6 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDo
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
-use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\FatalMigrationException;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 
 class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, LoggerAwareInterface
@@ -64,6 +64,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         if ($documentName === '') {
             $documentName = $this->buildDocumentNameFromIdentifier($documentIdentifier);
         }
+
         $documentConfiguration = $this->getDocumentConfigurationFromDocument($document);
         $this->setName($documentConfiguration, $documentName);
         $this->setVersion($documentConfiguration, $schemaDocument->getVersion());
@@ -84,6 +85,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function getDocumentInformation(string $documentIdentifier): array
     {
         $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier, true);
+
         return [
             'id' => $documentIdentifier,
             'shortId' => $this->storage->getShortIdentifier($documentIdentifier),
@@ -104,6 +106,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
                 $identifiers[] = $identifier;
             }
         }
+
         return $identifiers;
     }
 
@@ -121,6 +124,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         if ($document !== null && $document !== '') {
             return $document;
         }
+
         return $this->storage->getDocument($documentIdentifier, $metaDataOnly);
     }
 
@@ -137,7 +141,8 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function getIncludes(array $configuration): array
     {
         $includeList = $configuration[static::KEY_META_DATA][static::KEY_INCLUDES] ?? [];
-        return ListUtility::flatten(ListUtility::sort($includeList));
+
+        return ListUtility::flatten($includeList);
     }
 
     public function setIncludes(array &$configuration, array $includes): void
@@ -185,6 +190,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     /**
      * @param array<string> $documentIdentifiers
      * @param array<string> $processedDocumentIdentifiers
+     *
      * @return array<array<mixed>>
      */
     protected function getIncludedConfigurations(array $documentIdentifiers, array $processedDocumentIdentifiers = []): array
@@ -203,11 +209,13 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
             array_push($includes, ...$subConfigurations);
             $includes[] = $configuration;
         }
+
         return $includes;
     }
 
     /**
      * @param array<mixed> $configuration
+     *
      * @return array<array<mixed>>
      */
     public function getConfigurationStackFromConfiguration(array $configuration): array
@@ -218,9 +226,10 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         $includes = $this->getIncludes($configuration);
         array_unshift($includes, 'SYS:defaults');
         $includedConfigurations = $this->getIncludedConfigurations($includes);
+
         return [
             ...$includedConfigurations,
-            $configuration
+            $configuration,
         ];
     }
 
@@ -230,6 +239,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function getConfigurationStackFromDocument(string $document): array
     {
         $configuration = $this->parser->parseDocument($document);
+
         return $this->getConfigurationStackFromConfiguration($configuration);
     }
 
@@ -239,6 +249,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function getConfigurationStackFromIdentifier(string $documentIdentifier): array
     {
         $document = $this->storage->getDocument($documentIdentifier);
+
         return $this->getConfigurationStackFromDocument($document);
     }
 
@@ -247,6 +258,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         $configurationStack = $this->getConfigurationStackFromConfiguration($mergedConfiguration);
         array_pop($configurationStack);
         $parentConfiguration = ConfigurationUtility::mergeConfigurationStack($configurationStack);
+
         return ConfigurationUtility::splitConfiguration($parentConfiguration, $mergedConfiguration);
     }
 
@@ -256,6 +268,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         if ($inheritedConfigurationOnly) {
             array_pop($configurationStack);
         }
+
         return ConfigurationUtility::mergeConfigurationStack($configurationStack);
     }
 
@@ -263,8 +276,6 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     {
         $oldIncludes = $this->getIncludes($referenceMergedConfiguration);
         $newIncludes = $this->getIncludes($mergedConfiguration);
-
-        $mergedConfiguration = $mergedConfiguration;
         $this->setIncludes($mergedConfiguration, $oldIncludes);
         $splitConfiguration = $this->splitConfiguration($mergedConfiguration);
 
@@ -273,6 +284,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         if ($inheritedConfigurationOnly) {
             array_pop($configurationStack);
         }
+
         return ConfigurationUtility::mergeConfigurationStack($configurationStack);
     }
 
@@ -281,6 +293,9 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         $this->migrations[$migration->getKey()][$migration->getSourceVersion()] = $migration;
     }
 
+    /**
+     * @param array<string,mixed> $configuration
+     */
     protected function migrateByKey(array &$configuration, string $key, string $targetVersion): void
     {
         $version = $this->getVersionByKey($configuration, $key);
@@ -292,6 +307,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
                     if (!$migration->checkVersions()) {
                         throw new FatalMigrationException(sprintf('Migration source version "%s" seems to be bigger than or equal to target version "%s".', $migration->getSourceVersion(), $migration->getTargetVersion()));
                     }
+
                     $configuration = $migration->migrate($configuration);
                     $version = $migration->getTargetVersion();
                 } catch (MigrationException $e) {
@@ -306,6 +322,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
                 break;
             }
         }
+
         if ($version === '') {
             // if there is no initial migration present
             // assume that none is necessary to get from no verison to the current version
@@ -324,6 +341,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
                 $this->migrateByKey($configuration, $key, $targetVersion);
             }
         }
+
         foreach (array_keys($this->getVersion($configuration)) as $key) {
             if (!isset($schemaVersion[$key])) {
                 // document has a version key that does not exist in the current schema
@@ -331,6 +349,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
                 $this->unsetVersionByKey($configuration, $key);
             }
         }
+
         return $configuration;
     }
 
@@ -342,11 +361,13 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
                 return true;
             }
         }
+
         foreach (array_keys($this->getVersion($configuration)) as $key) {
             if (!isset($schemaVersion[$key])) {
                 return true;
             }
         }
+
         return false;
     }
 }

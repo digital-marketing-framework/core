@@ -10,6 +10,9 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
 {
     use DataProcessorAwareTrait;
 
+    /**
+     * @param array<string,mixed> $configuration
+     */
     public function __construct(
         string $keyword,
         protected RegistryInterface $registry,
@@ -19,19 +22,19 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
         parent::__construct($keyword);
     }
 
-    protected function fieldExists($key, bool $markAsProcessed = true): bool
+    protected function fieldExists(string $key, bool $markAsProcessed = true): bool
     {
         if ($markAsProcessed) {
             $this->context->getFieldTracker()->markAsProcessed($key);
         }
+
         return $this->context->getData()->fieldExists($key);
     }
 
     protected function getFieldValue(string $key, bool $markAsProcessed = true): string|ValueInterface|null
     {
-        $fieldValue = $this->fieldExists($key, $markAsProcessed)
+        return $this->fieldExists($key, $markAsProcessed)
             ? $this->context->getData()[$key]
             : null;
-        return $fieldValue;
     }
 }

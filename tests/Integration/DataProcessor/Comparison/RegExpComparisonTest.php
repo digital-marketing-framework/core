@@ -2,19 +2,18 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
-use DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers RegExpComparison
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison
  */
 class RegExpComparisonTest extends ComparisonTest
 {
     protected const KEYWORD = 'regExp';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->data['field1'] = 'value1';
@@ -23,6 +22,9 @@ class RegExpComparisonTest extends ComparisonTest
         $this->data['field4'] = new MultiValue(['value4a', 'value4b']);
     }
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2?:?array<string,mixed>,3?:?string}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -94,7 +96,11 @@ class RegExpComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     * @param ?array<string,mixed> $secondOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function regExp(bool $expectedResult, array $firstOperand, ?array $secondOperand = null, ?string $anyAll = null): void

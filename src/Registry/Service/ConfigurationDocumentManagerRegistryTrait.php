@@ -12,8 +12,11 @@ use DigitalMarketingFramework\Core\Registry\RegistryException;
 trait ConfigurationDocumentManagerRegistryTrait
 {
     protected ConfigurationDocumentStorageInterface $configurationDocumentStorage;
+
     protected ConfigurationDocumentParserInterface $configurationDocumentParser;
+
     protected ?ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage = null;
+
     protected ConfigurationDocumentManagerInterface $configurationDocumentManager;
 
     abstract protected function createObject(string $class, array $arguments = []): object;
@@ -23,6 +26,7 @@ trait ConfigurationDocumentManagerRegistryTrait
         if (!isset($this->configurationDocumentStorage)) {
             throw new RegistryException('Configuration document storage not defined');
         }
+
         return $this->configurationDocumentStorage;
     }
 
@@ -48,6 +52,7 @@ trait ConfigurationDocumentManagerRegistryTrait
         if (!isset($this->configurationDocumentParser)) {
             throw new RegistryException('Configuration document storage not defined');
         }
+
         return $this->configurationDocumentParser;
     }
 
@@ -62,15 +67,18 @@ trait ConfigurationDocumentManagerRegistryTrait
             $configurationDocumentStorage = $this->getConfigurationDocumentStorage();
             $configurationDocumentParser = $this->getConfigurationDocumentParser();
             $staticConfigurationDocumentStorage = $this->getStaticConfigurationDocumentStorage();
-            $this->configurationDocumentManager = $this->createObject(
+            /** @var ConfigurationDocumentManager */
+            $configurationDocumentManager = $this->createObject(
                 ConfigurationDocumentManager::class,
                 [
                     $configurationDocumentStorage,
                     $configurationDocumentParser,
-                    $staticConfigurationDocumentStorage
+                    $staticConfigurationDocumentStorage,
                 ]
             );
+            $this->configurationDocumentManager = $configurationDocumentManager;
         }
+
         return $this->configurationDocumentManager;
     }
 

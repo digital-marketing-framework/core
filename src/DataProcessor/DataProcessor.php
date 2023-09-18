@@ -4,11 +4,12 @@ namespace DigitalMarketingFramework\Core\DataProcessor;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation;
+use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
@@ -26,6 +27,7 @@ use DigitalMarketingFramework\Core\Utility\ListUtility;
 class DataProcessor extends Plugin implements DataProcessorInterface
 {
     public const KEY_DATA = 'data';
+
     public const KEY_MODIFIERS = 'modifiers';
 
     public function __construct(
@@ -43,10 +45,11 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         $keyword = SwitchSchema::getSwitchType($config);
         $valueSourceConfig = SwitchSchema::getSwitchConfiguration($config);
         $valueSource = $this->registry->getValueSource($keyword, $valueSourceConfig, $context);
-        if ($valueSource === null) {
+        if (!$valueSource instanceof ValueSourceInterface) {
             throw new DigitalMarketingFrameworkException(sprintf('ValueSource "%s" not found.', $keyword));
         }
-        return $valueSource->build($context);
+
+        return $valueSource->build();
     }
 
     public function processValueModifiers(array $config, string|ValueInterface|null $value, DataProcessorContextInterface $context): string|ValueInterface|null
@@ -56,11 +59,13 @@ class DataProcessor extends Plugin implements DataProcessorInterface
             $keyword = SwitchSchema::getSwitchType($modifierSwitchConfig);
             $modifierConfig = SwitchSchema::getSwitchConfiguration($modifierSwitchConfig);
             $modifier = $this->registry->getValueModifier($keyword, $modifierConfig, $context);
-            if ($modifier === null) {
+            if (!$modifier instanceof ValueModifierInterface) {
                 throw new DigitalMarketingFrameworkException(sprintf('ValueModifier "%s" not found.', $keyword));
             }
+
             $value = $modifier->modify($value);
         }
+
         return $value;
     }
 
@@ -71,6 +76,7 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         if ($dataConfig === null) {
             throw new DigitalMarketingFrameworkException('No data for value source configuration found.');
         }
+
         $value = $this->processValueSource($dataConfig, $context);
 
         // modify
@@ -78,9 +84,8 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         if ($modifierConfig === null) {
             throw new DigitalMarketingFrameworkException('No data for value modifiers configuration found.');
         }
-        $value = $this->processValueModifiers($modifierConfig, $value, $context);
 
-        return $value;
+        return $this->processValueModifiers($modifierConfig, $value, $context);
     }
 
     public function processComparison(array $config, DataProcessorContextInterface $context): bool
@@ -89,10 +94,12 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         if ($keyword === null) {
             throw new DigitalMarketingFrameworkException('no comparison operation given');
         }
+
         $comparison = $this->registry->getComparison($keyword, $config, $context);
-        if ($comparison === null) {
+        if (!$comparison instanceof ComparisonInterface) {
             throw new DigitalMarketingFrameworkException(sprintf('Comparison "%s" not found.', $keyword));
         }
+
         return $comparison->compare();
     }
 
@@ -101,9 +108,10 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         $keyword = SwitchSchema::getSwitchType($config);
         $evaluationConfig = SwitchSchema::getSwitchConfiguration($config);
         $evaluation = $this->registry->getEvaluation($keyword, $evaluationConfig, $context);
-        if ($evaluation === null) {
+        if (!$evaluation instanceof EvaluationInterface) {
             throw new DigitalMarketingFrameworkException(sprintf('Evaluation "%s" not found.', $keyword));
         }
+
         return $evaluation->evaluate();
     }
 
@@ -113,35 +121,54 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         $target = new Data();
         foreach ($config as $keyword => $dataMapperConfig) {
             $dataMapper = $this->registry->getDataMapper($keyword, $dataMapperConfig, $context);
-            if ($dataMapper === null) {
+            if (!$dataMapper instanceof DataMapperInterface) {
                 throw new DigitalMarketingFrameworkException(sprintf('DataMapper "%s" not found.', $keyword));
             }
+
             $target = $dataMapper->mapData($target);
         }
+
         return $target;
     }
 
+    /**
+     * @param array<string,mixed> $dataMapperConfig
+     *
+     * @return array<string,mixed>
+     */
     public static function dataMapperSchemaDefaultValuePassthroughFields(array $dataMapperConfig = []): array
     {
         $keyword = GeneralUtility::getPluginKeyword(PassthroughFieldsDataMapper::class, DataMapperInterface::class);
         $dataMapperConfig[$keyword] = [
             PassthroughFieldsDataMapper::KEY_ENABLED => true,
         ];
+
         return $dataMapperConfig;
     }
 
+    /**
+     * @param array<string,mixed> $fields
+     * @param array<string,mixed> $dataMapperConfig
+     *
+     * @return array<string,mixed>
+     */
     public static function dataMapperSchemaDefaultValueFieldMap(array $fields, array $dataMapperConfig = []): array
     {
         $keyword = GeneralUtility::getPluginKeyword(FieldMapDataMapper::class, DataMapperInterface::class);
         $dataMapperConfig[$keyword] = [
             FieldMapDataMapper::KEY_FIELDS => $fields,
         ];
+
         return $dataMapperConfig;
     }
 
+    /**
+     * @return array{data:array{type:string,config:array<string,array{fieldName:string}>}}
+     */
     public static function valueSchemaDefaultValueField(string $fieldName): array
     {
         $keyword = GeneralUtility::getPluginKeyword(FieldValueSource::class, ValueSourceInterface::class);
+
         return [
             static::KEY_DATA => [
                 SwitchSchema::KEY_TYPE => $keyword,
@@ -154,9 +181,13 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         ];
     }
 
+    /**
+     * @return array{data:array{type:string,config:array<string,array{value:string}>}}
+     */
     public static function valueSchemaDefaultValueConstant(string $constantValue): array
     {
         $keyword = GeneralUtility::getPluginKeyword(ConstantValueSource::class, ValueSourceInterface::class);
+
         return [
             static::KEY_DATA => [
                 SwitchSchema::KEY_TYPE => $keyword,
@@ -169,9 +200,13 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         ];
     }
 
+    /**
+     * @return array{data:array{type:string,config:array<string,array{unprocessedOnly:bool}>}}
+     */
     public static function valueSchemaDefaultValueFieldCollector(): array
     {
         $keyword = GeneralUtility::getPluginKeyword(FieldCollectorValueSource::class, ValueSourceInterface::class);
+
         return [
             static::KEY_DATA => [
                 SwitchSchema::KEY_TYPE => $keyword,

@@ -8,7 +8,7 @@ class BooleanSchema extends ScalarValueSchema
 {
     public function getType(): string
     {
-        return "BOOLEAN";
+        return 'BOOLEAN';
     }
 
     public function getDefaultValue(?SchemaDocument $schemaDocument = null): mixed

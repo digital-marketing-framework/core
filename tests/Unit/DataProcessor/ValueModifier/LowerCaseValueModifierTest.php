@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\LowerCaseValueMod
 class LowerCaseValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'lowerCase';
+
     protected const CLASS_NAME = LowerCaseValueModifier::class;
 
     public const MODIFY_TEST_CASES = [
@@ -18,7 +19,7 @@ class LowerCaseValueModifierTest extends ValueModifierTest
         [[], []],
         [['Value1', 'VALUE2', 'value3'], ['value1', 'value2', 'value3']],
     ];
-    
+
     public function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;

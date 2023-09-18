@@ -40,22 +40,28 @@ class Registry implements RegistryInterface
         if ($object instanceof GlobalConfigurationAwareInterface) {
             $object->setGlobalConfiguration($this->getGlobalConfiguration());
         }
+
         if ($object instanceof LoggerAwareInterface) {
-            $logger = $this->getLoggerFactory()->getLogger(get_class($object));
+            $logger = $this->getLoggerFactory()->getLogger($object::class);
             $object->setLogger($logger);
         }
+
         if ($object instanceof ContextAwareInterface) {
             $object->setContext($this->getContext());
         }
+
         if ($object instanceof DataCacheAwareInterface) {
             $object->setCache($this->getCache());
         }
+
         if ($object instanceof DataProcessorAwareInterface) {
             $object->setDataProcessor($this->getDataProcessor());
         }
+
         if ($object instanceof FileStorageAwareInterface) {
             $object->setFileStorage($this->getFileStorage());
         }
+
         if ($object instanceof TemplateEngineAwareInterface) {
             $object->setTemplateEngine($this->getTemplateEngine());
         }
@@ -64,30 +70,34 @@ class Registry implements RegistryInterface
     public function createObject(string $class, array $arguments = []): object
     {
         if (!class_exists($class)) {
-            throw new RegistryException('Class "' . $class . '" is unknown!');
+            throw new RegistryException('Class "'.$class.'" is unknown!');
         }
+
         $object = new $class(...$arguments);
         $this->processObjectAwareness($object);
+
         return $object;
     }
 
     protected function classValidation(string $class, string $interface): void
     {
         if (!class_exists($class)) {
-            throw new RegistryException('class "' . $class . '" does not exist.');
+            throw new RegistryException('class "'.$class.'" does not exist.');
         }
+
         if (!in_array($interface, class_implements($class))) {
-            throw new RegistryException('class "' . $class . '" has to implement interface "' . $interface . '".');
+            throw new RegistryException('class "'.$class.'" has to implement interface "'.$interface.'".');
         }
     }
 
     protected function interfaceValidation(string $interface, string $parentInterface): void
     {
         if (!interface_exists($interface)) {
-            throw new RegistryException('interface "' . $interface . '" does not exist.');
+            throw new RegistryException('interface "'.$interface.'" does not exist.');
         }
+
         if (!is_subclass_of($interface, $parentInterface, true)) {
-            throw new RegistryException('interface "' . $interface . '" has to extend "' . $parentInterface . '".');
+            throw new RegistryException('interface "'.$interface.'" has to extend "'.$parentInterface.'".');
         }
     }
 }

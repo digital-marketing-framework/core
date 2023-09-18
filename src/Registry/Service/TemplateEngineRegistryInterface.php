@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineInterface;
 interface TemplateEngineRegistryInterface
 {
     public function getTemplateEngine(): TemplateEngineInterface;
+
     public function setTemplateEngine(TemplateEngineInterface $templateEngine): void;
 
     public function getTemplateSchema(string $format): SchemaInterface;

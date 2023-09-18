@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 class ValueSet
 {
     /**
-     * @param array<string|int|bool,string}
+     * @param array<string|int|bool,string> $values
      */
     public function __construct(
         protected array $values = [],
@@ -26,6 +26,9 @@ class ValueSet
         }
     }
 
+    /**
+     * @return array<string|int|bool,string>
+     */
     public function toArray(): array
     {
         return $this->values;

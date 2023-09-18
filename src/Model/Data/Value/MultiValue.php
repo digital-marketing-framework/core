@@ -4,8 +4,10 @@ namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
 use ArrayObject;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
-use InvalidArgumentException;
 
+/**
+ * @extends ArrayObject<int|string,string|ValueInterface>
+ */
 class MultiValue extends ArrayObject implements MultiValueInterface
 {
     public function __construct(
@@ -15,6 +17,9 @@ class MultiValue extends ArrayObject implements MultiValueInterface
         parent::__construct($a);
     }
 
+    /**
+     * @return array<int|string,string|ValueInterface>
+     */
     public function getValue(): array
     {
         $result = [];
@@ -25,6 +30,7 @@ class MultiValue extends ArrayObject implements MultiValueInterface
                 $result[$key] = $value;
             }
         }
+
         return $result;
     }
 
@@ -63,8 +69,9 @@ class MultiValue extends ArrayObject implements MultiValueInterface
         $data = $this->toArray();
         $packed = [];
         foreach ($data as $key => $value) {
-            $packed[$key] = GeneralUtility::packValue($value);
+            $packed[(string) $key] = GeneralUtility::packValue($value);
         }
+
         return $packed;
     }
 
@@ -74,6 +81,7 @@ class MultiValue extends ArrayObject implements MultiValueInterface
         foreach ($packed as $key => $packedValue) {
             $data[$key] = GeneralUtility::unpackValue($packedValue);
         }
+
         return new static($data);
     }
 }

@@ -17,6 +17,9 @@ abstract class Initialization
     ) {
     }
 
+    /**
+     * @return array<mixed>
+     */
     protected function getAdditionalPluginArguments(string $interface, string $pluginClass): array
     {
         return [];

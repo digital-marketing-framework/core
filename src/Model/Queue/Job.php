@@ -9,6 +9,9 @@ class Job implements JobInterface
 {
     protected string $routeId;
 
+    /**
+     * @param array<mixed> $data
+     */
     public function __construct(
         protected DateTime $created = new DateTime(),
         protected DateTime $changed = new DateTime(),

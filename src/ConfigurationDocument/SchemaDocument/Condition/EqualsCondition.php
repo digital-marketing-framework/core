@@ -14,6 +14,9 @@ class EqualsCondition extends Condition
         parent::__construct('equals');
     }
 
+    /**
+     * @return array{path:string,value:string}
+     */
     protected function getConfig(): array
     {
         return [

@@ -2,13 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\Queue;
 
-use Exception;
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
 use DigitalMarketingFramework\Core\Queue\QueueException;
 use DigitalMarketingFramework\Core\Queue\QueueInterface;
 use DigitalMarketingFramework\Core\Queue\QueueProcessor;
 use DigitalMarketingFramework\Core\Queue\QueueProcessorInterface;
 use DigitalMarketingFramework\Core\Queue\WorkerInterface;
+use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -20,6 +20,7 @@ class QueueProcessorTest extends TestCase
 
     protected WorkerInterface&MockObject $worker;
 
+    /** @var array<JobInterface&MockObject> */
     protected array $jobs = [];
 
     protected int $batchSize = 1;
@@ -33,6 +34,9 @@ class QueueProcessorTest extends TestCase
         $this->subject = new QueueProcessor($this->queue, $this->worker);
     }
 
+    /**
+     * @return array<array{0:string}>
+     */
     public function processorMethodProvider(): array
     {
         return [
@@ -74,6 +78,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processEmpty(string $method): void
@@ -91,6 +96,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processJobThatSucceeds(string $method): void
@@ -112,6 +118,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processLessJobsThanRequested(string $method): void
@@ -133,6 +140,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processTwoJobsThatSucceed(string $method): void
@@ -157,6 +165,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processJobThatFails(string $method): void
@@ -179,6 +188,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processTwoJobsThatBothFail(string $method): void
@@ -207,6 +217,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processJobThrowsArbitraryException(string $method): void
@@ -230,6 +241,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processJobThatSucceedsButWasSkipped(string $method): void
@@ -251,6 +263,7 @@ class QueueProcessorTest extends TestCase
 
     /**
      * @dataProvider processorMethodProvider
+     *
      * @test
      */
     public function processTwoJobsOfWhichTheFirstFails(string $method): void
@@ -267,10 +280,11 @@ class QueueProcessorTest extends TestCase
         $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
         $this->worker->expects($this->exactly(2))->method('processJob')
             ->withConsecutive([$job1], [$job2])
-            ->willReturnCallback(function($job) use ($job1, $job2, $errorMessage) {
+            ->willReturnCallback(static function ($job) use ($job1, $errorMessage) {
                 if ($job === $job1) {
                     throw new QueueException($errorMessage);
                 }
+
                 return true;
             });
         $this->queue->expects($this->once())->method('markAsFailed')->with($job1, $errorMessage);

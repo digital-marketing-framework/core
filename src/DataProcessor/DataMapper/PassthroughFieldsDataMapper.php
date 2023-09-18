@@ -12,6 +12,7 @@ class PassthroughFieldsDataMapper extends DataMapper
     public const WEIGHT = 20;
 
     public const KEY_ENABLED = 'enabled';
+
     public const DEFAULT_ENABLED = false;
 
     public function mapData(DataInterface $target): DataInterface
@@ -23,6 +24,7 @@ class PassthroughFieldsDataMapper extends DataMapper
         foreach ($this->context->getData() as $fieldName => $value) {
             $this->addField($target, $fieldName, $value);
         }
+
         return $target;
     }
 
@@ -35,6 +37,7 @@ class PassthroughFieldsDataMapper extends DataMapper
         $enabledSchema = new BooleanSchema(static::DEFAULT_ENABLED);
         $enabledSchema->getRenderingDefinition()->setLabel('Passthrough Fields');
         $schema->addProperty(static::KEY_ENABLED, $enabledSchema);
+
         return $schema;
     }
 }

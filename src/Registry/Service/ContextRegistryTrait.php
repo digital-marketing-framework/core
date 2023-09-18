@@ -14,6 +14,7 @@ trait ContextRegistryTrait
         if (!isset($this->context)) {
             $this->context = new RequestContext();
         }
+
         return $this->context;
     }
 

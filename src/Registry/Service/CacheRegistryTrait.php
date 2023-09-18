@@ -15,6 +15,7 @@ trait CacheRegistryTrait
         if (!isset($this->cache)) {
             $this->cache = new DataCache(new NullCache());
         }
+
         return $this->cache;
     }
 

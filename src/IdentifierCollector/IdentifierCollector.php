@@ -10,25 +10,26 @@ use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
-use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 abstract class IdentifierCollector extends ConfigurablePlugin implements IdentifierCollectorInterface
 {
     protected const KEY_ENABLED = 'enabled';
+
     protected const DEFAULT_ENABLED = false;
 
     public function __construct(
         string $keyword,
-        IdentifierCollectorRegistryInterface $registry,
+        protected RegistryInterface $registry,
         protected ConfigurationInterface $identifiersConfiguration
     ) {
-        parent::__construct($keyword, $registry);
+        parent::__construct($keyword);
         $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration($this->getKeyword());
     }
 
     protected function proceed(): bool
     {
-        return (bool)$this->getConfig(static::KEY_ENABLED);
+        return (bool) $this->getConfig(static::KEY_ENABLED);
     }
 
     abstract protected function prepareContext(ContextInterface $source, WriteableContextInterface $target): void;
@@ -47,6 +48,7 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
         if ($this->proceed()) {
             return $this->collect($context);
         }
+
         return null;
     }
 
@@ -54,6 +56,7 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
     {
         $schema = new ContainerSchema();
         $schema->addProperty(static::KEY_ENABLED, new BooleanSchema(static::DEFAULT_ENABLED));
+
         return $schema;
     }
 }

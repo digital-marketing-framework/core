@@ -12,6 +12,9 @@ class NotCondition extends Condition
         parent::__construct('not');
     }
 
+    /**
+     * @return array{type:string,config:array<mixed>}
+     */
     protected function getConfig(): array
     {
         return $this->subCondition->toArray();

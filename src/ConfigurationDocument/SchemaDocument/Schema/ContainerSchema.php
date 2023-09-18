@@ -14,7 +14,7 @@ class ContainerSchema extends Schema
 
     public function getType(): string
     {
-        return "CONTAINER";
+        return 'CONTAINER';
     }
 
     /**
@@ -24,6 +24,7 @@ class ContainerSchema extends Schema
     public function setProperty(string $name, SchemaInterface $schema): ContainerProperty
     {
         $this->properties[$name] = new ContainerProperty($name, $schema);
+
         return $this->properties[$name];
     }
 
@@ -36,13 +37,15 @@ class ContainerSchema extends Schema
         if (!isset($this->properties[$name])) {
             $this->properties[$name] = new ContainerProperty($name, $schema);
         } else {
-            if (get_class($this->properties[$name]->getSchema()) !== get_class($schema)) {
-                throw new DigitalMarketingFrameworkException(sprintf('Schema container property does not match existing property ("%s%, "%s").', get_class($this->properties[$name]->getSchema()), get_class($schema)));
+            if ($this->properties[$name]->getSchema()::class !== $schema::class) {
+                throw new DigitalMarketingFrameworkException(sprintf('Schema container property does not match existing property ("%s%, "%s").', $this->properties[$name]->getSchema()::class, $schema::class));
             }
+
             if ($overwrite) {
                 $this->properties[$name] = new ContainerProperty($name, $schema);
             }
         }
+
         return $this->properties[$name];
     }
 
@@ -72,6 +75,7 @@ class ContainerSchema extends Schema
         foreach ($this->properties as $property) {
             $valueSets = $this->mergeValueSets($valueSets, $property->getSchema()->getValueSets());
         }
+
         return $valueSets;
     }
 
@@ -79,7 +83,7 @@ class ContainerSchema extends Schema
     {
         $properties = [];
         foreach ($this->properties as $property) {
-            if (SchemaDocument::FLATTEN_SCHEMA) {
+            if (SchemaDocument::FLATTEN_SCHEMA) { // @phpstan-ignore-line this flag may technically be a constant but it may change in the future
                 $properties[] = [
                         'key' => $property->getName(),
                         'weight' => $property->getWeight(),
@@ -95,6 +99,7 @@ class ContainerSchema extends Schema
                 ];
             }
         }
+
         return parent::getConfig() + [
             'values' => $properties,
         ];
@@ -106,10 +111,12 @@ class ContainerSchema extends Schema
         if ($defaultValue !== null) {
             return $defaultValue;
         }
+
         $result = [];
         foreach ($this->getProperties() as $property) {
             $result[$property->getName()] = $property->getSchema()->getDefaultValue($schemaDocument);
         }
+
         return $result;
     }
 
@@ -118,12 +125,13 @@ class ContainerSchema extends Schema
         if ($value === null) {
             return;
         }
-        if (!is_array($value) || empty($value)) {
-            $value = (object)[];
+
+        if (!is_array($value) || $value === []) {
+            $value = (object) [];
         } else {
             foreach (array_keys($value) as $key) {
                 $property = $this->getProperty($key);
-                if ($property !== null) {
+                if ($property instanceof ContainerProperty) {
                     // TODO unknown data should be allowed due to previous schema versions
                     //      however, if we can run migrations first, this would be different
                     //      eventually we do want to cleanup and/or validate a configuration completely

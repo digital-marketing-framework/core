@@ -10,7 +10,8 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
 {
     use FileStorageAwareTrait;
 
-    protected array $storageConfiguration;
+    /** @var array<string,mixed> */
+    protected array $storageConfiguration = [];
 
     abstract protected function getFileExtension(): string;
 
@@ -41,6 +42,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     protected function checkFileValidity(string $fileIdentifier): bool
     {
         $baseFileName = $this->fileStorage->getFileBaseName($fileIdentifier);
+
         return preg_match('/.config$/', strtolower($baseFileName));
     }
 
@@ -50,6 +52,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         if (empty($folderIdentifier)) {
             return [];
         }
+
         $fileIdentifiers = $this->fileStorage->getFilesFromFolder($folderIdentifier);
         $result = [];
         foreach ($fileIdentifiers as $fileIdentifier) {
@@ -57,17 +60,20 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
                 $result[] = $fileIdentifier;
             }
         }
+
         return $result;
     }
 
     protected function buildFileBaseName(string $documentBaseName): string
     {
         $baseName = $documentBaseName;
-        $baseName = preg_replace_callback('/[A-Z]+/', function(array $matches) { return '-' . strtolower($matches[0]); }, $baseName);
+        $baseName = preg_replace_callback('/[A-Z]+/', static function (array $matches) {
+            return '-'.strtolower($matches[0]);
+        }, $baseName);
         $baseName = preg_replace('/[^a-zA-Z0-9]+/', '-', $baseName);
         $baseName = preg_replace('/^[^a-zA-Z0-9]+/', '', $baseName);
-        $baseName = preg_replace('/[^a-zA-Z0-9]+$/', '', $baseName);
-        return $baseName;
+
+        return preg_replace('/[^a-zA-Z0-9]+$/', '', $baseName);
     }
 
     public function getDocumentIdentiferFromBaseName(string $baseName, bool $newFile = true): string
@@ -77,9 +83,10 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         $extension = $this->getFileExtension();
         $count = 0;
         do {
-            $fileIdentifier = sprintf('%s/%s%s.config.%s', $folder, $baseName, ($count > 0 ? '-' . $count : ''), $extension);
-            $count++;
+            $fileIdentifier = sprintf('%s/%s%s.config.%s', $folder, $baseName, $count > 0 ? '-'.$count : '', $extension);
+            ++$count;
         } while (!$newFile || $this->fileStorage->fileExists($fileIdentifier));
+
         return $fileIdentifier;
     }
 
@@ -88,13 +95,13 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         $baseName = $this->fileStorage->getFileBaseName($documentIdentifier);
         $baseNameParts = explode('.', $baseName);
         array_pop($baseNameParts);
-        $baseName = implode('.', $baseNameParts);
-        return $baseName;
+
+        return implode('.', $baseNameParts);
     }
 
     protected function getStorageFolderIdentifier(): string
     {
-        return rtrim($this->getStorageConfiguration('folder', ''), '/');
+        return rtrim((string) $this->getStorageConfiguration('folder', ''), '/');
     }
 
     public function initalizeConfigurationDocumentStorage(): void

@@ -2,11 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
-use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\DefaultValueModifierTest as DefaultValueModifierUnitTest;
 
 /**
- * @covers DefaultValueModifier
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier
  */
 class DefaultValueModifierTest extends ValueModifierTest
 {

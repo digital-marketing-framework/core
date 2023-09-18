@@ -2,11 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
-use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\MapValueModifierTest as MapValueModifierUnitTest;
 
 /**
- * @covers MapValueModifier
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapValueModifier
  */
 class MapValueModifierTest extends ValueModifierTest
 {

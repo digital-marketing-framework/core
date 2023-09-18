@@ -14,23 +14,27 @@ class PrefixDataMapper extends DataMapper
     public const WEIGHT = 100;
 
     public const KEY_PREFIX = 'prefix';
+
     public const DEFAULT_PREFIX = '';
 
     public const KEY_ACTION = 'action';
+
     public const DEFAULT_ACTION = 'add';
 
     public const ACTION_ADD = 'add';
+
     public const ACTION_REMOVE = 'remove';
 
     protected function processFieldName(string $fieldName, string $action, string $prefix): string
     {
         switch ($action) {
             case static::ACTION_ADD:
-                return $prefix . $fieldName;
+                return $prefix.$fieldName;
             case static::ACTION_REMOVE:
-                if (substr($fieldName, 0, strlen($prefix)) === $prefix) {
+                if (str_starts_with($fieldName, $prefix)) {
                     return substr($fieldName, strlen($prefix));
                 }
+
                 return $fieldName;
             default:
                 throw new DigitalMarketingFrameworkException(sprintf('unknown prefix action "%s"', $action));

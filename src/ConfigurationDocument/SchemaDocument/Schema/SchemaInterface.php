@@ -22,13 +22,17 @@ interface SchemaInterface
      * @return array<string,ValueSet>
      */
     public function getValueSets(): array;
+
     public function addValueToValueSet(string $name, string|int|bool $value, ?string $label = null): void;
 
     public function getDefaultValue(SchemaDocument $schemaDocument): mixed;
+
     public function setDefaultValue(mixed $value): void;
 
     public function addValidation(Condition $condition, string $message, bool $strict = true): void;
+
     public function addStrictValidation(Condition $condition, string $message): void;
+
     public function addSoftValidation(Condition $condition, string $message): void;
 
     /**

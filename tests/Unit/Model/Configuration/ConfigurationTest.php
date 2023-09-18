@@ -11,16 +11,22 @@ class ConfigurationTest extends TestCase
 {
     protected ConfigurationInterface $subject;
 
+    /**
+     * @return array<array{0:array<string,mixed>}>
+     */
     public function toArrayProvider(): array
     {
         return [
             [[]],
-            [['field1' => 'value1', 'field2' => 'value2',]],
+            [['field1' => 'value1', 'field2' => 'value2']],
         ];
     }
 
     /**
+     * @param array<string,mixed> $values
+     *
      * @dataProvider toArrayProvider
+     *
      * @test
      */
     public function toArray(array $values): void
@@ -89,8 +95,8 @@ class ConfigurationTest extends TestCase
     public function basicKeyDelete(): void
     {
         $configList = [
-            [ 'key1' => 'value1' ],
-            [ 'key1' => null ],
+            ['key1' => 'value1'],
+            ['key1' => null],
         ];
         $this->subject = new Configuration($configList);
         $this->assertNull($this->subject->get('key1'));
@@ -101,8 +107,8 @@ class ConfigurationTest extends TestCase
     public function basicKeyDeletesArray(): void
     {
         $configList = [
-            [ 'key1' => ['key1.1' => 'value1'] ],
-            [ 'key1' => null ],
+            ['key1' => ['key1.1' => 'value1']],
+            ['key1' => null],
         ];
         $this->subject = new Configuration($configList);
         $this->assertNull($this->subject->get('key1'));
@@ -235,6 +241,9 @@ class ConfigurationTest extends TestCase
         ], $this->subject->toArray());
     }
 
+    /**
+     * @return array{0:array{0:true},1:array{0:false}}
+     */
     public function readonlyStateProvider(): array
     {
         return [
@@ -245,17 +254,18 @@ class ConfigurationTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider readonlyStateProvider
      */
     public function readonlyConfigAddConfigurationIsBadMethodCall(bool $readonly): void
     {
-        $configList = [[],];
+        $configList = [[]];
 
         if ($readonly) {
             $this->expectException(BadMethodCallException::class);
         }
 
-        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject = new Configuration($configList, readonly: $readonly);
         $this->subject->addConfiguration([
             'key1' => 'value1',
         ]);
@@ -267,17 +277,18 @@ class ConfigurationTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider readonlyStateProvider
      */
     public function readonlyConfigSetIsBadMethodCall(bool $readonly): void
     {
-        $configList = [[],];
+        $configList = [[]];
 
         if ($readonly) {
             $this->expectException(BadMethodCallException::class);
         }
 
-        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject = new Configuration($configList, readonly: $readonly);
         $this->subject->set('key1', 'value1');
 
         if (!$readonly) {
@@ -287,17 +298,18 @@ class ConfigurationTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider readonlyStateProvider
      */
     public function readonlyConfigOffsetSetIsBadMethodCall(bool $readonly): void
     {
-        $configList = [[],];
+        $configList = [[]];
 
         if ($readonly) {
             $this->expectException(BadMethodCallException::class);
         }
 
-        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject = new Configuration($configList, readonly: $readonly);
         $this->subject['key1'] = 'value1';
 
         if (!$readonly) {
@@ -307,18 +319,19 @@ class ConfigurationTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider readonlyStateProvider
      */
     public function readonlyConfigUnsetIsBadMethodCall(bool $readonly): void
     {
-        $configList = [['key1' => 'value1'],];
+        $configList = [['key1' => 'value1']];
 
         if ($readonly) {
             $this->expectException(BadMethodCallException::class);
         }
 
-        $this->subject = new Configuration($configList, readonly:$readonly);
-        $this->subject->unset('key1', 'value1');
+        $this->subject = new Configuration($configList, readonly: $readonly);
+        $this->subject->unset('key1');
 
         if (!$readonly) {
             $this->assertNull($this->subject->get('key1'));
@@ -327,17 +340,18 @@ class ConfigurationTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider readonlyStateProvider
      */
     public function readonlyConfigOffsetUnsetIsBadMethodCall(bool $readonly): void
     {
-        $configList = [['key1' => 'value1'],];
+        $configList = [['key1' => 'value1']];
 
         if ($readonly) {
             $this->expectException(BadMethodCallException::class);
         }
 
-        $this->subject = new Configuration($configList, readonly:$readonly);
+        $this->subject = new Configuration($configList, readonly: $readonly);
         unset($this->subject['key1']);
 
         if (!$readonly) {
@@ -347,12 +361,13 @@ class ConfigurationTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider readonlyStateProvider
      */
     public function readonlyConfigReportsAccurately(bool $readonly): void
     {
-        $configList = [[],];
-        $this->subject = new Configuration($configList, readonly:$readonly);
+        $configList = [[]];
+        $this->subject = new Configuration($configList, readonly: $readonly);
         $this->assertEquals($readonly, $this->subject->isReadonly());
     }
 }

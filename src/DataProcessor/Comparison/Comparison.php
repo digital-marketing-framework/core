@@ -9,12 +9,15 @@ use DigitalMarketingFramework\Core\DataProcessor\DataProcessorPlugin;
 abstract class Comparison extends DataProcessorPlugin implements ComparisonInterface
 {
     public const KEY_FIRST_OPERAND = 'firstOperand';
+
     public const KEY_SECOND_OPERAND = 'secondOperand';
 
     public const KEY_OPERATION = 'type';
 
     public const KEY_ANY_ALL = 'anyAll';
+
     public const VALUE_ANY_ALL_ANY = 'any';
+
     public const VALUE_ANY_ALL_ALL = 'all';
 
     abstract public function compare(): bool;

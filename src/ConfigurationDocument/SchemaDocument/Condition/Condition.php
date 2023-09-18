@@ -11,8 +11,14 @@ abstract class Condition
     ) {
     }
 
+    /**
+     * @return array<mixed>
+     */
     abstract protected function getConfig(): array;
 
+    /**
+     * @return array{type:string,config:array<mixed>}
+     */
     public function toArray(): array
     {
         return [
