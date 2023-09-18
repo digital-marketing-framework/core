@@ -16,7 +16,7 @@ class FileValue extends Value implements FileValueInterface
 
     final public function __construct(?FileInterface $file = null)
     {
-        if ($file !== null) {
+        if ($file instanceof FileInterface) {
             $this->fileName = $file->getName();
             $this->publicUrl = $file->getPublicUrl();
             $this->relativePath = $file->getRelativePath();
