@@ -39,7 +39,7 @@ class FileValueTest extends AbstractFieldTest
     public function castToStringProvider(): array
     {
         return [
-            [['name1', 'url1', 'path1', 'type1'], 'url111'],
+            [['name1', 'url1', 'path1', 'type1'], 'url1'],
             [['name2', 'url2', 'path2', 'type2'], 'url2'],
         ];
     }
