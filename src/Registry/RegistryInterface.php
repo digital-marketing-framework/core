@@ -27,5 +27,10 @@ interface RegistryInterface extends
     DataProcessorRegistryInterface,
     IdentifierCollectorRegistryInterface
 {
+    /**
+     * Create a class instance and process awareness
+     *
+     * @param array<mixed> $arguments
+     */
     public function createObject(string $class, array $arguments = []): object;
 }
