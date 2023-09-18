@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
@@ -30,8 +29,11 @@ trait DataProcessorRegistryTrait
     public function getDataProcessor(): DataProcessorInterface
     {
         if (!isset($this->dataProcessor)) {
-            $this->dataProcessor = $this->createObject(DataProcessor::class, [$this]);
+            /** @var DataProcessor */
+            $dataProcessor = $this->createObject(DataProcessor::class, [$this]);
+            $this->dataProcessor = $dataProcessor;
         }
+
         return $this->dataProcessor;
     }
 
@@ -52,6 +54,7 @@ trait DataProcessorRegistryTrait
 
     public function getValueSource(string $keyword, array $config, DataProcessorContextInterface $context): ?ValueSourceInterface
     {
+        /** @var ?ValueSourceInterface */
         return $this->getPlugin($keyword, ValueSourceInterface::class, [$config, $context]);
     }
 
@@ -63,10 +66,12 @@ trait DataProcessorRegistryTrait
             if ($class::modifiable()) {
                 $schema->addModifiableKeyword($key);
             }
+
             if ($class::canBeMultiValue()) {
                 $schema->addCanBeMultiValueKeyword($key);
             }
         }
+
         return $schema;
     }
 
@@ -82,6 +87,7 @@ trait DataProcessorRegistryTrait
 
     public function getValueModifier(string $keyword, array $config, DataProcessorContextInterface $context): ?ValueModifierInterface
     {
+        /** @var ?ValueModifierInterface */
         return $this->getPlugin($keyword, ValueModifierInterface::class, [$config, $context]);
     }
 
@@ -91,6 +97,7 @@ trait DataProcessorRegistryTrait
         foreach ($this->getAllPluginClasses(ValueModifierInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
+
         return $schema;
     }
 
@@ -106,6 +113,7 @@ trait DataProcessorRegistryTrait
 
     public function getEvaluation(string $keyword, array $config, DataProcessorContextInterface $context): ?EvaluationInterface
     {
+        /** @var ?EvaluationInterface */
         return $this->getPlugin($keyword, EvaluationInterface::class, [$config, $context]);
     }
 
@@ -115,6 +123,7 @@ trait DataProcessorRegistryTrait
         foreach ($this->getAllPluginClasses(EvaluationInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
+
         return $schema;
     }
 
@@ -130,6 +139,7 @@ trait DataProcessorRegistryTrait
 
     public function getComparison(string $keyword, array $config, DataProcessorContextInterface $context): ?ComparisonInterface
     {
+        /** @var ?ComparisonInterface */
         return $this->getPlugin($keyword, ComparisonInterface::class, [$config, $context]);
     }
 
@@ -143,10 +153,12 @@ trait DataProcessorRegistryTrait
             if ($binaryOperation) {
                 $schema->addValueToValueSet(ComparisonSchema::VALUE_SET_BINARY_OPERATIONS, $key);
             }
+
             if ($multiValueHandlingOperation) {
                 $schema->addValueToValueSet(ComparisonSchema::VALUE_SET_MULTI_VALUE_HANDLING_OPERATIONS, $key);
             }
         }
+
         return $schema;
     }
 
@@ -162,6 +174,7 @@ trait DataProcessorRegistryTrait
 
     public function getDataMapper(string $keyword, array $config, DataProcessorContextInterface $context): ?DataMapperInterface
     {
+        /** @var ?DataMapperInterface */
         return $this->getPlugin($keyword, DataMapperInterface::class, [$config, $context]);
     }
 
@@ -171,6 +184,7 @@ trait DataProcessorRegistryTrait
         foreach ($this->getAllPluginClasses(DataMapperInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
+
         return $schema;
     }
 }

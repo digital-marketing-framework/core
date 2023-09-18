@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 class ConcatenationValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'concatenation';
+
     protected const CLASS_NAME = ConcatenationValueSource::class;
 
     protected const DEFAULT_CONFIG = [
@@ -60,7 +61,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
                 $this->createListItem($subConfig1, 'id1', 10),
             ],
         ];
-        $this->dataProcessor->method('processValue')->with($subConfig1)->willReturn(new MultiValue(['foo','bar']));
+        $this->dataProcessor->method('processValue')->with($subConfig1)->willReturn(new MultiValue(['foo', 'bar']));
         /** @var MultiValueInterface $output */
         $output = $this->processValueSource($config);
         $this->assertInstanceOf(MultiValueInterface::class, $output);

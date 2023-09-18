@@ -13,6 +13,7 @@ class DefaultValueModifier extends ValueModifier
     public const WEIGHT = 100;
 
     public const KEY_VALUE = 'value';
+
     public const DEFAULT_VALUE = '';
 
     public function modify(null|string|ValueInterface $value): null|string|ValueInterface
@@ -20,9 +21,11 @@ class DefaultValueModifier extends ValueModifier
         if (!$this->proceed()) {
             return $value;
         }
+
         if (GeneralUtility::isEmpty($value)) {
             return $this->getConfig(static::KEY_VALUE);
         }
+
         return $value;
     }
 
@@ -31,6 +34,7 @@ class DefaultValueModifier extends ValueModifier
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_VALUE, new StringSchema(static::DEFAULT_VALUE));
+
         return $schema;
     }
 }

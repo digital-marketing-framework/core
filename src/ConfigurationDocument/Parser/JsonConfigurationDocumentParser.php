@@ -6,9 +6,9 @@ class JsonConfigurationDocumentParser extends ConfigurationDocumentParser
 {
     public function parseDocument(string $document): array
     {
-        $config = json_decode($document, true);
+        $config = json_decode($document, true, 512, JSON_THROW_ON_ERROR);
 
-        if (!is_array($config) || empty($config)) {
+        if (!is_array($config) || $config === []) {
             return [];
         }
 
@@ -17,6 +17,6 @@ class JsonConfigurationDocumentParser extends ConfigurationDocumentParser
 
     protected function doProduceDocument(array $configuration): string
     {
-        return json_encode($configuration);
+        return json_encode($configuration, JSON_THROW_ON_ERROR);
     }
 }

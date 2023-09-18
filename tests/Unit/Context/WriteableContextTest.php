@@ -11,25 +11,31 @@ class WriteableContextTest extends TestCase
 {
     protected WriteableContext $subject;
 
+    /**
+     * @return array<array{0:array<string,mixed>}>
+     */
     public function toArrayProvider(): array
     {
         return [
             [[]],
             [[
                 'key1' => 'value1',
-                'key2' => 'value2'
+                'key2' => 'value2',
             ]],
             [[
                 'key1' => [
                     'key1.1' => 'value1.1',
                     'key1.2' => 'value1.2',
-                ]
+                ],
             ]],
         ];
     }
 
     /**
+     * @param array<string,mixed> $values
+     *
      * @dataProvider toArrayProvider
+     *
      * @test
      */
     public function toArray(array $values): void
@@ -54,6 +60,7 @@ class WriteableContextTest extends TestCase
     {
         $this->subject = new WriteableContext();
         $this->subject->setCookie('key1', 'value1');
+
         $result = $this->subject->toArray();
         $this->assertEquals([ContextInterface::KEY_COOKIES => ['key1' => 'value1']], $result);
     }
@@ -80,6 +87,7 @@ class WriteableContextTest extends TestCase
     {
         $this->subject = new WriteableContext();
         $this->subject->setRequestVariable('key1', 'value1');
+
         $result = $this->subject->toArray();
         $this->assertEquals([ContextInterface::KEY_REQUEST_VARIABLES => ['key1' => 'value1']], $result);
     }
@@ -105,7 +113,7 @@ class WriteableContextTest extends TestCase
     public function copyCookieFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getCookie')->with('name1')->willReturn('value1');
@@ -119,7 +127,7 @@ class WriteableContextTest extends TestCase
     public function copyNonExistentCookieFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getCookie')->with('name1')->willReturn(null);
@@ -133,7 +141,7 @@ class WriteableContextTest extends TestCase
     public function copyRequestVariableFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getRequestVariable')->with('name1')->willReturn('value1');
@@ -147,7 +155,7 @@ class WriteableContextTest extends TestCase
     public function copyNonExistentRequestVariableFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getRequestVariable')->with('name1')->willReturn(null);
@@ -161,7 +169,7 @@ class WriteableContextTest extends TestCase
     public function copyIpAddressFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getIpAddress')->willReturn('value1');
@@ -175,7 +183,7 @@ class WriteableContextTest extends TestCase
     public function copyInvalidIpAddressFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getIpAddress')->willReturn(null);
@@ -189,7 +197,7 @@ class WriteableContextTest extends TestCase
     public function copyTimestampFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getTimestamp')->willReturn(41);
@@ -203,7 +211,7 @@ class WriteableContextTest extends TestCase
     public function copyInvalidTimestampFromContext(): void
     {
         $this->subject = new WriteableContext();
-        
+
         /** @var ContextInterface&MockObject */
         $sourceContext = $this->createMock(ContextInterface::class);
         $sourceContext->expects($this->once())->method('getTimestamp')->willReturn(null);

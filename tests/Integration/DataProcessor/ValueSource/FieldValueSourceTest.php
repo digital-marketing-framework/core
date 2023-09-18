@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSo
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 
 /**
- * @covers FieldValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource
  */
 class FieldValueSourceTest extends ValueSourceTest
 {

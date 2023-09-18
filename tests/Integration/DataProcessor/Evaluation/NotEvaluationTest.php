@@ -2,10 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Evaluation;
 
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\NotEvaluation;
-
 /**
- * @covers NotEvaluation
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Evaluation\NotEvaluation
  */
 class NotEvaluationTest extends EvaluationTest
 {

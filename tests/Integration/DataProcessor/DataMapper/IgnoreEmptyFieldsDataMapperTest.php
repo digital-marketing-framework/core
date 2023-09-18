@@ -2,11 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers IgnoreEmptyFieldsDataMapper
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper
  */
 class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
 {

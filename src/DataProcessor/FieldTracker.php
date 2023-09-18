@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\DataProcessor;
 
 class FieldTracker implements FieldTrackerInterface
 {
+    /** @var array<string,bool> */
     protected array $processedFields = [];
 
     public function markAsProcessed(string $key): void
@@ -30,6 +31,6 @@ class FieldTracker implements FieldTrackerInterface
 
     public function getProcessedFields(): array
     {
-        return $this->processedFields;
+        return array_keys($this->processedFields);
     }
 }

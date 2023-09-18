@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 class FieldValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'field';
+
     protected const CLASS_NAME = FieldValueSource::class;
 
     protected const DEFAULT_CONFIG = [

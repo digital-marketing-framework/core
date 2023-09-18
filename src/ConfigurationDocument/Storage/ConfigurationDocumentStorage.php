@@ -13,9 +13,11 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
     use LoggerAwareTrait;
 
     public const CONFIGURATION_KEY = 'digitalmarketingframework';
+
     public const STORAGE_CONFIGURATION_KEY = 'configurationStorage';
 
     abstract public function getDocumentIdentifiers(): array;
+
     abstract public function getDocumentIdentiferFromBaseName(string $baseName, bool $newFile = true): string;
 
     public function getShortIdentifier(string $documentIdentifier): string
@@ -24,8 +26,11 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
     }
 
     abstract public function getDocument(string $documentIdentifier, bool $metaDataOnly = false): string;
+
     abstract public function setDocument(string $documentIdentifier, string $document): void;
+
     abstract public function deleteDocument(string $documentIdentifier): void;
+
     abstract public function isReadOnly(string $identifier): bool;
 
     protected function getStorageConfiguration(?string $key = null, mixed $default = null): mixed
@@ -34,6 +39,7 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
         if ($key !== null) {
             return $config[$key] ?? $default;
         }
+
         return $config;
     }
 

@@ -16,29 +16,40 @@ class FieldCollectorValueSource extends ValueSource
     public const WEIGHT = 20;
 
     public const KEY_IGNORE_IF_EMPTY = 'ignoreIfEmpty';
+
     public const DEFAULT_IGNORE_IF_EMPTY = true;
 
     public const KEY_UNPROCESSED_ONLY = 'unprocessedOnly';
+
     public const DEFAULT_UNPROCESSED_ONLY = true;
 
     public const KEY_EXCLUDE = 'exclude';
+
     public const DEFAULT_EXCLUDE = '';
 
     public const KEY_INCLUDE = 'include';
+
     public const DEFAULT_INCLUDE = '';
 
     public const KEY_TEMPLATE = 'template';
+
     public const DEFAULT_TEMPLATE = '{key}\\s=\\s{value}\\n';
 
     protected bool $ignoreIfEmpty;
+
     protected bool $unprocessedOnly;
-    protected array $excludeFields;
-    protected array $includeFields;
+
+    /** @var array<string> */
+    protected array $excludeFields = [];
+
+    /** @var array<string> */
+    protected array $includeFields = [];
+
     protected string $template;
 
     protected function getMultiValue(): MultiValueInterface
     {
-        return new MultiValue(glue:'');
+        return new MultiValue(glue: '');
     }
 
     protected function allowField(string|int $key, string|ValueInterface|null $value): bool
@@ -65,15 +76,10 @@ class FieldCollectorValueSource extends ValueSource
         }
 
         // unprocessedOnly has lowest priority because it is the most indirect directive
-        if ($this->unprocessedOnly && $this->context->getFieldTracker()->hasBeenProcessed($key)) {
-            return false;
-        }
-
-        // allow a field by default
-        return true;
+        return !($this->unprocessedOnly && $this->context->getFieldTracker()->hasBeenProcessed($key));
     }
 
-    protected function addValue(MultiValueInterface $output, string|int $key, string|ValueInterface|null $value): void
+    protected function addValue(MultiValueInterface $output, string|int $key, string|ValueInterface $value): void
     {
         $output[] = $value;
     }
@@ -83,14 +89,12 @@ class FieldCollectorValueSource extends ValueSource
         if ($value === null) {
             return null;
         }
-        switch ($this->template) {
-            case '{key}':
-                return $key;
-            case '{value}':
-                return $value;
-            default:
-                return str_replace(['{key}', '{value}'], [$key, $value], $this->template);
-        }
+
+        return match ($this->template) {
+            '{key}' => $key,
+            '{value}' => $value,
+            default => str_replace(['{key}', '{value}'], [$key, $value], $this->template),
+        };
     }
 
     public function build(): null|string|ValueInterface
@@ -112,6 +116,7 @@ class FieldCollectorValueSource extends ValueSource
                 $this->addValue($result, $key, $processedValue);
             }
         }
+
         return $result;
     }
 
@@ -124,6 +129,7 @@ class FieldCollectorValueSource extends ValueSource
         $schema->addProperty(static::KEY_EXCLUDE, new StringSchema());
         $schema->addProperty(static::KEY_INCLUDE, new StringSchema());
         $schema->addProperty(static::KEY_TEMPLATE, new StringSchema(static::DEFAULT_TEMPLATE));
+
         return $schema;
     }
 

@@ -5,11 +5,10 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\BinaryComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
+use DigitalMarketingFramework\Core\Tests\Integration\CoreRegistryTestTrait;
 use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 use PHPUnit\Framework\TestCase;
-
-use DigitalMarketingFramework\Core\Tests\Integration\CoreRegistryTestTrait;
 
 abstract class DataProcessorPluginTest extends TestCase
 {
@@ -19,14 +18,20 @@ abstract class DataProcessorPluginTest extends TestCase
 
     protected const KEYWORD = '';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->initRegistry();
     }
 
+    /**
+     * @param array<string,mixed> $config
+     *
+     * @return array{type:string,config:array<string,array<string,mixed>>}
+     */
     protected function getValueSourceConfiguration(array $config, ?string $keyword = null): array
     {
-        $keyword = $keyword ?? static::KEYWORD;
+        $keyword ??= static::KEYWORD;
+
         return [
             'type' => $keyword,
             'config' => [
@@ -35,9 +40,15 @@ abstract class DataProcessorPluginTest extends TestCase
         ];
     }
 
+    /**
+     * @param array<string,mixed> $config
+     *
+     * @return array{type:string,config:array<string,array<string,mixed>>}
+     */
     protected function getValueModifierConfiguration(array $config, ?string $keyword = null): array
     {
-        $keyword = $keyword ?? static::KEYWORD;
+        $keyword ??= static::KEYWORD;
+
         return [
             'type' => $keyword,
             'config' => [
@@ -46,6 +57,17 @@ abstract class DataProcessorPluginTest extends TestCase
         ];
     }
 
+    /**
+     * TODO shouldn't the modifiers config array be a list of modifiers instead of just one?
+     *
+     * @param array<string,mixed> $valueSourceConfig
+     * @param ?array<string,mixed> $modifierConfig
+     *
+     * @return array{
+     *   data:array{type:string,config:array<string,array<string,mixed>>},
+     *   modifiers:array{type:string,config:array<string,array<string,mixed>>}
+     * }
+     */
     protected function getValueConfiguration(array $valueSourceConfig, string $valueSourceKeyword, ?array $modifierConfig = null, ?string $modifierKeyword = null): array
     {
         return [
@@ -54,9 +76,15 @@ abstract class DataProcessorPluginTest extends TestCase
         ];
     }
 
+    /**
+     * @param array<string,mixed> $config
+     *
+     * @return array{type:string,config:array<string,array<string,mixed>>}
+     */
     protected function getEvaluationConfiguration(array $config, ?string $keyword = null): array
     {
-        $keyword = $keyword ?? static::KEYWORD;
+        $keyword ??= static::KEYWORD;
+
         return [
             'type' => $keyword,
             'config' => [
@@ -65,25 +93,44 @@ abstract class DataProcessorPluginTest extends TestCase
         ];
     }
 
-    protected function getComparisonConfiguration(array $firstOperatorConfig, ?array $secondOperatorConfig = null, ?string $anyAllConfig = null, ?string $keyword = null): array
+    /**
+     * @param array<string,mixed> $firstOperandConfig
+     * @param ?array<string,mixed> $secondOperandConfig
+     *
+     * @return array{
+     *   type:string,
+     *   firstOperand:array<string,mixed>,
+     *   secondOperand?:array<string,mixed>,
+     *   anyAll?:string
+     * }
+     */
+    protected function getComparisonConfiguration(array $firstOperandConfig, ?array $secondOperandConfig = null, ?string $anyAllConfig = null, ?string $keyword = null): array
     {
-        $keyword = $keyword ?? static::KEYWORD;
+        $keyword ??= static::KEYWORD;
         $config = [
             Comparison::KEY_OPERATION => $keyword,
-            BinaryComparison::KEY_FIRST_OPERAND => $firstOperatorConfig,
+            BinaryComparison::KEY_FIRST_OPERAND => $firstOperandConfig,
         ];
-        if ($secondOperatorConfig !== null) {
-            $config[BinaryComparison::KEY_SECOND_OPERAND] = $secondOperatorConfig;
+        if ($secondOperandConfig !== null) {
+            $config[BinaryComparison::KEY_SECOND_OPERAND] = $secondOperandConfig;
         }
+
         if ($anyAllConfig !== null) {
             $config[Comparison::KEY_ANY_ALL] = $anyAllConfig;
         }
+
         return $config;
     }
 
+    /**
+     * @param array<string,mixed> $config
+     *
+     * @return array<string,array<string,mixed>>
+     */
     protected function getDataMapperConfiguration(array $config, ?string $keyword = null): array
     {
-        $keyword = $keyword ?? static::KEYWORD;
+        $keyword ??= static::KEYWORD;
+
         return [
             $keyword => $config,
         ];

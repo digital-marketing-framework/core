@@ -2,11 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
-use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\TrimValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\TrimValueModifierTest as TrimValueModifierUnitTest;
 
 /**
- * @covers TrimValueModifier
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\TrimValueModifier
  */
 class TrimValueModifierTest extends ValueModifierTest
 {

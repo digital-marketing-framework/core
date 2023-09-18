@@ -35,7 +35,7 @@ trait RegistryTestTrait
         $this->configurationDocumentManager = $this->createMock(ConfigurationDocumentManagerInterface::class);
         $this->configurationDocumentManager->method('getStorage')->willReturn($this->configurationDocumentStorage);
         $this->configurationDocumentManager->method('getParser')->willReturn($this->configurationDocumentParser);
-        $this->configurationDocumentManager->method('getConfigurationStackFromConfiguration')->willReturnCallback(function($configuration) {
+        $this->configurationDocumentManager->method('getConfigurationStackFromConfiguration')->willReturnCallback(static function ($configuration) {
             return [$configuration];
         });
 

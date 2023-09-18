@@ -25,7 +25,7 @@ class QueueProcessor implements QueueProcessorInterface
 
     public function processJobs(array $jobs): void
     {
-        if (!empty($jobs)) {
+        if ($jobs !== []) {
             $this->queue->markListAsPending($jobs);
             foreach ($jobs as $job) {
                 $this->processJob($job);

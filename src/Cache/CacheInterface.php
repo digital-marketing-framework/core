@@ -9,7 +9,7 @@ interface CacheInterface extends NonTaggableCacheInterface
      * @param array<string> $tags
      */
     public function store(string $key, array $data, array $tags = []): void;
-    
+
     /**
      * @param array<string> $tags
      */

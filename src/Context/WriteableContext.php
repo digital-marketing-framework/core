@@ -29,8 +29,10 @@ class WriteableContext extends Context implements WriteableContextInterface
         $value = $context[$key] ?? null;
         if ($value !== null) {
             $this[$key] = $value;
+
             return true;
         }
+
         return false;
     }
 
@@ -39,8 +41,10 @@ class WriteableContext extends Context implements WriteableContextInterface
         $value = $context->getCookie($name);
         if ($value !== null) {
             $this->setCookie($name, $value);
+
             return true;
         }
+
         return false;
     }
 
@@ -49,8 +53,10 @@ class WriteableContext extends Context implements WriteableContextInterface
         $value = $context->getIpAddress();
         if ($value !== null) {
             $this->setIpAddress($value);
+
             return true;
         }
+
         return false;
     }
 
@@ -59,8 +65,10 @@ class WriteableContext extends Context implements WriteableContextInterface
         $value = $context->getTimestamp();
         if ($value !== null) {
             $this->setTimestamp($value);
+
             return true;
         }
+
         return false;
     }
 
@@ -69,8 +77,10 @@ class WriteableContext extends Context implements WriteableContextInterface
         $value = $context->getRequestVariable($name);
         if ($value !== null) {
             $this->setRequestVariable($name, $value);
+
             return true;
         }
+
         return false;
     }
 }

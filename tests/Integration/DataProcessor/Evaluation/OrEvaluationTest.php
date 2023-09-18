@@ -5,12 +5,15 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Evaluat
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\OrEvaluation;
 
 /**
- * @covers OrEvaluation
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Evaluation\OrEvaluation
  */
 class OrEvaluationTest extends EvaluationTest
 {
     protected const KEYWORD = 'or';
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>}>
+     */
     public function orDataProvider(): array
     {
         return [
@@ -112,7 +115,10 @@ class OrEvaluationTest extends EvaluationTest
     }
 
     /**
+     * @param array<string,mixed> $config
+     *
      * @test
+     *
      * @dataProvider orDataProvider
      */
     public function or(bool $expectedResult, array $config): void

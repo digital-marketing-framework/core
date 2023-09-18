@@ -2,11 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
-use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\NegateValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\NegateValueModifierTest as NegateValueModifierUnitTest;
 
 /**
- * @covers NegateValueModifier
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\NegateValueModifier
  */
 class NegateValueModifierTest extends ValueModifierTest
 {

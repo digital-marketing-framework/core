@@ -7,8 +7,12 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsTrueComparison;
 class IsTrueComparisonTest extends ComparisonTest
 {
     protected const CLASS_NAME = IsTrueComparison::class;
+
     protected const KEYWORD = 'isTrue';
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2:mixed,3?:?string}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -56,7 +60,7 @@ class IsTrueComparisonTest extends ComparisonTest
                 true,
                 ['firstOperandConfigKey' => 'firstOperandConfigValue'],
                 ['', '1'],
-                'any'
+                'any',
             ],
             [
                 false,
@@ -90,7 +94,10 @@ class IsTrueComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function isTrueTest(bool $expectedResult, array $firstOperand, mixed $firstOperandResult, ?string $anyAll = null): void

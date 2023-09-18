@@ -44,6 +44,9 @@ class JobTest extends TestCase
         $this->assertEquals($value, $this->subject->getChanged());
     }
 
+    /**
+     * @return array<array{0:int}>
+     */
     public function statusProvider(): array
     {
         return [
@@ -57,6 +60,7 @@ class JobTest extends TestCase
 
     /**
      * @dataProvider statusProvider
+     *
      * @test
      */
     public function setGetStatus(int $value): void

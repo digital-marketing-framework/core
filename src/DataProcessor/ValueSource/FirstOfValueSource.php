@@ -24,6 +24,7 @@ class FirstOfValueSource extends ValueSource
                 return $value;
             }
         }
+
         return null;
     }
 
@@ -32,6 +33,7 @@ class FirstOfValueSource extends ValueSource
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_VALUE_LIST, new ListSchema(new CustomSchema(ValueSchema::TYPE)));
+
         return $schema;
     }
 }

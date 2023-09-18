@@ -2,10 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Evaluation;
 
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation;
-
 /**
- * @covers TrueEvaluation
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation
  */
 class TrueEvaluationTest extends EvaluationTest
 {

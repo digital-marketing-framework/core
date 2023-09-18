@@ -15,6 +15,7 @@ interface DataCacheInterface
 
     /**
      * @param array<IdentifierInterface> $identifiers
+     *
      * @return array<DataInterface>
      */
     public function fetchMultiple(array $identifiers): array;
@@ -30,7 +31,7 @@ interface DataCacheInterface
     public function storeReference(IdentifierInterface $source, IdentifierInterface $target, array $tags = []): void;
 
     public function purge(IdentifierInterface $identifier): void;
-    
+
     /**
      * @param array<string> $tags
      */

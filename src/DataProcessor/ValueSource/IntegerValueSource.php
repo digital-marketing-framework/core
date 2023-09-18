@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 class IntegerValueSource extends ValueSource
 {
     public const KEY_VALUE = 'value';
+
     public const DEFAULT_VALUE = null;
 
     public function build(): null|string|ValueInterface
@@ -20,13 +21,16 @@ class IntegerValueSource extends ValueSource
         if ($value !== null) {
             $value = $this->dataProcessor->processValue($value, $this->context->copy());
         }
+
         if ($value === null) {
             return null;
         }
+
         $value = (string) $value;
         if (!is_numeric($value)) {
             return null;
         }
+
         return new IntegerValue((int) $value);
     }
 
@@ -35,6 +39,7 @@ class IntegerValueSource extends ValueSource
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_VALUE, new CustomSchema(ValueSchema::TYPE));
+
         return $schema;
     }
 

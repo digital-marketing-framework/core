@@ -7,12 +7,15 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\IndexValueModifierTest as IndexValueModifierUnitTest;
 
 /**
- * @covers IndexValueModifier
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\IndexValueModifier
  */
 class IndexValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'index';
 
+    /**
+     * @return array<array{0:mixed,1:string,2:string}>
+     */
     public function errorValuesDataProvider(): array
     {
         return IndexValueModifierUnitTest::MODIFY_ERROR_TEST_CASES;
@@ -20,6 +23,7 @@ class IndexValueModifierTest extends ValueModifierTest
 
     /**
      * @test
+     *
      * @dataProvider errorValuesDataProvider
      */
     public function errorValues(mixed $value, string $index, string $message): void

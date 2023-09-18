@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 class MapReferenceValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'mapReference';
+
     protected const CLASS_NAME = MapReferenceValueModifier::class;
 
     protected const DEFAULT_CONFIG = [
@@ -37,7 +38,7 @@ class MapReferenceValueModifierTest extends ValueModifierTest
         ['c3', 'c1', [MapReferenceValueModifier::KEY_MAP_NAME => 'id.m2', MapReferenceValueModifier::KEY_INVERT => true]],
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $map1 = [
@@ -49,8 +50,8 @@ class MapReferenceValueModifierTest extends ValueModifierTest
             'id.m2.2' => $this->createMapItem('c1', 'c3', 'id.m2.2', 20),
         ];
         $this->configuration[0][ConfigurationInterface::KEY_VALUE_MAPS] = [
-            'id.m1' => $this->createMapItem('map1', $map1, 'id.m1', 10,),
-            'id.m2' => $this->createMapItem('map2', $map2, 'id.m2', 20,),
+            'id.m1' => $this->createMapItem('map1', $map1, 'id.m1', 10),
+            'id.m2' => $this->createMapItem('map2', $map2, 'id.m2', 20),
         ];
     }
 

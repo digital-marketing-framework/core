@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\Evaluation\ComparisonEvaluation
 class ComparisonEvaluationTest extends EvaluationTest
 {
     protected const CLASS_NAME = ComparisonEvaluation::class;
+
     protected const KEYWORD = 'comparison';
 
     /** @test */

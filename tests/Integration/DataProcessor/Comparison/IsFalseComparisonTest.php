@@ -2,18 +2,17 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
-use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsFalseComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers IsFalseComparison
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\IsFalseComparison
  */
 class IsFalseComparisonTest extends ComparisonTest
 {
     protected const KEYWORD = 'isFalse';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->data['field1'] = 'value1';
@@ -28,6 +27,9 @@ class IsFalseComparisonTest extends ComparisonTest
         $this->data['field10'] = new MultiValue(['0', '1']);
     }
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2?:?string}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -95,7 +97,10 @@ class IsFalseComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function isFalseTest(bool $expectedResult, array $firstOperand, ?string $anyAll = null): void

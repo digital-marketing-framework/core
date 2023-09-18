@@ -8,17 +8,20 @@ use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class DataSet implements DataSetInterface
 {
     protected DataInterface $data;
+
     protected ConfigurationInterface $configuration;
+
     protected WriteableContextInterface $context;
 
     /**
-     * @param array $data The form fields and their values as associative array
-     * @param array $configurationList An array of (override) configurations
-     * @param array $context The context needed for processing the submission
+     * @param array<string,string|ValueInterface> $data The form fields and their values as associative array
+     * @param array<array<string,mixed>> $configurationList An array of (override) configurations
+     * @param array<string,mixed> $context The context needed for processing the submission
      */
     public function __construct(array $data, array $configurationList = [], array $context = [])
     {

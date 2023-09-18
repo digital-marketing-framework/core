@@ -2,11 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Evaluation;
 
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\ComparisonEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 
 /**
- * @covers ComparisonEvaluation
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Evaluation\ComparisonEvaluation
  */
 class ComparisonEvaluationTest extends EvaluationTest
 {

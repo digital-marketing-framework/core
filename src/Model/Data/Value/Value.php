@@ -6,6 +6,6 @@ abstract class Value implements ValueInterface
 {
     public function getValue(): mixed
     {
-        return (string)$this;
+        return (string) $this;
     }
 }

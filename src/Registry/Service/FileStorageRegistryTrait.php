@@ -12,8 +12,11 @@ trait FileStorageRegistryTrait
     public function getFileStorage(): FileStorageInterface
     {
         if (!isset($this->fileStorage)) {
-            $this->fileStorage = $this->createObject(FileStorage::class);
+            /** @var FileStorage */
+            $fileStorage = $this->createObject(FileStorage::class);
+            $this->fileStorage = $fileStorage;
         }
+
         return $this->fileStorage;
     }
 

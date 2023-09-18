@@ -2,10 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
-
 /**
- * @covers NullValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource
  */
 class NullValueSourceTest extends ValueSourceTest
 {

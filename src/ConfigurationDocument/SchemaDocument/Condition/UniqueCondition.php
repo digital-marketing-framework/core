@@ -14,6 +14,9 @@ class UniqueCondition extends Condition
         parent::__construct('unique');
     }
 
+    /**
+     * @return array{valuePath:string,pathPattern:string}
+     */
     protected function getConfig(): array
     {
         return [

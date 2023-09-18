@@ -21,7 +21,7 @@ class MapSchema extends ListSchema
 
     public function getType(): string
     {
-        return "MAP";
+        return 'MAP';
     }
 
     public function getNameSchema(): StringSchema
@@ -51,6 +51,7 @@ class MapSchema extends ListSchema
                 $map = MapUtility::append($map, $key, $value);
             }
         }
+
         return $map;
     }
 }

@@ -26,7 +26,7 @@ class ListSchema extends Schema
 
     public function getType(): string
     {
-        return "LIST";
+        return 'LIST';
     }
 
     public function getItemSchema(): ContainerSchema
@@ -64,7 +64,7 @@ class ListSchema extends Schema
 
     protected function getConfig(): array
     {
-        if (SchemaDocument::FLATTEN_SCHEMA) {
+        if (SchemaDocument::FLATTEN_SCHEMA) { // @phpstan-ignore-line this flag may technically be a constant but it may change in the future
             return parent::getConfig() + [
                 'dynamicOrder' => $this->dynamicOrder,
                 'itemTemplate' => $this->getItemSchema()->toArray(),
@@ -86,6 +86,7 @@ class ListSchema extends Schema
                 $list = ListUtility::append($list, $value);
             }
         }
+
         return $list;
     }
 
@@ -94,13 +95,15 @@ class ListSchema extends Schema
         if ($value === null) {
             return;
         }
+
         if (empty($value)) {
-            $value = (object)[];
+            $value = (object) [];
         } else {
             foreach (array_keys($value) as $key) {
                 if (!isset($value[$key])) {
                     continue;
                 }
+
                 $this->itemSchema->preSaveDataTransform($value[$key], $schemaDocument);
             }
         }

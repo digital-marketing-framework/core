@@ -22,11 +22,13 @@ trait IdentifierCollectorRegistryTrait
      */
     public function getAllIdentifierCollectors(ConfigurationInterface $configuration): array
     {
+        /** @var array<IdentifierCollectorInterface> */
         return $this->getAllPlugins(IdentifierCollectorInterface::class, [$configuration]);
     }
 
     public function getIdentifierCollector(string $keyword, ConfigurationInterface $configuration): ?IdentifierCollectorInterface
     {
+        /** @var ?IdentifierCollectorInterface */
         return $this->getPlugin($keyword, IdentifierCollectorInterface::class, [$configuration]);
     }
 
@@ -45,6 +47,7 @@ trait IdentifierCollectorRegistryTrait
         }
 
         $schema->addProperty(ConfigurationInterface::KEY_IDENTIFIER_COLLECTORS, $collectorSchema);
+
         return $schema;
     }
 }

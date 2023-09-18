@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
 class FileValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'file';
+
     protected const CLASS_NAME = FileValueSource::class;
 
     /** @test */

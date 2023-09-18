@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSourc
 class ConditionValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'condition';
+
     protected const CLASS_NAME = ConditionValueSource::class;
 
     /** @test */
@@ -16,6 +17,9 @@ class ConditionValueSourceTest extends ValueSourceTest
         $this->processValueSource([]);
     }
 
+    /**
+     * @return array<array{0:mixed,1:bool,2:mixed,3:mixed,4:array<string,mixed>,5:?array<string,mixed>,6:?array<string,mixed>}>
+     */
     public function conditionValueSourceDataProvider(): array
     {
         return [
@@ -77,7 +81,12 @@ class ConditionValueSourceTest extends ValueSourceTest
     }
 
     /**
+     * @param array<string,mixed> $ifConfig
+     * @param ?array<string,mixed> $thenConfig
+     * @param ?array<string,mixed> $elseConfig
+     *
      * @test
+     *
      * @dataProvider conditionValueSourceDataProvider
      */
     public function conditionValueSource(
@@ -95,10 +104,12 @@ class ConditionValueSourceTest extends ValueSourceTest
             $valueWith[] = [$thenConfig];
             $valueResults[] = $thenResult;
         }
+
         if ($elseConfig !== null) {
             $valueWith[] = [$elseConfig];
             $valueResults[] = $elseResult;
         }
+
         $this->dataProcessor->method('processValue')->withConsecutive(...$valueWith)->willReturnOnConsecutiveCalls(...$valueResults);
         $this->dataProcessor->method('processEvaluation')->with($ifConfig)->willReturn($evalResult);
 

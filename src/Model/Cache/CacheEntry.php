@@ -6,6 +6,10 @@ use DateTime;
 
 class CacheEntry implements CacheEntryInterface
 {
+    /**
+     * @param array<mixed> $data,
+     * @param array<string> $tags
+     */
     public function __construct(
         protected string $key,
         protected array $data,
@@ -16,12 +20,12 @@ class CacheEntry implements CacheEntryInterface
 
     public function getKey(): string
     {
-        return $this->identifier;
+        return $this->key;
     }
 
     public function setKey(string $key): void
     {
-        $this->kes = $key;
+        $this->key = $key;
     }
 
     public function getData(): array
@@ -52,6 +56,7 @@ class CacheEntry implements CacheEntryInterface
     public function expired(int $timeoutInSeconds = 86400): bool
     {
         $now = new DateTime();
+
         return $now->getTimestamp() - $this->getTimestamp()->getTimestamp() < $timeoutInSeconds;
     }
 
@@ -74,7 +79,7 @@ class CacheEntry implements CacheEntryInterface
 
     public function removeTag(string $tag): void
     {
-        $this->tags = array_filter($this->tags, function(string $entryTag) use ($tag) {
+        $this->tags = array_filter($this->tags, static function (string $entryTag) use ($tag) {
             return $entryTag !== $tag;
         });
     }

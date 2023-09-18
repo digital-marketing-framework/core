@@ -19,6 +19,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         if (!$this->fileExists($fileIdentifier)) {
             return null;
         }
+
         return file_get_contents($this->getFilePath($fileIdentifier));
     }
 
@@ -43,6 +44,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         } else {
             $this->logger->warning(sprintf('File %s does not seem to exist.', $fileIdentifier));
         }
+
         return null;
     }
 
@@ -73,6 +75,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
             // we expect at least two letters though, so that we do not catch windows paths like C:\foobar
             return true;
         }
+
         return $this->fileExists($fileIdentifier) && !$this->fileIsWriteable($fileIdentifier);
     }
 
@@ -86,13 +89,14 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         if (!$this->folderExists($folderIdentifier)) {
             return [];
         }
+
         $path = rtrim($this->getFilePath($folderIdentifier), '/');
         $list = scandir($path);
-        $list = array_map(function(string $file) use ($path) {
-            return $path . '/' . $file;
+        $list = array_map(static function (string $file) use ($path) {
+            return $path.'/'.$file;
         }, $list);
 
-        return array_filter($list, function(string $file) {
+        return array_filter($list, static function (string $file) {
             return is_file($file);
         });
     }
@@ -100,6 +104,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
     public function folderExists(string $folderIdentifier): bool
     {
         $path = rtrim($this->getFilePath($folderIdentifier), '/');
+
         return is_dir($path);
     }
 
@@ -107,7 +112,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
     {
         if (!$this->folderExists($folderIdentifier)) {
             $path = rtrim($this->getFilePath($folderIdentifier), '/');
-            mkdir($path, recursive:true);
+            mkdir($path, recursive: true);
         }
     }
 }

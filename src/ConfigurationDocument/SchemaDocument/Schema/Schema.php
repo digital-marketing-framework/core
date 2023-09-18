@@ -13,13 +13,13 @@ abstract class Schema implements SchemaInterface
 {
     protected RenderingDefinitionInterface $renderingDefinition;
 
-    /** @var array<string,ValueSet> $valueSets */
+    /** @var array<string,ValueSet> */
     protected array $valueSets = [];
 
-    /** @var array<array{condition:Condition,message:string}> $strictValidations */
+    /** @var array<array{condition:Condition,message:string}> */
     protected array $strictValidations = [];
 
-    /** @var array<array{condition:Condition,message:string}> $validations */
+    /** @var array<array{condition:Condition,message:string}> */
     protected array $validations = [];
 
     protected bool $required = false;
@@ -40,13 +40,15 @@ abstract class Schema implements SchemaInterface
         if (!isset($this->valueSets[$name])) {
             $this->valueSets[$name] = new ValueSet();
         }
+
         $this->valueSets[$name]->addValue($value, $label);
     }
 
     /**
      * @param array<string,ValueSet> $a
      * @param array<string,ValueSet> $b
-     * @param array<string,ValueSet>
+     *
+     * @return array<string,ValueSet>
      */
     protected function mergeValueSets(array $a, array $b): array
     {
@@ -56,11 +58,13 @@ abstract class Schema implements SchemaInterface
             $mergedSet->merge($valueSet);
             $mergedSets[$valueSetName] = $mergedSet;
         }
+
         foreach ($b as $valueSetName => $valueSet) {
             $mergedSet = $mergedSets[$valueSetName] ?? new ValueSet();
             $mergedSet->merge($valueSet);
             $mergedSets[$valueSetName] = $mergedSet;
         }
+
         return $mergedSets;
     }
 
@@ -74,6 +78,9 @@ abstract class Schema implements SchemaInterface
 
     abstract public function getType(): string;
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function getConfig(): array
     {
         $config = [
@@ -82,30 +89,36 @@ abstract class Schema implements SchemaInterface
         if ($this->required) {
             $config['required'] = true;
         }
-        if (count($this->strictValidations) > 0) {
-            $config['strictValidations'] = array_map(function(array $evaluation) {
+
+        if ($this->strictValidations !== []) {
+            $config['strictValidations'] = array_map(static function (array $evaluation) {
                 return [
                     'condition' => $evaluation['condition']->toArray(),
                     'message' => $evaluation['message'],
                 ];
             }, $this->strictValidations);
         }
-        if (count($this->validations) > 0) {
-            $config['validations'] = array_map(function(array $evaluation) {
+
+        if ($this->validations !== []) {
+            $config['validations'] = array_map(static function (array $evaluation) {
                 return [
                     'condition' => $evaluation['condition']->toArray(),
                     'message' => $evaluation['message'],
                 ];
             }, $this->validations);
         }
+
         return $config;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function toArray(): array
     {
-        if (SchemaDocument::FLATTEN_SCHEMA) {
+        if (SchemaDocument::FLATTEN_SCHEMA) { // @phpstan-ignore-line this flag may technically be a constant but it may change in the future
             return ['type' => $this->getType()]
-                + ($this->getConfig() ?? [])
+                + $this->getConfig()
                 + ($this->renderingDefinition->toArray() ?? []);
         } else {
             return [

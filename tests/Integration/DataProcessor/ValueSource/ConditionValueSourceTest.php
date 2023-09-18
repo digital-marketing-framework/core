@@ -6,12 +6,15 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSourc
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 
 /**
- * @covers ConditionValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSource
  */
 class ConditionValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'condition';
 
+    /**
+     * @return array<array{0:array<string,mixed>,1:?array<string,mixed>,2:?array<string,mixed>,3:mixed}>
+     */
     public function conditionValueSourceDataProvider(): array
     {
         return [
@@ -55,7 +58,12 @@ class ConditionValueSourceTest extends ValueSourceTest
     }
 
     /**
+     * @param array<string,mixed> $if
+     * @param ?array<string,mixed> $then
+     * @param ?array<string,mixed> $else
+     *
      * @test
+     *
      * @dataProvider conditionValueSourceDataProvider
      */
     public function conditionValueSource(array $if, ?array $then, ?array $else, mixed $expectedResult): void

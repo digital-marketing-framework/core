@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 abstract class ValueModifier extends DataProcessorPlugin implements ValueModifierInterface
 {
     public const KEY_ENABLED = 'enabled';
+
     public const DEFAULT_ENABLED = false;
 
     protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
@@ -31,7 +32,7 @@ abstract class ValueModifier extends DataProcessorPlugin implements ValueModifie
         }
 
         if ($value instanceof MultiValueInterface) {
-            $multiValueClass = get_class($value);
+            $multiValueClass = $value::class;
             $modifiedValue = new $multiValueClass();
             foreach ($value as $index => $subValue) {
                 $modifiedSubValue = $this->modify($subValue);
@@ -42,6 +43,7 @@ abstract class ValueModifier extends DataProcessorPlugin implements ValueModifie
         } else {
             $modifiedValue = $this->modifyValue($value);
         }
+
         return $modifiedValue;
     }
 
@@ -49,6 +51,7 @@ abstract class ValueModifier extends DataProcessorPlugin implements ValueModifie
     {
         $schema = new ContainerSchema();
         $schema->addProperty(static::KEY_ENABLED, new BooleanSchema(static::DEFAULT_ENABLED));
+
         return $schema;
     }
 }

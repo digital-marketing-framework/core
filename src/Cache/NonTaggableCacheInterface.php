@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Cache;
 interface NonTaggableCacheInterface
 {
     public function setTimeoutInSeconds(int $timeout): void;
+
     public function getTimeoutInSeconds(): int;
 
     /**
@@ -14,6 +15,7 @@ interface NonTaggableCacheInterface
 
     /**
      * @param array<string> $keys
+     *
      * @return array<array<mixed>>
      */
     public function fetchMultiple(array $keys): array;
@@ -22,15 +24,15 @@ interface NonTaggableCacheInterface
      * @param array<mixed> $data
      */
     public function store(string $key, array $data): void;
-    
+
     public function purge(string $key): void;
 
     /**
      * @param array<string> $keys
      */
     public function purgeMultiple(array $keys): void;
-    
+
     public function purgeExpired(): void;
-    
+
     public function purgeAll(): void;
 }

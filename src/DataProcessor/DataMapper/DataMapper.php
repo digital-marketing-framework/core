@@ -16,8 +16,10 @@ abstract class DataMapper extends DataProcessorPlugin implements DataMapperInter
     {
         if ($value !== null && ($overwrite || $data->fieldEmpty($fieldName))) {
             $data[$fieldName] = $value;
+
             return true;
         }
+
         return false;
     }
 
@@ -25,6 +27,7 @@ abstract class DataMapper extends DataProcessorPlugin implements DataMapperInter
     {
         $schema = new ContainerSchema();
         $schema->getRenderingDefinition()->setNavigationItem(false);
+
         return $schema;
     }
 }

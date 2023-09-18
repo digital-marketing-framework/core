@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\DataProcessor\FieldTracker;
 use DigitalMarketingFramework\Core\DataProcessor\FieldTrackerInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Data\Data;
+use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
@@ -21,6 +22,7 @@ abstract class DataProcessorPluginTest extends TestCase
     use MultiValueTestTrait;
 
     protected const KEYWORD = '';
+
     protected const CLASS_NAME = '';
 
     protected RegistryInterface&MockObject $registry;
@@ -29,10 +31,13 @@ abstract class DataProcessorPluginTest extends TestCase
 
     protected FieldTrackerInterface $fieldTracker;
 
+    /** @var array<string,string|ValueInterface|null> */
     protected array $data = [];
+
+    /** @var array<int,array<string,mixed>> */
     protected array $configuration = [[]];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->registry = $this->createMock(RegistryInterface::class);
         $this->dataProcessor = $this->createMock(DataProcessorInterface::class);

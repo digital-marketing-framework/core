@@ -14,9 +14,9 @@ class FileValue extends Value implements FileValueInterface
 
     protected string $mimeType = '';
 
-    public function __construct(FileInterface $file = null)
+    final public function __construct(?FileInterface $file = null)
     {
-        if ($file !== null) {
+        if ($file instanceof FileInterface) {
             $this->fileName = $file->getName();
             $this->publicUrl = $file->getPublicUrl();
             $this->relativePath = $file->getRelativePath();
@@ -86,6 +86,7 @@ class FileValue extends Value implements FileValueInterface
         $field->setPublicUrl($packed['publicUrl']);
         $field->setRelativePath($packed['relativePath']);
         $field->setMimeType($packed['mimeType']);
+
         return $field;
     }
 }

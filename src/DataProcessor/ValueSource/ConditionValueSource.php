@@ -15,12 +15,15 @@ class ConditionValueSource extends ValueSource
     public const WEIGHT = 4;
 
     public const KEY_IF = 'if';
+
     public const DEFAULT_IF = null;
 
     public const KEY_THEN = 'then';
+
     public const DEFAULT_THEN = null;
 
     public const KEY_ELSE = 'else';
+
     public const DEFAULT_ELSE = null;
 
     public function build(): null|string|ValueInterface
@@ -51,6 +54,7 @@ class ConditionValueSource extends ValueSource
 
         $schema->addProperty(static::KEY_THEN, new CustomSchema(ValueSchema::TYPE));
         $schema->addProperty(static::KEY_ELSE, new CustomSchema(ValueSchema::TYPE));
+
         return $schema;
     }
 }

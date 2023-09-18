@@ -6,6 +6,9 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 abstract class Identifier implements IdentifierInterface
 {
+    /**
+     * @param array<mixed> $payload
+     */
     public function __construct(
         protected array $payload = [],
     ) {
@@ -15,12 +18,12 @@ abstract class Identifier implements IdentifierInterface
 
     public function getDomainKey(): string
     {
-        return GeneralUtility::getPluginKeyword(get_class($this), IdentifierInterface::class);
+        return GeneralUtility::getPluginKeyword(static::class, IdentifierInterface::class);
     }
 
     public function getCacheKey(): string
     {
-        return $this->getDomainKey() . '-' . $this->getInternalCacheKey();
+        return $this->getDomainKey().'-'.$this->getInternalCacheKey();
     }
 
     public function getPayload(): array

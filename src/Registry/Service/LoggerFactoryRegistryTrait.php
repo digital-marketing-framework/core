@@ -14,6 +14,7 @@ trait LoggerFactoryRegistryTrait
         if (!isset($this->loggerFactory)) {
             $this->loggerFactory = new NullLoggerFactory();
         }
+
         return $this->loggerFactory;
     }
 

@@ -2,10 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
-
 /**
- * @covers PassthroughFieldsDataMapper
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper
  */
 class PassthroughFieldsDataMapperTest extends DataMapperTest
 {

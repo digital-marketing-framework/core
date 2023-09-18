@@ -11,6 +11,8 @@ interface ValueSourceInterface extends DataProcessorPluginInterface
     public function build(): null|string|ValueInterface;
 
     public static function getSchema(): SchemaInterface;
+
     public static function modifiable(): bool;
+
     public static function canBeMultiValue(): bool;
 }

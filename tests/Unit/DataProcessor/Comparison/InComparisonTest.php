@@ -7,8 +7,12 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\InComparison;
 class InComparisonTest extends ComparisonTest
 {
     protected const CLASS_NAME = InComparison::class;
+
     protected const KEYWORD = 'in';
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2:mixed,3?:?array<string,mixed>,4?:mixed,5?:?string}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -38,7 +42,7 @@ class InComparisonTest extends ComparisonTest
                 ['firstOperandConfigKey' => 'firstOperandConfigValue'],
                 'value1',
                 ['secondOperandConfigKey' => 'secondOperandConfigValue'],
-                ['value1','value2'],
+                ['value1', 'value2'],
             ],
             [
                 true,
@@ -52,21 +56,21 @@ class InComparisonTest extends ComparisonTest
                 ['firstOperandConfigKey' => 'firstOperandConfigValue'],
                 ['value1'],
                 ['secondOperandConfigKey' => 'secondOperandConfigValue'],
-                ['value1','value2'],
+                ['value1', 'value2'],
             ],
             [
                 true,
                 ['firstOperandConfigKey' => 'firstOperandConfigValue'],
                 ['value1', 'value3'],
                 ['secondOperandConfigKey' => 'secondOperandConfigValue'],
-                ['value1','value2'],
+                ['value1', 'value2'],
             ],
             [
                 true,
                 ['firstOperandConfigKey' => 'firstOperandConfigValue'],
                 ['value1', 'value3'],
                 ['secondOperandConfigKey' => 'secondOperandConfigValue'],
-                ['value1','value2'],
+                ['value1', 'value2'],
                 'any',
             ],
             [
@@ -74,14 +78,18 @@ class InComparisonTest extends ComparisonTest
                 ['firstOperandConfigKey' => 'firstOperandConfigValue'],
                 ['value1', 'value3'],
                 ['secondOperandConfigKey' => 'secondOperandConfigValue'],
-                ['value1','value2'],
+                ['value1', 'value2'],
                 'all',
             ],
         ];
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     * @param ?array<string,mixed> $secondOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function in(bool $expectedResult, array $firstOperand, mixed $firstOperandResult, ?array $secondOperand = null, mixed $secondOperandResult = null, ?string $anyAll = null): void

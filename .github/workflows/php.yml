@@ -2,13 +2,12 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,8 +37,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Run unit tests
-        run: composer run-script unit-testdox
+      - name: Tests
+        run: composer run-script ci:test
 
-      - name: Run integration tests
-        run: composer run-script integration-testdox
+      - name: Code Quality
+        run: composer run-script ci:code-quality

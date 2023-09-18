@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataMap
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\ExcludeFieldsDataMapper;
 
 /**
- * @covers ExcludeFieldsDataMapper
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\DataMapper\ExcludeFieldsDataMapper
  */
 class ExcludeFieldsDataMapperTest extends DataMapperTest
 {

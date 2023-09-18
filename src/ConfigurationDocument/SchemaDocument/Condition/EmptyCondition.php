@@ -13,6 +13,9 @@ class EmptyCondition extends Condition
         parent::__construct('empty');
     }
 
+    /**
+     * @return array{path:string}
+     */
     protected function getConfig(): array
     {
         return [

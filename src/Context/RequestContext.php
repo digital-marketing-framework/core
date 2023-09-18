@@ -6,17 +6,17 @@ use BadMethodCallException;
 
 class RequestContext extends Context
 {
-    public function toArray(): array
+    public function toArray(): never
     {
         throw new BadMethodCallException('Request context is not supposed to be processed/saved as a whole');
     }
 
-    public function offsetSet(mixed $offset, mixed $value): void
+    public function offsetSet(mixed $offset, mixed $value): never
     {
         throw new BadMethodCallException('Request context is read-only and should not be attempted to be altered');
     }
 
-    public function offsetUnset(mixed $offset): void
+    public function offsetUnset(mixed $offset): never
     {
         throw new BadMethodCallException('Request context is read-only and should not be attempted to be altered');
     }
@@ -28,15 +28,12 @@ class RequestContext extends Context
 
     public function offsetGet(mixed $offset): mixed
     {
-        switch ((string)$offset) {
-            case static::KEY_COOKIES:
-                return $this->getCookies();
-            case static::KEY_IP_ADDRESS:
-                return $this->getIpAddress();
-            case static::KEY_REQUEST_VARIABLES:
-                return $this->getRequestVariables();
-        }
-        return parent::offsetGet($offset);
+        return match ($offset) {
+            static::KEY_COOKIES => $this->getCookies(),
+            static::KEY_IP_ADDRESS => $this->getIpAddress(),
+            static::KEY_REQUEST_VARIABLES => $this->getRequestVariables(),
+            default => parent::offsetGet($offset),
+        };
     }
 
     public function getCookies(): array
@@ -47,14 +44,15 @@ class RequestContext extends Context
     public function getIpAddress(): ?string
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            //check ip from share internet
+            // check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            //to check ip is pass from proxy
+            // to check ip is pass from proxy
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
+            $ip = $_SERVER['REMOTE_ADDR'] ?? null;
         }
+
         return $ip;
     }
 

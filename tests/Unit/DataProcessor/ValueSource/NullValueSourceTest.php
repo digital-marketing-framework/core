@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 class NullValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'constant';
+
     protected const CLASS_NAME = NullValueSource::class;
 
     /** @test */

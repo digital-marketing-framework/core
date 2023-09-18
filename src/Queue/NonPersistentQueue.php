@@ -7,33 +7,44 @@ use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
 
 class NonPersistentQueue implements QueueInterface
 {
+    /** @var array<JobInterface> */
     protected array $queue = [];
+
     protected int $index = 1;
 
+    /**
+     * @param array<int> $status
+     *
+     * @return array<JobInterface>
+     */
     public function fetchWhere(array $status = [], int $limit = 0, int $offset = 0, int $minTimeSinceChangedInSeconds = 0, int $minAgeInSeconds = 0): array
     {
         $result = [];
         $now = new DateTime();
         $count = 0;
-        /** @var JobInterface $job */
         foreach ($this->queue as $job) {
-            if (!empty($status) && !in_array($job->getStatus(), $status)) {
+            if ($status !== [] && !in_array($job->getStatus(), $status)) {
                 continue;
             }
+
             if ($minTimeSinceChangedInSeconds > 0 && $now->getTimestamp() - $job->getChanged()->getTimestamp() < $minTimeSinceChangedInSeconds) {
                 continue;
             }
+
             if ($minAgeInSeconds > 0 && $now->getTimestamp() - $job->getCreated()->getTimestamp() < $minAgeInSeconds) {
                 continue;
             }
-            $count++;
+
+            ++$count;
             if ($count > $offset) {
                 $result[] = $job;
             }
+
             if ($limit > 0 && ($count - $offset) >= $limit) {
                 break;
             }
         }
+
         return $result;
     }
 
@@ -142,10 +153,11 @@ class NonPersistentQueue implements QueueInterface
 
     public function addJob(JobInterface $job): JobInterface
     {
-        if (array_search($job, $this->queue) === false) {
+        if (!in_array($job, $this->queue)) {
             $job->setRouteId((string) $this->index++);
             $this->queue[] = $job;
         }
+
         return $job;
     }
 
@@ -153,7 +165,9 @@ class NonPersistentQueue implements QueueInterface
     {
         $this->queue = array_filter(
             $this->queue,
-            function ($a) use ($job) { return $a !== $job; }
+            static function ($a) use ($job) {
+                return $a !== $job;
+            }
         );
     }
 

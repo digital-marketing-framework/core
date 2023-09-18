@@ -3,11 +3,12 @@
 namespace DigitalMarketingFramework\Core\DataProcessor;
 
 use ArrayObject;
-use DigitalMarketingFramework\Core\DataProcessor\FieldTracker;
-use DigitalMarketingFramework\Core\DataProcessor\FieldTrackerInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 
+/**
+ * @extends ArrayObject<string,mixed>
+ */
 class DataProcessorContext extends ArrayObject implements DataProcessorContextInterface
 {
     public function __construct(
@@ -44,22 +45,26 @@ class DataProcessorContext extends ArrayObject implements DataProcessorContextIn
 
     public function copy(bool $keepFieldTracker = true, ?DataInterface $data = null, ?ConfigurationInterface $configuration = null): DataProcessorContextInterface
     {
-        if ($data === null) {
+        if (!$data instanceof DataInterface) {
             $data = $this->data;
         }
-        if ($configuration === null) {
+
+        if (!$configuration instanceof ConfigurationInterface) {
             $configuration = $this->configuration;
         }
+
         if ($keepFieldTracker) {
             $copy = new DataProcessorContext($data, $configuration, $this->fieldTracker);
         } else {
             $copy = new DataProcessorContext($data, $configuration);
         }
+
         foreach ($this as $key => $value) {
             if (!in_array($key, ['data', 'configuration', 'tracker'])) {
                 $copy[$key] = $value;
             }
         }
+
         return $copy;
     }
 }

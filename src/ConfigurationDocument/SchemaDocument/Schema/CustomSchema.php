@@ -29,6 +29,7 @@ class CustomSchema extends Schema
         if ($defaultValue !== null) {
             return $defaultValue;
         }
+
         return $schemaDocument->getCustomType($this->getType())->getDefaultValue($schemaDocument);
     }
 

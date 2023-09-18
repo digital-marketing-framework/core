@@ -12,6 +12,7 @@ class ConstantValueSource extends ValueSource
     public const WEIGHT = 1;
 
     public const KEY_VALUE = 'value';
+
     public const DEFAULT_VALUE = '';
 
     public function build(): null|string|ValueInterface
@@ -24,6 +25,7 @@ class ConstantValueSource extends ValueSource
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
         $schema->addProperty(static::KEY_VALUE, new StringSchema(static::DEFAULT_VALUE));
+
         return $schema;
     }
 }

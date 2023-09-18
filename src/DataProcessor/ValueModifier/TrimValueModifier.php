@@ -10,6 +10,6 @@ class TrimValueModifier extends ValueModifier
 
     protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
     {
-        return $value !== null ? trim((string)$value) : null;
+        return $value !== null ? trim((string) $value) : null;
     }
 }

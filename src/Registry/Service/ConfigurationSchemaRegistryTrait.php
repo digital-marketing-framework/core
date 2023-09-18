@@ -24,7 +24,9 @@ trait ConfigurationSchemaRegistryTrait
     use DataProcessorRegistryTrait;
     use TemplateEngineRegistryTrait;
 
+    /** @var array<string,string> */
     protected array $schemaVersion = [];
+
     protected SchemaDocument $schemaDocument;
 
     abstract public function getConfigurationDocumentManager(): ConfigurationDocumentManagerInterface;
@@ -34,6 +36,9 @@ trait ConfigurationSchemaRegistryTrait
         $this->schemaVersion[$key] = $version;
     }
 
+    /**
+     * @return array<string,string>
+     */
     protected function getIncludeValueSet(): array
     {
         $includes = [];
@@ -41,16 +46,17 @@ trait ConfigurationSchemaRegistryTrait
         $documentIdentifiers = $configurationDocumentManager->getDocumentIdentifiers();
         foreach ($documentIdentifiers as $documentIdentifier) {
             $metaData = $configurationDocumentManager->getDocumentInformation($documentIdentifier);
-            $label = '[' . $documentIdentifier . ']';
+            $label = '['.$documentIdentifier.']';
             if ($metaData['name'] !== $documentIdentifier) {
-                $label = $metaData['name'] . ' ' . $label;
+                $label = $metaData['name'].' '.$label;
             }
+
             $includes[$documentIdentifier] = $label;
         }
-        uksort($includes, function(string $key1, string $key2) {
+
+        uksort($includes, static function (string $key1, string $key2) {
             $prefix1 = substr($key1, 0, 4);
             $prefix2 = substr($key2, 0, 4);
-
             if ($prefix1 === 'SYS:') {
                 if ($prefix2 !== 'SYS:') {
                     return -1;
@@ -67,6 +73,7 @@ trait ConfigurationSchemaRegistryTrait
 
             return $key1 <=> $key2;
         });
+
         return $includes;
     }
 
@@ -127,6 +134,7 @@ trait ConfigurationSchemaRegistryTrait
             $this->schemaDocument = new SchemaDocument();
             $this->addConfigurationSchema($this->schemaDocument);
         }
+
         return $this->schemaDocument;
     }
 }

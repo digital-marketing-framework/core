@@ -12,6 +12,7 @@ class DataCache implements DataCacheInterface
     protected const PREFIX = 'digital_marketing_framework';
 
     protected const CACHE_KEY_DATA = 'data';
+
     protected const CACHE_KEY_REFERENCE = 'reference';
 
     protected CacheInterface $cache;
@@ -21,6 +22,7 @@ class DataCache implements DataCacheInterface
         if (!$cache instanceof CacheInterface) {
             $cache = new TaggableCacheWrapper($cache);
         }
+
         $this->cache = $cache;
     }
 
@@ -35,21 +37,23 @@ class DataCache implements DataCacheInterface
     }
 
     /**
-     * @param ?array<mixed> $result
+     * @param ?array{reference?:string,data?:array<string,mixed>} $result
      * @param array<string> $processedKeys
      */
     protected function resolveResult(?array $result, array $processedKeys = []): ?DataInterface
     {
         if (isset($result[static::CACHE_KEY_REFERENCE])) {
+            /** @var string */
             $reference = $result[static::CACHE_KEY_REFERENCE];
 
             $loopFound = in_array($reference, $processedKeys);
             $processedKeys[] = $reference;
             if ($loopFound) {
-                throw new DigitalMarketingFrameworkException('Cache reference loop found: ' . implode(',', $processedKeys));
+                throw new DigitalMarketingFrameworkException('Cache reference loop found: '.implode(',', $processedKeys));
             }
 
             $result = $this->cache->fetch($this->addKeyPrefix($reference));
+
             return $this->resolveResult($result, $processedKeys);
         }
 
@@ -60,43 +64,54 @@ class DataCache implements DataCacheInterface
         return null;
     }
 
+    /**
+     * @param array<string> $tags
+     *
+     * @return array<string>
+     */
     protected function addTagPrefix(array $tags): array
     {
-        return array_unique(array_map(function(string $tag) {
+        return array_unique(array_map(static function (string $tag) {
             if ($tag === static::PREFIX) {
                 return $tag;
             }
-            return static::PREFIX . '-' . $tag;
+
+            return static::PREFIX.'-'.$tag;
         }, $tags));
     }
 
     protected function addKeyPrefix(string $key): string
     {
-        return static::PREFIX . '-' . $key;
+        return static::PREFIX.'-'.$key;
     }
 
     /**
      * @param array<array<mixed>> $results
-     * @return array<array<DataInterface>>
+     *
+     * @return array<DataInterface>
      */
     protected function resolveResults(array $results): array
     {
         $resolvedResults = [];
         foreach ($results as $result) {
             $resolvedResult = $this->resolveResult($result);
-            if ($resolvedResult !== null) {
+            if ($resolvedResult instanceof DataInterface) {
                 $resolvedResults[] = $resolvedResult;
             }
         }
+
         return $resolvedResults;
     }
 
+    /**
+     * @param array<string> $processedKeys
+     */
     protected function followReferenceKeys(string $key, array $processedKeys = []): string
     {
         $loopFound = in_array($key, $processedKeys);
         $processedKeys[] = $key;
         if ($loopFound) {
-            throw new DigitalMarketingFrameworkException('Cache reference loop found: ' . implode(',', $processedKeys));
+            throw new DigitalMarketingFrameworkException('Cache reference loop found: '.implode(',', $processedKeys));
         }
 
         $result = $this->cache->fetch($key);
@@ -111,17 +126,21 @@ class DataCache implements DataCacheInterface
     {
         $key = $this->addKeyPrefix($identifier->getCacheKey());
         $result = $this->cache->fetch($key);
+
         return $this->resolveResult($result, [$key]);
     }
 
     public function fetchMultiple(array $identifiers): array
     {
         $results = $this->cache->fetchMultiple(
-            array_map(function(IdentifierInterface $identifier) {
-                return $this->addKeyPrefix($identifier->getCacheKey());
-            },
-            $identifiers)
+            array_map(
+                function (IdentifierInterface $identifier) {
+                    return $this->addKeyPrefix($identifier->getCacheKey());
+                },
+                $identifiers
+            )
         );
+
         return $this->resolveResults($results);
     }
 
@@ -134,6 +153,7 @@ class DataCache implements DataCacheInterface
         if ($followReferences) {
             $key = $this->followReferenceKeys($key);
         }
+
         $tags[] = static::PREFIX;
         $tags[] = $identifier->getDomainKey();
         $this->cache->store(
@@ -153,6 +173,7 @@ class DataCache implements DataCacheInterface
         if ($source->getDomainKey() !== $target->getDomainKey()) {
             $tags[] = $target->getDomainKey();
         }
+
         $this->cache->store(
             $this->addKeyPrefix($source->getCacheKey()),
             [static::CACHE_KEY_REFERENCE => $target->getCacheKey()],

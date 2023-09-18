@@ -10,25 +10,31 @@ class DataTest extends TestCase
 {
     protected Data $subject;
 
+    /**
+     * @return array<array{0:array<string,mixed>}>
+     */
     public function toArrayProvider(): array
     {
         return [
             [[]],
             [[
                 'key1' => 'value1',
-                'key2' => 'value2'
+                'key2' => 'value2',
             ]],
             [[
                 'key1' => [
                     'key1.1' => 'value1.1',
                     'key1.2' => 'value1.2',
-                ]
+                ],
             ]],
         ];
     }
 
     /**
+     * @param array<string,mixed> $values
+     *
      * @dataProvider toArrayProvider
+     *
      * @test
      */
     public function toArray(array $values): void
@@ -48,6 +54,9 @@ class DataTest extends TestCase
         $this->assertEquals('value2.1', $this->subject['key2']['key2.1']);
     }
 
+    /**
+     * @return array<array{0:string|ValueInterface|null}>
+     */
     public function fieldExistsProvider(): array
     {
         return [
@@ -61,6 +70,7 @@ class DataTest extends TestCase
 
     /**
      * @dataProvider fieldExistsProvider
+     *
      * @test
      */
     public function fieldExists(string|ValueInterface|null $value): void
@@ -84,6 +94,9 @@ class DataTest extends TestCase
         $this->assertTrue($this->subject->fieldEmpty('field1'));
     }
 
+    /**
+     * @return array<array{0:string|ValueInterface|null,1:bool}>
+     */
     public function fieldEmptyProvider(): array
     {
         return [
@@ -96,6 +109,7 @@ class DataTest extends TestCase
 
     /**
      * @dataProvider fieldEmptyProvider
+     *
      * @test
      */
     public function fieldEmpty(string|ValueInterface|null $value, bool $empty): void

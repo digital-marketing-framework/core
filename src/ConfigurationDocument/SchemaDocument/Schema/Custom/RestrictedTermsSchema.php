@@ -14,9 +14,13 @@ use DigitalMarketingFramework\Core\Utility\ListUtility;
 class RestrictedTermsSchema extends SwitchSchema
 {
     public const KEY_ALL = 'all';
+
     public const KEY_NONE = 'none';
+
     public const KEY_BLACKLIST = 'blacklist';
+
     public const KEY_WHITELIST = 'whitelist';
+
     public const KEY_LIST = 'list';
 
     protected function addList(string $name, string $referencePath, string $referenceType): void
@@ -37,7 +41,7 @@ class RestrictedTermsSchema extends SwitchSchema
         string $referenceType = ScalarValues::REFERENCE_TYPE_KEY,
         mixed $defaultValue = null
     ) {
-        parent::__construct('restrictedTerms' , $defaultValue);
+        parent::__construct('restrictedTerms', $defaultValue);
         $this->addItem(static::KEY_ALL, new ContainerSchema());
         $this->addItem(static::KEY_NONE, new ContainerSchema());
         $this->addList(static::KEY_BLACKLIST, $referencePath, $referenceType);
@@ -46,6 +50,7 @@ class RestrictedTermsSchema extends SwitchSchema
 
     /**
      * @param array{type:string,config:array<string,array{list?:array<string>}>} $config
+     *
      * @return array<string>
      */
     public static function getAllowedTerms(array $config): array
@@ -58,8 +63,11 @@ class RestrictedTermsSchema extends SwitchSchema
             case static::KEY_NONE:
                 return [];
             case static::KEY_BLACKLIST:
-                $list = array_map(function($term) { return '!' . $term; }, $list);
+                $list = array_map(static function ($term) {
+                    return '!'.$term;
+                }, $list);
                 array_unshift($list, '*');
+
                 return $list;
             case static::KEY_WHITELIST:
                 return $list;
@@ -73,9 +81,10 @@ class RestrictedTermsSchema extends SwitchSchema
      */
     public static function isTermAllowed(array $allowedTerms, string $term): bool
     {
-        if (in_array('!' . $term, $allowedTerms)) {
+        if (in_array('!'.$term, $allowedTerms)) {
             return false;
         }
+
         return in_array('*', $allowedTerms) || in_array($term, $allowedTerms);
     }
 }

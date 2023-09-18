@@ -2,15 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\DataProcessor\ValueSource\BooleanValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\IntegerValueSource;
-use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 class IntegerValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'integer';
+
     protected const CLASS_NAME = IntegerValueSource::class;
 
     /** @test */
@@ -41,6 +40,7 @@ class IntegerValueSourceTest extends ValueSourceTest
 
     /**
      * @test
+     *
      * @dataProvider valuesDataProvider
      */
     public function integerValue(mixed $value, ?int $expectedResult): void

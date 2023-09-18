@@ -20,6 +20,9 @@ class InCondition extends Condition
         return $this->values;
     }
 
+    /**
+     * @return array{path:string,list:array<string,mixed>}
+     */
     protected function getConfig(): array
     {
         return [

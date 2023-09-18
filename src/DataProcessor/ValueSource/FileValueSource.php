@@ -13,15 +13,19 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 class FileValueSource extends ValueSource
 {
     public const KEY_NAME = 'name';
+
     public const DEFAULT_NAME = [];
 
     public const KEY_PATH = 'path';
+
     public const DEFAULT_PATH = [];
 
     public const KEY_URL = 'url';
+
     public const DEFAULT_URL = [];
 
     public const KEY_MIMETYPE = 'mimetype';
+
     public const DEFAULT_MIMETYPE = [];
 
     public function build(): null|string|ValueInterface
@@ -35,9 +39,11 @@ class FileValueSource extends ValueSource
             if (GeneralUtility::isEmpty($fileName)) {
                 $fileName = pathinfo($filePath)['filename'];
             }
+
             if (GeneralUtility::isEmpty($fileUrl)) {
                 $fileUrl = $filePath;
             }
+
             if (GeneralUtility::isEmpty($mimeType)) {
                 $mimeType = mime_content_type($filePath);
             }
@@ -49,12 +55,13 @@ class FileValueSource extends ValueSource
             && !GeneralUtility::isEmpty($fileUrl)
             && !GeneralUtility::isEmpty($mimeType)
         ) {
-            $fileField = array(
+            $fileField = [
                 'fileName' => (string) $fileName,
                 'publicUrl' => (string) $fileUrl,
                 'relativePath' => (string) $filePath,
-                'mimeType' => (string) $mimeType
-            );
+                'mimeType' => (string) $mimeType,
+            ];
+
             return FileValue::unpack($fileField);
         }
 
@@ -69,6 +76,7 @@ class FileValueSource extends ValueSource
         $schema->addProperty(static::KEY_PATH, new CustomSchema(ValueSchema::TYPE));
         $schema->addProperty(static::KEY_URL, new CustomSchema(ValueSchema::TYPE));
         $schema->addProperty(static::KEY_MIMETYPE, new CustomSchema(ValueSchema::TYPE));
+
         return $schema;
     }
 

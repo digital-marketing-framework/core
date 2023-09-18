@@ -7,29 +7,31 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
 trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
 {
-    public static function assertMultiValue($actual, string $class = MultiValueInterface::class): void
+    public static function assertMultiValue(mixed $actual, string $class = MultiValueInterface::class): void
     {
         static::assertIsObject($actual);
         if ($class !== MultiValueInterface::class) {
             static::assertInstanceOf(MultiValueInterface::class, $actual);
         }
+
         static::assertInstanceOf($class, $actual);
     }
 
+    /**
+     * @param MultiValueInterface|array<mixed> $expected
+     */
     public static function assertMultiValueEquals(MultiValueInterface|array $expected, mixed $actual, string $class = ''): void
     {
         if ($class === '') {
-            if ($expected instanceof MultiValueInterface) {
-                $class = get_class($expected);
-            } else {
-                $class = MultiValueInterface::class;
-            }
+            $class = $expected instanceof MultiValueInterface ? $expected::class : MultiValueInterface::class;
         }
+
         static::assertMultiValue($actual, $class);
 
         if ($expected instanceof MultiValueInterface) {
             $expected = $expected->toArray();
         }
+
         $actual = $actual->toArray();
         static::assertEquals(count($expected), count($actual));
         static::assertEquals(array_keys($expected), array_keys($actual));
@@ -38,7 +40,7 @@ trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
             if (is_scalar($value)) {
                 static::assertEquals($actual[$key], $value);
             } elseif ($value instanceof MultiValueInterface) {
-                static::assertMultiValueEquals($value, $actual[$key], get_class($value));
+                static::assertMultiValueEquals($value, $actual[$key], $value::class);
             } else {
                 static::assertMultiValueEquals($value, $actual[$key]);
             }
@@ -54,11 +56,12 @@ trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
     public static function convertMultiValues(mixed $value): mixed
     {
         if (is_array($value)) {
-            $value = array_map(function(mixed $subValue) {
+            $value = array_map(static function (mixed $subValue) {
                 return static::convertMultiValues($subValue);
             }, $value);
             $value = new MultiValue($value);
         }
+
         return $value;
     }
 
@@ -71,6 +74,7 @@ trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
                 $result[$key] = static::deconvertMultiValues($subValue);
             }
         }
+
         return $result;
     }
 }

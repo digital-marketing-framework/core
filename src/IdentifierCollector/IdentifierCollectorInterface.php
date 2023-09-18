@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 interface IdentifierCollectorInterface extends PluginInterface
 {
     public function addContext(ContextInterface $source, WriteableContextInterface $target): void;
+
     public function getIdentifier(ContextInterface $context): ?IdentifierInterface;
 
     public static function getSchema(): SchemaInterface;

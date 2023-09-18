@@ -5,12 +5,15 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Evaluat
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\AndEvaluation;
 
 /**
- * @covers AndEvaluation
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Evaluation\AndEvaluation
  */
 class AndEvaluationTest extends EvaluationTest
 {
     protected const KEYWORD = 'and';
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>}>
+     */
     public function andDataProvider(): array
     {
         return [
@@ -112,7 +115,10 @@ class AndEvaluationTest extends EvaluationTest
     }
 
     /**
+     * @param array<string,mixed> $config
+     *
      * @test
+     *
      * @dataProvider andDataProvider
      */
     public function and(bool $expectedResult, array $config): void

@@ -8,7 +8,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers IntegerValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\IntegerValueSource
  */
 class IntegerValueSourceTest extends ValueSourceTest
 {
@@ -19,7 +19,6 @@ class IntegerValueSourceTest extends ValueSourceTest
     {
         $output = $this->processValueSource($this->getValueSourceConfiguration([]));
         $this->assertNull($output);
-        IntegerValueSource::class;
     }
 
     /**
@@ -43,6 +42,7 @@ class IntegerValueSourceTest extends ValueSourceTest
 
     /**
      * @test
+     *
      * @dataProvider valuesDataProvider
      */
     public function integerValue(mixed $value, ?int $expectedResult): void

@@ -2,18 +2,17 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
-use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsEmptyComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
 /**
- * @covers IsEmptyComparison
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\IsEmptyComparison
  */
 class IsEmptyComparisonTest extends ComparisonTest
 {
     protected const KEYWORD = 'isEmpty';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->data['field1'] = 'value1';
@@ -26,6 +25,9 @@ class IsEmptyComparisonTest extends ComparisonTest
         $this->data['field8'] = new MultiValue(['0']);
     }
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -65,7 +67,10 @@ class IsEmptyComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function isEmptyTest(bool $expectedResult, array $firstOperand): void

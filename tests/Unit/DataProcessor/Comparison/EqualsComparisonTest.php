@@ -7,8 +7,12 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\EqualsComparison;
 class EqualsComparisonTest extends ComparisonTest
 {
     protected const CLASS_NAME = EqualsComparison::class;
+
     protected const KEYWORD = 'equals';
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2:mixed,3?:?array<string,mixed>,4?:mixed,5?:?string}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -75,7 +79,11 @@ class EqualsComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     * @param ?array<string,mixed> $secondOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function equals(

@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDo
 interface ConfigurationSchemaRegistryInterface
 {
     public function addConfigurationSchema(SchemaDocument $schemaDocument): void;
+
     public function getConfigurationSchema(): SchemaDocument;
 
     public function addSchemaVersion(string $key, string $version): void;

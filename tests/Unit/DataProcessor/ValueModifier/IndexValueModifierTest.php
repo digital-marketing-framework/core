@@ -8,12 +8,13 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifier;
 class IndexValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'index';
+
     protected const CLASS_NAME = IndexValueModifier::class;
 
     public const MODIFY_TEST_CASES = [
-        [['a','b','c'], 'b', [IndexValueModifier::KEY_INDEX => '1']],
-        [['a','b','c'], null, [IndexValueModifier::KEY_INDEX => '5']],
-        [['a',['b1', 'b2'],'c'], 'b1', [IndexValueModifier::KEY_INDEX => '1,0']],
+        [['a', 'b', 'c'], 'b', [IndexValueModifier::KEY_INDEX => '1']],
+        [['a', 'b', 'c'], null, [IndexValueModifier::KEY_INDEX => '5']],
+        [['a', ['b1', 'b2'], 'c'], 'b1', [IndexValueModifier::KEY_INDEX => '1,0']],
     ];
 
     public const MODIFY_ERROR_TEST_CASES = [
@@ -22,6 +23,9 @@ class IndexValueModifierTest extends ValueModifierTest
         [['foo'], '0,1', 'Value is not a multi value and does not have an index "1".'],
     ];
 
+    /**
+     * @return array<array{0:mixed,1:string,2:string}>
+     */
     public function errorValuesDataProvider(): array
     {
         return static::MODIFY_ERROR_TEST_CASES;
@@ -29,6 +33,7 @@ class IndexValueModifierTest extends ValueModifierTest
 
     /**
      * @test
+     *
      * @dataProvider errorValuesDataProvider
      */
     public function errorValues(mixed $value, string $index, string $message): void

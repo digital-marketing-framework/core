@@ -7,8 +7,12 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison;
 class RegExpComparisonTest extends ComparisonTest
 {
     protected const CLASS_NAME = RegExpComparison::class;
+
     protected const KEYWORD = 'regExp';
 
+    /**
+     * @return array<array{0:bool,1:array<string,mixed>,2:mixed,3?:?array<string,mixed>,4?:mixed,5?:?string}>
+     */
     public function comparisonDataProvider(): array
     {
         return [
@@ -104,7 +108,11 @@ class RegExpComparisonTest extends ComparisonTest
     }
 
     /**
+     * @param array<string,mixed> $firstOperand
+     * @param ?array<string,mixed> $secondOperand
+     *
      * @test
+     *
      * @dataProvider comparisonDataProvider
      */
     public function regExp(bool $expectedResult, array $firstOperand, mixed $firstOperandResult, ?array $secondOperand = null, mixed $secondOperandResult = null, ?string $anyAll = null): void

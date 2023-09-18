@@ -8,7 +8,7 @@ class IntegerSchema extends ScalarValueSchema
 {
     public function getType(): string
     {
-        return "INTEGER";
+        return 'INTEGER';
     }
 
     public function getDefaultValue(?SchemaDocument $schemaDocument = null): mixed

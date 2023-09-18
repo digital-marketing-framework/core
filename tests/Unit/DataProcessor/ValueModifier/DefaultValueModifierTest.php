@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModif
 class DefaultValueModifierTest extends ValueModifierTest
 {
     protected const KEYWORD = 'default';
+
     protected const CLASS_NAME = DefaultValueModifier::class;
 
     public const MODIFY_TEST_CASES = [

@@ -51,11 +51,14 @@ abstract class ScalarValueSchema extends Schema
         if ($defaultValue !== null) {
             return $defaultValue;
         }
+
         $allowedValues = $this->allowedValues->getValues($schemaDocument);
-        if (!empty($allowedValues)) {
+        if ($allowedValues !== []) {
             $rawValues = array_keys($allowedValues);
+
             return reset($rawValues);
         }
+
         return null;
     }
 }

@@ -8,7 +8,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
 /**
- * @covers ConcatenationValueSource
+ * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConcatenationValueSource
  */
 class ConcatenationValueSourceTest extends ValueSourceTest
 {
@@ -56,7 +56,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
     /** @test */
     public function singleComlpexFieldWillBeReturnedAsIs(): void
     {
-        $this->data['field1'] = new MultiValue(['foo','bar']);
+        $this->data['field1'] = new MultiValue(['foo', 'bar']);
         $config = [
             ConcatenationValueSource::KEY_VALUES => [
                 'id1' => $this->createListItem(

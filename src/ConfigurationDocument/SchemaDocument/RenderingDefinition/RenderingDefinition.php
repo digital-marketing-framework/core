@@ -10,13 +10,22 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\Sc
 class RenderingDefinition implements RenderingDefinitionInterface
 {
     protected AndCondition $visibility;
+
     protected ?string $format = null;
+
     protected ?bool $hideLabel = null;
+
     protected ?string $label = null;
+
     protected ?bool $isNavigationItem = null;
+
     protected ?bool $skipInNavigation = null;
+
     protected ?bool $skipHeader = null;
+
     protected ?string $group = null;
+
+    /** @var array<string> */
     protected array $triggers = [];
 
     public function __construct()
@@ -30,31 +39,40 @@ class RenderingDefinition implements RenderingDefinitionInterface
         if ($this->format !== null) {
             $render['format'] = $this->format;
         }
+
         if ($this->hideLabel ?? false) {
             $render['hideLabel'] = true;
         }
+
         if ($this->visibility->getConditionCount() > 0) {
             $render['visibility'] = $this->visibility->toArray();
         }
+
         if ($this->isNavigationItem !== null) {
             $render['navigationItem'] = $this->isNavigationItem;
         }
+
         if ($this->skipInNavigation !== null) {
             $render['skipInNavigation'] = $this->skipInNavigation;
         }
+
         if ($this->label !== null) {
             $render['label'] = $this->label;
         }
+
         if ($this->skipHeader !== null) {
             $render['skipHeader'] = $this->skipHeader;
         }
-        if (!empty($this->triggers)) {
+
+        if ($this->triggers !== []) {
             $render['triggers'] = $this->triggers;
         }
+
         if ($this->group !== null) {
             $render['group'] = $this->group;
         }
-        return !empty($render) ? $render : null;
+
+        return empty($render) ? null : $render;
     }
 
     public function setLabel(?string $label): void
@@ -128,6 +146,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
     {
         $values = new ScalarValues();
         $this->addVisibilityCondition(new InCondition($path, $values));
+
         return $values;
     }
 

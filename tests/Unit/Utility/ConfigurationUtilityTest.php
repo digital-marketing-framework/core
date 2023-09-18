@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\Utility;
 
-use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 use PHPUnit\Framework\TestCase;
 
@@ -15,6 +14,9 @@ class ConfigurationUtilityTest extends TestCase
         $this->assertEquals([], $result);
     }
 
+    /**
+     * @return array<array{0:array<string,mixed>,1:array<string,mixed>,2:array<string,mixed>}>
+     */
     public function mergeDontResolveNullProvider(): array
     {
         return [
@@ -24,73 +26,78 @@ class ConfigurationUtilityTest extends TestCase
             'Target key does not exist' => [
                 [],
                 ['key1' => 'value1'],
-                ['key1' => 'value1']
+                ['key1' => 'value1'],
             ],
 
             'Target key does not exist and source value is null' => [
                 [],
                 ['key1' => null],
-                ['key1' => null]
+                ['key1' => null],
             ],
 
             'Target value is null and source value is array' => [
                 ['key1' => null],
                 ['key1' => ['key1.1' => 'value1.1']],
-                ['key1' => ['key1.1' => 'value1.1']]
+                ['key1' => ['key1.1' => 'value1.1']],
             ],
 
             'Target value is scalar and source value is array' => [
                 ['key1' => 'value1'],
                 ['key1' => ['key1.1' => 'value1.1']],
-                ['key1' => ['key1.1' => 'value1.1']]
+                ['key1' => ['key1.1' => 'value1.1']],
             ],
 
             'Target value is array and source value is null' => [
                 ['key1' => ['key1.1' => 'value1.1']],
                 ['key1' => null],
-                ['key1' => null]
+                ['key1' => null],
             ],
 
             'Target value is array and source value scalar' => [
                 ['key1' => ['key1.1' => 'value1.1']],
                 ['key1' => 'value1'],
-                ['key1' => 'value1']
+                ['key1' => 'value1'],
             ],
 
             'Target value is scalar and source value is null' => [
                 ['key1' => 'value1'],
                 ['key1' => null],
-                ['key1' => null]
+                ['key1' => null],
             ],
 
             'Target value is null and source value is null' => [
                 ['key1' => null],
                 ['key1' => null],
-                ['key1' => null]
+                ['key1' => null],
             ],
 
             'Target value is scalar and source value is scalar' => [
                 ['key1' => 'value1'],
                 ['key1' => 'value1b'],
-                ['key1' => 'value1b']
+                ['key1' => 'value1b'],
             ],
 
             'Target value is array and source value is array' => [
                 ['key1' => ['key1.1' => 'value1.1', 'key1.2' => 'value1.2']],
                 ['key1' => ['key1.1' => 'value1.1b', 'key1.3' => 'value1.3b']],
-                ['key1' => ['key1.1' => 'value1.1b', 'key1.2' => 'value1.2', 'key1.3' => 'value1.3b']]
+                ['key1' => ['key1.1' => 'value1.1b', 'key1.2' => 'value1.2', 'key1.3' => 'value1.3b']],
             ],
 
             'Nested arrays' => [
                 ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1']]],
                 ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1b']]],
-                ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1b']]]
+                ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1b']]],
             ],
         ];
     }
 
     /**
+     * @param array<string,mixed> $target
+     * @param array<string,mixed> $source
+     * @param array<string,mixed> $expected
+     *
      * @dataProvider mergeDontResolveNullProvider
+     *
      * @test
      */
     public function mergeDontResolveNull(array $target, array $source, array $expected): void
@@ -99,6 +106,9 @@ class ConfigurationUtilityTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:array<string,mixed>,1:array<string,mixed>,2:array<string,mixed>}>
+     */
     public function mergeResolveNullProvider(): array
     {
         return [
@@ -108,73 +118,78 @@ class ConfigurationUtilityTest extends TestCase
             'Target key does not exist' => [
                 [],
                 ['key1' => 'value1'],
-                ['key1' => 'value1']
+                ['key1' => 'value1'],
             ],
 
             'Target key does not exist and source value is null' => [
                 [],
                 ['key1' => null],
-                []
+                [],
             ],
 
             'Target value is null and source value is array' => [
                 ['key1' => null],
                 ['key1' => ['key1.1' => 'value1.1']],
-                ['key1' => ['key1.1' => 'value1.1']]
+                ['key1' => ['key1.1' => 'value1.1']],
             ],
 
             'Target value is scalar and source value is array' => [
                 ['key1' => 'value1'],
                 ['key1' => ['key1.1' => 'value1.1']],
-                ['key1' => ['key1.1' => 'value1.1']]
+                ['key1' => ['key1.1' => 'value1.1']],
             ],
 
             'Target value is array and source value is null' => [
                 ['key1' => ['key1.1' => 'value1.1']],
                 ['key1' => null],
-                []
+                [],
             ],
 
             'Target value is array and source value scalar' => [
                 ['key1' => ['key1.1' => 'value1.1']],
                 ['key1' => 'value1'],
-                ['key1' => 'value1']
+                ['key1' => 'value1'],
             ],
 
             'Target value is scalar and source value is null' => [
                 ['key1' => 'value1'],
                 ['key1' => null],
-                []
+                [],
             ],
 
             'Target value is null and source value is null' => [
                 ['key1' => null],
                 ['key1' => null],
-                []
+                [],
             ],
 
             'Target value is scalar and source value is scalar' => [
                 ['key1' => 'value1'],
                 ['key1' => 'value1b'],
-                ['key1' => 'value1b']
+                ['key1' => 'value1b'],
             ],
 
             'Target value is array and source value is array' => [
                 ['key1' => ['key1.1' => 'value1.1', 'key1.2' => 'value1.2']],
                 ['key1' => ['key1.1' => 'value1.1b', 'key1.3' => 'value1.3b']],
-                ['key1' => ['key1.1' => 'value1.1b', 'key1.2' => 'value1.2', 'key1.3' => 'value1.3b']]
+                ['key1' => ['key1.1' => 'value1.1b', 'key1.2' => 'value1.2', 'key1.3' => 'value1.3b']],
             ],
 
             'Nested arrays' => [
                 ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1']]],
                 ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1b']]],
-                ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1b']]]
+                ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1b']]],
             ],
         ];
     }
 
     /**
+     * @param array<string,mixed> $target
+     * @param array<string,mixed> $source
+     * @param array<string,mixed> $expected
+     *
      * @dataProvider mergeResolveNullProvider
+     *
      * @test
      */
     public function mergeResolveNull(array $target, array $source, array $expected): void
@@ -184,8 +199,13 @@ class ConfigurationUtilityTest extends TestCase
     }
 
     /**
+     * @param array<string,mixed> $target
+     * @param array<string,mixed> $source
+     * @param array<string,mixed> $expected
+     *
      * @dataProvider mergeDontResolveNullProvider
      * @dataProvider mergeResolveNullProvider
+     *
      * @test
      */
     public function resolvedNullDirectlyEqualsUnresolvedNullThenResolvedNull(array $target, array $source, array $expected): void
@@ -198,6 +218,9 @@ class ConfigurationUtilityTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:array<string,mixed>,1:array<string,mixed>}>
+     */
     public function resolveNullProvider(): array
     {
         return [
@@ -206,33 +229,37 @@ class ConfigurationUtilityTest extends TestCase
 
             'Scalar value' => [
                 ['key1' => 'value1'],
-                ['key1' => 'value1']
+                ['key1' => 'value1'],
             ],
 
             'Null' => [
                 ['key1' => null],
-                []
+                [],
             ],
 
             'Array' => [
                 ['key1' => ['key1.1' => 'value1.1']],
-                ['key1' => ['key1.1' => 'value1.1']]
+                ['key1' => ['key1.1' => 'value1.1']],
             ],
 
             'Array with null' => [
                 ['key1' => ['key1.1' => null]],
-                ['key1' => []]
+                ['key1' => []],
             ],
 
             'Nested array with null' => [
                 ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1', 'key1.1.2' => null, 'key1.1.3' => 'value1.1.3']]],
-                ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1', 'key1.1.3' => 'value1.1.3']]]
+                ['key1' => ['key1.1' => ['key1.1.1' => 'value1.1.1', 'key1.1.3' => 'value1.1.3']]],
             ],
         ];
     }
 
     /**
+     * @param array<string,mixed> $config
+     * @param array<string,mixed> $expected
+     *
      * @dataProvider resolveNullProvider
+     *
      * @test
      */
     public function resolveNull(array $config, array $expected): void
@@ -241,6 +268,9 @@ class ConfigurationUtilityTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * @return array<array{0:array<string,mixed>,1:array<string,mixed>,2:array<string,mixed>}>
+     */
     public function splitConfigurationProvider(): array
     {
         return [
@@ -281,7 +311,12 @@ class ConfigurationUtilityTest extends TestCase
     }
 
     /**
+     * @param array<string,mixed> $parentConfiguration
+     * @param array<string,mixed> $mergedConfiguration
+     * @param array<string,mixed> $expectedSplitConfiguration
+     *
      * @dataProvider splitConfigurationProvider
+     *
      * @test
      */
     public function splitConfiguration(array $parentConfiguration, array $mergedConfiguration, array $expectedSplitConfiguration): void

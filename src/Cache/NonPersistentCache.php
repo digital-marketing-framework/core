@@ -7,8 +7,8 @@ use DigitalMarketingFramework\Core\Model\Cache\CacheEntryInterface;
 
 class NonPersistentCache implements CacheInterface
 {
-    /** @var array<string,CacheEntryInterface>*/
-    protected array $storage;
+    /** @var array<string,CacheEntryInterface> */
+    protected array $storage = [];
 
     protected int $timeoutInSeconds = 86400;
 
@@ -25,17 +25,17 @@ class NonPersistentCache implements CacheInterface
     public function fetch(string $key): ?array
     {
         $entry = $this->storage[$key] ?? null;
-        if ($entry !== null) {
-            if ($entry->expired($this->timeoutInSeconds)) {
-                unset($this->storage[$key]);
-                $entry = null;
-            }
+        if ($entry instanceof CacheEntryInterface && $entry->expired($this->timeoutInSeconds)) {
+            unset($this->storage[$key]);
+            $entry = null;
         }
+
         return $entry?->getData();
     }
 
     /**
      * @param array<string> $keys
+     *
      * @return array<array<mixed>>
      */
     public function fetchMultiple(array $keys): array
@@ -47,12 +47,14 @@ class NonPersistentCache implements CacheInterface
                 $result[] = $data;
             }
         }
+
         return $result;
     }
 
     /**
      * @param array<string> $tags
-     * @return array<string,CacheEntryInterface>
+     *
+     * @return array<CacheEntryInterface>
      */
     protected function fetchEntriesByTags(array $tags): array
     {
@@ -62,6 +64,7 @@ class NonPersistentCache implements CacheInterface
                 unset($this->storage[$key]);
                 continue;
             }
+
             foreach ($entry->getTags() as $tag) {
                 if (in_array($tag, $tags)) {
                     $result[] = $entry;
@@ -69,6 +72,7 @@ class NonPersistentCache implements CacheInterface
                 }
             }
         }
+
         return $result;
     }
 
@@ -79,7 +83,7 @@ class NonPersistentCache implements CacheInterface
     {
         $this->storage[$key] = new CacheEntry($key, $data, $tags);
     }
-    
+
     public function purge(string $key): void
     {
         unset($this->storage[$key]);
