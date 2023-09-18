@@ -14,12 +14,9 @@ class FileValue extends Value implements FileValueInterface
 
     protected string $mimeType = '';
 
-    /**
-     * @param int $foo phpdoc error to test the pipeline
-     */
     final public function __construct(?FileInterface $file = null)
     {
-        if ($file instanceof FileInterface) {
+        if ($file !== null) {
             $this->fileName = $file->getName();
             $this->publicUrl = $file->getPublicUrl();
             $this->relativePath = $file->getRelativePath();
