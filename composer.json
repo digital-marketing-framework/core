@@ -12,19 +12,9 @@
     "license": "GPL-2.0-or-later",
     "authors": [
       {
-        "name": "Michael Vöhringer",
-        "role": "Developer"
-      },
-      {
-        "name": "Meelis Karulin",
-        "role": "Developer"
-      },
-      {
-        "name": "Damian Ickler",
-        "role": "Developer"
-      },
-      {
-        "name": "Stephan Ude",
+        "email": "info@mediatis.de",
+        "homepage": "https://www.mediatis.de",
+        "name": "Mediatis AG",
         "role": "Developer"
       }
     ],
@@ -37,9 +27,6 @@
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^9.5",
         "rector/rector": "^0.18.3"
-    },
-    "config": {
-      "sort-packages": true
     },
     "autoload": {
       "psr-4": {

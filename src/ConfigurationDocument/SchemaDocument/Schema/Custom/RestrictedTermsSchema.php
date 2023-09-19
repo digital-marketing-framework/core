@@ -64,7 +64,7 @@ class RestrictedTermsSchema extends SwitchSchema
                 return [];
             case static::KEY_BLACKLIST:
                 $list = array_map(static function ($term) {
-                    return '!'.$term;
+                    return '!' . $term;
                 }, $list);
                 array_unshift($list, '*');
 
@@ -81,7 +81,7 @@ class RestrictedTermsSchema extends SwitchSchema
      */
     public static function isTermAllowed(array $allowedTerms, string $term): bool
     {
-        if (in_array('!'.$term, $allowedTerms)) {
+        if (in_array('!' . $term, $allowedTerms)) {
             return false;
         }
 

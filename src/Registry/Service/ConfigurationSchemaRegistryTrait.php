@@ -46,9 +46,9 @@ trait ConfigurationSchemaRegistryTrait
         $documentIdentifiers = $configurationDocumentManager->getDocumentIdentifiers();
         foreach ($documentIdentifiers as $documentIdentifier) {
             $metaData = $configurationDocumentManager->getDocumentInformation($documentIdentifier);
-            $label = '['.$documentIdentifier.']';
+            $label = '[' . $documentIdentifier . ']';
             if ($metaData['name'] !== $documentIdentifier) {
-                $label = $metaData['name'].' '.$label;
+                $label = $metaData['name'] . ' ' . $label;
             }
 
             $includes[$documentIdentifier] = $label;

@@ -17,8 +17,8 @@ class DefaultTemplateEngine implements TemplateEngineInterface
     public const KEY_TEMPLATE = 'template';
 
     public const DEFAULT_TEMPLATES = [
-        TemplateEngineInterface::FORMAT_PLAIN_TEXT => '{'.self::KEYWORD_ALL_VALUES.'}',
-        TemplateEngineInterface::FORMAT_HTML => '{'.self::KEYWORD_ALL_VALUES.'}',
+        TemplateEngineInterface::FORMAT_PLAIN_TEXT => '{' . self::KEYWORD_ALL_VALUES . '}',
+        TemplateEngineInterface::FORMAT_HTML => '{' . self::KEYWORD_ALL_VALUES . '}',
     ];
 
     protected const TEMPLATE_LABELS = [
@@ -37,11 +37,11 @@ class DefaultTemplateEngine implements TemplateEngineInterface
 
         $allValues = '';
         foreach ($data as $field => $value) {
-            $result = str_replace('{'.$field.'}', $value, $result);
-            $allValues .= $field.' = '.$value.PHP_EOL;
+            $result = str_replace('{' . $field . '}', $value, $result);
+            $allValues .= $field . ' = ' . $value . PHP_EOL;
         }
 
-        return str_replace('{'.static::KEYWORD_ALL_VALUES.'}', $allValues, $result);
+        return str_replace('{' . static::KEYWORD_ALL_VALUES . '}', $allValues, $result);
     }
 
     public function getSchema(string $format): SchemaInterface

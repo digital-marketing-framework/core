@@ -167,7 +167,7 @@ class GeneralUtilityTest extends TestCase
     }
 
     /**
-     * @return array<array{0:mixed,1:string|null,2:bool,3:mixed}>
+     * @return array<array{0:mixed,1:?string,2:?bool,3:mixed}>
      */
     public function castValueToArrayProvider(): array
     {
@@ -195,7 +195,7 @@ class GeneralUtilityTest extends TestCase
      *
      * @test
      */
-    public function castValueToArray(mixed $value, string|null $token, bool|null $trim, mixed $expected): void
+    public function castValueToArray(mixed $value, ?string $token, ?bool $trim, mixed $expected): void
     {
         if ($token === null && $trim === null) {
             $result = GeneralUtility::castValueToArray($value);

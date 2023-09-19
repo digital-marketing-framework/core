@@ -59,7 +59,7 @@ class OrEvaluationTest extends EvaluationTest
         ];
         $id = 1;
         foreach ($subConfigList as $subConfigItem) {
-            $config[OrEvaluation::KEY_EVALUATIONS]['id'.$id] = $this->createListItem($subConfigItem, 'id'.$id, $id * 10);
+            $config[OrEvaluation::KEY_EVALUATIONS]['id' . $id] = $this->createListItem($subConfigItem, 'id' . $id, $id * 10);
             ++$id;
         }
 

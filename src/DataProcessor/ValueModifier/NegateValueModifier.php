@@ -63,11 +63,11 @@ class NegateValueModifier extends ValueModifier
         $schema->addProperty(static::KEY_CUSTOM_VALUES, new BooleanSchema(static::DEFAULT_CUSTOM_VALUES));
 
         $trueSchema = new StringSchema(static::DEFAULT_TRUE);
-        $trueSchema->getRenderingDefinition()->addVisibilityConditionByValue('../'.static::KEY_CUSTOM_VALUES)->addValue(true);
+        $trueSchema->getRenderingDefinition()->addVisibilityConditionByValue('../' . static::KEY_CUSTOM_VALUES)->addValue(true);
         $schema->addProperty(static::KEY_TRUE, $trueSchema);
 
         $falseSchema = new StringSchema(static::DEFAULT_FALSE);
-        $falseSchema->getRenderingDefinition()->addVisibilityConditionByValue('../'.static::KEY_CUSTOM_VALUES)->addValue(true);
+        $falseSchema->getRenderingDefinition()->addVisibilityConditionByValue('../' . static::KEY_CUSTOM_VALUES)->addValue(true);
         $schema->addProperty(static::KEY_FALSE, $falseSchema);
 
         return $schema;

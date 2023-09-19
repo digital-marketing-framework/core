@@ -49,7 +49,7 @@ class DataCache implements DataCacheInterface
             $loopFound = in_array($reference, $processedKeys);
             $processedKeys[] = $reference;
             if ($loopFound) {
-                throw new DigitalMarketingFrameworkException('Cache reference loop found: '.implode(',', $processedKeys));
+                throw new DigitalMarketingFrameworkException('Cache reference loop found: ' . implode(',', $processedKeys));
             }
 
             $result = $this->cache->fetch($this->addKeyPrefix($reference));
@@ -76,13 +76,13 @@ class DataCache implements DataCacheInterface
                 return $tag;
             }
 
-            return static::PREFIX.'-'.$tag;
+            return static::PREFIX . '-' . $tag;
         }, $tags));
     }
 
     protected function addKeyPrefix(string $key): string
     {
-        return static::PREFIX.'-'.$key;
+        return static::PREFIX . '-' . $key;
     }
 
     /**
@@ -111,7 +111,7 @@ class DataCache implements DataCacheInterface
         $loopFound = in_array($key, $processedKeys);
         $processedKeys[] = $key;
         if ($loopFound) {
-            throw new DigitalMarketingFrameworkException('Cache reference loop found: '.implode(',', $processedKeys));
+            throw new DigitalMarketingFrameworkException('Cache reference loop found: ' . implode(',', $processedKeys));
         }
 
         $result = $this->cache->fetch($key);

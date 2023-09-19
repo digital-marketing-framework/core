@@ -29,7 +29,7 @@ class PrefixDataMapper extends DataMapper
     {
         switch ($action) {
             case static::ACTION_ADD:
-                return $prefix.$fieldName;
+                return $prefix . $fieldName;
             case static::ACTION_REMOVE:
                 if (str_starts_with($fieldName, $prefix)) {
                     return substr($fieldName, strlen($prefix));

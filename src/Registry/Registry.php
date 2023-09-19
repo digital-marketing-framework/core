@@ -70,7 +70,7 @@ class Registry implements RegistryInterface
     public function createObject(string $class, array $arguments = []): object
     {
         if (!class_exists($class)) {
-            throw new RegistryException('Class "'.$class.'" is unknown!');
+            throw new RegistryException('Class "' . $class . '" is unknown!');
         }
 
         $object = new $class(...$arguments);
@@ -82,22 +82,22 @@ class Registry implements RegistryInterface
     protected function classValidation(string $class, string $interface): void
     {
         if (!class_exists($class)) {
-            throw new RegistryException('class "'.$class.'" does not exist.');
+            throw new RegistryException('class "' . $class . '" does not exist.');
         }
 
         if (!in_array($interface, class_implements($class))) {
-            throw new RegistryException('class "'.$class.'" has to implement interface "'.$interface.'".');
+            throw new RegistryException('class "' . $class . '" has to implement interface "' . $interface . '".');
         }
     }
 
     protected function interfaceValidation(string $interface, string $parentInterface): void
     {
         if (!interface_exists($interface)) {
-            throw new RegistryException('interface "'.$interface.'" does not exist.');
+            throw new RegistryException('interface "' . $interface . '" does not exist.');
         }
 
         if (!is_subclass_of($interface, $parentInterface, true)) {
-            throw new RegistryException('interface "'.$interface.'" has to extend "'.$parentInterface.'".');
+            throw new RegistryException('interface "' . $interface . '" has to extend "' . $parentInterface . '".');
         }
     }
 }

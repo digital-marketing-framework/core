@@ -34,7 +34,7 @@ class TaggableCacheWrapper implements CacheInterface
      */
     public function fetch(string $key): ?array
     {
-        return $this->cache->fetch(static::PREFIX_KEY.$key)[static::KEY_DATA] ?? null;
+        return $this->cache->fetch(static::PREFIX_KEY . $key)[static::KEY_DATA] ?? null;
     }
 
     /**
@@ -51,24 +51,24 @@ class TaggableCacheWrapper implements CacheInterface
 
     public function purge(string $key): void
     {
-        $data = $this->cache->fetch(static::PREFIX_KEY.$key);
+        $data = $this->cache->fetch(static::PREFIX_KEY . $key);
         if ($data !== null) {
             foreach ($data[static::KEY_TAGS] as $tag) {
-                $tagData = $this->cache->fetch(static::PREFIX_TAG.$tag);
+                $tagData = $this->cache->fetch(static::PREFIX_TAG . $tag);
                 if ($tagData !== null) {
                     $tagData = array_filter($tagData, static function ($tagKey) use ($key) {
                         return $tagKey !== $key;
                     });
                     if ($tagData !== []) {
-                        $this->cache->store(static::PREFIX_TAG.$tag, $tagData);
+                        $this->cache->store(static::PREFIX_TAG . $tag, $tagData);
                     } else {
-                        $this->cache->purge(static::PREFIX_TAG.$tag);
+                        $this->cache->purge(static::PREFIX_TAG . $tag);
                     }
                 }
             }
         }
 
-        $this->cache->purge(static::PREFIX_KEY.$key);
+        $this->cache->purge(static::PREFIX_KEY . $key);
     }
 
     public function purgeMultiple(array $keys): void
@@ -84,19 +84,19 @@ class TaggableCacheWrapper implements CacheInterface
         $allTags = $this->cache->fetch(static::KEY_ALL_TAGS);
         if ($allTags !== null) {
             foreach ($allTags as $tag) {
-                $tagData = $this->cache->fetch(static::PREFIX_TAG.$tag);
+                $tagData = $this->cache->fetch(static::PREFIX_TAG . $tag);
                 if ($tagData !== null) {
                     $newTagData = [];
                     foreach ($tagData as $tagKey) {
-                        if ($this->cache->fetch(static::PREFIX_KEY.$tagKey) !== null) {
+                        if ($this->cache->fetch(static::PREFIX_KEY . $tagKey) !== null) {
                             $newTagData[] = $tagKey;
                         }
                     }
 
                     if ($newTagData === []) {
-                        $this->cache->purge(static::PREFIX_TAG.$tag);
+                        $this->cache->purge(static::PREFIX_TAG . $tag);
                     } else {
-                        $this->cache->store(static::PREFIX_TAG.$tag, $newTagData);
+                        $this->cache->store(static::PREFIX_TAG . $tag, $newTagData);
                     }
                 }
             }
@@ -116,7 +116,7 @@ class TaggableCacheWrapper implements CacheInterface
     protected function fetchKeysByTags(array $tags): array
     {
         $tagDataList = $this->cache->fetchMultiple(array_map(static function ($tag) {
-            return static::PREFIX_TAG.$tag;
+            return static::PREFIX_TAG . $tag;
         }, $tags));
         $keys = [];
         foreach ($tagDataList as $tagData) {
@@ -133,16 +133,16 @@ class TaggableCacheWrapper implements CacheInterface
     public function store(string $key, array $data, array $tags = []): void
     {
         $this->purge($key);
-        $this->cache->store(static::PREFIX_KEY.$key, [static::KEY_DATA => $data, static::KEY_TAGS => $tags]);
+        $this->cache->store(static::PREFIX_KEY . $key, [static::KEY_DATA => $data, static::KEY_TAGS => $tags]);
         foreach ($tags as $tag) {
-            $tagData = $this->cache->fetch(static::PREFIX_TAG.$tag);
+            $tagData = $this->cache->fetch(static::PREFIX_TAG . $tag);
             if ($tagData === null) {
                 $tagData = [$key];
             } elseif (!in_array($key, $tagData)) {
                 $tagData[] = $key;
             }
 
-            $this->cache->store(static::PREFIX_TAG.$tag, $tagData);
+            $this->cache->store(static::PREFIX_TAG . $tag, $tagData);
         }
     }
 

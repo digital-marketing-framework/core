@@ -7,6 +7,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\DeadCode\Rector\Node\RemoveNonExistingVarAnnotationRector;
 use Rector\Php74\Rector\Closure\ClosureToArrowFunctionRector;
+use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
 use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
@@ -32,5 +33,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveNonExistingVarAnnotationRector::class, // conflicts with phpstan
         RemoveUselessReturnTagRector::class, // conflicts with phpstan
         CatchExceptionNameMatchingTypeRector::class,
+        AddLiteralSeparatorToNumberRector::class,
     ]);
 };

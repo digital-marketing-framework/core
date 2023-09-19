@@ -31,7 +31,7 @@ class SwitchSchema extends ContainerSchema
         $this->typeSchema = new StringSchema();
         $this->typeSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $this->typeSchema->getRenderingDefinition()->addTrigger(RenderingDefinitionInterface::TRIGGER_SWITCH);
-        $this->typeSchema->getAllowedValues()->addValueSet($this->switchName.'/all');
+        $this->typeSchema->getAllowedValues()->addValueSet($this->switchName . '/all');
 
         $this->configSchema = new ContainerSchema();
         $this->configSchema->getRenderingDefinition()->setSkipInNavigation(true);
@@ -56,7 +56,7 @@ class SwitchSchema extends ContainerSchema
 
     public function addItem(string $type, SchemaInterface $schema): void
     {
-        $this->addValueToValueSet($this->switchName.'/all', $type);
+        $this->addValueToValueSet($this->switchName . '/all', $type);
         $schema->getRenderingDefinition()->setSkipHeader(true);
         $schema->getRenderingDefinition()->setNavigationItem(false);
         $this->configSchema->addProperty($type, $schema);

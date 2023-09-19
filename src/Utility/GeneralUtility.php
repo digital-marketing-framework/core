@@ -178,7 +178,7 @@ final class GeneralUtility
     }
 
     /**
-     * @param array<mixed> $data
+     * @param array<string,mixed> $data
      */
     public static function calculateHash(array $data, bool $short = false): string
     {
@@ -248,8 +248,8 @@ final class GeneralUtility
         $classNamespaceParts = explode('\\', $class);
         $className = array_pop($classNamespaceParts);
 
-        if (str_ends_with($className.'Interface', $interfaceName)) {
-            $keyword = lcfirst(substr($className.'Interface', 0, -strlen($interfaceName)));
+        if (str_ends_with($className . 'Interface', $interfaceName)) {
+            $keyword = lcfirst(substr($className . 'Interface', 0, -strlen($interfaceName)));
         }
 
         return $keyword;
@@ -272,15 +272,15 @@ final class GeneralUtility
             //    . str_repeat('*', $maskedFirstPart)
             //    . '*'
             //    . str_repeat('*', $maskedSecondPart)
-                .'****'
-                .substr($secondPart, $maskedSecondPart);
+                . '****'
+                . substr($secondPart, $maskedSecondPart);
         }
 
         $length = strlen($value);
         $masked = (int) ceil($length / 2);
         $start = (int) floor($masked / 2);
 
-        return substr($value, 0, $start).str_repeat('*', 4).substr($value, $start + $masked);
+        return substr($value, 0, $start) . str_repeat('*', 4) . substr($value, $start + $masked);
     }
 
     public static function copyMultiValue(MultiValueInterface $multiValue, bool $copyValues = true, bool $recursive = true): MultiValueInterface
@@ -310,7 +310,7 @@ final class GeneralUtility
                 $type = $value::class;
                 $packedValue = $value->pack();
             } else {
-                throw new InvalidArgumentException('Invalid field class "'.$value::class.'"');
+                throw new InvalidArgumentException('Invalid field class "' . $value::class . '"');
             }
         } elseif (is_array($value)) {
             throw new InvalidArgumentException('Fields cannot be arrays. Only string representations or ValueInterface objects are allowed.');
@@ -336,11 +336,11 @@ final class GeneralUtility
             $class = $packedValue['type'];
             $value = $packedValue['value'];
             if (!class_exists($class)) {
-                throw new DigitalMarketingFrameworkException('Unknown class "'.$class.'"');
+                throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
             }
 
             if (!in_array(ValueInterface::class, class_implements($class))) {
-                throw new DigitalMarketingFrameworkException('Invalid value class "'.$class.'"');
+                throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
             }
 
             return $class::unpack($value);
@@ -357,10 +357,10 @@ final class GeneralUtility
     {
         $label = $value;
         $label = preg_replace_callback('/[A-Z]+/', static function (array $matches) {
-            return ' '.$matches[0];
+            return ' ' . $matches[0];
         }, $label);
         $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', static function (array $matches) {
-            return ' '.ucfirst($matches[1]);
+            return ' ' . ucfirst($matches[1]);
         }, $label);
         $label = preg_replace('/[^a-zA-Z0-9]$/', '', $label);
 

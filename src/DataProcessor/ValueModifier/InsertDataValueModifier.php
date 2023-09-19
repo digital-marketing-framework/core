@@ -21,8 +21,8 @@ class InsertDataValueModifier extends ValueModifier
             $result = $this->getFieldValue($matches[1]);
         } else {
             foreach (array_keys($this->context->getData()->toArray()) as $key) {
-                if (str_contains($result, '{'.$key.'}')) {
-                    $result = str_replace('{'.$key.'}', $this->getFieldValue($key), $result);
+                if (str_contains($result, '{' . $key . '}')) {
+                    $result = str_replace('{' . $key . '}', $this->getFieldValue($key), $result);
                 }
             }
 

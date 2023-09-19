@@ -23,7 +23,7 @@ abstract class Identifier implements IdentifierInterface
 
     public function getCacheKey(): string
     {
-        return $this->getDomainKey().'-'.$this->getInternalCacheKey();
+        return $this->getDomainKey() . '-' . $this->getInternalCacheKey();
     }
 
     public function getPayload(): array

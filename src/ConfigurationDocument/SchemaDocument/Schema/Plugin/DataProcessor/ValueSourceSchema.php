@@ -17,11 +17,11 @@ class ValueSourceSchema extends SwitchSchema
 
     public function addModifiableKeyword(string $keyword): void
     {
-        $this->addValueToValueSet($this->switchName.'/modifiable', $keyword);
+        $this->addValueToValueSet($this->switchName . '/modifiable', $keyword);
     }
 
     public function addCanBeMultiValueKeyword(string $keyword): void
     {
-        $this->addValueToValueSet($this->switchName.'/canBeMultiValue', $keyword);
+        $this->addValueToValueSet($this->switchName . '/canBeMultiValue', $keyword);
     }
 }

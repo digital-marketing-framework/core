@@ -93,7 +93,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         $path = rtrim($this->getFilePath($folderIdentifier), '/');
         $list = scandir($path);
         $list = array_map(static function (string $file) use ($path) {
-            return $path.'/'.$file;
+            return $path . '/' . $file;
         }, $list);
 
         return array_filter($list, static function (string $file) {

@@ -133,7 +133,7 @@ class NonPersistentQueueTest extends TestCase
     public function fetch(int $limit, int $offset, int $expectedCount, array $statusFilter, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
-            $this->subject->addJob($this->createJob(['value'.$i], $s));
+            $this->subject->addJob($this->createJob(['value' . $i], $s));
         }
 
         $jobs = $this->subject->fetch($statusFilter, $limit, $offset);
@@ -195,7 +195,7 @@ class NonPersistentQueueTest extends TestCase
     public function fetchQueued(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
-            $this->subject->addJob($this->createJob(['value'.$i], $s));
+            $this->subject->addJob($this->createJob(['value' . $i], $s));
         }
 
         $jobs = $this->subject->fetchQueued($limit, $offset);
@@ -230,7 +230,7 @@ class NonPersistentQueueTest extends TestCase
     public function fetchPending(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
-            $this->subject->addJob($this->createJob(['value'.$i], $s));
+            $this->subject->addJob($this->createJob(['value' . $i], $s));
         }
 
         $jobs = $this->subject->fetchPending($limit, $offset);
@@ -265,7 +265,7 @@ class NonPersistentQueueTest extends TestCase
     public function fetchDone(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
-            $this->subject->addJob($this->createJob(['value'.$i], $s));
+            $this->subject->addJob($this->createJob(['value' . $i], $s));
         }
 
         $jobs = $this->subject->fetchDone($limit, $offset);
@@ -300,7 +300,7 @@ class NonPersistentQueueTest extends TestCase
     public function fetchFailed(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
-            $this->subject->addJob($this->createJob(['value'.$i], $s));
+            $this->subject->addJob($this->createJob(['value' . $i], $s));
         }
 
         $jobs = $this->subject->fetchFailed($limit, $offset);
@@ -335,7 +335,7 @@ class NonPersistentQueueTest extends TestCase
     public function fetchRunning(int $limit, int $offset, int $expectedCount, array $jobStatusArray): void
     {
         foreach ($jobStatusArray as $i => $s) {
-            $this->subject->addJob($this->createJob(['value'.$i], $s));
+            $this->subject->addJob($this->createJob(['value' . $i], $s));
         }
 
         $jobs = $this->subject->fetchRunning($limit, $offset);
