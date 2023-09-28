@@ -1,0 +1,2 @@
+includes:
+	- vendor/mediatis/coding-standards/phpstan.neon
