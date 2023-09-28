@@ -45,12 +45,17 @@
             "@ci:static",
             "@ci:dynamic"
         ],
+        "ci:composer": [
+            "@ci:composer:static"
+        ],
         "ci:composer:normalize": "@composer normalize --no-check-lock --dry-run",
         "ci:composer:psr-verify": "@composer dumpautoload --optimize --strict-psr",
         "ci:composer:static": [
+            "@ci:composer:validate",
             "@ci:composer:psr-verify",
             "@ci:composer:normalize"
         ],
+        "ci:composer:validate": "@composer validate --strict",
         "ci:dynamic": [
             "@ci:tests"
         ],
@@ -104,6 +109,7 @@
         "ci:composer": "Runs all dynamic and static composer checks",
         "ci:composer:normalize": "Checks the composer.json.",
         "ci:composer:psr-verify": "Verifies PSR-4 namespace correctness.",
+        "ci:composer:validate": "Validates the composer.json",
         "ci:dynamic": "Runs all dynamic tests.",
         "ci:php": "Runs all static checks for the PHP files.",
         "ci:php:cs-fixer": "Checks the code style with the PHP Coding Standards Fixer (PHP-CS-Fixer).",
