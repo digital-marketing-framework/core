@@ -14,7 +14,7 @@
     "pinia": "^2.0.32",
     "prismjs": "1.15.0",
     "uuid": "^9.0.0",
-    "vue": "^3.2.47",
+    "vue": "^3.3.4",
     "vue-code-highlight": "^0.7.8",
     "vue-prism-editor": "^2.0.0-alpha.2",
     "yaml": "^2.3.1"
