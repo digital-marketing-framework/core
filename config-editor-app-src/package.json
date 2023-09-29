@@ -10,7 +10,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@headlessui/vue": "^1.7.13",
+    "@headlessui/vue": "^1.7.16",
     "pinia": "^2.0.32",
     "prismjs": "1.15.0",
     "uuid": "^9.0.0",
