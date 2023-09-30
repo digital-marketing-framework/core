@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
-abstract class Initialization
+abstract class Initialization implements InitializationInterface
 {
     protected const PLUGINS = [];
 
@@ -57,10 +57,5 @@ abstract class Initialization
             $migration = new $migrationClass();
             $registry->addSchemaMigration($migration);
         }
-    }
-
-    public function init(string $domain, RegistryInterface $registry): void
-    {
-        $this->initPlugins($domain, $registry);
     }
 }

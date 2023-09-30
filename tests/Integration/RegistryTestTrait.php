@@ -47,6 +47,9 @@ trait RegistryTestTrait
 
         // init plugins
         $coreInitialization = new CoreInitialization();
-        $coreInitialization->init(RegistryDomain::CORE, $this->registry);
+        $coreInitialization->initMetaData($this->registry);
+        $coreInitialization->initGlobalConfiguration(RegistryDomain::CORE, $this->registry);
+        $coreInitialization->initServices(RegistryDomain::CORE, $this->registry);
+        $coreInitialization->initPlugins(RegistryDomain::CORE, $this->registry);
     }
 }
