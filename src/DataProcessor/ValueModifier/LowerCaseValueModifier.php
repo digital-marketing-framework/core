@@ -14,6 +14,6 @@ class LowerCaseValueModifier extends ValueModifier
             return null;
         }
 
-        return strtolower((string) $value);
+        return strtolower((string)$value);
     }
 }

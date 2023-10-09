@@ -116,17 +116,17 @@ abstract class Schema implements SchemaInterface
      */
     public function toArray(): array
     {
-        if (SchemaDocument::FLATTEN_SCHEMA) { // @phpstan-ignore-line this flag may technically be a constant but it may change in the future
+        if (SchemaDocument::$flattenSchema) {
             return ['type' => $this->getType()]
                 + $this->getConfig()
                 + ($this->renderingDefinition->toArray() ?? []);
-        } else {
-            return [
-                'type' => $this->getType(),
-                'config' => $this->getConfig(),
-                'render' => $this->renderingDefinition->toArray(),
-            ];
         }
+
+        return [
+            'type' => $this->getType(),
+            'config' => $this->getConfig(),
+            'render' => $this->renderingDefinition->toArray(),
+        ];
     }
 
     public function getDefaultValue(SchemaDocument $schemaDocument): mixed

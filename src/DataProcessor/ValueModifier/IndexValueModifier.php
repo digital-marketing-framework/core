@@ -24,7 +24,7 @@ class IndexValueModifier extends ValueModifier
         }
 
         $indexString = $this->getConfig(static::KEY_INDEX);
-        $indices = $indexString !== '' ? explode(',', (string) $indexString) : [];
+        $indices = $indexString !== '' ? explode(',', (string)$indexString) : [];
 
         $currentValue = $value;
         foreach ($indices as $index) {

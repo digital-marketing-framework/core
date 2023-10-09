@@ -35,7 +35,7 @@ class MapReferenceValueModifier extends ValueModifier
                 $map = array_flip($map);
             }
 
-            return $map[(string) $value] ?? $value;
+            return $map[(string)$value] ?? $value;
         }
 
         return $value;

@@ -101,7 +101,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
 
     protected function getStorageFolderIdentifier(): string
     {
-        return rtrim((string) $this->getStorageConfiguration('folder', ''), '/');
+        return rtrim((string)$this->getStorageConfiguration('folder', ''), '/');
     }
 
     public function initalizeConfigurationDocumentStorage(): void

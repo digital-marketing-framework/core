@@ -83,7 +83,7 @@ class ContainerSchema extends Schema
     {
         $properties = [];
         foreach ($this->properties as $property) {
-            if (SchemaDocument::FLATTEN_SCHEMA) { // @phpstan-ignore-line this flag may technically be a constant but it may change in the future
+            if (SchemaDocument::$flattenSchema) {
                 $properties[] = [
                         'key' => $property->getName(),
                         'weight' => $property->getWeight(),
@@ -127,7 +127,7 @@ class ContainerSchema extends Schema
         }
 
         if (!is_array($value) || $value === []) {
-            $value = (object) [];
+            $value = (object)[];
         } else {
             foreach (array_keys($value) as $key) {
                 $property = $this->getProperty($key);

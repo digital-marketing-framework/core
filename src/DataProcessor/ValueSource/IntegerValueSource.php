@@ -26,12 +26,12 @@ class IntegerValueSource extends ValueSource
             return null;
         }
 
-        $value = (string) $value;
+        $value = (string)$value;
         if (!is_numeric($value)) {
             return null;
         }
 
-        return new IntegerValue((int) $value);
+        return new IntegerValue((int)$value);
     }
 
     public static function getSchema(): SchemaInterface

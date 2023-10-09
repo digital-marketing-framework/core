@@ -11,7 +11,7 @@ class BooleanValue extends Value implements BooleanValueInterface
         protected string $true = '1',
         protected string $false = '0',
     ) {
-        $this->value = (bool) $value;
+        $this->value = (bool)$value;
     }
 
     public function __toString(): string
@@ -51,7 +51,7 @@ class BooleanValue extends Value implements BooleanValueInterface
 
     public function setValue(mixed $value): void
     {
-        $this->value = (bool) $value;
+        $this->value = (bool)$value;
     }
 
     public function pack(): array

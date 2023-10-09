@@ -29,7 +29,7 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
 
     protected function proceed(): bool
     {
-        return (bool) $this->getConfig(static::KEY_ENABLED);
+        return (bool)$this->getConfig(static::KEY_ENABLED);
     }
 
     abstract protected function prepareContext(ContextInterface $source, WriteableContextInterface $target): void;
