@@ -8,7 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\Va
 
 class SchemaDocument
 {
-    public const FLATTEN_SCHEMA = true;
+    public static bool $flattenSchema = true;
 
     /** @var array<string,string> */
     protected array $version = [];

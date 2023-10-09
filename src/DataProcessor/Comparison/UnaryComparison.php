@@ -54,8 +54,8 @@ abstract class UnaryComparison extends Comparison
             return $this->compareValue($value);
         } elseif ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
             return $this->compareAny($value);
-        } else {
-            return $this->compareAll($value);
         }
+
+        return $this->compareAll($value);
     }
 }

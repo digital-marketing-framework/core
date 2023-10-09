@@ -69,7 +69,7 @@ class MultiValue extends ArrayObject implements MultiValueInterface
         $data = $this->toArray();
         $packed = [];
         foreach ($data as $key => $value) {
-            $packed[(string) $key] = GeneralUtility::packValue($value);
+            $packed[(string)$key] = GeneralUtility::packValue($value);
         }
 
         return $packed;

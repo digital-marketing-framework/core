@@ -14,6 +14,6 @@ class UpperCaseValueModifier extends ValueModifier
             return null;
         }
 
-        return strtoupper((string) $value);
+        return strtoupper((string)$value);
     }
 }

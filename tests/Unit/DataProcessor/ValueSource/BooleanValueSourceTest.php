@@ -71,9 +71,9 @@ class BooleanValueSourceTest extends ValueSourceTest
             $this->assertInstanceOf(BooleanValueInterface::class, $output);
             $this->assertEquals($expectedResult, $output->getValue());
             if ($expectedResult) {
-                $this->assertEquals($true ?? '1', (string) $output);
+                $this->assertEquals($true ?? '1', (string)$output);
             } else {
-                $this->assertEquals($false ?? '0', (string) $output);
+                $this->assertEquals($false ?? '0', (string)$output);
             }
         }
     }

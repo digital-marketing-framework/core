@@ -35,7 +35,7 @@ class FileValueSource extends ValueSource
         $fileUrl = $this->dataProcessor->processValue($this->getConfig(static::KEY_URL), $this->context->copy());
         $mimeType = $this->dataProcessor->processValue($this->getConfig(static::KEY_MIMETYPE), $this->context->copy());
 
-        if (file_exists((string) $filePath)) {
+        if (file_exists((string)$filePath)) {
             if (GeneralUtility::isEmpty($fileName)) {
                 $fileName = pathinfo($filePath)['filename'];
             }
@@ -56,10 +56,10 @@ class FileValueSource extends ValueSource
             && !GeneralUtility::isEmpty($mimeType)
         ) {
             $fileField = [
-                'fileName' => (string) $fileName,
-                'publicUrl' => (string) $fileUrl,
-                'relativePath' => (string) $filePath,
-                'mimeType' => (string) $mimeType,
+                'fileName' => (string)$fileName,
+                'publicUrl' => (string)$fileUrl,
+                'relativePath' => (string)$filePath,
+                'mimeType' => (string)$mimeType,
             ];
 
             return FileValue::unpack($fileField);

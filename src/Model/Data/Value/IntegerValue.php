@@ -8,12 +8,12 @@ class IntegerValue extends Value implements IntegerValueInterface
 
     final public function __construct(mixed $value)
     {
-        $this->value = (int) $value;
+        $this->value = (int)$value;
     }
 
     public function __toString(): string
     {
-        return (string) $this->value;
+        return (string)$this->value;
     }
 
     public function getValue(): int
@@ -23,7 +23,7 @@ class IntegerValue extends Value implements IntegerValueInterface
 
     public function setValue(mixed $value): void
     {
-        $this->value = (int) $value;
+        $this->value = (int)$value;
     }
 
     public function pack(): array

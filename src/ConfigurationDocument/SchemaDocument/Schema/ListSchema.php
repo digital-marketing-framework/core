@@ -64,17 +64,17 @@ class ListSchema extends Schema
 
     protected function getConfig(): array
     {
-        if (SchemaDocument::FLATTEN_SCHEMA) { // @phpstan-ignore-line this flag may technically be a constant but it may change in the future
+        if (SchemaDocument::$flattenSchema) {
             return parent::getConfig() + [
                 'dynamicOrder' => $this->dynamicOrder,
                 'itemTemplate' => $this->getItemSchema()->toArray(),
             ];
-        } else {
-            return parent::getConfig() + [
-                'dynamicOrder' => $this->dynamicOrder,
-                'item' => $this->getItemSchema()->toArray(),
-            ];
         }
+
+        return parent::getConfig() + [
+            'dynamicOrder' => $this->dynamicOrder,
+            'item' => $this->getItemSchema()->toArray(),
+        ];
     }
 
     public function getDefaultValue(SchemaDocument $schemaDocument): mixed
@@ -97,7 +97,7 @@ class ListSchema extends Schema
         }
 
         if (empty($value)) {
-            $value = (object) [];
+            $value = (object)[];
         } else {
             foreach (array_keys($value) as $key) {
                 if (!isset($value[$key])) {

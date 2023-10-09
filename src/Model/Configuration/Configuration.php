@@ -116,7 +116,7 @@ class Configuration implements ConfigurationInterface
 
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->set((string) $offset, $value);
+        $this->set((string)$offset, $value);
     }
 
     public function offsetUnset(mixed $offset): void

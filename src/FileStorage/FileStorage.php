@@ -41,9 +41,9 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
     {
         if ($this->fileExists($fileIdentifier)) {
             return pathinfo($this->getFilePath($fileIdentifier), $flag);
-        } else {
-            $this->logger->warning(sprintf('File %s does not seem to exist.', $fileIdentifier));
         }
+
+        $this->logger->warning(sprintf('File %s does not seem to exist.', $fileIdentifier));
 
         return null;
     }

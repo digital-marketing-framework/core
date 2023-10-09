@@ -24,7 +24,7 @@ class JoinValueModifier extends ValueModifier
         if ($value instanceof MultiValueInterface) {
             $glue = GeneralUtility::parseSeparatorString($this->getConfig(static::KEY_GLUE));
             $value->setGlue($glue);
-            $value = (string) $value;
+            $value = (string)$value;
         }
 
         return $value;

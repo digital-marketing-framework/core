@@ -32,16 +32,16 @@ final class GeneralUtility
             return $value->toArray() === [];
         }
 
-        return (string) $value === '';
+        return (string)$value === '';
     }
 
     public static function isTrue(mixed $value): bool
     {
         if ($value instanceof MultiValueInterface) {
-            return (bool) $value->toArray();
+            return (bool)$value->toArray();
         }
 
-        return (bool) $value;
+        return (bool)$value;
     }
 
     public static function isFalse(mixed $value): bool
@@ -80,7 +80,7 @@ final class GeneralUtility
         } elseif ($value instanceof MultiValueInterface) {
             $array = $value->toArray();
         } else {
-            $value = (string) $value;
+            $value = (string)$value;
             $array = static::isEmpty($value) ? [] : explode($token, $value);
         }
 
@@ -198,7 +198,7 @@ final class GeneralUtility
 
     public static function compareValue(mixed $fieldValue, mixed $compareValue): bool
     {
-        return (string) $fieldValue === (string) $compareValue;
+        return (string)$fieldValue === (string)$compareValue;
     }
 
     public static function compareLists(mixed $fieldValue, mixed $compareList, bool $strict = false): bool
@@ -262,11 +262,11 @@ final class GeneralUtility
 
             $firstPart = array_shift($parts);
             $lengthFirstPart = strlen($firstPart);
-            $maskedFirstPart = (int) ceil($lengthFirstPart / 2);
+            $maskedFirstPart = (int)ceil($lengthFirstPart / 2);
 
             $secondPart = implode('@', $parts);
             $lengthSecondPart = strlen($secondPart);
-            $maskedSecondPart = (int) ceil($lengthSecondPart / 2);
+            $maskedSecondPart = (int)ceil($lengthSecondPart / 2);
 
             return substr($firstPart, 0, $lengthFirstPart - $maskedFirstPart)
             //    . str_repeat('*', $maskedFirstPart)
@@ -277,8 +277,8 @@ final class GeneralUtility
         }
 
         $length = strlen($value);
-        $masked = (int) ceil($length / 2);
-        $start = (int) floor($masked / 2);
+        $masked = (int)ceil($length / 2);
+        $start = (int)floor($masked / 2);
 
         return substr($value, 0, $start) . str_repeat('*', 4) . substr($value, $start + $masked);
     }
@@ -316,7 +316,7 @@ final class GeneralUtility
             throw new InvalidArgumentException('Fields cannot be arrays. Only string representations or ValueInterface objects are allowed.');
         } else {
             $type = 'string';
-            $packedValue = (string) $value;
+            $packedValue = (string)$value;
         }
 
         return [
@@ -331,20 +331,20 @@ final class GeneralUtility
     public static function unpackValue(array $packedValue): string|ValueInterface
     {
         if ($packedValue['type'] === 'string') {
-            return (string) $packedValue['value'];
-        } else {
-            $class = $packedValue['type'];
-            $value = $packedValue['value'];
-            if (!class_exists($class)) {
-                throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
-            }
-
-            if (!in_array(ValueInterface::class, class_implements($class))) {
-                throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
-            }
-
-            return $class::unpack($value);
+            return (string)$packedValue['value'];
         }
+
+        $class = $packedValue['type'];
+        $value = $packedValue['value'];
+        if (!class_exists($class)) {
+            throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
+        }
+
+        if (!in_array(ValueInterface::class, class_implements($class))) {
+            throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
+        }
+
+        return $class::unpack($value);
     }
 
     /**

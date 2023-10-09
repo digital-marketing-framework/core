@@ -56,8 +56,8 @@ abstract class BinaryComparison extends Comparison
             return $this->compareValues($a, $b);
         } elseif ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
             return $this->compareAny($a, $b);
-        } else {
-            return $this->compareAll($a, $b);
         }
+
+        return $this->compareAll($a, $b);
     }
 }

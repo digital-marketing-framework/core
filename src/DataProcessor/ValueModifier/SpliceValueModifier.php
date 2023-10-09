@@ -26,7 +26,7 @@ class SpliceValueModifier extends ValueModifier
 
         $token = GeneralUtility::parseSeparatorString($this->getConfig(static::KEY_TOKEN));
         $slice = $this->getConfig(static::KEY_INDEX);
-        $indices = explode(':', (string) $slice);
+        $indices = explode(':', (string)$slice);
 
         $offset = $indices[0] ?: 1;
         if ($offset > 0) {
@@ -41,7 +41,7 @@ class SpliceValueModifier extends ValueModifier
             $length = $indices[1] ?: null;
         }
 
-        $parts = explode($token, (string) $value);
+        $parts = explode($token, (string)$value);
         $slices = $length === null ? array_slice($parts, $offset) : array_slice($parts, $offset, $length);
 
         return implode($token, $slices);

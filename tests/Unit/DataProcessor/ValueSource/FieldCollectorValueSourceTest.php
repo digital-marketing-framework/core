@@ -48,14 +48,14 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         $this->data = [];
         $output = $this->processValueSource($this->getNeutralConfig());
         $this->assertInstanceOf(MultiValueInterface::class, $output);
-        $this->assertEquals('', (string) $output);
+        $this->assertEquals('', (string)$output);
     }
 
     /** @test */
     public function collectWithDefaultConfig(): void
     {
         $output = $this->processValueSource($this->getNeutralConfig());
-        $this->assertEquals("field1 = value1\nfield2 = value2\nfield3 = value3\n", (string) $output);
+        $this->assertEquals("field1 = value1\nfield2 = value2\nfield3 = value3\n", (string)$output);
     }
 
     /**
@@ -91,7 +91,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         }
 
         $output = $this->processValueSource($config);
-        $this->assertEquals($expected, (string) $output);
+        $this->assertEquals($expected, (string)$output);
     }
 
     /**
@@ -126,7 +126,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         }
 
         $output = $this->processValueSource($config);
-        $this->assertEquals($expected, (string) $output);
+        $this->assertEquals($expected, (string)$output);
     }
 
     /**
@@ -156,7 +156,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         }
 
         $output = $this->processValueSource($config);
-        $this->assertEquals($expected, (string) $output);
+        $this->assertEquals($expected, (string)$output);
     }
 
     /**
@@ -184,7 +184,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         }
 
         $output = $this->processValueSource($config);
-        $this->assertEquals($expected, (string) $output);
+        $this->assertEquals($expected, (string)$output);
     }
 
     /**
@@ -234,7 +234,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         }
 
         $output = $this->processValueSource($config);
-        $this->assertEquals($expected, (string) $output);
+        $this->assertEquals($expected, (string)$output);
     }
 
     /** @test */
@@ -257,6 +257,6 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
             new MultiValue(['value2.1', 'value2.2']),
         ], $output);
 
-        $this->assertEquals('value1.1,value1.2value2.1,value2.2', (string) $output);
+        $this->assertEquals('value1.1,value1.2value2.1,value2.2', (string)$output);
     }
 }

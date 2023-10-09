@@ -38,21 +38,21 @@ class NegateValueModifier extends ValueModifier
             if ($useCustomValues) {
                 if ($value->getValue()) {
                     return $false;
-                } else {
-                    return $true;
                 }
-            } else {
-                return $value->negated();
-            }
-        } else {
-            if ($value === $true) {
-                return $false;
-            } elseif ($value === $false) {
+
                 return $true;
             }
 
-            return (bool) $value ? $false : $true;
+            return $value->negated();
         }
+
+        if ($value === $true) {
+            return $false;
+        } elseif ($value === $false) {
+            return $true;
+        }
+
+        return (bool)$value ? $false : $true;
     }
 
     public static function getSchema(): SchemaInterface

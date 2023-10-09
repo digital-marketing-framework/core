@@ -77,7 +77,7 @@ class MultiValueTest extends AbstractFieldTest
         $this->subject = $this->createField($values);
         $this->subject->setGlue($glue);
 
-        $result = (string) $this->subject;
+        $result = (string)$this->subject;
         $this->assertEquals($stringRepresentation, $result);
     }
 
@@ -89,7 +89,7 @@ class MultiValueTest extends AbstractFieldTest
             $this->createField(['x', 'y', 'z']),
             'c',
         ]);
-        $result = (string) $this->subject;
+        $result = (string)$this->subject;
         $this->assertEquals('a,x,y,z,c', $result);
     }
 

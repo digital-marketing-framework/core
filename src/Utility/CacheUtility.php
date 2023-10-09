@@ -15,7 +15,7 @@ final class CacheUtility
         $result = new Data();
         foreach ($dataList as $data) {
             foreach ($data as $key => $value) {
-                if ($override || $result->fieldEmpty((string) $key)) {
+                if ($override || $result->fieldEmpty((string)$key)) {
                     $result[$key] = $value;
                 }
             }

@@ -381,9 +381,9 @@ abstract class AbstractListUtility
         if ($winnerIds === null) {
             if (count($allPreviousIds) < count($allNextIds)) {
                 return static::moveMultipleToFront($list, [...$allPreviousIds, ...$ids]);
-            } else {
-                return static::moveMultipleToEnd($list, [...$ids, ...$allNextIds]);
             }
+
+            return static::moveMultipleToEnd($list, [...$ids, ...$allNextIds]);
         }
 
         $previousWeight = $list[$winnerPreviousId][static::KEY_WEIGHT];
