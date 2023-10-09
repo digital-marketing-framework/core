@@ -50,7 +50,7 @@ abstract class AbstractFieldTest extends TestCase
     public function castToString(array $arguments, string $stringRepresentation): void
     {
         $this->subject = $this->createField(...$arguments);
-        $result = (string) $this->subject;
+        $result = (string)$this->subject;
         $this->assertEquals($stringRepresentation, $result);
     }
 
