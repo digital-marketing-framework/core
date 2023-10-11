@@ -20,7 +20,7 @@ abstract class Initialization implements InitializationInterface
     /**
      * @return array<mixed>
      */
-    protected function getAdditionalPluginArguments(string $interface, string $pluginClass): array
+    protected function getAdditionalPluginArguments(string $interface, string $pluginClass, RegistryInterface $registry): array
     {
         return [];
     }
@@ -33,7 +33,7 @@ abstract class Initialization implements InitializationInterface
                 $registry->registerPlugin(
                     $interface,
                     $class,
-                    $this->getAdditionalPluginArguments($interface, $class),
+                    $this->getAdditionalPluginArguments($interface, $class, $registry),
                     $keyword
                 );
             }
