@@ -7,12 +7,15 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterf
 
 trait GlobalConfigurationRegistryTrait
 {
+    use PackageAliasesRegistryTrait;
+
     protected GlobalConfigurationInterface $globalConfiguration;
 
     public function getGlobalConfiguration(): GlobalConfigurationInterface
     {
         if (!isset($this->globalConfiguration)) {
             $this->globalConfiguration = new DefaultGlobalConfiguration();
+            $this->globalConfiguration->setPackageAliases($this->getPackageAliases());
         }
 
         return $this->globalConfiguration;
@@ -21,5 +24,6 @@ trait GlobalConfigurationRegistryTrait
     public function setGlobalConfiguration(GlobalConfigurationInterface $globalConfiguration): void
     {
         $this->globalConfiguration = $globalConfiguration;
+        $this->globalConfiguration->setPackageAliases($this->getPackageAliases());
     }
 }

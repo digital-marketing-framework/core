@@ -13,7 +13,8 @@ abstract class Initialization implements InitializationInterface
 
     public function __construct(
         protected string $packageName,
-        protected string $schemaVersion
+        protected string $schemaVersion,
+        protected string $packageAlias = ''
     ) {
     }
 
@@ -51,6 +52,8 @@ abstract class Initialization implements InitializationInterface
     public function initMetaData(RegistryInterface $registry): void
     {
         $registry->addSchemaVersion($this->packageName, $this->schemaVersion);
+
+        $registry->addPackageAlias($this->packageName, $this->packageAlias);
 
         foreach (static::SCHEMA_MIGRATIONS as $migrationClass) {
             /** @var ConfigurationDocumentMigrationInterface $migration */

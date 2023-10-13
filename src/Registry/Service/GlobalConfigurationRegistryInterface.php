@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterface;
 
-interface GlobalConfigurationRegistryInterface
+interface GlobalConfigurationRegistryInterface extends PackageAliasesRegistryInterface
 {
     public function getGlobalConfiguration(): GlobalConfigurationInterface;
 

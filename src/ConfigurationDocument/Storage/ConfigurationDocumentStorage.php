@@ -12,8 +12,6 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
     use GlobalConfigurationAwareTrait;
     use LoggerAwareTrait;
 
-    public const CONFIGURATION_KEY = 'digitalmarketingframework';
-
     public const STORAGE_CONFIGURATION_KEY = 'configurationStorage';
 
     abstract public function getDocumentIdentifiers(): array;
@@ -35,7 +33,7 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
 
     protected function getStorageConfiguration(?string $key = null, mixed $default = null): mixed
     {
-        $config = $this->globalConfiguration->get(static::CONFIGURATION_KEY)[static::STORAGE_CONFIGURATION_KEY] ?? [];
+        $config = $this->globalConfiguration->get('core')[static::STORAGE_CONFIGURATION_KEY] ?? [];
         if ($key !== null) {
             return $config[$key] ?? $default;
         }
