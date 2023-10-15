@@ -13,6 +13,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInte
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
@@ -196,6 +197,20 @@ class DataProcessor extends Plugin implements DataProcessorInterface
                         ConstantValueSource::KEY_VALUE => $constantValue,
                     ],
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array{data:array{type:string}}
+     */
+    public static function valueSchemaDefaultValueNull(): array
+    {
+        $keyword = GeneralUtility::getPluginKeyword(NullValueSource::class, ValueSourceInterface::class);
+
+        return [
+            static::KEY_DATA => [
+                SwitchSchema::KEY_TYPE => $keyword,
             ],
         ];
     }
