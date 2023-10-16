@@ -736,7 +736,7 @@ export const useDmfStore = defineStore('dmf', {
         }
         if (!this.isNativeType(schema.type)) {
           const customSchema = this.getCustomSchema(schema.type);
-          return this._getValues(customSchema, field);
+          return this._getValues(customSchema, field, currentPath);
         }
         return {};
       };
