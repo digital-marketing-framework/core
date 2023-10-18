@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\MigrationExce
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
@@ -43,6 +44,19 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $this->parser;
     }
 
+    protected function getStorageForDocumentIdentifier(string $documentIdentifier): ConfigurationDocumentStorageInterface
+    {
+        if (preg_match('/^[A-Z]{2,}:/', $documentIdentifier)) {
+            if (!$this->staticStorage instanceof ConfigurationDocumentStorageInterface) {
+                throw new DigitalMarketingFrameworkException('No static document storage found.');
+            }
+
+            return $this->staticStorage;
+        }
+
+        return $this->storage;
+    }
+
     public function tidyDocument(string $document, SchemaDocument $schemaDocument): string
     {
         return $this->parser->tidyDocument($document, $schemaDocument);
@@ -50,8 +64,9 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function saveDocument(string $documentIdentifier, string $document, SchemaDocument $schemaDocument): void
     {
+        $storage = $this->getStorageForDocumentIdentifier($documentIdentifier);
         $document = $this->tidyDocument($document, $schemaDocument);
-        $this->storage->setDocument($documentIdentifier, $document);
+        $storage->setDocument($documentIdentifier, $document);
     }
 
     protected function buildDocumentNameFromIdentifier(string $documentIdentifier): string
@@ -74,7 +89,8 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function deleteDocument(string $documentIdentifier): void
     {
-        $this->storage->deleteDocument($documentIdentifier);
+        $storage = $this->getStorageForDocumentIdentifier($documentIdentifier);
+        $storage->deleteDocument($documentIdentifier);
     }
 
     public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string
@@ -84,13 +100,14 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function getDocumentInformation(string $documentIdentifier): array
     {
+        $storage = $this->getStorageForDocumentIdentifier($documentIdentifier);
         $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier, true);
 
         return [
             'id' => $documentIdentifier,
-            'shortId' => $this->storage->getShortIdentifier($documentIdentifier),
+            'shortId' => $storage->getShortIdentifier($documentIdentifier),
             'name' => $this->getName($documentConfiguration) ?: $documentIdentifier,
-            'readonly' => $this->storage->isReadOnly($documentIdentifier),
+            'readonly' => $storage->isReadOnly($documentIdentifier),
             'includes' => $this->getIncludes($documentConfiguration),
         ];
     }
