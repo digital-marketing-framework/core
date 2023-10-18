@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { nextTick } from 'vue';
 import { watch } from 'vue';
 import { cloneValue, mergeValue, valuesEqual, EVENT_GET_VALUES } from '../composables/valueHelper';
+import { debounce } from '../composables/debounce.js';
 import { EVENT_CONDITION_EVALUATION } from '../composables/conditionHelper';
 import { rawDataParse, rawDataDump } from '../composables/rawValueHelper';
 import { ListUtility } from '../composables/listValueHelper';
@@ -80,9 +81,12 @@ export const useDmfStore = defineStore('dmf', {
       this.referenceIncludes = cloneValue(this.data.metaData.includes || {});
       this._updateValue('/');
       this.evaluate('/');
-      watch(this.data, () => {
-        this.evaluate('/');
-      });
+      watch(
+        this.data,
+        debounce(() => {
+          this.evaluate('/');
+        }, 300)
+      );
       // this.triggerRerender();
     },
     async receiveData(response) {
