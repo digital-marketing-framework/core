@@ -21,6 +21,22 @@ const WARNINGS = {};
 WARNINGS[WARNING_INCLUDES_CHANGED] = 'Includes have changed';
 WARNINGS[WARNING_DOCUMENT_INVALID] = 'Document validation failed';
 
+const cache = {};
+
+const cacheManager = {
+  key: function (path, currentPath) {
+    return (currentPath || '/') + '::' + path;
+  },
+  get: function (domain, key) {
+    cache[domain] = cache[domain] || {};
+    return cache[domain][key];
+  },
+  set: function (domain, key, data) {
+    cache[domain] = cache[domain] || {};
+    cache[domain][key] = data;
+  }
+};
+
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
     selectedPath: '/',
@@ -625,6 +641,11 @@ export const useDmfStore = defineStore('dmf', {
     },
     getAbsolutePath() {
       return (path, currentPath) => {
+        const key = cacheManager.key(path, currentPath);
+        let result = cacheManager.get('getAbsolutePath', key);
+        if (typeof result !== 'undefined') {
+          return result;
+        }
         path = this._sanitizePath(path);
         currentPath = this._sanitizePath(currentPath || '/');
         if (!path.startsWith('/')) {
@@ -633,7 +654,9 @@ export const useDmfStore = defineStore('dmf', {
           }
           path = currentPath === '/' ? '/' + path : currentPath + '/' + path;
         }
-        return this._simplifyPath(path);
+        result = this._simplifyPath(path);
+        cacheManager.set('getAbsolutePath', key, result);
+        return result;
       };
     },
     getAllPaths() {
@@ -1045,9 +1068,17 @@ export const useDmfStore = defineStore('dmf', {
     },
     getSchema(state) {
       return (path, currentPath, resolveCustomType) => {
+        const key =
+          cacheManager.key(path, currentPath) + '::' + (resolveCustomType ? 'deep' : 'shallow');
+        let result = cacheManager.get('getSchema', key);
+        if (typeof result !== 'undefined') {
+          return result;
+        }
         const pathParts = this._getPathParts(path, currentPath);
         const schema = this._getSchema(pathParts, state.schemaDocument.schema, state.data);
-        return resolveCustomType ? this.resolveSchema(schema) : schema;
+        result = resolveCustomType ? this.resolveSchema(schema) : schema;
+        cacheManager.set('getSchema', key, result);
+        return result;
       };
     },
     _getValue() {
