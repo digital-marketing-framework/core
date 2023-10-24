@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { watch } from 'vue';
 import { cloneValue, mergeValue, valuesEqual, EVENT_GET_VALUES } from '../composables/valueHelper';
 import { debounce } from '../composables/debounce.js';
+import { cacheManager } from '../composables/processorCache.js';
 import { EVENT_CONDITION_EVALUATION } from '../composables/conditionHelper';
 import { rawDataParse, rawDataDump } from '../composables/rawValueHelper';
 import { ListUtility } from '../composables/listValueHelper';
@@ -21,22 +22,6 @@ const WARNING_DOCUMENT_INVALID = 'documentInvalid';
 const WARNINGS = {};
 WARNINGS[WARNING_INCLUDES_CHANGED] = 'Includes have changed';
 WARNINGS[WARNING_DOCUMENT_INVALID] = 'Document validation failed';
-
-const cache = {};
-
-const cacheManager = {
-  key: function (path, currentPath) {
-    return (currentPath || '/') + '::' + path;
-  },
-  get: function (domain, key) {
-    cache[domain] = cache[domain] || {};
-    return cache[domain][key];
-  },
-  set: function (domain, key, data) {
-    cache[domain] = cache[domain] || {};
-    cache[domain][key] = data;
-  }
-};
 
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
@@ -126,14 +111,6 @@ export const useDmfStore = defineStore('dmf', {
       this.isOpen = false;
       await nextTick();
       this.isOpen = true;
-    },
-    _updateParentValue(path, currentPath) {
-      const parentPath = path + '/..';
-      const parentValue = this.getValue(parentPath, currentPath);
-      if (typeof parentValue === 'undefined') {
-        this._updateParentValue(parentPath, currentPath);
-        this.setValue(parentPath, currentPath, this.getDefaultValue(parentPath, currentPath));
-      }
     },
     _updateValue(path, currentPath) {
       const value = this.getValue(path, currentPath);
@@ -700,11 +677,19 @@ export const useDmfStore = defineStore('dmf', {
     },
     _getPathParts() {
       return (path, currentPath) => {
+        const key = cacheManager.key(path, currentPath);
+        let result = cacheManager.get('_getPathParts', key);
+        if (typeof result !== 'undefined') {
+          return result;
+        }
         const pathPartsString = this.getAbsolutePath(path, currentPath).substring(1);
         if (pathPartsString === '') {
-          return [];
+          result = [];
+        } else {
+          result = pathPartsString.split('/');
         }
-        return pathPartsString.split('/');
+        cacheManager.set('_getPathParts', key, result);
+        return result;
       };
     },
     getCustomSchema(state) {
@@ -733,7 +718,7 @@ export const useDmfStore = defineStore('dmf', {
     },
     getPredefinedValues() {
       return (valueConfig, currentPath) => {
-        let values = {};
+        const values = {};
         Object.keys(valueConfig).forEach((keyword) => {
           const e = new CustomEvent(EVENT_GET_VALUES, {
             detail: {
@@ -1098,11 +1083,11 @@ export const useDmfStore = defineStore('dmf', {
       };
     },
     getValue(state) {
-      return (path, currentPath, withDefault, source) => {
+      return (path, currentPath, withDefault, inherited) => {
         // TODO should we have the flag "withDefault"?
         //      or should we have another flag "addDefaultIfEmpty"
         //      or just do that automatically?
-        source = source || state.data;
+        const source = inherited ? state.inheritedData : state.data;
         const pathParts = this._getPathParts(path, currentPath);
         const value = this._getValue(pathParts, source);
         if (typeof value !== 'undefined') {
@@ -1111,24 +1096,25 @@ export const useDmfStore = defineStore('dmf', {
         if (withDefault) {
           return this.getDefaultValue(path, currentPath);
         }
+
         return undefined;
       };
     },
-    getInheritedValue(state) {
+    getInheritedValue() {
       return (path, currentPath, withDefault) =>
-        this.getValue(path, currentPath, withDefault, state.inheritedData);
+        this.getValue(path, currentPath, withDefault, true);
     },
     getParentValue() {
-      return (path, currentPath, withDefault, source) => {
+      return (path, currentPath, withDefault, inherited) => {
         if (this.isRoot(path, currentPath)) {
           return undefined;
         }
-        return this.getValue(path + '/..', currentPath, withDefault, source);
+        return this.getValue(path + '/..', currentPath, withDefault, inherited);
       };
     },
     getInheritedParentValue() {
       return (path, currentPath, withDefault) =>
-        this.getParentValue(path, currentPath, withDefault, this.inheritedData);
+        this.getParentValue(path, currentPath, withDefault, true);
     },
     getParentSchema() {
       return (path, currentPath, resolveCustomType) => {
@@ -1402,13 +1388,19 @@ export const useDmfStore = defineStore('dmf', {
     },
     getRootLine() {
       return (path, currentPath) => {
+        const key = cacheManager.key(path, currentPath);
+        let rootLine = cacheManager.get('getRootLine', key);
+        if (typeof rootLine !== 'undefined') {
+          return rootLine;
+        }
         const pathParts = this._getPathParts(path, currentPath);
         let currentRootLinePath = '/';
-        const rootLine = ['/'];
+        rootLine = ['/'];
         pathParts.forEach((pathPart) => {
           currentRootLinePath = this.getAbsolutePath(pathPart, currentRootLinePath);
           rootLine.push(currentRootLinePath);
         });
+        cacheManager.set('getRootLine', key, rootLine);
         return rootLine;
       };
     },
