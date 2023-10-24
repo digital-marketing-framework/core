@@ -1,9 +1,10 @@
 <script setup>
 
+import { computed } from 'vue';
+
 import GenericItem from '../GenericItem.vue';
 import GenericContainerItem from './GenericContainerItem.vue';
 
-import { computed } from "vue";
 import { useDmfStore } from '../../stores/dmf';
 
 const store = useDmfStore();
@@ -15,18 +16,17 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
-const valueItem = computed(() => store.getItem('value', props.currentPath));
-
+const valueSchema = computed(() => store.getSchema('value', props.currentPath, true));
+const valueIsScalar = computed(() => store.isScalarType(valueSchema.value.type));
 </script>
 
 <template>
     <GenericContainerItem :currentPath="currentPath">
         <template #fieldsUi>
             <GenericItem :currentPath="store.getAbsolutePath('key', currentPath)" />
-            <GenericItem :currentPath="store.getAbsolutePath('value', currentPath)" :dynamicItem="item" :class="{
-                'todo-scalar-map-value-maybe-easy-to-put-side-by-side': valueItem.isScalar,
-                'todo-complex-map-value-maybe-harder-to-put-side-by-side': !valueItem.isScalar
+            <GenericItem :currentPath="store.getAbsolutePath('value', currentPath)" :dynamicItem="currentPath" :class="{
+                'todo-scalar-map-value-maybe-easy-to-put-side-by-side': valueIsScalar,
+                'todo-complex-map-value-maybe-harder-to-put-side-by-side': !valueIsScalar
             }" />
         </template>
     </GenericContainerItem>

@@ -18,21 +18,23 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const currentKey = computed(() => store.getLeafKey(props.currentPath));
+const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
+const parentValue = computed(() => store.getParentValue(props.currentPath));
 </script>
 <template>
     <GenericScalarItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldUi>
             <div class="mt-2">
-                <input v-if="item.schema.format === 'hidden'"
+                <input v-if="schema.format === 'hidden'"
                     :id="'input_' + currentPath"
                     :name="'input_' + currentPath"
-                    v-model="item.parentValue[item.currentKey]"
+                    v-model="parentValue[currentKey]"
                     type="hidden" />
                 <input v-else
                     :id="'input_' + currentPath"
                     :name="'input_' + currentPath"
-                    v-model="item.parentValue[item.currentKey]"
+                    v-model="parentValue[currentKey]"
                     type="number"
                     autocomplete="off"
                     placeholder="Enter value"

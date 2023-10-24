@@ -18,36 +18,39 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const currentKey = computed(() => store.getLeafKey(props.currentPath));
+const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
+const parentValue = computed(() => store.getParentValue(props.currentPath));
+const allowedValues = computed(() => store.getAllowedValues(props.currentPath));
 </script>
 
 <template>
     <GenericScalarItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldUi>
             <div class="mt-2">
-                <select v-if="item.schema.format === 'select'"
-                    v-model="item.parentValue[item.currentKey]"
+                <select v-if="schema.format === 'select'"
+                    v-model="parentValue[currentKey]"
                     :class="{
                         'todo-class-readonly bg-neutral-100': store.settings.readonly
                     }"
                     :disabled="store.settings.readonly">
-                    <option v-for="(label, value) in store.getAllowedValues(currentPath)" :key="value" :value="value">{{ label }}</option>
+                    <option v-for="(label, value) in allowedValues" :key="value" :value="value">{{ label }}</option>
                 </select>
-                <textarea v-else-if="item.schema.format === 'text'"
-                    v-model="item.parentValue[item.currentKey]"
+                <textarea v-else-if="schema.format === 'text'"
+                    v-model="parentValue[currentKey]"
                     class="block w-full rounded border-0 py-1.5 text-gray-900 placeholder:text-blue-800 placeholder:opacity-60 shadow-sm ring-1 ring-inset ring-blue-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                     :class="{
                         'todo-class-readonly bg-neutral-100': store.settings.readonly
                     }" />
-                <input v-else-if="item.schema.format === 'hidden'"
+                <input v-else-if="schema.format === 'hidden'"
                     :id="'input_' + currentPath"
                     :name="'input_' + currentPath"
-                    v-model="item.parentValue[item.currentKey]"
+                    v-model="parentValue[currentKey]"
                     type="hidden" />
                 <input v-else
                     :id="'input_' + currentPath"
                     :name="'input_' + currentPath"
-                    v-model="item.parentValue[item.currentKey]"
+                    v-model="parentValue[currentKey]"
                     type="text"
                     autocomplete="off"
                     placeholder="Enter value"

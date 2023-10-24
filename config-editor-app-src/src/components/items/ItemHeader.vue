@@ -19,9 +19,9 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
-
-const parentItem = computed(() => store.getParentItem(props.currentPath));
+const parentSchema = computed(() => store.getSchema('..', props.currentPath, true));
+const isDynamicItem = computed(() => store.isDynamicChild(props.currentPath));
+const label = computed(() => store.getLabel(props.currentPath));
 </script>
 
 <template>
@@ -30,10 +30,10 @@ const parentItem = computed(() => store.getParentItem(props.currentPath));
             <slot name="disclosureButton"></slot>
             <label :for="'input_' + currentPath"
                    :class="{
-                       'font-medium text-sm': !item.isDynamicItem || parentItem.schema.type === 'MAP',
-                       'text-blue-800/50 text-xs': item.isDynamicItem && parentItem.schema.type !== 'MAP'
+                       'font-medium text-sm': !isDynamicItem || parentSchema.type === 'MAP',
+                       'text-blue-800/50 text-xs': isDynamicItem && parentSchema.type !== 'MAP'
                    }">
-                {{ item.label }}
+                {{ label }}
             </label>
         </div>
         <HeaderActions :currentPath="currentPath" :dynamicItem="dynamicItem" />

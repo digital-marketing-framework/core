@@ -20,13 +20,13 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const childPaths = computed(() => store.getChildPaths(props.currentPath));
 </script>
 
 <template>
     <GenericContainerItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldsUi>
-            <div v-for="path in item.childPaths" :key="currentPath + '/' + path">
+            <div v-for="path in childPaths" :key="currentPath + '/' + path">
                 <MapItemItem :currentPath="store.getAbsolutePath(path, currentPath)" />
             </div>
         </template>

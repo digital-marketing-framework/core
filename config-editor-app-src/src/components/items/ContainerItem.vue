@@ -20,21 +20,22 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const childPaths = computed(() => store.getChildPaths(props.currentPath));
+// const groupedChildPaths = computed(() => store.getChildPathsGrouped(props.currentPath));
 </script>
 
 <template>
     <GenericContainerItem :currentPath="currentPath" :dynamicItem="dynamicItem">
         <template #fieldsUi>
-            <div v-for="path in item.childPaths" :key="currentPath + '/' + path">
+            <div v-for="path in childPaths" :key="currentPath + '/' + path">
                 <GenericItem :currentPath="store.getAbsolutePath(path, currentPath)" :key="currentPath + '/' + path"/>
             </div>
             <!-- TODO container child elements can be grouped in global and secondary elements to treat those differently. it's possible to add more groups if necessary -->
             <!--
-            <div v-if="item.groupedChildPaths.global" v-for="path in item.groupedChildPaths.global" :key="currentPath + '/' + path">
+            <div v-if="groupedChildPaths.global" v-for="path in groupedChildPaths.global" :key="currentPath + '/' + path">
                 <GenericItem :currentPath="store.getAbsolutePath(path, currentPath)" :key="currentPath + '/' + path"/>
             </div>
-            <div v-if="item.groupedChildPaths.secondary" v-for="path in item.groupedChildPaths.secondary" :key="currentPath + '/' + path">
+            <div v-if="groupedChildPaths.secondary" v-for="path in groupedChildPaths.secondary" :key="currentPath + '/' + path">
                 <GenericItem :currentPath="store.getAbsolutePath(path, currentPath)" :key="currentPath + '/' + path"/>
             </div>
             -->

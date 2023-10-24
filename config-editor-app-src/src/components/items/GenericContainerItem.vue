@@ -27,9 +27,12 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
 const containerState = computed(() => store.getContainerState(props.currentPath));
-const skipHeader = computed(() => item.value.schema.skipHeader && !item.value.selected);
+const selected = computed(() => store.isSelected(props.currentPath));
+const skipHeader = computed(() => schema.value.skipHeader && !selected.value);
+const childPaths = computed(() => store.getChildPaths(props.currentPath));
+const rawView = computed(() => store.isRawView(props.currentPath));
 </script>
 
 <template>
@@ -37,7 +40,7 @@ const skipHeader = computed(() => item.value.schema.skipHeader && !item.value.se
                     v-slot="{ open }">
         <ContainerHeader :currentPath="currentPath" :dynamicItem="dynamicItem">
             <template #disclosureButton>
-                <DisclosureButton v-if="!item.selected" class="p-1" @click="store.toggleContainerState(currentPath)">
+                <DisclosureButton v-if="!selected" class="p-1" @click="store.toggleContainerState(currentPath)">
                     <AngleDownIcon class="w-3 h-3"
                                     :class="{
                                         '-rotate-90': !open
@@ -47,11 +50,11 @@ const skipHeader = computed(() => item.value.schema.skipHeader && !item.value.se
         </ContainerHeader>
         <TransitionExpand>
             <DisclosurePanel>
-                <div v-if="!item.rawView && item.childPaths.length > 0"
+                <div v-if="!rawView && childPaths.length > 0"
                     class="pt-3 pl-5 space-y-3">
                     <slot name="fieldsUi"></slot>
                 </div>
-                <RawItem v-else-if="item.rawView" :currentPath="currentPath"/>
+                <RawItem v-else-if="rawView" :currentPath="currentPath"/>
             </DisclosurePanel>
         </TransitionExpand>
     </Disclosure>

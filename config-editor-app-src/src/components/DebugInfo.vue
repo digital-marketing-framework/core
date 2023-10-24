@@ -4,7 +4,6 @@ import { computed } from "vue";
 import { useDmfStore } from '../stores/dmf';
 
 const store = useDmfStore();
-// const { getItem } = storeToRefs(store);
 
 const props = defineProps({
     currentPath: {
@@ -18,7 +17,19 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const immediateSchema = computed(() => store.getSchema(props.currentPath));
+const schema = computed(() => store.resolveSchema(immediateSchema.value));
+const isScalar = computed(() => store.isScalarType(schema.value.type));
+const isContainer = computed(() => store.isContainerType(schema.value.type));
+const isDynamicContainer = computed(() => store.isDynamicContainerType(schema.value.type));
+const isCustomType = computed(() => store.isCustomType(immediateSchema.value.type));
+const triggers = computed(() => store.getTriggers(props.currentPath));
+const level = computed(() => store.getLevel(props.currentPath));
+const label = computed(() => store.getLabel(props.currentPath));
+const selected = computed(() => store.isSelected(props.currentPath));
+const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
+const value = computed(() => isScalar.value ? store.getValue(props.currentPath) : null);
+
 </script>
 
 <template>
@@ -26,51 +37,51 @@ const item = computed(() => store.getItem(props.currentPath));
         <table>
             <tr>
                 <th class="p-1 align-top">Path</th>
-                <td class="p-1 align-top"><span class="break-all">{{ item.path }}</span></td>
+                <td class="p-1 align-top"><span class="break-all">{{ currentPath }}</span></td>
             </tr>
             <tr>
                 <th class="p-1 align-top">Label</th>
-                <td class="p-1 align-top">{{ item.label }}</td>
+                <td class="p-1 align-top">{{ label }}</td>
             </tr>
             <tr>
                 <th class="p-1 align-top">Type</th>
-                <td class="p-1 align-top">{{ item.schema.type }}</td>
+                <td class="p-1 align-top">{{ schema.type }}</td>
             </tr>
             <tr>
                 <th class="p-1 align-top">Level</th>
-                <td class="p-1 align-top">{{ item.level }}</td>
+                <td class="p-1 align-top">{{ level }}</td>
             </tr>
             <tr>
                 <th class="p-1 align-top">Selected</th>
-                <td class="p-1 align-top">{{ item.selected }}</td>
+                <td class="p-1 align-top">{{ selected }}</td>
             </tr>
             <tr>
                 <th class="p-1 align-top">Overwritten</th>
-                <td class="p-1 align-top">{{ item.isOverwritten }}</td>
+                <td class="p-1 align-top">{{ isOverwritten }}</td>
             </tr>
-            <tr v-if="item.isScalar">
+            <tr v-if="isScalar">
                 <th class="p-1 align-top">Value</th>
-                <td class="p-1 align-top"><span class="break-all">{{ item.value }}</span></td>
+                <td class="p-1 align-top"><span class="break-all">{{ value }}</span></td>
             </tr>
-            <tr v-if="item.isContainer">
+            <tr v-if="isContainer">
                 <th class="p-1 align-top">Dynamic Container</th>
-                <td class="p-1 align-top">{{ item.isDynamicContainer }}</td>
+                <td class="p-1 align-top">{{ isDynamicContainer }}</td>
             </tr>
             <tr>
                 <th class="p-1 align-top">Dynamic Item</th>
                 <td class="p-1 align-top" >{{ !!dynamicItem }}</td>
             </tr>
-            <tr v-if="store.isCustomType(store.getSchema(item.path).type)">
+            <tr v-if="isCustomType">
                 <th class="p-1 align-top">Immediate Schema</th>
-                <td class="p-1 align-top">{{ store.getSchema(item.path) }}</td>
+                <td class="p-1 align-top">{{ immediateSchema }}</td>
             </tr>
-            <tr v-if="item.isScalar">
+            <tr v-if="isScalar">
                 <th class="p-1 align-top">Schema</th>
-                <td class="p-1 align-top">{{ item.schema }}</td>
+                <td class="p-1 align-top">{{ schema }}</td>
             </tr>
-            <tr v-if="item.triggers.length > 0">
+            <tr v-if="triggers.length > 0">
                 <th class="p-1 align-top">Triggers</th>
-                <td class="p1-align-top">{{ item.triggers }}</td>
+                <td class="p1-align-top">{{ triggers }}</td>
             </tr>
         </table>
     </div>

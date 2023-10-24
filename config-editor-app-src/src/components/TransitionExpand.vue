@@ -28,11 +28,11 @@ const enter = (element) => {
     requestAnimationFrame(() => {
         element.style.height = height;
     });
-}
+};
 
 const afterEnter = (element) => {
     element.style.height = 'auto';
-}
+};
 
 const leave = (element) => {
     const height = getComputedStyle(element).height;
@@ -46,7 +46,7 @@ const leave = (element) => {
     requestAnimationFrame(() => {
         element.style.height = 0;
     });
-}
+};
 </script>
 
 <template>

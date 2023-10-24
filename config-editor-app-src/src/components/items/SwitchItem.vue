@@ -21,7 +21,6 @@ const props = defineProps({
 });
 
 const type = computed(() => store.getValue('type', props.currentPath, true));
-
 const childPaths = computed(() => store.getChildPaths(props.currentPath).filter(childPath => childPath !== 'type' && childPath !== 'config/' + type.value));
 </script>
 

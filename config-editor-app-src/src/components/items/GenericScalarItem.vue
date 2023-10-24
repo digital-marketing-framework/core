@@ -19,13 +19,14 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
+const rawView = computed(() => store.isRawView(props.currentPath));
 </script>
 <template>
-    <slot name="fieldHeader" v-if="!item.schema.skipHeader">
+    <slot name="fieldHeader" v-if="!schema.skipHeader">
         <ItemHeader :currentPath="currentPath" :dynamicItem="dynamicItem" />
     </slot>
-    <slot v-if="!item.rawView" name="fieldUi"></slot>
+    <slot v-if="!rawView" name="fieldUi"></slot>
     <RawItem v-else :currentPath="currentPath" />
     <slot name="fieldFooter"></slot>
 </template>

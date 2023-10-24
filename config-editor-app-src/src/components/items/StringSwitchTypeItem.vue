@@ -13,14 +13,14 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const value = computed(() => store.getValue(props.currentPath));
 </script>
 
 <template>
     <GenericScalarItem :currentPath="currentPath">
         <template #fieldUi>
             <div class="mt-2">
-                <select :value="item.value"
+                <select :value="value"
                     @change="store.setValue(currentPath, currentPath, $event.target.value, true)"
                     :class="{
                         'todo-class-readonly bg-neutral-100': store.settings.readonly

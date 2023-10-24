@@ -19,7 +19,10 @@ const props = defineProps({
     }
 });
 
-const item = computed(() => store.getItem(props.currentPath));
+const currentKey = computed(() => store.getLeafKey(props.currentPath));
+const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
+const parentValue = computed(() => store.getParentValue(props.currentPath));
+const label = computed(() => store.getLabel(props.currentPath));
 </script>
 
 <template>
@@ -30,7 +33,7 @@ const item = computed(() => store.getItem(props.currentPath));
                 <div class="flex items-center h-6">
                     <input :id="'input_' + currentPath"
                         :name="'input_' + currentPath"
-                        v-model="item.parentValue[item.currentKey]"
+                        v-model="parentValue[currentKey]"
                         type="checkbox"
                         autocomplete="off"
                         class="w-4 h-4 text-blue-600 border-blue-200 rounded focus:ring-blue-600"
@@ -41,12 +44,12 @@ const item = computed(() => store.getItem(props.currentPath));
                 </div>
                 <div class="flex justify-between ml-3 text-sm leading-6 gap-x-2 grow">
                     <label :for="'input_' + currentPath"
-                        class="font-medium">{{ item.label }}</label>
+                        class="font-medium">{{ label }}</label>
                 </div>
             </div>
         </template>
         <template #fieldFooter>
-            <HeaderActions v-if="!item.schema.skipHeader" :currentPath="currentPath" :dynamicItem="dynamicItem"/>
+            <HeaderActions v-if="!schema.skipHeader" :currentPath="currentPath" :dynamicItem="dynamicItem"/>
         </template>
     </GenericScalarItem>
 </template>

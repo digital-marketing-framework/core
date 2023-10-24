@@ -1518,47 +1518,6 @@ export const useDmfStore = defineStore('dmf', {
         }
         return resultPath;
       };
-    },
-    getItem() {
-      return (path, currentPath) => {
-        const schema = this.getSchema(path, currentPath, true);
-        const immediateSchema = this.getSchema(path, currentPath);
-        return {
-          path: this.getAbsolutePath(path, currentPath),
-          parentPath: this.isRoot(path, currentPath) ? '' : this.getParentPath(path, currentPath),
-          value: this.getValue(path, currentPath, true),
-          isRoot: this.isRoot(path, currentPath),
-          rootLine: this.getRootLine(path, currentPath),
-          schema: schema,
-          immediateSchema: immediateSchema,
-          custom: this.isCustomType(immediateSchema.type),
-          level: this.getLevel(path, currentPath),
-          currentKey: this.getLeafKey(path, currentPath),
-          parentValue: this.getParentValue(path, currentPath),
-          selected: this.isSelected(path, currentPath),
-          isOverwritten: this.isOverwritten(path, currentPath),
-          canResetOverwrite: this.canResetOverwrite(path, currentPath),
-          isScalar: this.isScalarType(schema.type),
-          isContainer: this.isContainerType(schema.type),
-          isDynamicContainer: this.isDynamicContainerType(schema.type),
-          isDynamicItem: this.isDynamicChild(path, currentPath),
-          childPaths: this.getChildPaths(path, currentPath),
-          groupedChildPaths: this.getChildPathsGrouped(path, currentPath),
-          navigationChildPaths: this.getNavigationChildPaths(path, currentPath),
-          label: this.getLabel(path, currentPath),
-          hasIssues: this.hasIssues(path, currentPath),
-          issue: this.getIssue(path, currentPath),
-          rawView: this.isRawView(path, currentPath),
-          triggers: this.getTriggers(path, currentPath),
-          isVisible: this.isVisible(path, currentPath)
-        };
-      };
-    },
-    getParentItem() {
-      return (path, currentPath) =>
-        this.isRoot(path, currentPath)
-          ? undefined
-          : this.getItem(this.getParentPath(path, currentPath));
     }
   }
 });
