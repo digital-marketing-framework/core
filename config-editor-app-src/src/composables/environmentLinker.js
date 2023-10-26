@@ -81,17 +81,26 @@ const updateTextArea = (textarea, stage, settings, start) => {
   textarea.style.display = 'none';
 };
 
-const setupEmbedded = (textarea) => {
+const createStage = () => {
   const stage = document.createElement('DIV');
   stage.classList.add('dmf-configuration-document-editor-stage');
+  stage.style.position = 'fixed';
+  stage.style.inset = '0';
+  stage.style.backgroundColor = 'rgba(0,0,0,0.5)';
+  stage.style.zIndex = '99999';
+  stage.style.display = 'none';
+  return stage;
+};
+
+const setupEmbedded = (textarea) => {
+  const stage = createStage();
   const form = getDocumentForm(textarea);
   form.parentNode.insertBefore(stage, form.nextSibling);
   return stage;
 };
 
 const setupModal = () => {
-  const stage = document.createElement('DIV');
-  stage.classList.add('dmf-configuration-document-editor-stage');
+  const stage = createStage();
   document.body.appendChild(stage);
   return stage;
 };
@@ -128,18 +137,6 @@ const getInitialTextArea = async () => {
   });
 };
 
-const getStageSiblings = (stage) => {
-  const siblings = [];
-  const children = stage.parentNode.children;
-  for (let i = 0; i < children.length; i++) {
-    const child = children[i];
-    if (child !== stage) {
-      siblings.push({ element: child, display: child.style.display });
-    }
-  }
-  return siblings;
-};
-
 const triggerFormSave = (textarea) => {
   getDocumentForm(textarea)?.submit();
 };
@@ -151,19 +148,6 @@ const triggerFormDiscard = (textarea) => {
 export const linkEnvironment = async () => {
   let textarea, settings, stage, schemaDocument;
   let data, inheritedData, referenceData;
-  let elementsToHide = null;
-
-  const hideElements = () => {
-    elementsToHide.forEach((e) => {
-      e.element.style.display = 'none';
-    });
-  };
-
-  const showElements = () => {
-    elementsToHide.forEach((e) => {
-      e.element.style.display = e.display;
-    });
-  };
 
   const onSave = async (newData) => {
     await save(textarea, settings, newData);
@@ -184,7 +168,7 @@ export const linkEnvironment = async () => {
 
   const onClose = async () => {
     if (settings.mode === 'modal') {
-      showElements();
+      stage.style.display = 'none';
     } else {
       triggerFormDiscard(textarea);
     }
@@ -204,13 +188,7 @@ export const linkEnvironment = async () => {
       }
     });
     document.dispatchEvent(appEvent);
-    if (settings.mode === 'modal') {
-      elementsToHide = getStageSiblings(stage);
-    } else {
-      const form = getDocumentForm(textarea);
-      elementsToHide = [{ element: form, display: form.style.display }];
-    }
-    hideElements();
+    stage.style.display = 'block';
   };
 
   if (settings.mode === 'modal') {
