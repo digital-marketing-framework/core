@@ -1,8 +1,11 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from "vue";
 import { useDmfStore } from '../stores/dmf';
+import { useNotifications } from "../composables/notifications";
 
 const store = useDmfStore();
+const { removeMessage } = useNotifications(store);
+
 const props = defineProps({
     index: {
         type: Number,
@@ -12,8 +15,8 @@ const props = defineProps({
 
 let messageTimeout = null;
 
-const removeMessage = () => {
-    store.removeMessage(props.index);
+const remove = () => {
+    removeMessage(props.index);
     stopTimer();
 };
 const stopTimer = () => {
@@ -26,7 +29,7 @@ const startTimer = () => {
     stopTimer();
     messageTimeout = setTimeout(() => {
         messageTimeout = null;
-        removeMessage();
+        remove();
     }, 5000);
 };
 
@@ -41,6 +44,6 @@ onUnmounted(() => {
 </script>
 <template>
     <li :class="message.type">
-        {{ message.text }} <button type="button>" @click="removeMessage()">X</button>
+        {{ message.text }} <button type="button>" @click="remove()">X</button>
     </li>
 </template>

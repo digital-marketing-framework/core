@@ -1,8 +1,9 @@
 <script setup>
 import { computed } from "vue";
 import { useDmfStore } from '../../stores/dmf';
+import { useRawProcessor } from "../../composables/raw";
 
-import { getPrismHighlighter } from '../../composables/rawValueHelper';
+import { getPrismHighlighter } from '../../helpers/rawValue';
 
 import 'vue-prism-editor/dist/prismeditor.min.css'; // import the styles somewhere
 import 'prismjs/themes/prism-funky.css';
@@ -10,6 +11,7 @@ import 'prismjs/themes/prism-funky.css';
 import { PrismEditor } from 'vue-prism-editor';
 
 const store = useDmfStore();
+const { getRawValue, getRawIssue, setRawValue } = useRawProcessor(store);
 
 const props = defineProps({
     currentPath: {
@@ -26,15 +28,15 @@ const rawValue = computed({
     if (typeof rawData !== 'undefined') {
         return rawData;
     }
-    return store.getRawValue(props.currentPath);
+    return getRawValue(props.currentPath);
   },
   set(rawData) {
     store.rawValues[props.currentPath] = rawData;
-    store.setRawValue('.', props.currentPath, rawData);
+    setRawValue('.', props.currentPath, rawData);
   }
 });
 
-const rawIssue = computed(() => store.getRawIssue(props.currentPath));
+const rawIssue = computed(() => getRawIssue(props.currentPath));
 </script>
 <template>
     <PrismEditor

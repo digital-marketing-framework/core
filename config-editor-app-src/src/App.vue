@@ -1,19 +1,26 @@
 <script setup>
-
 import { computed } from "vue";
 import { useDmfStore } from './stores/dmf';
+import { isRoot, getRootLine } from './helpers/path';
+import { useLabelProcessor } from './composables/label';
+import { usePathProcessor } from "./composables/path";
+import { useDocument } from "./composables/document";
 
 import ArrowLeftLongIcon from './components/icons/ArrowLeftLongIcon.vue';
 import MediatisLogo from './components/icons/MediatisLogo.vue';
-
 import TimedMessage from './components/TimedMessage.vue';
-import MenuItem from './components/MenuItem.vue';
-import GenericItem from './components/GenericItem.vue';
+import ConfirmationDialog from "./components/ConfirmationDialog.vue";
+import MenuItem from './components/navigation/MenuItem.vue';
+import GenericItem from './components/items/GenericItem.vue';
 
 const store = useDmfStore();
+const { getLabel } = useLabelProcessor(store);
+const { getSelectedPath, selectPath } = usePathProcessor(store);
+const { getDocumentName } = useDocument(store);
 
-const selectedPath = computed(() => store.getSelectedPath());
-const rootSelected = computed(() => store.isRoot(selectedPath.value));
+const selectedPath = computed(() => getSelectedPath());
+const rootSelected = computed(() => isRoot(selectedPath.value));
+const rootLine = computed(() => getRootLine(selectedPath.value));
 
 const warnings = computed(() => {
     const warnings = [];
@@ -23,8 +30,9 @@ const warnings = computed(() => {
     return warnings;
 });
 
-const documentName = computed(() => store.getDocumentName());
+const documentName = computed(() => getDocumentName());
 const showApp = computed(() => store.loaded && store.isOpen);
+const confirmationDialogOpen = computed(() => store.confirmDialog.open);
 </script>
 
 <template>
@@ -111,10 +119,10 @@ const showApp = computed(() => store.loaded && store.isOpen);
                                 <ArrowLeftLongIcon v-if="!rootSelected"
                                                    class="w-3 h-3 shrink-0"
                                                    @click="store.selectParentPath()" />
-                                <span v-for="rootLinePath in store.getRootLine(selectedPath)"
+                                <span v-for="rootLinePath in rootLine"
                                       :key="rootLinePath">
                                     / <span
-                                          @click="store.selectPath(rootLinePath)">{{ store.getLabel(rootLinePath) }}</span>
+                                          @click="selectPath(rootLinePath)">{{ getLabel(rootLinePath) }}</span>
                                 </span>
                             </button>
                             <GenericItem :currentPath="selectedPath" />
@@ -124,4 +132,5 @@ const showApp = computed(() => store.loaded && store.isOpen);
             </div>
         </div>
     </main>
+    <ConfirmationDialog v-if="confirmationDialogOpen" />
 </template>
