@@ -15,6 +15,8 @@ interface ConfigurationDocumentManagerInterface
 
     public const KEY_DOCUMENT_NAME = 'name';
 
+    public const KEY_DOCUMENT_SOFT_VALIDATION = 'softValidation';
+
     public const KEY_DOCUMENT_VERSION = 'version';
 
     public function getStorage(): ConfigurationDocumentStorageInterface;

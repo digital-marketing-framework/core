@@ -10,9 +10,7 @@ import NumericInputIcon from './NumericInputIcon.vue';
 import TextInputIcon from './TextInputIcon.vue';
 import ToggleIcon from './ToggleIcon.vue';
 
-import { useDmfStore } from '../../stores/dmf';
-
-const store = useDmfStore();
+import { isContainerType } from '../../helpers/type';
 
 const props = defineProps({
     itemType: {
@@ -28,10 +26,10 @@ const props = defineProps({
 const iconClassName = computed(() => {
     return ["h-4 w-4 shrink-0", {
         'text-gray-400': !props.active,
-        'group-hover:text-indigo-600': store.isContainerType(props.itemType),
-        'group-hover:text-blue-600': !store.isContainerType(props.itemType),
-        'text-indigo-600 group-hover:text-indigo-600': props.active && store.isContainerType(props.itemType),
-        'text-blue-600 group-hover:text-blue-600': props.active && !store.isContainerType(props.itemType),
+        'group-hover:text-indigo-600': isContainerType(props.itemType),
+        'group-hover:text-blue-600': !isContainerType(props.itemType),
+        'text-indigo-600 group-hover:text-indigo-600': props.active && isContainerType(props.itemType),
+        'text-blue-600 group-hover:text-blue-600': props.active && !isContainerType(props.itemType),
         '!w-3.5 !h-3.5': props.itemType === "CONTAINER" || props.itemType === "LIST",
     }];
 });

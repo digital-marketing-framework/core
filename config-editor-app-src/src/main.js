@@ -6,7 +6,7 @@ import {
   EVENT_APP_CLOSE,
   EVENT_APP_SAVE,
   linkEnvironment
-} from './composables/environmentLinker.js';
+} from './utils/environmentLinker.js';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
