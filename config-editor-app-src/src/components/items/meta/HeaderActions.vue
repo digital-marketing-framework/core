@@ -8,7 +8,7 @@ import {
 import { useTippy } from 'vue-tippy';
 import { computed } from "vue";
 import { useDmfStore } from '../../../stores/dmf';
-import { isDynamicContainerType } from '../../../helpers/type';
+import { isContainerType, isDynamicContainerType } from '../../../helpers/type';
 import { useDynamicProcessor } from '../../../composables/dynamicItem';
 import { useRawProcessor } from '../../../composables/raw';
 import { useConfirmation } from '../../../composables/confirmation';
@@ -65,7 +65,9 @@ const reset = () => {
             }
         },
         'Are you sure you want to reset this part of the configuration?',
-        'The value (and all sub values) will be reset to the inherited value from parent document(s). If there is no inherited value, the default value will be used.'
+        'The value'
+        + (isContainerType(schema.value.type) ? ' (and all sub values)' : '')
+        + ' will be reset to the inherited value from parent document(s). If there is no inherited value, the default value will be used.'
     );
 };
 
