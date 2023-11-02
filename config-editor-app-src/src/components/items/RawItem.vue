@@ -9,6 +9,7 @@ import 'vue-prism-editor/dist/prismeditor.min.css'; // import the styles somewhe
 import 'prismjs/themes/prism-funky.css';
 
 import { PrismEditor } from 'vue-prism-editor';
+import UuidGenerator from "./meta/UuidGenerator.vue";
 
 const store = useDmfStore();
 const { getRawValue, getRawIssue, setRawValue } = useRawProcessor(store);
@@ -23,27 +24,27 @@ const props = defineProps({
 const highlighter = getPrismHighlighter(store.settings.rawLanguage);
 
 const rawValue = computed({
-  get() {
-    let rawData = store.rawValues[props.currentPath];
-    if (typeof rawData !== 'undefined') {
-        return rawData;
+    get() {
+        let rawData = store.rawValues[props.currentPath];
+        if (typeof rawData !== 'undefined') {
+            return rawData;
+        }
+        return getRawValue(props.currentPath);
+    },
+    set(rawData) {
+        store.rawValues[props.currentPath] = rawData;
+        setRawValue('.', props.currentPath, rawData);
     }
-    return getRawValue(props.currentPath);
-  },
-  set(rawData) {
-    store.rawValues[props.currentPath] = rawData;
-    setRawValue('.', props.currentPath, rawData);
-  }
 });
 
 const rawIssue = computed(() => getRawIssue(props.currentPath));
 </script>
 <template>
-    <PrismEditor
-            class="flex-1 block w-full p-4 overflow-y-auto font-mono text-sm whitespace-pre-wrap bg-indigo-900 overscroll-none"
-            v-model="rawValue"
-            :readonly="store.settings.readonly"
-            :highlight="highlighter"
-            line-numbers></PrismEditor>
+    <PrismEditor class="flex-1 block w-full p-4 overflow-y-auto font-mono text-sm whitespace-pre-wrap bg-indigo-900 overscroll-none"
+                 v-model="rawValue"
+                 :readonly="store.settings.readonly"
+                 :highlight="highlighter"
+                 line-numbers></PrismEditor>
     <div v-if="rawIssue">{{ rawIssue }}</div>
+    <UuidGenerator />
 </template>
