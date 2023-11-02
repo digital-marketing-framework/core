@@ -44,7 +44,7 @@ const rawIssue = computed(() => getRawIssue(props.currentPath));
                  v-model="rawValue"
                  :readonly="store.settings.readonly"
                  :highlight="highlighter"
-                 line-numbers></PrismEditor>
+                 :line-numbers="false" /> <!-- TODO enable line numbers again once the styling is fixed -->
     <div v-if="rawIssue">{{ rawIssue }}</div>
     <UuidGenerator />
 </template>
