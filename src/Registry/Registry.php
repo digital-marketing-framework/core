@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
+use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
@@ -14,6 +15,7 @@ use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
@@ -24,6 +26,7 @@ class Registry implements RegistryInterface
 {
     use GlobalConfigurationRegistryTrait;
 
+    use DataPrivacyManagerRegistryTrait;
     use LoggerFactoryRegistryTrait;
     use ContextRegistryTrait;
     use CacheRegistryTrait;
@@ -39,6 +42,10 @@ class Registry implements RegistryInterface
     {
         if ($object instanceof GlobalConfigurationAwareInterface) {
             $object->setGlobalConfiguration($this->getGlobalConfiguration());
+        }
+
+        if ($object instanceof DataPrivacyManagerAwareInterface) {
+            $object->setDataPrivacyManager($this->getDataPrivacyManager());
         }
 
         if ($object instanceof LoggerAwareInterface) {
