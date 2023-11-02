@@ -107,11 +107,6 @@ watch(
 
 <template>
     <div class="flex items-center gap-x-2">
-        <div v-if="!store.settings.readonly && isDynamicContainer"
-             @click="addValue(currentPath)"
-             class="p-1 text-indigo-400 hover:text-indigo-500">
-            <PlusIcon class="w-3 h-3" />
-        </div>
         <div v-if="canResetOverwrite"
              @click="reset()"
              class="p-1 text-indigo-400 hover:text-indigo-500">
@@ -140,6 +135,16 @@ watch(
              }">
             <SortDownIcon class="w-3 h-3" />
         </div>
+        <div v-if="isDynamic"
+             @click="remove()"
+             class="p-1 text-indigo-400 hover:text-indigo-500">
+            <TrashIcon class="w-3 h-3" />
+        </div>
+        <div v-if="!store.settings.readonly && isDynamicContainer"
+             @click="addValue(currentPath)"
+             class="p-1 text-indigo-400 hover:text-indigo-500">
+            <PlusIcon class="w-3 h-3" />
+        </div>
         <div @click="toggleRawView(currentPath)"
              class="p-1"
              :class="{
@@ -147,11 +152,6 @@ watch(
                  'text-indigo-400': !raw
              }">
             <CodeIcon class="w-4 h-4" />
-        </div>
-        <div v-if="isDynamic"
-             @click="remove()"
-             class="p-1 text-indigo-400 hover:text-indigo-500">
-            <TrashIcon class="w-3 h-3" />
         </div>
         <div v-if="debug"
              ref="debugToggle"
