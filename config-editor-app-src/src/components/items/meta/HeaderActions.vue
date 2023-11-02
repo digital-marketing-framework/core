@@ -15,6 +15,7 @@ import { useConfirmation } from '../../../composables/confirmation';
 
 import BugIcon from '../../icons/BugIcon.vue';
 import CodeIcon from '../../icons/CodeIcon.vue';
+import CopyIcon from '../../icons/CopyIcon.vue';
 import DebugInfo from './DebugInfo.vue';
 import PlusIcon from '../../icons/PlusIcon.vue';
 import RotateLeftIcon from '../../icons/RotateLeftIcon.vue';
@@ -29,7 +30,8 @@ const {
     moveValueUp,
     moveValueDown,
     addValue,
-    removeValue
+    removeValue,
+    copyValue
 } = useDynamicProcessor(store);
 const { toggleRawView, isRawView } = useRawProcessor(store);
 const { requestConfirmation } = useConfirmation(store);
@@ -114,6 +116,11 @@ watch(
              @click="reset()"
              class="p-1 text-indigo-400 hover:text-indigo-500">
             <RotateLeftIcon class="w-3 h-3" />
+        </div>
+        <div v-if="isDynamic"
+             @click="copyValue(dynamicItemPath)"
+             class="p-1 text-indigo-400 hover:text-indigo-500">
+            <CopyIcon class="w-3 h-3" />
         </div>
         <div v-if="canMove"
              @click="canMoveUp && moveValueUp(dynamicItemPath)"
