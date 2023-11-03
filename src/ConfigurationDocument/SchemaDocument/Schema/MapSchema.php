@@ -18,6 +18,7 @@ class MapSchema extends ListSchema
         if ($this->valueSchema->getRenderingDefinition()->getLabel() === null) {
             $this->valueSchema->getRenderingDefinition()->setLabel(sprintf('{../%s}', MapUtility::KEY_KEY));
         }
+
         $this->nameSchema->addValidation(new UniqueCondition('.', sprintf('../../*/%s', MapUtility::KEY_KEY)), 'Map key must be unique', true);
     }
 
