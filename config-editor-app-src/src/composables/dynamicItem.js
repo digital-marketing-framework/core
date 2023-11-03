@@ -3,6 +3,7 @@ import { MapUtility } from '../helpers/mapValue';
 import { getAbsolutePath, getParentPath, isRoot } from '../helpers/path';
 import { isDynamicContainerType } from '../helpers/type';
 import { useDmfStore } from '../stores/dmf';
+import { useCopyProcessor } from './copy';
 import { useDefaults } from './defaults';
 import { useNavigation } from './navigation';
 
@@ -79,7 +80,7 @@ const moveValueDown = (store, path, currentPath) => {
   }
 };
 
-const addValue = (store, path, currentPath) => {
+const addValue = (store, path, currentPath, value) => {
   const absolutePath = getAbsolutePath(path, currentPath);
   if (!isDynamicContainer(store, path, currentPath)) {
     throw new Error(absolutePath + ': cannot add items to a non-dynamic container');
@@ -88,23 +89,31 @@ const addValue = (store, path, currentPath) => {
   const container = store.getValue(path, currentPath, true);
   const { getDefaultValue } = useDefaults(store);
   if (schema.type === 'LIST') {
-    const defaultValue = getDefaultValue(
-      UUID_PLACEHOLDER + '/' + ListUtility.KEY_VALUE,
-      absolutePath,
-      true
-    );
-    ListUtility.append(container, defaultValue);
+    if (typeof value === 'undefined') {
+      value = getDefaultValue(UUID_PLACEHOLDER + '/' + ListUtility.KEY_VALUE, absolutePath, true);
+    }
+    ListUtility.append(container, value);
   } else if (schema.type === 'MAP') {
-    const defaultValue = getDefaultValue(
-      UUID_PLACEHOLDER + '/' + MapUtility.KEY_VALUE,
-      absolutePath,
-      true
-    );
+    if (typeof value === 'undefined') {
+      value = getDefaultValue(UUID_PLACEHOLDER + '/' + MapUtility.KEY_VALUE, absolutePath, true);
+    }
     const defaultKey = getDefaultValue(UUID_PLACEHOLDER + '/' + MapUtility.KEY_KEY, absolutePath);
-    MapUtility.append(container, defaultKey, defaultValue);
+    MapUtility.append(container, defaultKey, value);
   }
   const { expandContainer } = useNavigation(store);
   expandContainer(path, currentPath);
+};
+
+const copyValue = (store, path, currentPath) => {
+  const absolutePath = getAbsolutePath(path, currentPath);
+  if (!isDynamicChild(store, absolutePath)) {
+    throw new Error('non-dynamic items cannot be copied');
+  }
+  const { copyValue } = useCopyProcessor(store);
+  const item = store.getValue(absolutePath);
+  const value = item[ListUtility.KEY_VALUE];
+  const copy = copyValue(path + '/' + ListUtility.KEY_VALUE, currentPath, value);
+  addValue(store, '..', absolutePath, copy);
 };
 
 const removeValue = (store, path, currentPath) => {
@@ -131,6 +140,7 @@ export const useDynamicProcessor = (store) => {
     moveValueUp: (path, currentPath) => moveValueUp(store, path, currentPath),
     moveValueDown: (path, currentPath) => moveValueDown(store, path, currentPath),
     addValue: (path, currentPath) => addValue(store, path, currentPath),
-    removeValue: (path, currentPath) => removeValue(store, path, currentPath)
+    removeValue: (path, currentPath) => removeValue(store, path, currentPath),
+    copyValue: (path, currentPath) => copyValue(store, path, currentPath)
   };
 };

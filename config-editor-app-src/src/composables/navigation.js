@@ -88,8 +88,9 @@ const expandContainer = (store, path, currentPath) => {
   //      it is only read when the component is re-rendered
   //      that is also why the opening animation is missing
   //      how to open the Disclosure thingy properly?
-  setContainerState(store, path, currentPath, true);
-  store.triggerRerender();
+  // TODO disabled for now as the re-render resets the scroll position...
+  // setContainerState(store, path, currentPath, true);
+  // store.triggerRerender();
 };
 
 const setContainerState = (store, path, currentPath, open) => {
