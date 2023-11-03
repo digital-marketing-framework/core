@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Condition\UniqueCondition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\MapUtility;
 
@@ -17,6 +18,7 @@ class MapSchema extends ListSchema
         if ($this->valueSchema->getRenderingDefinition()->getLabel() === null) {
             $this->valueSchema->getRenderingDefinition()->setLabel(sprintf('{../%s}', MapUtility::KEY_KEY));
         }
+        $this->nameSchema->addValidation(new UniqueCondition('.', sprintf('../../*/%s', MapUtility::KEY_KEY)), 'Map key must be unique', true);
     }
 
     public function getType(): string
