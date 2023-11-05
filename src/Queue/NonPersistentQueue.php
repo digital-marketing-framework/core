@@ -10,8 +10,6 @@ class NonPersistentQueue implements QueueInterface
     /** @var array<JobInterface> */
     protected array $queue = [];
 
-    protected int $index = 1;
-
     /**
      * @param array<int> $status
      *
@@ -154,7 +152,6 @@ class NonPersistentQueue implements QueueInterface
     public function addJob(JobInterface $job): JobInterface
     {
         if (!in_array($job, $this->queue)) {
-            $job->setRouteId((string)$this->index++);
             $this->queue[] = $job;
         }
 

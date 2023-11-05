@@ -7,8 +7,6 @@ use DigitalMarketingFramework\Core\Queue\QueueInterface;
 
 class Job implements JobInterface
 {
-    protected string $routeId;
-
     /**
      * @param array<mixed> $data
      */
@@ -21,17 +19,8 @@ class Job implements JobInterface
         protected array $data = [],
         protected string $hash = '',
         protected string $label = '',
+        protected string $type = '',
     ) {
-    }
-
-    public function getRouteId(): string
-    {
-        return $this->routeId;
-    }
-
-    public function setRouteId(string $routeId): void
-    {
-        $this->routeId = $routeId;
     }
 
     public function getCreated(): DateTime
@@ -112,5 +101,20 @@ class Job implements JobInterface
     public function setLabel(string $label): void
     {
         $this->label = $label;
+        $labelParts = explode('#', $label);
+        if (count($labelParts) > 1) {
+            array_shift($labelParts);
+            $this->setType(implode('#', $labelParts));
+        }
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
     }
 }

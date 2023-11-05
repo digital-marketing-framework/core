@@ -6,10 +6,6 @@ use DateTime;
 
 interface JobInterface
 {
-    public function getRouteId(): string;
-
-    public function setRouteId(string $routeId): void;
-
     public function getCreated(): DateTime;
 
     public function setCreated(DateTime $created): void;
@@ -47,4 +43,8 @@ interface JobInterface
     public function getLabel(): string;
 
     public function setLabel(string $label): void;
+
+    public function getType(): string;
+
+    public function setType(string $type): void;
 }
