@@ -131,9 +131,11 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
             do {
                 $fileIdentifier = $temporaryPath . $filePrefix . random_int(1, PHP_INT_MAX) . $fileSuffix;
             } while (file_exists($fileIdentifier));
+
             touch($fileIdentifier);
             clearstatcache(false, $fileIdentifier);
         }
+
         if ($this->fileIsWriteable($fileIdentifier)) {
             $result = file_put_contents($fileIdentifier, $fileContent);
         } else {
