@@ -4,6 +4,8 @@ namespace DigitalMarketingFramework\Core\FileStorage;
 
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 class FileStorage implements FileStorageInterface, LoggerAwareInterface
 {
@@ -114,5 +116,31 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
             $path = rtrim($this->getFilePath($folderIdentifier), '/');
             mkdir($path, recursive: true);
         }
+    }
+
+    public function getTempPath(): string
+    {
+        return sys_get_temp_dir();
+    }
+
+    public function writeTempFile(string $filePrefix = '', string $fileContent = '', $fileSuffix = ''): string|bool
+    {
+        $temporaryPath = $this->getTempPath();
+        if ($fileSuffix === '') {
+            $path = (string)tempnam($temporaryPath, $filePrefix);
+            $fileIdentifier = $temporaryPath . '/' . basename($path);
+        } else {
+            do {
+                $fileIdentifier = $temporaryPath . $filePrefix . random_int(1, PHP_INT_MAX) . $fileSuffix;
+            } while (file_exists($fileIdentifier));
+            touch($fileIdentifier);
+            clearstatcache(false, $fileIdentifier);
+        }
+        if ($this->fileIsWriteable($fileIdentifier)) {
+            $result = file_put_contents($fileIdentifier, $fileContent);
+        } else {
+            $this->logger->warning(sprintf('File %s does not seem to be writeable.', $fileIdentifier));
+        }
+        return $result ? $fileIdentifier : false;
     }
 }

@@ -30,4 +30,8 @@ interface FileStorageInterface
     public function folderExists(string $folderIdentifier): bool;
 
     public function createFolder(string $folderIdentifier): void;
+
+    public function getTempPath(): string;
+
+    public function writeTempFile(string $filePrefix, string $fileContent, string $fileSuffix): string|bool;
 }
