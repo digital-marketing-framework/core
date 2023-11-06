@@ -121,8 +121,9 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return sys_get_temp_dir();
     }
 
-    public function writeTempFile(string $filePrefix = '', string $fileContent = '', $fileSuffix = ''): string|bool
+    public function writeTempFile(string $filePrefix = '', string $fileContent = '', string $fileSuffix = ''): string|bool
     {
+        $result = false;
         $temporaryPath = $this->getTempPath();
         if ($fileSuffix === '') {
             $path = (string)tempnam($temporaryPath, $filePrefix);
