@@ -4,8 +4,6 @@ namespace DigitalMarketingFramework\Core\FileStorage;
 
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Utility\PathUtility;
 
 class FileStorage implements FileStorageInterface, LoggerAwareInterface
 {
@@ -141,6 +139,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         } else {
             $this->logger->warning(sprintf('File %s does not seem to be writeable.', $fileIdentifier));
         }
+
         return $result ? $fileIdentifier : false;
     }
 }
