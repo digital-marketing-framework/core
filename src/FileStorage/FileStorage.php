@@ -127,22 +127,22 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         $temporaryPath = $this->getTempPath();
         if ($fileSuffix === '') {
             $path = (string)tempnam($temporaryPath, $filePrefix);
-            $fileIdentifier = $temporaryPath . '/' . basename($path);
+            $filePath = $temporaryPath . '/' . basename($path);
         } else {
             do {
-                $fileIdentifier = $temporaryPath . $filePrefix . random_int(1, PHP_INT_MAX) . $fileSuffix;
-            } while (file_exists($fileIdentifier));
+                $filePath = $temporaryPath . $filePrefix . random_int(1, PHP_INT_MAX) . $fileSuffix;
+            } while (file_exists($filePath));
 
-            touch($fileIdentifier);
-            clearstatcache(false, $fileIdentifier);
+            touch($filePath);
+            clearstatcache(false, $filePath);
         }
 
-        if ($this->fileIsWriteable($fileIdentifier)) {
-            $result = file_put_contents($fileIdentifier, $fileContent);
+        if ($this->fileIsWriteable($filePath)) {
+            $result = file_put_contents($filePath, $fileContent);
         } else {
-            $this->logger->warning(sprintf('File %s does not seem to be writeable.', $fileIdentifier));
+            $this->logger->warning(sprintf('File %s does not seem to be writeable.', $filePath));
         }
 
-        return $result ? $fileIdentifier : false;
+        return $result ? $filePath : false;
     }
 }
