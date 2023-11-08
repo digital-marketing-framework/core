@@ -116,6 +116,11 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         }
     }
 
+    public function getPublicUrl(): string
+    {
+        return '';
+    }
+
     public function getTempPath(): string
     {
         return sys_get_temp_dir();
