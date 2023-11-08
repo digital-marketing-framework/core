@@ -116,7 +116,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         }
     }
 
-    public function getPublicUrl(): string
+    public function getPublicUrl(string $fileIdentifier): string
     {
         return '';
     }
