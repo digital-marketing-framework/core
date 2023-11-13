@@ -22,6 +22,8 @@ interface FileStorageInterface
 
     public function fileIsWriteable(string $fileIdentifier): bool;
 
+    public function getPublicUrl(string $fileIdentifier): string;
+
     /**
      * @return array<string>
      */
@@ -30,4 +32,8 @@ interface FileStorageInterface
     public function folderExists(string $folderIdentifier): bool;
 
     public function createFolder(string $folderIdentifier): void;
+
+    public function getTempPath(): string;
+
+    public function writeTempFile(string $filePrefix, string $fileContent, string $fileSuffix): string|bool;
 }

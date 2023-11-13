@@ -115,4 +115,39 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
             mkdir($path, recursive: true);
         }
     }
+
+    public function getPublicUrl(string $fileIdentifier): string
+    {
+        return '';
+    }
+
+    public function getTempPath(): string
+    {
+        return sys_get_temp_dir();
+    }
+
+    public function writeTempFile(string $filePrefix = '', string $fileContent = '', string $fileSuffix = ''): string|false
+    {
+        $result = false;
+        $temporaryPath = $this->getTempPath();
+        if ($fileSuffix === '') {
+            $path = (string)tempnam($temporaryPath, $filePrefix);
+            $filePath = $temporaryPath . '/' . basename($path);
+        } else {
+            do {
+                $filePath = $temporaryPath . $filePrefix . random_int(1, PHP_INT_MAX) . $fileSuffix;
+            } while (file_exists($filePath));
+
+            touch($filePath);
+            clearstatcache(false, $filePath);
+        }
+
+        if (is_writable($filePath)) {
+            $result = file_put_contents($filePath, $fileContent);
+        } else {
+            $this->logger->warning(sprintf('File %s does not seem to be writeable.', $filePath));
+        }
+
+        return $result ? $filePath : false;
+    }
 }
