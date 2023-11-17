@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsFalseComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsTrueComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataPrivacyDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\ExcludeFieldsDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper;
@@ -18,11 +19,13 @@ use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDat
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PrefixDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\AndEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\ComparisonEvaluation;
+use DigitalMarketingFramework\Core\DataProcessor\Evaluation\DataPrivacyEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\NotEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\OrEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation;
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DataPrivacyValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\IndexValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\InsertDataValueModifier;
@@ -70,6 +73,7 @@ class CoreInitialization extends Initialization
                 NullValueSource::class,
             ],
             ValueModifierInterface::class => [
+                DataPrivacyValueModifier::class,
                 DefaultValueModifier::class,
                 IndexValueModifier::class,
                 InsertDataValueModifier::class,
@@ -86,6 +90,7 @@ class CoreInitialization extends Initialization
             EvaluationInterface::class => [
                 AndEvaluation::class,
                 ComparisonEvaluation::class,
+                DataPrivacyEvaluation::class,
                 FalseEvaluation::class,
                 NotEvaluation::class,
                 OrEvaluation::class,
@@ -101,6 +106,7 @@ class CoreInitialization extends Initialization
                 RegExpComparison::class,
             ],
             DataMapperInterface::class => [
+                DataPrivacyDataMapper::class,
                 PrefixDataMapper::class,
                 ExcludeFieldsDataMapper::class,
                 FieldMapDataMapper::class,

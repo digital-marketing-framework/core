@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryInterface;
@@ -16,6 +17,7 @@ use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryInterf
 interface RegistryInterface extends
     GlobalConfigurationRegistryInterface,
 
+    DataPrivacyManagerRegistryInterface,
     LoggerFactoryRegistryInterface,
     ContextRegistryInterface,
     CacheRegistryInterface,
