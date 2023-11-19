@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Queue;
 
+use BadMethodCallException;
 use DateTime;
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
 
@@ -174,5 +175,30 @@ class NonPersistentQueue implements QueueInterface
         foreach ($jobs as $job) {
             $this->removeJob($job);
         }
+    }
+
+    public function getStatistics(array $filters): array
+    {
+        throw new BadMethodCallException('Non persistent queue does not have any statistics to produce.');
+    }
+
+    public function getErrorMessages(array $filters, array $navigation): array
+    {
+        throw new BadMethodCallException('Non persistent queue does not have any statistics to produce.');
+    }
+
+    public function fetchFiltered(array $filters, array $navigation): array
+    {
+        throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
+    }
+
+    public function countFiltered(array $filters): int
+    {
+        throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
+    }
+
+    public function getJobTypes(): array
+    {
+        throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
     }
 }

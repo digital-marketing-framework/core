@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Queue;
 
+use DateTime;
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
 
 interface QueueInterface
@@ -96,4 +97,37 @@ interface QueueInterface
      * @param array<int> $status
      */
     public function removeOldJobs(int $minAgeInSeconds, array $status = []): void;
+
+    /**
+     * @param array{minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime} $filters
+     *
+     * @return array{hashes:int,all:int,queued:int,pending:int,running:int,done:int,doneNotSkipped:int,doneSkipped:int,failed:int,groupedByType:array<string,array{all:int,queued:int,pending:int,running:int,done:int,doneNotSkipped:int,doneSkipped:int,failed:int}>}
+     */
+    public function getStatistics(array $filters): array;
+
+    /**
+     * @param array{minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime} $filters
+     * @param array{sorting:array<string,string>} $navigation
+     *
+     * @return array<array{message:string,count:int,lastSeen:JobInterface,firstSeen:JobInterface,types:array<string,int>}>
+     */
+    public function getErrorMessages(array $filters, array $navigation): array;
+
+    /**
+     * @return array<string>
+     */
+    public function getJobTypes(): array;
+
+    /**
+     * @param array{search:string,advancedSearch:bool,searchExactMatch:bool,minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime,type:array<string>,status:array<int>,skipped:?bool} $filters
+     * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     *
+     * @return array<JobInterface>
+     */
+    public function fetchFiltered(array $filters, array $navigation): array;
+
+    /**
+     * @param array{search:string,advancedSearch:bool,searchExactMatch:bool,minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime,type:array<string>,status:array<int>,skipped:?bool} $filters
+     */
+    public function countFiltered(array $filters): int;
 }
