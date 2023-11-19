@@ -34,39 +34,48 @@ class MultiValueValueSourceTest extends ValueSourceTest
                 [],
                 [
                     MultiValueValueSource::KEY_VALUES => [
-                        'id1' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id2', 20),
-                        'id3' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id3', 30),
+                        'id1' => $this->createMapItem('key1', $this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createMapItem('key2', $this->getValueConfiguration([], 'null'), 'id2', 20),
+                        'id3' => $this->createMapItem('key2', $this->getValueConfiguration([], 'null'), 'id3', 30),
                     ],
                 ],
             ],
             [
-                ['foo'],
+                [
+                    'key2' => 'foo',
+                ],
                 [
                     MultiValueValueSource::KEY_VALUES => [
-                        'id1' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
-                        'id3' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id3', 30),
+                        'id1' => $this->createMapItem('key1', $this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createMapItem('key2', $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
+                        'id3' => $this->createMapItem('key3', $this->getValueConfiguration([], 'null'), 'id3', 30),
                     ],
                 ],
             ],
             [
-                ['', 'a'],
+                [
+                    'key2' => '',
+                    'key3' => 'a',
+                ],
                 [
                     MultiValueValueSource::KEY_VALUES => [
-                        'id1' => $this->createListItem($this->getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
-                        'id3' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
+                        'id1' => $this->createMapItem('key1', $this->getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => $this->createMapItem('key2', $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
+                        'id3' => $this->createMapItem('key3', $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],
             [
-                ['a', 'b', 'c'],
+                [
+                    'key1' => 'a',
+                    'key2' => 'b',
+                    'key3' => 'c',
+                ],
                 [
                     MultiValueValueSource::KEY_VALUES => [
-                        'id1' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
-                        'id2' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
-                        'id3' => $this->createListItem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                        'id1' => $this->createMapItem('key1', $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
+                        'id2' => $this->createMapItem('key2', $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
+                        'id3' => $this->createMapItem('key3', $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],

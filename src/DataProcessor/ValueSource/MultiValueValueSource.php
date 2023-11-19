@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
@@ -23,11 +23,11 @@ class MultiValueValueSource extends ValueSource
     public function build(): null|string|ValueInterface
     {
         $multiValue = $this->getMultiValue();
-        $values = $this->getListConfig(static::KEY_VALUES);
-        foreach ($values as $valueConfig) {
+        $values = $this->getMapConfig(static::KEY_VALUES);
+        foreach ($values as $key => $valueConfig) {
             $value = $this->dataProcessor->processValue($valueConfig, $this->context->copy());
             if ($value !== null) {
-                $multiValue[] = $value;
+                $multiValue[$key] = $value;
             }
         }
 
@@ -38,7 +38,7 @@ class MultiValueValueSource extends ValueSource
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_VALUES, new ListSchema(new CustomSchema(ValueSchema::TYPE)));
+        $schema->addProperty(static::KEY_VALUES, new MapSchema(new CustomSchema(ValueSchema::TYPE)));
 
         return $schema;
     }

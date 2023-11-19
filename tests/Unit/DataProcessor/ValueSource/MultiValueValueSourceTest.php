@@ -24,7 +24,7 @@ class MultiValueValueSourceTest extends ValueSourceTest
     }
 
     /**
-     * @return array<array{0:array<mixed>,1:array<array<string,mixed>>,2:array<mixed>}>
+     * @return array<array{0:array<mixed>,1:array<string,array<string,mixed>>,2:array<mixed>}>
      */
     public function multiValueDataProvider(): array
     {
@@ -32,9 +32,9 @@ class MultiValueValueSourceTest extends ValueSourceTest
             [
                 [],
                 [
-                    ['confKey1' => 'confValue1'],
-                    ['confKey2' => 'confValue2'],
-                    ['confKey3' => 'confValue3'],
+                    'key1' => ['confKey1' => 'confValue1'],
+                    'key2' => ['confKey2' => 'confValue2'],
+                    'key3' => ['confKey3' => 'confValue3'],
                 ],
                 [
                     null,
@@ -43,11 +43,13 @@ class MultiValueValueSourceTest extends ValueSourceTest
                 ],
             ],
             [
-                ['foo'],
                 [
-                    ['confKey1' => 'confValue1'],
-                    ['confKey2' => 'confValue2'],
-                    ['confKey3' => 'confValue3'],
+                    'key2' => 'foo',
+                ],
+                [
+                    'key1' => ['confKey1' => 'confValue1'],
+                    'key2' => ['confKey2' => 'confValue2'],
+                    'key3' => ['confKey3' => 'confValue3'],
                 ],
                 [
                     null,
@@ -56,11 +58,14 @@ class MultiValueValueSourceTest extends ValueSourceTest
                 ],
             ],
             [
-                ['', 'a'],
                 [
-                    ['confKey1' => 'confValue1'],
-                    ['confKey2' => 'confValue2'],
-                    ['confKey3' => 'confValue3'],
+                    'key2' => '',
+                    'key3' => 'a',
+                ],
+                [
+                    'key1' => ['confKey1' => 'confValue1'],
+                    'key2' => ['confKey2' => 'confValue2'],
+                    'key3' => ['confKey3' => 'confValue3'],
                 ],
                 [
                     null,
@@ -69,11 +74,15 @@ class MultiValueValueSourceTest extends ValueSourceTest
                 ],
             ],
             [
-                ['a', 'b', 'c'],
                 [
-                    ['confKey1' => 'confValue1'],
-                    ['confKey2' => 'confValue2'],
-                    ['confKey3' => 'confValue3'],
+                    'key1' => 'a',
+                    'key2' => 'b',
+                    'key3' => 'c',
+                ],
+                [
+                    'key1' => ['confKey1' => 'confValue1'],
+                    'key2' => ['confKey2' => 'confValue2'],
+                    'key3' => ['confKey3' => 'confValue3'],
                 ],
                 [
                     'a',
@@ -98,13 +107,16 @@ class MultiValueValueSourceTest extends ValueSourceTest
         $with = array_map(static function (array $subConfigItem) {
             return [$subConfigItem];
         }, $subConfigurations);
-        $listConfig = [];
-        foreach ($subConfigurations as $index => $subConfig) {
-            $listConfig[$index] = $this->createListItem($subConfig, $index, $index * 10);
+        $mapConfig = [];
+        $index = 0;
+        foreach ($subConfigurations as $key => $subConfig) {
+            $id = 'id' . $index;
+            $mapConfig[$id] = $this->createMapItem($key, $subConfig, $id, $index * 10);
+            ++$index;
         }
 
         $config = [
-            MultiValueValueSource::KEY_VALUES => $listConfig,
+            MultiValueValueSource::KEY_VALUES => $mapConfig,
         ];
         $this->dataProcessor->method('processValue')->withConsecutive(...$with)->willReturnOnConsecutiveCalls(...$subResults);
         $output = $this->processValueSource($config);
