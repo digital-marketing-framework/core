@@ -71,6 +71,7 @@ export const useLabelProcessor = (store) => {
   return {
     getLabel: (path, currentPath) => getLabel(store, path, currentPath),
     processLabel: (label, path, currentPath) => processLabel(store, label, path, currentPath),
+    prettifyLabel: (label) => prettifyLabel(label),
     getValueLabel: (value, path, currentPath) => getValueLabel(store, value, path, currentPath)
   };
 };

@@ -6,26 +6,36 @@ import { EVENT_GET_VALUE_PROCESSORS, EVENT_SET_VALUE_PROCESSOR } from './events'
 const keyword = 'references';
 /**
  * config: [
- *   {path: '/foo/bar', label:'foo-bar'},
- *   {'/foo/* /bar'},
- *   {'../foo/bar/*', label:'{baz}'}
+ *   {type: 'value', path: '/foo/bar', label:'foo-bar'},
+ *   {type: 'value', path: '/foo/* /bar'},
+ *   {type: 'key', path: '../foo/bar/*', label:'{baz}'}
  * ]
  */
 const processor = (store, config, currentPath, add) => {
   config.forEach((reference) => {
     const { getAllPaths } = usePathProcessor(store);
-    const { processLabel } = useLabelProcessor(store);
+    const { processLabel, getLabel, getValueLabel, prettifyLabel } = useLabelProcessor(store);
     const paths = getAllPaths(reference.path, currentPath);
     paths.forEach((path) => {
       switch (reference.type) {
         case 'key': {
           const value = getLeafKey(path);
-          const label = reference.label ? processLabel(reference.label, path) : value;
+          const label = reference.label ? processLabel(reference.label, path) : getLabel(path);
           add(value, label);
           break;
         }
         case 'value': {
-          add(store.getValue(path));
+          const value = store.getValue(path);
+          let label = value;
+          if (reference.label) {
+            label = processLabel(reference.label, path);
+          } else {
+            label = getValueLabel(value, path);
+            if (value === label) {
+              label = prettifyLabel(label);
+            }
+          }
+          add(value, label);
           break;
         }
         default: {
