@@ -109,7 +109,7 @@ interface QueueInterface
      * @param array{minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime} $filters
      * @param array{sorting:array<string,string>} $navigation
      *
-     * @return array<array{type:string,message:string,count:int,lastSeen:JobInterface,firstSeen:JobInterface}>
+     * @return array<array{message:string,count:int,lastSeen:JobInterface,firstSeen:JobInterface,types:array<string,int>}>
      */
     public function getErrorMessages(array $filters, array $navigation): array;
 
@@ -119,7 +119,7 @@ interface QueueInterface
     public function getJobTypes(): array;
 
     /**
-     * @param array{minCreated:int,maxCreated:int,minChanged:int,maxChanged:int,type:array<string>,status:array<int>,skipped:?bool} $filters
+     * @param array{search:string,advancedSearch:bool,searchExactMatch:bool,minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime,type:array<string>,status:array<int>,skipped:?bool} $filters
      * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
      *
      * @return array<JobInterface>
@@ -127,7 +127,7 @@ interface QueueInterface
     public function fetchFiltered(array $filters, array $navigation): array;
 
     /**
-     * @param array{minCreated:int,maxCreated:int,minChanged:int,maxChanged:int,type:array<string>,status:array<int>,skipped:?bool} $filters
+     * @param array{search:string,advancedSearch:bool,searchExactMatch:bool,minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime,type:array<string>,status:array<int>,skipped:?bool} $filters
      */
     public function countFiltered(array $filters): int;
 }
