@@ -1,20 +1,25 @@
 import { getAbsolutePath, getLeafKey } from '../helpers/path';
 import { useDmfStore } from '../stores/dmf';
+import { useValueSets } from './valueSets';
 
 const processLabel = (store, label, path, currentPath) => {
   const absolutePath = getAbsolutePath(path, currentPath);
-  let anyVariableFound = false;
+  let rawValueFound = false;
   let variableFound = true;
   while (variableFound) {
     variableFound = false;
     label = label.replace(/\{[^}]+\}/, (match) => {
       variableFound = true;
-      anyVariableFound = true;
       const referencePath = match.substring(1, match.length - 1);
-      return store.getValue(referencePath, absolutePath);
+      const value = store.getValue(referencePath, absolutePath);
+      const valueLabel = getValueLabel(store, value, referencePath, absolutePath);
+      if (value === valueLabel) {
+        rawValueFound = true;
+      }
+      return valueLabel;
     });
   }
-  return anyVariableFound ? prettifyLabel(label) : label;
+  return rawValueFound ? prettifyLabel(label) : label;
 };
 
 const prettifyLabel = (label) => {
@@ -46,10 +51,26 @@ const getLabel = (store, path, currentPath) => {
   return label;
 };
 
+const getValueLabel = (store, value, path, currentPath) => {
+  const { getAllowedValues, getSuggestedValues } = useValueSets(store);
+  const allowedValues = getAllowedValues(path, currentPath);
+  if (typeof allowedValues[value] !== 'undefined') {
+    return allowedValues[value];
+  }
+
+  const suggestedValues = getSuggestedValues(path, currentPath);
+  if (typeof suggestedValues[value] !== 'undefined') {
+    return suggestedValues[value];
+  }
+
+  return value;
+};
+
 export const useLabelProcessor = (store) => {
   store = store || useDmfStore();
   return {
     getLabel: (path, currentPath) => getLabel(store, path, currentPath),
-    processLabel: (label, path, currentPath) => processLabel(store, label, path, currentPath)
+    processLabel: (label, path, currentPath) => processLabel(store, label, path, currentPath),
+    getValueLabel: (value, path, currentPath) => getValueLabel(store, value, path, currentPath)
   };
 };

@@ -54,9 +54,9 @@ class SwitchSchema extends ContainerSchema
         return $this->configSchema->getProperty($type)?->getSchema();
     }
 
-    public function addItem(string $type, SchemaInterface $schema): void
+    public function addItem(string $type, SchemaInterface $schema, ?string $label = null): void
     {
-        $this->addValueToValueSet($this->switchName . '/all', $type);
+        $this->addValueToValueSet($this->switchName . '/all', $type, $label);
         $schema->getRenderingDefinition()->setSkipHeader(true);
         $schema->getRenderingDefinition()->setNavigationItem(false);
         $this->configSchema->addProperty($type, $schema);

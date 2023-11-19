@@ -17,4 +17,6 @@ interface ConfigurablePluginInterface extends PluginInterface
     public function getDefaultConfiguration(): array;
 
     public static function getSchema(): SchemaInterface;
+
+    public static function getLabel(): ?string;
 }

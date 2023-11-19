@@ -141,7 +141,7 @@ export const useValueSets = (store) => {
   return {
     getPredefinedValues: (valueConfig, currentPath) =>
       getPredefinedValues(store, valueConfig, currentPath),
-    getAllowedValues: (schema, currentPath) => getAllowedValues(store, schema, currentPath),
+    getAllowedValues: (path, currentPath) => getAllowedValues(store, path, currentPath),
     getFirstAllowedValue: (path, currentPath) => getFirstAllowedValue(store, path, currentPath),
     getFirstAllowedValueLabel: (path, currentPath) =>
       getFirstAllowedValueLabel(store, path, currentPath),

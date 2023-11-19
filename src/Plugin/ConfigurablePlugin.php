@@ -65,4 +65,9 @@ abstract class ConfigurablePlugin extends Plugin implements ConfigurablePluginIn
 
         return $default;
     }
+
+    public static function getLabel(): ?string
+    {
+        return null;
+    }
 }
