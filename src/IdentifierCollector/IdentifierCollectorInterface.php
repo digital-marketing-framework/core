@@ -6,9 +6,9 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\S
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
-use DigitalMarketingFramework\Core\Plugin\PluginInterface;
+use DigitalMarketingFramework\Core\Plugin\ConfigurablePluginInterface;
 
-interface IdentifierCollectorInterface extends PluginInterface
+interface IdentifierCollectorInterface extends ConfigurablePluginInterface
 {
     public function addContext(ContextInterface $source, WriteableContextInterface $target): void;
 
