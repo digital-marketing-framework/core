@@ -18,7 +18,9 @@
     return out
   }
 
-  const DMF = window.DMF
+  let fetchCache = {}
+
+  let DMF = window.DMF
 
   if (typeof DMF === 'undefined') {
     console.error('No DMF settings found!')
@@ -29,14 +31,8 @@
     settings: {
       prefix: 'dmf',
     },
-    urls: {
-      useData: {},
-      modifier: {},
-    },
-    pluginSettings: {
-      userData: {},
-      modifier: {},
-    },
+    urls: {},
+    pluginSettings: {},
   }
 
   DMF = deepExtend({}, defaults, DMF)
@@ -57,18 +53,48 @@
   }
 
   DMF.getAjaxUrl = function (type, plugin) {
-    if (this.settings.urls[type][plugin]) {
-      return this.settings.urls[plugin]
+    if (this.urls[type][plugin]) {
+      return this.urls[type][plugin]
     }
     return ''
   }
 
+  function _fetch(url) {
+    return new Promise(async function (resolve) {
+      if (typeof fetchCache[url] !== 'undefined') {
+        if (typeof fetchCache[url].response !== 'undefined') {
+          resolve(fetchCache[url].response)
+        } else {
+          fetchCache[url].callbacks.push(function () {
+            resolve(fetchCache[url].response)
+          })
+        }
+      } else {
+        fetchCache[url] = {
+          callbacks: [
+            function () {
+              resolve(fetchCache[url].response)
+            },
+          ],
+        }
+        const response = await fetch(url)
+        const dataString = await response.text()
+        const data = JSON.parse(dataString)
+        fetchCache[url].response = data
+        fetchCache[url].callbacks.forEach((callback) => {
+          callback()
+        })
+      }
+    })
+  }
+
   DMF.fetch = async function (type, plugin) {
     const url = this.getAjaxUrl(type, plugin)
-    const response = await fetch(url)
-    const dataString = await response.text()
-    const data = JSON.parse(dataString)
-    return data
+    return await _fetch(url)
+  }
+
+  DMF.flushCache = function () {
+    fetchCache = {}
   }
 
   DMF.getSettings = function (type, plugin) {
@@ -93,7 +119,10 @@
       }
     }
   }
-  for (let type in DMF.settings.urls) {
+  for (let type in DMF.urls) {
+    setupPlugin(type)
+  }
+  for (let type in DMF.pluginSettings) {
     setupPlugin(type)
   }
 
