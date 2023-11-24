@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\AssetsRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryInterface;
@@ -15,6 +16,7 @@ use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryInterf
 
 interface RegistryInterface extends
     GlobalConfigurationRegistryInterface,
+    AssetsRegistryInterface,
 
     LoggerFactoryRegistryInterface,
     ContextRegistryInterface,
@@ -28,9 +30,12 @@ interface RegistryInterface extends
     IdentifierCollectorRegistryInterface
 {
     /**
-     * Create a class instance and process awareness
+     * @template T of object
      *
+     * @param class-string<T> $class
      * @param array<mixed> $arguments
+     *
+     * @return T
      */
     public function createObject(string $class, array $arguments = []): object;
 }
