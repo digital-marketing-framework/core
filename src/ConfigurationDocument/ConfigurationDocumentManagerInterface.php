@@ -139,6 +139,13 @@ interface ConfigurationDocumentManagerInterface
      */
     public function getConfigurationStackFromIdentifier(string $documentIdentifier): array;
 
+    public function getDefaultConfigurationIdentifier(): string;
+
+    /**
+     * @return array<array<string,mixed>>
+     */
+    public function getDefaultConfigurationStack(): array;
+
     /**
      * @param array<string,mixed> $mergedConfiguration
      *

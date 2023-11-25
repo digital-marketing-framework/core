@@ -10,13 +10,16 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDoc
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 
-class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, LoggerAwareInterface
+class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
 {
+    use GlobalConfigurationAwareTrait;
     use LoggerAwareTrait;
 
     /** @var array<string,array<string,ConfigurationDocumentMigrationInterface>> */
@@ -268,6 +271,20 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         $document = $this->storage->getDocument($documentIdentifier);
 
         return $this->getConfigurationStackFromDocument($document);
+    }
+
+    public function getDefaultConfigurationIdentifier(): string
+    {
+        return $this->globalConfiguration->get('core')['configurationStorage']['defaultConfigurationDocument'] ?? '';
+    }
+
+    public function getDefaultConfigurationStack(): array
+    {
+        $documentIdentifier = $this->getDefaultConfigurationIdentifier();
+        if ($documentIdentifier === '') {
+            throw new DigitalMarketingFrameworkException('No default configuration document given');
+        }
+        return $this->getConfigurationStackFromIdentifier($documentIdentifier);
     }
 
     public function splitConfiguration(array $mergedConfiguration): array
