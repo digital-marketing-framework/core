@@ -93,8 +93,13 @@
     return await _fetch(url)
   }
 
-  DMF.flushCache = function () {
-    fetchCache = {}
+  DMF.flushCache = function (type, plugin) {
+    if (typeof type !== 'undefined' && typeof plugin !== 'undefined') {
+      const url = this.getAjaxUrl(type, plugin)
+      delete fetchCache[url]
+    } else {
+      fetchCache = {}
+    }
   }
 
   DMF.getSettings = function (type, plugin) {
@@ -116,6 +121,7 @@
       return {
         settings: DMF.getSettings(type, plugin),
         fetch: async () => await DMF.fetch(type, plugin),
+        flushCache: () => DMF.flushCache(type, plugin),
       }
     }
   }
