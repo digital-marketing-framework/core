@@ -284,6 +284,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         if ($documentIdentifier === '') {
             throw new DigitalMarketingFrameworkException('No default configuration document given');
         }
+
         return $this->getConfigurationStackFromIdentifier($documentIdentifier);
     }
 

@@ -61,7 +61,7 @@ abstract class Initialization implements InitializationInterface
     public function getFullPackageName(): string
     {
         $package = $this->packageName;
-        if (strpos($package, '/') === false) {
+        if (!str_contains($package, '/')) {
             $package = 'digital-marketing-framework/' . $package;
         }
 
