@@ -21,7 +21,7 @@ class InCondition extends Condition
     }
 
     /**
-     * @return array{path:string,list:array<string,mixed>}
+     * @return array{path:string,list:?array<string,mixed>}
      */
     protected function getConfig(): array
     {

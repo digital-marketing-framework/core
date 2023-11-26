@@ -76,7 +76,7 @@ class FieldCollectorValueSource extends ValueSource
         }
 
         // unprocessedOnly has lowest priority because it is the most indirect directive
-        return !($this->unprocessedOnly && $this->context->getFieldTracker()->hasBeenProcessed($key));
+        return !($this->unprocessedOnly && $this->context->getFieldTracker()->hasBeenProcessed((string)$key));
     }
 
     protected function addValue(MultiValueInterface $output, string|int $key, string|ValueInterface $value): void
@@ -91,7 +91,7 @@ class FieldCollectorValueSource extends ValueSource
         }
 
         return match ($this->template) {
-            '{key}' => $key,
+            '{key}' => (string)$key,
             '{value}' => $value,
             default => str_replace(['{key}', '{value}'], [$key, $value], $this->template),
         };

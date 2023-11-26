@@ -20,7 +20,9 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
             return null;
         }
 
-        return file_get_contents($this->getFilePath($fileIdentifier));
+        $contents = file_get_contents($this->getFilePath($fileIdentifier));
+
+        return $contents === false ? null : $contents;
     }
 
     public function putFileContents(string $fileIdentifier, string $fileContent): void
@@ -40,6 +42,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
     protected function getFileInfo(string $fileIdentifier, int $flag): ?string
     {
         if ($this->fileExists($fileIdentifier)) {
+            /** @var string */
             return pathinfo($this->getFilePath($fileIdentifier), $flag);
         }
 
@@ -92,6 +95,10 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
 
         $path = rtrim($this->getFilePath($folderIdentifier), '/');
         $list = scandir($path);
+        if ($list === false) {
+            $list = [];
+        }
+
         $list = array_map(static function (string $file) use ($path) {
             return $path . '/' . $file;
         }, $list);

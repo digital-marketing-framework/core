@@ -14,7 +14,7 @@ abstract class ConfigurationDocumentMigration implements ConfigurationDocumentMi
 
     protected function checkVersion(string $version): bool
     {
-        return preg_match('/\d+(\.\d+)*/', $version);
+        return (bool)preg_match('/\d+(\.\d+)*/', $version);
     }
 
     public function checkVersions(): bool

@@ -16,7 +16,7 @@ class ValueSet
 
     public function addValue(string|int|bool $value, ?string $label = null): void
     {
-        $this->values[$value] = $label ?? GeneralUtility::getLabelFromValue($value);
+        $this->values[$value] = $label ?? GeneralUtility::getLabelFromValue((string)$value);
     }
 
     public function merge(ValueSet $valueSet): void

@@ -22,7 +22,7 @@ class PassthroughFieldsDataMapper extends DataMapper
         }
 
         foreach ($this->context->getData() as $fieldName => $value) {
-            $this->addField($target, $fieldName, $value);
+            $this->addField($target, (string)$fieldName, $value);
         }
 
         return $target;
