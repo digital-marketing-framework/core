@@ -4,7 +4,9 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSo
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource;
+use DigitalMarketingFramework\Core\FileStorage\FileStorageInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource
@@ -12,6 +14,16 @@ use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
 class FileValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'file';
+
+    protected FileStorageInterface&MockObject $fileStorage;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->fileStorage = $this->createMock(FileStorageInterface::class);
+        $this->registry->setFileStorage($this->fileStorage);
+    }
 
     /** @test */
     public function fileValueSource(): void
@@ -22,6 +34,8 @@ class FileValueSourceTest extends ValueSourceTest
             FileValueSource::KEY_URL => $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'),
             FileValueSource::KEY_MIMETYPE => $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'd'], 'constant'),
         ];
+
+        $this->fileStorage->method('fileExists')->with('b')->willReturn(false);
 
         /** @var FileValueInterface $output */
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));

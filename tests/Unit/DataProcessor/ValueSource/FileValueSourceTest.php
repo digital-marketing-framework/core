@@ -3,13 +3,32 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource;
+use DigitalMarketingFramework\Core\FileStorage\FileStorageInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * @extends ValueSourceTest<FileValueSource>
+ */
 class FileValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'file';
 
     protected const CLASS_NAME = FileValueSource::class;
+
+    protected FileStorageInterface&MockObject $fileStorage;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->fileStorage = $this->createMock(FileStorageInterface::class);
+    }
+
+    protected function processObjectAwareness(): void
+    {
+        parent::processObjectAwareness();
+        $this->subject->setFileStorage($this->fileStorage);
+    }
 
     /** @test */
     public function fileValueSource(): void
@@ -20,6 +39,7 @@ class FileValueSourceTest extends ValueSourceTest
             FileValueSource::KEY_URL => ['urlKey' => 'urlValue'],
             FileValueSource::KEY_MIMETYPE => ['mimetypeKey' => 'mimetypeValue'],
         ];
+
         $this->dataProcessor
             ->method('processValue')
             ->withConsecutive(
@@ -29,6 +49,9 @@ class FileValueSourceTest extends ValueSourceTest
                 [$config[FileValueSource::KEY_MIMETYPE]]
             )
             ->willReturnOnConsecutiveCalls('a', 'b', 'c', 'd');
+
+        $this->fileStorage->method('fileExists')->with('b')->willReturn(false);
+
         /** @var FileValueInterface $output */
         $output = $this->processValueSource($config);
         $this->assertInstanceOf(FileValueInterface::class, $output);

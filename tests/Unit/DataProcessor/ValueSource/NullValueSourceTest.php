@@ -4,6 +4,9 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 
+/**
+ * @extends ValueSourceTest<NullValueSource>
+ */
 class NullValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'constant';
