@@ -38,8 +38,11 @@ trait IdentifierCollectorRegistryTrait
     public function getIdentifierCollectorSchema(): SchemaInterface
     {
         $schema = new ContainerSchema();
+        $schema->getRenderingDefinition()->setLabel('Identification');
 
         $collectorSchema = new IdentifierCollectorSchema();
+        $collectorSchema->getRenderingDefinition()->setSkipHeader(true);
+        $collectorSchema->getRenderingDefinition()->setSkipInNavigation(true);
         foreach ($this->getAllPluginClasses(IdentifierCollectorInterface::class) as $key => $class) {
             $collectorSchema->addItem($key, $class::getSchema());
         }
