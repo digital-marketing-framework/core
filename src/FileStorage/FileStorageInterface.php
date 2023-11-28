@@ -24,6 +24,8 @@ interface FileStorageInterface
 
     public function getPublicUrl(string $fileIdentifier): string;
 
+    public function getMimeType(string $fileIdentifier): string;
+
     /**
      * @return array<string>
      */
