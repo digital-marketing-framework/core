@@ -7,6 +7,9 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 
+/**
+ * @extends ValueSourceTest<FieldCollectorValueSource>
+ */
 class FieldCollectorValueSourceTest extends ValueSourceTest
 {
     use MultiValueTestTrait;

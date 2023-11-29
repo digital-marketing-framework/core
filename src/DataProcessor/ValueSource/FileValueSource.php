@@ -6,12 +6,16 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
+use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareTrait;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
-class FileValueSource extends ValueSource
+class FileValueSource extends ValueSource implements FileStorageAwareInterface
 {
+    use FileStorageAwareTrait;
+
     public const KEY_NAME = 'name';
 
     public const DEFAULT_NAME = [];
@@ -31,34 +35,34 @@ class FileValueSource extends ValueSource
     public function build(): null|string|ValueInterface
     {
         $fileName = $this->dataProcessor->processValue($this->getConfig(static::KEY_NAME), $this->context->copy());
-        $filePath = $this->dataProcessor->processValue($this->getConfig(static::KEY_PATH), $this->context->copy());
+        $fileIdentifier = $this->dataProcessor->processValue($this->getConfig(static::KEY_PATH), $this->context->copy());
         $fileUrl = $this->dataProcessor->processValue($this->getConfig(static::KEY_URL), $this->context->copy());
         $mimeType = $this->dataProcessor->processValue($this->getConfig(static::KEY_MIMETYPE), $this->context->copy());
 
-        if (file_exists((string)$filePath)) {
+        if ($this->fileStorage->fileExists((string)$fileIdentifier)) {
             if (GeneralUtility::isEmpty($fileName)) {
-                $fileName = pathinfo($filePath)['filename'];
+                $fileName = $this->fileStorage->getFileName($fileIdentifier);
             }
 
             if (GeneralUtility::isEmpty($fileUrl)) {
-                $fileUrl = $filePath;
+                $fileUrl = $this->fileStorage->getPublicUrl($fileIdentifier);
             }
 
             if (GeneralUtility::isEmpty($mimeType)) {
-                $mimeType = mime_content_type($filePath);
+                $mimeType = $this->fileStorage->getMimeType($fileIdentifier);
             }
         }
 
         if (
-            !GeneralUtility::isEmpty($fileName)
-            && !GeneralUtility::isEmpty($filePath)
+            !GeneralUtility::isEmpty($fileIdentifier)
+            && !GeneralUtility::isEmpty($fileName)
             && !GeneralUtility::isEmpty($fileUrl)
             && !GeneralUtility::isEmpty($mimeType)
         ) {
             $fileField = [
                 'fileName' => (string)$fileName,
                 'publicUrl' => (string)$fileUrl,
-                'relativePath' => (string)$filePath,
+                'relativePath' => (string)$fileIdentifier,
                 'mimeType' => (string)$mimeType,
             ];
 
@@ -72,10 +76,22 @@ class FileValueSource extends ValueSource
     {
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
-        $schema->addProperty(static::KEY_NAME, new CustomSchema(ValueSchema::TYPE));
-        $schema->addProperty(static::KEY_PATH, new CustomSchema(ValueSchema::TYPE));
-        $schema->addProperty(static::KEY_URL, new CustomSchema(ValueSchema::TYPE));
-        $schema->addProperty(static::KEY_MIMETYPE, new CustomSchema(ValueSchema::TYPE));
+
+        $pathSchema = new CustomSchema(ValueSchema::TYPE);
+        $pathSchema->getRenderingDefinition()->setLabel('File Identifier');
+        $schema->addProperty(static::KEY_PATH, $pathSchema);
+
+        $nameSchema = new CustomSchema(ValueSchema::TYPE);
+        $nameSchema->getRenderingDefinition()->setLabel('File Name (optional)');
+        $schema->addProperty(static::KEY_NAME, $nameSchema);
+
+        $urlSchema = new CustomSchema(ValueSchema::TYPE);
+        $urlSchema->getRenderingDefinition()->setLabel('Public URL (optional)');
+        $schema->addProperty(static::KEY_URL, $urlSchema);
+
+        $mimeTypeSchema = new CustomSchema(ValueSchema::TYPE);
+        $mimeTypeSchema->getRenderingDefinition()->setLabel('MIME Type (optional)');
+        $schema->addProperty(static::KEY_MIMETYPE, $mimeTypeSchema);
 
         return $schema;
     }

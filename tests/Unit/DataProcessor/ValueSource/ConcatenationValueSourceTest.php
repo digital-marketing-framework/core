@@ -6,6 +6,9 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConcatenationValueS
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 
+/**
+ * @extends ValueSourceTest<ConcatenationValueSource>
+ */
 class ConcatenationValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'concatenation';

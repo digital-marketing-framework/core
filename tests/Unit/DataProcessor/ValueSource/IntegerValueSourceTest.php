@@ -6,6 +6,9 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\IntegerValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
+/**
+ * @extends ValueSourceTest<IntegerValueSource>
+ */
 class IntegerValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'integer';

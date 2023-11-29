@@ -128,6 +128,16 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return '';
     }
 
+    public function getMimeType(string $fileIdentifier): string
+    {
+        $mimeType = mime_content_type($this->getFilePath($fileIdentifier));
+        if ($mimeType === false) {
+            return '';
+        }
+
+        return $mimeType;
+    }
+
     public function getTempPath(): string
     {
         return sys_get_temp_dir();
