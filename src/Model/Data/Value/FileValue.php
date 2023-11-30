@@ -2,26 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-use DigitalMarketingFramework\Core\Model\File\FileInterface;
-
 class FileValue extends Value implements FileValueInterface
 {
-    protected string $fileName = '';
-
-    protected string $publicUrl = '';
-
-    protected string $relativePath = '';
-
-    protected string $mimeType = '';
-
-    final public function __construct(?FileInterface $file = null)
-    {
-        if ($file instanceof FileInterface) {
-            $this->fileName = $file->getName();
-            $this->publicUrl = $file->getPublicUrl();
-            $this->relativePath = $file->getRelativePath();
-            $this->mimeType = $file->getMimeType();
-        }
+    final public function __construct(
+        protected string $relativePath = '',
+        protected string $fileName = '',
+        protected string $publicUrl = '',
+        protected string $mimeType = '',
+    ) {
     }
 
     public function setFileName(string $fileName): void

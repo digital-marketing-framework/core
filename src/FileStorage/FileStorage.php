@@ -2,8 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\FileStorage;
 
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
 
 class FileStorage implements FileStorageInterface, LoggerAwareInterface
 {
@@ -87,6 +90,25 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return is_writable($this->getFilePath($fileIdentifier));
     }
 
+    public function copyFileToFolder(string $fileIdentifier, string $folderIdentifier): string
+    {
+        if (!$this->fileExists($fileIdentifier)) {
+            throw new DigitalMarketingFrameworkException(sprintf('File "%s" not found', $fileIdentifier));
+        }
+
+        if (!$this->folderExists($folderIdentifier)) {
+            throw new DigitalMarketingFrameworkException(sprintf('Folder "%s" not found', $folderIdentifier));
+        }
+
+        $name = $this->getFileName($fileIdentifier);
+        $targetFileIdentifier = rtrim($folderIdentifier, '/') . '/' . $name;
+
+        $contents = $this->getFileContents($fileIdentifier);
+        $this->putFileContents($targetFileIdentifier, $contents);
+
+        return $targetFileIdentifier;
+    }
+
     public function getFilesFromFolder(string $folderIdentifier): array
     {
         if (!$this->folderExists($folderIdentifier)) {
@@ -136,6 +158,20 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         }
 
         return $mimeType;
+    }
+
+    public function getFileValue(string $fileIdentifier): ?FileValueInterface
+    {
+        if (!$this->fileExists($fileIdentifier)) {
+            return null;
+        }
+
+        return new FileValue(
+            $fileIdentifier,
+            $this->getFileName($fileIdentifier) ?? '',
+            $this->getPublicUrl($fileIdentifier),
+            $this->getMimeType($fileIdentifier)
+        );
     }
 
     public function getTempPath(): string

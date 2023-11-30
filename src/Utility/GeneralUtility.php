@@ -6,12 +6,10 @@ use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
-use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Model\File\FileInterface;
 use InvalidArgumentException;
 
 final class GeneralUtility
@@ -99,8 +97,6 @@ final class GeneralUtility
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $multiValue[$key] = static::castArrayToMultiValue($value);
-            } elseif ($value instanceof FileInterface) {
-                $multiValue[$key] = new FileValue($value);
             } elseif (is_int($value)) {
                 $multiValue[$key] = new IntegerValue($value);
             } elseif (is_bool($value)) {
