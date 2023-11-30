@@ -30,12 +30,12 @@ interface RegistryInterface extends
     IdentifierCollectorRegistryInterface
 {
     /**
-     * @template T of object
+     * @template ClassName of object
      *
-     * @param class-string<T> $class
+     * @param class-string<ClassName> $class
      * @param array<mixed> $arguments
      *
-     * @return T
+     * @return ClassName
      */
     public function createObject(string $class, array $arguments = []): object;
 }
