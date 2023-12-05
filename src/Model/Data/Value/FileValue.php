@@ -60,21 +60,20 @@ class FileValue extends Value implements FileValueInterface
     public function pack(): array
     {
         return [
+            'relativePath' => $this->getRelativePath(),
             'fileName' => $this->getFileName(),
             'publicUrl' => $this->getPublicUrl(),
-            'relativePath' => $this->getRelativePath(),
             'mimeType' => $this->getMimeType(),
         ];
     }
 
     public static function unpack(array $packed): FileValueInterface
     {
-        $field = new static();
-        $field->setFileName($packed['fileName']);
-        $field->setPublicUrl($packed['publicUrl']);
-        $field->setRelativePath($packed['relativePath']);
-        $field->setMimeType($packed['mimeType']);
-
-        return $field;
+        return new static(
+            relativePath: $packed['relativePath'],
+            fileName: $packed['fileName'],
+            publicUrl: $packed['publicUrl'],
+            mimeType: $packed['mimeType']
+        );
     }
 }
