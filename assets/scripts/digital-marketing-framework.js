@@ -4,6 +4,8 @@
   const EVENT_READY = 'dmf-ready'
   const EVENT_REQUEST_READY = 'dmf-request-ready'
 
+  const CLASS_LOADING = 'loading'
+
   const DEFAULTS = {
     settings: {
       prefix: 'dmf',
@@ -19,6 +21,10 @@
   let DMF = null
 
   // helpers //
+
+  function ucfirst(keyword) {
+    return keyword === '' ? '' : keyword[0].toUpperCase() + keyword.substring(1)
+  }
 
   function deepExtend(out) {
     out = out || {}
@@ -63,15 +69,15 @@
     }
   }
 
-  function getAjaxUrl(type, plugin) {
-    if (DMF.urls[type][plugin]) {
-      return DMF.urls[type][plugin]
+  function getAjaxUrl(module, plugin) {
+    if (DMF.urls[module][plugin]) {
+      return DMF.urls[module][plugin]
     }
     return ''
   }
 
-  function fetchData(type, plugin) {
-    const url = getAjaxUrl(type, plugin)
+  function fetchData(module, plugin) {
+    const url = getAjaxUrl(module, plugin)
     return new Promise(async function (resolve) {
       if (typeof fetchCache[url] !== 'undefined') {
         if (typeof fetchCache[url].response !== 'undefined') {
@@ -100,30 +106,34 @@
     })
   }
 
-  function getPluginSettings(type, plugin) {
-    DMF.pluginSettings[type] = DMF.pluginSettings[type] || {}
-    DMF.pluginSettings[type][plugin] = DMF.pluginSettings[type][plugin] || {}
-    const pluginSettings = DMF.pluginSettings[type][plugin] || {}
+  function getPluginSettings(module, plugin) {
+    DMF.pluginSettings[module] = DMF.pluginSettings[module] || {}
+    DMF.pluginSettings[module][plugin] =
+      DMF.pluginSettings[module][plugin] || {}
+    const pluginSettings = DMF.pluginSettings[module][plugin] || {}
 
-    DMF.urls[type] = DMF.urls[type] || {}
-    const urlSettings = DMF.urls[type][plugin]
+    DMF.urls[module] = DMF.urls[module] || {}
+    const urlSettings = DMF.urls[module][plugin]
       ? {
-          url: DMF.urls[type][plugin],
+          url: DMF.urls[module][plugin],
         }
       : {}
 
     return deepExtend({}, DMF.settings, pluginSettings, urlSettings)
   }
 
-  function setupPlugin(type) {
-    if (typeof DMF[type] !== 'undefined') {
+  function setupPlugin(module) {
+    if (typeof DMF[module] !== 'undefined') {
       return
     }
-    DMF[type] = function (plugin) {
+    DMF[module] = function (plugin, name) {
+      if (typeof name !== 'undefined') {
+        plugin = plugin + '-' + name
+      }
       const instance = {
-        settings: getPluginSettings(type, plugin),
-        fetchData: async () => await fetchData(type, plugin),
-        flushCache: () => DMF.flushCache(type, plugin),
+        settings: getPluginSettings(module, plugin),
+        fetchData: async () => await fetchData(module, plugin),
+        flushCache: () => DMF.flushCache(module, plugin),
         onRefresh: (callback) => {
           refreshCallbacks.push(() => {
             callback.apply(plugin, [])
@@ -147,12 +157,12 @@
       DMF.container = document
     }
 
-    for (let type in DMF.urls) {
-      setupPlugin(type)
+    for (let module in DMF.urls) {
+      setupPlugin(module)
     }
 
-    for (let type in DMF.pluginSettings) {
-      setupPlugin(type)
+    for (let module in DMF.pluginSettings) {
+      setupPlugin(module)
     }
   }
 
@@ -180,26 +190,56 @@
 
   DMF.markAsLoading = function (elements) {
     elements.forEach((element) => {
-      element.classList.add('loading')
+      element.classList.add(CLASS_LOADING)
     })
   }
 
   DMF.markAsLoaded = function (elements) {
     elements.forEach((element) => {
-      element.classList.remove('loading')
+      element.classList.remove(CLASS_LOADING)
     })
   }
 
-  DMF.fetchElements = function (type, plugin) {
-    const dataType = camelCaseToDashed(type)
+  DMF.fetchElements = function (module, plugin) {
+    const dataModule = camelCaseToDashed(module)
     return DMF.container.querySelectorAll(
-      '[data-' + DMF.settings.prefix + '-' + dataType + '="' + plugin + '"]'
+      '[data-' + DMF.settings.prefix + '-' + dataModule + '="' + plugin + '"]'
     )
   }
 
-  DMF.flushCache = function (type, plugin) {
-    if (typeof type !== 'undefined' && typeof plugin !== 'undefined') {
-      const url = getAjaxUrl(type, plugin)
+  DMF.getPluginType = function (module, element) {
+    return element.dataset[DMF.settings.prefix + ucfirst(module)]
+  }
+
+  DMF.getPluginName = function (module, element) {
+    return element.dataset[DMF.settings.prefix + ucfirst(module) + 'Name'] || ''
+  }
+
+  DMF.getInstance = function (module, plugin, name) {
+    return DMF[module](plugin, name)
+  }
+
+  DMF.getInstanceFromElement = function (module, element) {
+    const plugin = DMF.getPluginType(module, element)
+    const name = DMF.getPluginName(module, element)
+    return DMF.getInstance(module, plugin, name)
+  }
+
+  DMF.getAllPluginInstancesWithElements = function (module, plugin) {
+    const result = []
+    DMF.fetchElements(module, plugin).forEach((element) => {
+      const instance = DMF.getInstanceFromElement(module, element)
+      result.push({
+        element: element,
+        plugin: instance,
+      })
+    })
+    return result
+  }
+
+  DMF.flushCache = function (module, plugin) {
+    if (typeof module !== 'undefined' && typeof plugin !== 'undefined') {
+      const url = getAjaxUrl(module, plugin)
       delete fetchCache[url]
     } else {
       fetchCache = {}
