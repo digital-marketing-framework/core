@@ -3,7 +3,6 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Data;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
-use DigitalMarketingFramework\Core\Model\File\FileInterface;
 
 /**
  * @extends AbstractFieldTest<FileValue>
@@ -14,13 +13,12 @@ class FileValueTest extends AbstractFieldTest
 
     protected function createField(mixed ...$arguments): FileValue
     {
-        $file = $this->createMock(FileInterface::class);
-        $file->method('getName')->willReturn($arguments[0] ?? 'name1');
-        $file->method('getPublicUrl')->willReturn($arguments[1] ?? 'url1');
-        $file->method('getRelativePath')->willReturn($arguments[2] ?? 'path1');
-        $file->method('getMimeType')->willReturn($arguments[3] ?? 'type1');
-
-        return new FileValue($file);
+        return new FileValue(
+            $arguments[2] ?? 'path1',
+            $arguments[0] ?? 'name1',
+            $arguments[1] ?? 'url1',
+            $arguments[3] ?? 'type1'
+        );
     }
 
     /** @test */

@@ -53,7 +53,7 @@ class PrefixDataMapper extends DataMapper
         $newData = [];
         // remove all values first to avoid name conflicts
         foreach ($target as $fieldName => $value) {
-            $newFieldName = $this->processFieldName($fieldName, $action, $prefix);
+            $newFieldName = $this->processFieldName((string)$fieldName, $action, $prefix);
             $newData[$newFieldName] = $value;
             unset($target[$fieldName]);
         }

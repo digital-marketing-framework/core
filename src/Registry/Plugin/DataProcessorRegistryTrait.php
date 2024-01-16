@@ -29,7 +29,6 @@ trait DataProcessorRegistryTrait
     public function getDataProcessor(): DataProcessorInterface
     {
         if (!isset($this->dataProcessor)) {
-            /** @var DataProcessor */
             $dataProcessor = $this->createObject(DataProcessor::class, [$this]);
             $this->dataProcessor = $dataProcessor;
         }
@@ -54,7 +53,6 @@ trait DataProcessorRegistryTrait
 
     public function getValueSource(string $keyword, array $config, DataProcessorContextInterface $context): ?ValueSourceInterface
     {
-        /** @var ?ValueSourceInterface */
         return $this->getPlugin($keyword, ValueSourceInterface::class, [$config, $context]);
     }
 
@@ -87,7 +85,6 @@ trait DataProcessorRegistryTrait
 
     public function getValueModifier(string $keyword, array $config, DataProcessorContextInterface $context): ?ValueModifierInterface
     {
-        /** @var ?ValueModifierInterface */
         return $this->getPlugin($keyword, ValueModifierInterface::class, [$config, $context]);
     }
 
@@ -113,7 +110,6 @@ trait DataProcessorRegistryTrait
 
     public function getEvaluation(string $keyword, array $config, DataProcessorContextInterface $context): ?EvaluationInterface
     {
-        /** @var ?EvaluationInterface */
         return $this->getPlugin($keyword, EvaluationInterface::class, [$config, $context]);
     }
 
@@ -139,7 +135,6 @@ trait DataProcessorRegistryTrait
 
     public function getComparison(string $keyword, array $config, DataProcessorContextInterface $context): ?ComparisonInterface
     {
-        /** @var ?ComparisonInterface */
         return $this->getPlugin($keyword, ComparisonInterface::class, [$config, $context]);
     }
 
@@ -174,7 +169,6 @@ trait DataProcessorRegistryTrait
 
     public function getDataMapper(string $keyword, array $config, DataProcessorContextInterface $context): ?DataMapperInterface
     {
-        /** @var ?DataMapperInterface */
         return $this->getPlugin($keyword, DataMapperInterface::class, [$config, $context]);
     }
 

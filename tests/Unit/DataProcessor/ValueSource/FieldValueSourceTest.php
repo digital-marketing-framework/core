@@ -4,6 +4,9 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 
+/**
+ * @extends ValueSourceTest<FieldValueSource>
+ */
 class FieldValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'field';

@@ -4,6 +4,9 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FirstOfValueSource;
 
+/**
+ * @extends ValueSourceTest<FirstOfValueSource>
+ */
 class FirstOfValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'firstOf';

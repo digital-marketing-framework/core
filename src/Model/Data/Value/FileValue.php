@@ -2,26 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-use DigitalMarketingFramework\Core\Model\File\FileInterface;
-
 class FileValue extends Value implements FileValueInterface
 {
-    protected string $fileName = '';
-
-    protected string $publicUrl = '';
-
-    protected string $relativePath = '';
-
-    protected string $mimeType = '';
-
-    final public function __construct(?FileInterface $file = null)
-    {
-        if ($file instanceof FileInterface) {
-            $this->fileName = $file->getName();
-            $this->publicUrl = $file->getPublicUrl();
-            $this->relativePath = $file->getRelativePath();
-            $this->mimeType = $file->getMimeType();
-        }
+    final public function __construct(
+        protected string $relativePath = '',
+        protected string $fileName = '',
+        protected string $publicUrl = '',
+        protected string $mimeType = '',
+    ) {
     }
 
     public function setFileName(string $fileName): void
@@ -72,21 +60,20 @@ class FileValue extends Value implements FileValueInterface
     public function pack(): array
     {
         return [
+            'relativePath' => $this->getRelativePath(),
             'fileName' => $this->getFileName(),
             'publicUrl' => $this->getPublicUrl(),
-            'relativePath' => $this->getRelativePath(),
             'mimeType' => $this->getMimeType(),
         ];
     }
 
     public static function unpack(array $packed): FileValueInterface
     {
-        $field = new static();
-        $field->setFileName($packed['fileName']);
-        $field->setPublicUrl($packed['publicUrl']);
-        $field->setRelativePath($packed['relativePath']);
-        $field->setMimeType($packed['mimeType']);
-
-        return $field;
+        return new static(
+            relativePath: $packed['relativePath'],
+            fileName: $packed['fileName'],
+            publicUrl: $packed['publicUrl'],
+            mimeType: $packed['mimeType']
+        );
     }
 }

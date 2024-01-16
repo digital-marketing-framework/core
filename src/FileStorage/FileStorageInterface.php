@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\FileStorage;
 
+use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
+
 interface FileStorageInterface
 {
     public function getFileContents(string $fileIdentifier): ?string;
@@ -23,6 +25,12 @@ interface FileStorageInterface
     public function fileIsWriteable(string $fileIdentifier): bool;
 
     public function getPublicUrl(string $fileIdentifier): string;
+
+    public function getMimeType(string $fileIdentifier): string;
+
+    public function getFileValue(string $fileIdentifier): ?FileValueInterface;
+
+    public function copyFileToFolder(string $fileIdentifier, string $folderIdentifier): string;
 
     /**
      * @return array<string>

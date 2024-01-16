@@ -6,6 +6,9 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\BooleanValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
+/**
+ * @extends ValueSourceTest<BooleanValueSource>
+ */
 class BooleanValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'boolean';

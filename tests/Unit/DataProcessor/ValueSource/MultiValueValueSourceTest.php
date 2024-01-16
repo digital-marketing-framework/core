@@ -5,6 +5,9 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
+/**
+ * @extends ValueSourceTest<MultiValueValueSource>
+ */
 class MultiValueValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'multiValue';

@@ -112,6 +112,12 @@ class CoreInitialization extends Initialization
 
     protected const SCHEMA_MIGRATIONS = [];
 
+    protected const FRONTEND_SCRIPTS = [
+        'core' => [
+            '/scripts/digital-marketing-framework.js',
+        ],
+    ];
+
     public function __construct(string $packageAlias = '')
     {
         parent::__construct('core', '1.0.0', $packageAlias);

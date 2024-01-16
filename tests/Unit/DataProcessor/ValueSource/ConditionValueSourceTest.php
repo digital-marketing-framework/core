@@ -4,6 +4,9 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSource;
 
+/**
+ * @extends ValueSourceTest<ConditionValueSource>
+ */
 class ConditionValueSourceTest extends ValueSourceTest
 {
     protected const KEYWORD = 'condition';

@@ -2,8 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor;
 
-use DigitalMarketingFramework\Core\Plugin\PluginInterface;
+use DigitalMarketingFramework\Core\Plugin\ConfigurablePluginInterface;
 
-interface DataProcessorPluginInterface extends PluginInterface
+interface DataProcessorPluginInterface extends ConfigurablePluginInterface
 {
 }

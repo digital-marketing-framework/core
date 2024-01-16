@@ -2,8 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\FileStorage;
 
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
 
 class FileStorage implements FileStorageInterface, LoggerAwareInterface
 {
@@ -20,7 +23,9 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
             return null;
         }
 
-        return file_get_contents($this->getFilePath($fileIdentifier));
+        $contents = file_get_contents($this->getFilePath($fileIdentifier));
+
+        return $contents === false ? null : $contents;
     }
 
     public function putFileContents(string $fileIdentifier, string $fileContent): void
@@ -40,6 +45,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
     protected function getFileInfo(string $fileIdentifier, int $flag): ?string
     {
         if ($this->fileExists($fileIdentifier)) {
+            /** @var string */
             return pathinfo($this->getFilePath($fileIdentifier), $flag);
         }
 
@@ -84,6 +90,25 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return is_writable($this->getFilePath($fileIdentifier));
     }
 
+    public function copyFileToFolder(string $fileIdentifier, string $folderIdentifier): string
+    {
+        if (!$this->fileExists($fileIdentifier)) {
+            throw new DigitalMarketingFrameworkException(sprintf('File "%s" not found', $fileIdentifier));
+        }
+
+        if (!$this->folderExists($folderIdentifier)) {
+            throw new DigitalMarketingFrameworkException(sprintf('Folder "%s" not found', $folderIdentifier));
+        }
+
+        $name = $this->getFileName($fileIdentifier);
+        $targetFileIdentifier = rtrim($folderIdentifier, '/') . '/' . $name;
+
+        $contents = $this->getFileContents($fileIdentifier);
+        $this->putFileContents($targetFileIdentifier, $contents);
+
+        return $targetFileIdentifier;
+    }
+
     public function getFilesFromFolder(string $folderIdentifier): array
     {
         if (!$this->folderExists($folderIdentifier)) {
@@ -92,6 +117,10 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
 
         $path = rtrim($this->getFilePath($folderIdentifier), '/');
         $list = scandir($path);
+        if ($list === false) {
+            $list = [];
+        }
+
         $list = array_map(static function (string $file) use ($path) {
             return $path . '/' . $file;
         }, $list);
@@ -119,6 +148,30 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
     public function getPublicUrl(string $fileIdentifier): string
     {
         return '';
+    }
+
+    public function getMimeType(string $fileIdentifier): string
+    {
+        $mimeType = mime_content_type($this->getFilePath($fileIdentifier));
+        if ($mimeType === false) {
+            return '';
+        }
+
+        return $mimeType;
+    }
+
+    public function getFileValue(string $fileIdentifier): ?FileValueInterface
+    {
+        if (!$this->fileExists($fileIdentifier)) {
+            return null;
+        }
+
+        return new FileValue(
+            $fileIdentifier,
+            $this->getFileName($fileIdentifier) ?? '',
+            $this->getPublicUrl($fileIdentifier),
+            $this->getMimeType($fileIdentifier)
+        );
     }
 
     public function getTempPath(): string

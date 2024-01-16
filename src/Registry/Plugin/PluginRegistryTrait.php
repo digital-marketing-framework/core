@@ -14,7 +14,9 @@ trait PluginRegistryTrait
     /** @var array<string,array<string,string>> */
     protected array $pluginClasses = [];
 
-    /** @var array<string,array<string,array<mixed>>> */
+    /**
+     * @var array<class-string<PluginInterface>,array<class-string<PluginInterface>,array<mixed>>>
+     */
     protected array $pluginAdditionalArguments = [];
 
     abstract protected function createObject(string $class, array $arguments = []): object;

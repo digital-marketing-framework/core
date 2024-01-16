@@ -12,7 +12,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: '../assets',
+    outDir: '../assets/config-editor',
     emptyOutDir: false,
     rollupOptions: {
       output: {

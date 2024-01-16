@@ -38,10 +38,10 @@ class SpliceValueModifier extends ValueModifier
             $length = 1;
         } else {
             // 'X:' || ':Y' || 'X:Y'
-            $length = $indices[1] ?: null;
+            $length = (int)$indices[1] ?: null;
         }
 
-        $parts = explode($token, (string)$value);
+        $parts = $token === '' ? [$value] : explode($token, (string)$value);
         $slices = $length === null ? array_slice($parts, $offset) : array_slice($parts, $offset, $length);
 
         return implode($token, $slices);
