@@ -33,22 +33,22 @@ const label = computed(() => getLabel(props.currentPath));
                        :dynamicItemPath="dynamicItemPath">
         <template #fieldHeader><span><!-- a slot cannot be overwritten with empty content --></span></template>
         <template #fieldUi>
-            <div class="relative flex items-start">
-                <div class="flex items-center h-6">
+            <div class="tw-relative tw-flex tw-items-start">
+                <div class="tw-flex tw-items-center tw-h-6">
                     <input :id="'input_' + currentPath"
                            :name="'input_' + currentPath"
                            v-model="parentValue[currentKey]"
                            type="checkbox"
                            autocomplete="off"
-                           class="w-4 h-4 text-blue-600 border-blue-200 rounded focus:ring-blue-600"
+                           class="tw-form-checkbox tw-w-4 tw-h-4 tw-text-blue-600 tw-border-blue-200 tw-rounded focus:tw-ring-blue-600"
                            :class="{
-                               'todo-class-readonly bg-neutral-100': store.settings.readonly
+                               'todo-class-readonly tw-bg-neutral-100': store.settings.readonly
                            }"
                            :disabled="store.settings.readonly">
                 </div>
-                <div class="flex justify-between ml-3 text-sm leading-6 gap-x-2 grow">
+                <div class="tw-flex tw-justify-between tw-ml-3 tw-text-sm tw-leading-6 tw-gap-x-2 tw-grow">
                     <label :for="'input_' + currentPath"
-                           class="font-medium">{{ label }}</label>
+                           class="tw-font-medium">{{ label }}</label>
                 </div>
             </div>
         </template>

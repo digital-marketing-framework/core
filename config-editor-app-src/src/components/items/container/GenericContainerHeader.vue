@@ -27,16 +27,16 @@ const label = computed(() => getLabel(props.currentPath));
 </script>
 
 <template>
-    <header class="flex items-center justify-between gap-4 px-3 py-2 text-indigo-800 bg-indigo-100 border rounded border-indigo-500/20"
+    <header class="tw-flex tw-items-center tw-justify-between tw-gap-4 tw-px-3 tw-py-2 tw-text-indigo-800 tw-bg-indigo-100 tw-border tw-rounded tw-border-indigo-500/20"
             :class="{
-                'border-r-red-400 todo-class-overwritten': isOverwritten
+                'tw-border-r-red-400 todo-class-overwritten': isOverwritten
             }">
-        <div class="flex items-center gap-x-2">
+        <div class="tw-flex tw-items-center tw-gap-x-2">
             <slot name="disclosureButton"></slot>
             <label :for="label"
-                   class="flex items-center text-sm font-medium">
+                   class="tw-flex tw-items-center tw-text-sm tw-font-medium">
                 <ItemIcon :item-type="schema.type"
-                          class="!text-indigo-800 mr-2.5" />
+                          class="!tw-text-indigo-800 tw-mr-2.5" />
                 <span>{{ label }}</span>
             </label>
         </div>

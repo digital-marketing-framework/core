@@ -24,13 +24,13 @@ const props = defineProps({
 });
 
 const iconClassName = computed(() => {
-    return ["h-4 w-4 shrink-0", {
-        'text-gray-400': !props.active,
-        'group-hover:text-indigo-600': isContainerType(props.itemType),
-        'group-hover:text-blue-600': !isContainerType(props.itemType),
-        'text-indigo-600 group-hover:text-indigo-600': props.active && isContainerType(props.itemType),
-        'text-blue-600 group-hover:text-blue-600': props.active && !isContainerType(props.itemType),
-        '!w-3.5 !h-3.5': props.itemType === "CONTAINER" || props.itemType === "LIST",
+    return ["tw-h-4 tw-w-4 tw-shrink-0", {
+        'tw-text-gray-400': !props.active,
+        'group-hover:tw-text-indigo-600': isContainerType(props.itemType),
+        'group-hover:tw-text-blue-600': !isContainerType(props.itemType),
+        'tw-text-indigo-600 group-hover:tw-text-indigo-600': props.active && isContainerType(props.itemType),
+        'tw-text-blue-600 group-hover:tw-text-blue-600': props.active && !isContainerType(props.itemType),
+        '!tw-w-3.5 !tw-h-3.5': props.itemType === "CONTAINER" || props.itemType === "LIST",
     }];
 });
 </script>
