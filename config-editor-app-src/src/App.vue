@@ -59,7 +59,8 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
 
                     <div class="tw-sticky tw-bottom-0 tw-px-6 tw-py-3 tw-text-2xl tw-font-caveat tw-bg-white/50 tw-backdrop-blur-sm">
                         <a href="https://www.mediatis.de"
-                           class="tw-flex tw-items-center tw-leading-6 tw-text-gray-900 tw-gap-x-4 hover:tw-bg-gray-50">
+                           class="tw-flex tw-items-center tw-leading-6 tw-text-gray-900 tw-gap-x-4 hover:tw-bg-gray-50"
+                           target="_blank">
                             <span aria-hidden="true">Mediatis AG</span>
                         </a>
                     </div>

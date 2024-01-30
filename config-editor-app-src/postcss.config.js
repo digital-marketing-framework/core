@@ -6,15 +6,12 @@ module.exports = {
     require('tailwindcss'),
     prefixSelector({
       prefix: '.dmf-configuration-document-editor-stage',
-      exclude: [
-          /\[/, // starts with [ (e.g. [role])
-      ],
 
       // Optional transform callback for case-by-case overrides
       transform: function (prefix, selector, prefixedSelector) {
           // mainly for applying font
-          if (selector === 'html') {
-              return prefix + " *";
+          if (selector === 'html' || selector === 'body') {
+              return prefix;
           }
 
           // root identifier
