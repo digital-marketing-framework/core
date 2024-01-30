@@ -36,30 +36,31 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
 </script>
 
 <template>
-    <main class="absolute flex flex-col overflow-hidden bg-white"
+    <main class="tw-absolute tw-flex tw-flex-col tw-overflow-hidden tw-bg-white"
           :class="{
-              'inset-4 rounded': store.settings.mode === 'modal',
-              'inset-0': store.settings.mode === 'embedded',
+              'tw-inset-4 tw-rounded': store.settings.mode === 'modal',
+              'tw-inset-0': store.settings.mode === 'embedded',
           }"
           v-if="showApp">
-        <div class="flex grow h-full">
-            <div class="relative z-50 flex shrink-0 w-96">
+        <div class="tw-flex tw-grow tw-h-full">
+            <div class="tw-relative tw-z-50 tw-flex tw-shrink-0 tw-w-96">
                 <div
-                     class="flex flex-col w-full overflow-y-auto bg-white border-r border-gray-200 grow gap-y-5 overscroll-none">
+                     class="tw-flex tw-flex-col tw-w-full tw-overflow-y-auto tw-bg-white tw-border-r tw-border-gray-200 tw-grow tw-gap-y-5 tw-overscroll-none">
 
                     <div
-                         class="sticky top-0 z-10 flex items-baseline gap-3 px-6 py-6 shrink-0 bg-white/50 backdrop-blur-sm">
-                        <MediatisLogo class="h-8"></MediatisLogo>
-                        <span class="text-2xl leading-none font-caveat">dmf</span>
+                         class="tw-sticky tw-top-0 tw-z-10 tw-flex tw-items-baseline tw-gap-3 tw-px-6 tw-py-6 tw-shrink-0 tw-bg-white/50 tw-backdrop-blur-sm">
+                        <MediatisLogo class="tw-h-8"></MediatisLogo>
+                        <span class="tw-text-2xl tw-leading-none tw-font-caveat">dmf</span>
                     </div>
 
-                    <nav class="px-6 space-y-1 grow">
+                    <nav class="tw-px-6 tw-space-y-1 tw-grow">
                         <MenuItem currentPath="/" />
                     </nav>
 
-                    <div class="sticky bottom-0 px-6 py-3 text-2xl font-caveat bg-white/50 backdrop-blur-sm">
+                    <div class="tw-sticky tw-bottom-0 tw-px-6 tw-py-3 tw-text-2xl tw-font-caveat tw-bg-white/50 tw-backdrop-blur-sm">
                         <a href="https://www.mediatis.de"
-                           class="flex items-center leading-6 text-gray-900 gap-x-4 hover:bg-gray-50">
+                           class="tw-flex tw-items-center tw-leading-6 tw-text-gray-900 tw-gap-x-4 hover:tw-bg-gray-50"
+                           target="_blank">
                             <span aria-hidden="true">Mediatis AG</span>
                         </a>
                     </div>
@@ -67,20 +68,20 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                 </div>
             </div>
 
-            <div class="flex grow overflow-auto">
-                <div class="grow">
-                    <div class="sticky top-0 z-10 px-4 py-3 text-right bg-gray-100 border-b border-gray-200 sm:px-6 flex items-center">
-                        <span class="text-2xl leading-none font-caveat">{{ documentName }}</span>
-                        <div class="space-x-4 ml-auto pl-4">
+            <div class="tw-flex tw-grow tw-overflow-auto">
+                <div class="tw-grow">
+                    <div class="tw-sticky tw-top-0 tw-z-10 tw-px-4 tw-py-3 tw-text-right tw-bg-gray-100 tw-border-b tw-border-gray-200 sm:tw-px-6 tw-flex tw-items-center">
+                        <span class="tw-text-2xl tw-leading-none tw-font-caveat">{{ documentName }}</span>
+                        <div class="tw-space-x-4 tw-ml-auto tw-pl-4">
                             <button type="button"
                                     @click="store.close()"
-                                    class="rounded px-4 text-sm py-1.5 disabled:opacity-50 bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+                                    class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600">
                                 <span v-if="store.settings.mode === 'embedded'">Close</span>
                                 <span v-else-if="store.settings.mode === 'modal'">Discard</span>
                             </button>
                             <button type="button"
                                     @click="store.save()"
-                                    class="rounded px-4 text-sm py-1.5 disabled:opacity-50 bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+                                    class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600">
                                 <span v-if="store.settings.mode === 'embedded'">Save</span>
                                 <span v-else-if="store.settings.mode === 'modal'">Confirm</span>
                             </button>
@@ -112,12 +113,12 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                         </li>
                     </ul>
 
-                    <div class="flex justify-center px-4 py-10 sm:px-6 grow">
-                        <div class="grow max-w-7xl">
+                    <div class="tw-flex tw-justify-center tw-px-4 tw-py-10 sm:tw-px-6 tw-grow">
+                        <div class="tw-grow tw-max-w-7xl">
                             <button type="button"
-                                    class="flex items-center mb-4 text-xs text-gray-500 hover:text-gray-600 gap-x-2">
+                                    class="tw-flex tw-items-center tw-mb-4 tw-text-xs tw-text-gray-500 hover:tw-text-gray-600 tw-gap-x-2">
                                 <ArrowLeftLongIcon v-if="!rootSelected"
-                                                   class="w-3 h-3 shrink-0"
+                                                   class="tw-w-3 tw-h-3 tw-shrink-0"
                                                    @click="store.selectParentPath()" />
                                 <span v-for="rootLinePath in rootLine"
                                       :key="rootLinePath">

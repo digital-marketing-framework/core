@@ -106,57 +106,57 @@ watch(
 </script>
 
 <template>
-    <div class="flex items-center gap-x-2">
+    <div class="tw-flex tw-items-center tw-gap-x-2">
         <div v-if="canResetOverwrite"
              @click="reset()"
-             class="p-1 text-indigo-400 hover:text-indigo-500">
-            <RotateLeftIcon class="w-3 h-3" />
+             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+            <RotateLeftIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="isDynamic"
              @click="copyValue(dynamicItemPath)"
-             class="p-1 text-indigo-400 hover:text-indigo-500">
-            <CopyIcon class="w-3 h-3" />
+             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+            <CopyIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="canMove"
              @click="canMoveUp && moveValueUp(dynamicItemPath)"
-             class="p-1"
+             class="tw-p-1"
              :class="{
-                 'text-indigo-500': canMoveUp,
-                 'text-indigo-400': !canMoveUp
+                 'tw-text-indigo-500': canMoveUp,
+                 'tw-text-indigo-400': !canMoveUp
              }">
-            <SortUpIcon class="w-3 h-3" />
+            <SortUpIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="canMove"
              @click="canMoveDown && moveValueDown(dynamicItemPath)"
-             class="p-1"
+             class="tw-p-1"
              :class="{
-                 'text-indigo-500': canMoveDown,
-                 'text-indigo-400': !canMoveDown
+                 'tw-text-indigo-500': canMoveDown,
+                 'tw-text-indigo-400': !canMoveDown
              }">
-            <SortDownIcon class="w-3 h-3" />
+            <SortDownIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="isDynamic"
              @click="remove()"
-             class="p-1 text-indigo-400 hover:text-indigo-500">
-            <TrashIcon class="w-3 h-3" />
+             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+            <TrashIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="!store.settings.readonly && isDynamicContainer"
              @click="addValue(currentPath)"
-             class="p-1 text-indigo-400 hover:text-indigo-500">
-            <PlusIcon class="w-3 h-3" />
+             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+            <PlusIcon class="tw-w-3 tw-h-3" />
         </div>
         <div @click="toggleRawView(currentPath)"
-             class="p-1"
+             class="tw-p-1"
              :class="{
-                 'text-indigo-500': raw,
-                 'text-indigo-400': !raw
+                 'tw-text-indigo-500': raw,
+                 'tw-text-indigo-400': !raw
              }">
-            <CodeIcon class="w-4 h-4" />
+            <CodeIcon class="tw-w-4 tw-h-4" />
         </div>
         <div v-if="debug"
              ref="debugToggle"
-             class="p-1 text-indigo-400 hover:text-indigo-500">
-            <BugIcon class="w-3 h-3" />
+             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+            <BugIcon class="tw-w-3 tw-h-3" />
         </div>
     </div>
 </template>

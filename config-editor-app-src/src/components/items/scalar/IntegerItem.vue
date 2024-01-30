@@ -27,7 +27,7 @@ const parentValue = computed(() => store.getParentValue(props.currentPath));
     <GenericScalarItem :currentPath="currentPath"
                        :dynamicItemPath="dynamicItemPath">
         <template #fieldUi>
-            <div class="mt-2">
+            <div class="tw-mt-2">
                 <input v-if="schema.format === 'hidden'"
                        :id="'input_' + currentPath"
                        :name="'input_' + currentPath"
@@ -40,9 +40,9 @@ const parentValue = computed(() => store.getParentValue(props.currentPath));
                        type="number"
                        autocomplete="off"
                        placeholder="Enter value"
-                       class="block w-full rounded border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-blue-200 placeholder:text-blue-800 placeholder:opacity-60 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                       class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
                        :class="{
-                           'todo-class-readonly bg-neutral-100': store.settings.readonly
+                           'todo-class-readonly tw-bg-neutral-100': store.settings.readonly
                        }"
                        :disabled="store.settings.readonly" />
             </div>

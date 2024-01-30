@@ -39,27 +39,27 @@ const selectUuid = () => {
 
 </script>
 <template>
-    <div class="w-full max-w-3xl bg-blue-100 text-blue-800 border border-blue-200 py-2 px-3 rounded">
-        <header class="flex items-center justify-between gap-4">
-            <div class="flex items-center gap-x-1">
+    <div class="tw-w-full tw-max-w-3xl tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded">
+        <header class="tw-flex tw-items-center tw-justify-between tw-gap-4">
+            <div class="tw-flex tw-items-center tw-gap-x-1">
                 <label :for="'input_raw_uuid' + currentPath"
-                       class="font-medium text-sm">UUID Generator</label>
+                       class="tw-font-medium tw-text-sm">UUID Generator</label>
             </div>
-            <div class="flex items-center gap-x-2">
+            <div class="tw-flex tw-items-center tw-gap-x-2">
                 <div @click="updateUuid()"
-                     class="p-1 text-indigo-400 hover:text-indigo-500">
-                    <RotateLeftIcon class="w-3 h-3" />
+                     class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+                    <RotateLeftIcon class="tw-w-3 tw-h-3" />
                 </div>
                 <div @click="copyUuid()"
-                     class="p-1 text-indigo-400 hover:text-indigo-500">
+                     class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
                     <CopySolidIcon v-if="newUuidCopied"
-                                   class="w-3 h-3" />
+                                   class="tw-w-3 tw-h-3" />
                     <CopyIcon v-else
-                              class="w-3 h-3" />
+                              class="tw-w-3 tw-h-3" />
                 </div>
             </div>
         </header>
-        <div class="mt-2">
+        <div class="tw-mt-2">
             <input :id="'input_raw_uuid' + currentPath"
                    :name="'input_raw_uuid' + currentPath"
                    v-model="newUuid"
@@ -67,7 +67,7 @@ const selectUuid = () => {
                    autocomplete="off"
                    @focus="selectUuid"
                    ref="newUuidInput"
-                   class="block w-full rounded border-0 py-1.5 text-gray-900 placeholder:text-blue-800 placeholder:opacity-60 shadow-sm ring-1 ring-inset ring-blue-200 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                   class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
                    readonly="readonly" />
         </div>
     </div>

@@ -47,10 +47,10 @@ const issueFound = computed(() => hasIssues(props.currentPath));
 const issue = computed(() => getIssue(props.currentPath));
 </script>
 <template>
-    <div class="w-full max-w-3xl"
+    <div class="tw-w-full tw-max-w-3xl"
          :class="{
-             'bg-blue-100 text-blue-800 border border-blue-200 py-2 px-3 rounded': !isContainer,
-             'border-r-red-400 todo-class-overwritten': !isContainer && isOverwritten
+             'tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded': !isContainer,
+             'tw-border-r-red-400 todo-class-overwritten': !isContainer && isOverwritten
          }"
          v-if="isVisible">
 

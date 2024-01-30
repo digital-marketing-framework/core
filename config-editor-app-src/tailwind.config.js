@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // prefix: 'tw-',
-  important: true,
+  prefix: 'tw-',
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -11,5 +10,10 @@ module.exports = {
       }
     }
   },
-  plugins: [require('@headlessui/tailwindcss'), require('@tailwindcss/forms')]
+  plugins: [
+    require('@headlessui/tailwindcss'),
+    require("@tailwindcss/forms")({
+      strategy: 'class'
+    })
+  ]
 };

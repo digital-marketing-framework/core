@@ -40,11 +40,11 @@ const rawValue = computed({
 const rawIssue = computed(() => getRawIssue(props.currentPath));
 </script>
 <template>
-    <PrismEditor class="flex-1 block w-full p-4 overflow-y-auto font-mono text-sm whitespace-pre-wrap bg-indigo-900 overscroll-none"
+    <PrismEditor class="tw-flex-1 tw-block tw-w-full tw-p-4 tw-overflow-y-auto tw-font-mono tw-text-sm tw-whitespace-pre-wrap tw-bg-indigo-900 tw-overscroll-none"
                  v-model="rawValue"
                  :readonly="store.settings.readonly"
                  :highlight="highlighter"
-                 :line-numbers="false" /> <!-- TODO enable line numbers again once the styling is fixed -->
+                 :line-numbers="true" />
     <div v-if="rawIssue">{{ rawIssue }}</div>
     <UuidGenerator />
 </template>

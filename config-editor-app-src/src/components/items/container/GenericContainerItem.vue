@@ -50,11 +50,11 @@ const rawView = computed(() => isRawView(props.currentPath));
                                 :dynamicItemPath="dynamicItemPath">
             <template #disclosureButton>
                 <DisclosureButton v-if="!selected"
-                                  class="p-1"
+                                  class="tw-p-1"
                                   @click="toggleContainerState(currentPath)">
-                    <AngleDownIcon class="w-3 h-3"
+                    <AngleDownIcon class="tw-w-3 tw-h-3"
                                    :class="{
-                                       '-rotate-90': !open
+                                       '-tw-rotate-90': !open
                                    }" />
                 </DisclosureButton>
             </template>
@@ -62,7 +62,7 @@ const rawView = computed(() => isRawView(props.currentPath));
         <TransitionExpand>
             <DisclosurePanel>
                 <div v-if="!rawView && childPaths.length > 0"
-                     class="pt-3 pl-5 space-y-3">
+                     class="tw-pt-3 tw-pl-5 tw-space-y-3">
                     <slot name="fieldsUi"></slot>
                 </div>
                 <RawItem v-else-if="rawView"
@@ -71,7 +71,7 @@ const rawView = computed(() => isRawView(props.currentPath));
         </TransitionExpand>
     </Disclosure>
     <div v-else
-         class="space-y-3">
+         class="tw-space-y-3">
         <slot name="fieldsUi"></slot>
     </div>
 </template>

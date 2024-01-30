@@ -40,20 +40,20 @@ const navigationChildPaths = computed(() => getNavigationChildPaths(props.curren
 <template>
     <Disclosure :default-open="containerNavigationState" v-slot="{ open }">
 
-        <div class="flex justify-between rounded cursor-pointer gap-x-3"
+        <div class="tw-flex tw-justify-between tw-rounded tw-cursor-pointer tw-gap-x-3"
              :class="{
-                 'hover:bg-indigo-100/80': !selected && isContainer,
-                 'hover:bg-blue-100/80': !selected && !isContainer,
-                 'bg-indigo-100/80': selected && isContainer,
-                 'bg-blue-100/80': selected && !isContainer,
+                 'hover:tw-bg-indigo-100/80': !selected && isContainer,
+                 'hover:tw-bg-blue-100/80': !selected && !isContainer,
+                 'tw-bg-indigo-100/80': selected && isContainer,
+                 'tw-bg-blue-100/80': selected && !isContainer,
              }">
-            <div class="flex group gap-x-2.5 items-center text-sm leading-6 font-semibold grow py-1.5 px-3"
+            <div class="tw-flex tw-group tw-gap-x-2.5 tw-items-center tw-text-sm tw-leading-6 tw-font-semibold tw-grow tw-py-1.5 tw-px-3"
                  :class="{
-                     'text-gray-700': !selected,
-                     'hover:text-indigo-600': isContainer,
-                     'hover:text-blue-600': !isContainer,
-                     'text-indigo-600': selected && isContainer,
-                     'text-blue-600': selected && !isContainer,
+                     'tw-text-gray-700': !selected,
+                     'hover:tw-text-indigo-600': isContainer,
+                     'hover:tw-text-blue-600': !isContainer,
+                     'tw-text-indigo-600': selected && isContainer,
+                     'tw-text-blue-600': selected && !isContainer,
                  }"
                  @click="selectPath(currentPath)">
                 <ItemIcon :item-type="schema.type"
@@ -61,18 +61,18 @@ const navigationChildPaths = computed(() => getNavigationChildPaths(props.curren
                 {{ label }}
             </div>
             <DisclosureButton v-if="navigationChildPaths.length && !isRoot"
-                              class="flex items-center justify-center w-8 hover:text-indigo-600"
+                              class="tw-flex tw-items-center tw-justify-center tw-w-8 hover:tw-text-indigo-600"
                               @click="toggleContainerNavigationState(currentPath)">
-                <AngleDownIcon class="w-3 h-3"
-                               :class="open && 'rotate-180 transform'" />
+                <AngleDownIcon class="tw-w-3 tw-h-3"
+                               :class="open && 'tw-rotate-180 tw-transform'" />
             </DisclosureButton>
         </div>
 
         <TransitionExpand>
             <DisclosurePanel v-if="navigationChildPaths.length"
-                             class="relative">
+                             class="tw-relative">
                 <div role="list"
-                     class="pl-6 space-y-1">
+                     class="tw-pl-6 tw-space-y-1">
 
                     <MenuItem v-for="path in navigationChildPaths" :key="currentPath + '/' + path"
                         :currentPath="getAbsolutePath(path, currentPath)" />

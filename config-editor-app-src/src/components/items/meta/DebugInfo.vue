@@ -44,55 +44,55 @@ const value = computed(() => isScalar.value ? store.getValue(props.currentPath) 
 </script>
 
 <template>
-    <div class="text-xs text-left text-gray-500">
+    <div class="tw-text-xs tw-text-left tw-text-gray-500">
         <table>
             <tr>
-                <th class="p-1 align-top">Path</th>
-                <td class="p-1 align-top"><span class="break-all">{{ currentPath }}</span></td>
+                <th class="tw-p-1 tw-align-top">Path</th>
+                <td class="tw-p-1 tw-align-top"><span class="tw-break-all">{{ currentPath }}</span></td>
             </tr>
             <tr>
-                <th class="p-1 align-top">Label</th>
-                <td class="p-1 align-top">{{ label }}</td>
+                <th class="tw-p-1 tw-align-top">Label</th>
+                <td class="tw-p-1 tw-align-top">{{ label }}</td>
             </tr>
             <tr>
-                <th class="p-1 align-top">Type</th>
-                <td class="p-1 align-top">{{ schema.type }}</td>
+                <th class="tw-p-1 tw-align-top">Type</th>
+                <td class="tw-p-1 tw-align-top">{{ schema.type }}</td>
             </tr>
             <tr>
-                <th class="p-1 align-top">Level</th>
-                <td class="p-1 align-top">{{ level }}</td>
+                <th class="tw-p-1 tw-align-top">Level</th>
+                <td class="tw-p-1 tw-align-top">{{ level }}</td>
             </tr>
             <tr>
-                <th class="p-1 align-top">Selected</th>
-                <td class="p-1 align-top">{{ selected }}</td>
+                <th class="tw-p-1 tw-align-top">Selected</th>
+                <td class="tw-p-1 tw-align-top">{{ selected }}</td>
             </tr>
             <tr>
-                <th class="p-1 align-top">Overwritten</th>
-                <td class="p-1 align-top">{{ isOverwritten }}</td>
+                <th class="tw-p-1 tw-align-top">Overwritten</th>
+                <td class="tw-p-1 tw-align-top">{{ isOverwritten }}</td>
             </tr>
             <tr v-if="isScalar">
-                <th class="p-1 align-top">Value</th>
-                <td class="p-1 align-top"><span class="break-all">{{ value }}</span></td>
+                <th class="tw-p-1 tw-align-top">Value</th>
+                <td class="tw-p-1 tw-align-top"><span class="tw-break-all">{{ value }}</span></td>
             </tr>
             <tr v-if="isContainer">
-                <th class="p-1 align-top">Dynamic Container</th>
-                <td class="p-1 align-top">{{ isDynamicContainer }}</td>
+                <th class="tw-p-1 tw-align-top">Dynamic Container</th>
+                <td class="tw-p-1 tw-align-top">{{ isDynamicContainer }}</td>
             </tr>
             <tr>
-                <th class="p-1 align-top">Dynamic Item</th>
-                <td class="p-1 align-top">{{ !!dynamicItemPath }}</td>
+                <th class="tw-p-1 tw-align-top">Dynamic Item</th>
+                <td class="tw-p-1 tw-align-top">{{ !!dynamicItemPath }}</td>
             </tr>
             <tr v-if="isCustomType">
-                <th class="p-1 align-top">Immediate Schema</th>
-                <td class="p-1 align-top">{{ immediateSchema }}</td>
+                <th class="tw-p-1 tw-align-top">Immediate Schema</th>
+                <td class="tw-p-1 tw-align-top">{{ immediateSchema }}</td>
             </tr>
             <tr v-if="isScalar">
-                <th class="p-1 align-top">Schema</th>
-                <td class="p-1 align-top">{{ schema }}</td>
+                <th class="tw-p-1 tw-align-top">Schema</th>
+                <td class="tw-p-1 tw-align-top">{{ schema }}</td>
             </tr>
             <tr v-if="triggers.length > 0">
-                <th class="p-1 align-top">Triggers</th>
-                <td class="p1-align-top">{{ triggers }}</td>
+                <th class="tw-p-1 tw-align-top">Triggers</th>
+                <td class="tw-p-1 tw-align-top">{{ triggers }}</td>
             </tr>
         </table>
     </div>
