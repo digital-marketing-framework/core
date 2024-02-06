@@ -92,6 +92,7 @@ const { setContent } = useTippy(debugToggle, {
     theme: 'light',
     delay: [0, null],
     allowHTML: true,
+    appendTo: 'parent',
 });
 
 // Needed as VueTippy doesn't update content
