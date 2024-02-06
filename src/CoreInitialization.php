@@ -48,6 +48,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\IntegerValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ListValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryDomain;
 
@@ -68,6 +69,7 @@ class CoreInitialization extends Initialization
                 ListValueSource::class,
                 MultiValueValueSource::class,
                 NullValueSource::class,
+                SwitchValueSource::class,
             ],
             ValueModifierInterface::class => [
                 DefaultValueModifier::class,
