@@ -17,7 +17,7 @@ class IsTrueComparison extends UnaryComparison
         return false;
     }
 
-    protected function compareValue(string|null|ValueInterface $value): bool
+    protected function compareValue(string|ValueInterface|null $value): bool
     {
         return GeneralUtility::isTrue($value);
     }

@@ -25,7 +25,7 @@ abstract class ValueSourceTest extends DataProcessorPluginTest
      * @param array<string,mixed> $config
      * @param ?array<string,mixed> $defaultConfig
      */
-    protected function processValueSource(array $config, ?array $defaultConfig = null): string|null|ValueInterface
+    protected function processValueSource(array $config, ?array $defaultConfig = null): string|ValueInterface|null
     {
         if ($defaultConfig === null) {
             $defaultConfig = static::DEFAULT_CONFIG;

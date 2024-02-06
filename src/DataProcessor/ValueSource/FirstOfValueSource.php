@@ -15,7 +15,7 @@ class FirstOfValueSource extends ValueSource
 
     public const KEY_VALUE_LIST = 'listValues';
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $valueList = $this->getListConfig(static::KEY_VALUE_LIST);
         foreach ($valueList as $valueConfig) {

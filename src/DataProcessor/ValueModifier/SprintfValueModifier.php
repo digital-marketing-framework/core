@@ -14,7 +14,7 @@ class SprintfValueModifier extends ValueModifier
 
     public const DEFAULT_FORMAT = '%s';
 
-    public function modify(null|string|ValueInterface $value): null|string|ValueInterface
+    public function modify(string|ValueInterface|null $value): string|ValueInterface|null
     {
         if (!$this->proceed()) {
             return $value;

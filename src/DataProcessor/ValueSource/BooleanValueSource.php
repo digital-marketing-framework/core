@@ -25,7 +25,7 @@ class BooleanValueSource extends ValueSource
 
     public const DEFAULT_FALSE = '0';
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $value = $this->getConfig(static::KEY_VALUE);
         if ($value !== null) {

@@ -8,7 +8,7 @@ class NullValueSource extends ValueSource
 {
     public const WEIGHT = 30;
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         return null;
     }

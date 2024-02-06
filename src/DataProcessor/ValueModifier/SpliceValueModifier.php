@@ -18,7 +18,7 @@ class SpliceValueModifier extends ValueModifier
 
     public const DEFAULT_INDEX = '1';
 
-    protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
+    protected function modifyValue(string|ValueInterface|null $value): string|ValueInterface|null
     {
         if ($value === null) {
             return null;

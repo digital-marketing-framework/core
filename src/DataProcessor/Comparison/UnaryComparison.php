@@ -12,7 +12,7 @@ abstract class UnaryComparison extends Comparison
 
     public const DEFAULT_VALUE = null;
 
-    protected function compareValue(string|null|ValueInterface $value): bool
+    protected function compareValue(string|ValueInterface|null $value): bool
     {
         return true;
     }

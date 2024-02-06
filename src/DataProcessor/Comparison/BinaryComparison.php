@@ -16,9 +16,9 @@ abstract class BinaryComparison extends Comparison
 
     public const DEFAULT_SECOND_OPERAND = null;
 
-    abstract protected function compareValues(string|null|ValueInterface $a, string|null|ValueInterface $b): bool;
+    abstract protected function compareValues(string|ValueInterface|null $a, string|ValueInterface|null $b): bool;
 
-    protected function compareAny(MultiValueInterface $a, string|null|ValueInterface $b): bool
+    protected function compareAny(MultiValueInterface $a, string|ValueInterface|null $b): bool
     {
         if (GeneralUtility::isEmpty($a)) {
             return $this->compareAnyEmpty();
@@ -33,7 +33,7 @@ abstract class BinaryComparison extends Comparison
         return false;
     }
 
-    protected function compareAll(MultiValueInterface $a, string|null|ValueInterface $b): bool
+    protected function compareAll(MultiValueInterface $a, string|ValueInterface|null $b): bool
     {
         if (GeneralUtility::isEmpty($a)) {
             return $this->compareAllEmpty();

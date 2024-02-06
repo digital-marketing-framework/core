@@ -16,7 +16,7 @@ class DefaultValueModifier extends ValueModifier
 
     public const DEFAULT_VALUE = '';
 
-    public function modify(null|string|ValueInterface $value): null|string|ValueInterface
+    public function modify(string|ValueInterface|null $value): string|ValueInterface|null
     {
         if (!$this->proceed()) {
             return $value;

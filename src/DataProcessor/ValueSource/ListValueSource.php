@@ -22,7 +22,7 @@ class ListValueSource extends ValueSource
         return new MultiValue();
     }
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $multiValue = $this->getMultiValue();
         $values = $this->getListConfig(static::KEY_VALUES);

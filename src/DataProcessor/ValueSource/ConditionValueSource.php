@@ -26,7 +26,7 @@ class ConditionValueSource extends ValueSource
 
     public const DEFAULT_ELSE = null;
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $if = $this->getConfig(static::KEY_IF);
         $then = $this->getConfig(static::KEY_THEN);

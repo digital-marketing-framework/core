@@ -15,7 +15,7 @@ abstract class ValueModifier extends DataProcessorPlugin implements ValueModifie
 
     public const DEFAULT_ENABLED = false;
 
-    protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
+    protected function modifyValue(string|ValueInterface|null $value): string|ValueInterface|null
     {
         return $value;
     }
@@ -25,7 +25,7 @@ abstract class ValueModifier extends DataProcessorPlugin implements ValueModifie
         return $this->getConfig(static::KEY_ENABLED);
     }
 
-    public function modify(null|string|ValueInterface $value): null|string|ValueInterface
+    public function modify(string|ValueInterface|null $value): string|ValueInterface|null
     {
         if (!$this->proceed()) {
             return $value;

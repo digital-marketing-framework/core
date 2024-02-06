@@ -15,7 +15,7 @@ class IntegerValueSource extends ValueSource
 
     public const DEFAULT_VALUE = null;
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $value = $this->getConfig(static::KEY_VALUE);
         if ($value !== null) {
