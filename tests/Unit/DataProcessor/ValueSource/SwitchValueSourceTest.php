@@ -14,7 +14,7 @@ class SwitchValueSourceTest extends ValueSourceTest
     protected const CLASS_NAME = SwitchValueSource::class;
 
     /**
-     * @return array<array<mixed>>
+     * @return array<string,array{string,string,array<string,array{uuid:string,key:string,value:string,weight:int}>,bool,string}>
      */
     public function switchDataProvider(): array
     {
@@ -27,6 +27,8 @@ class SwitchValueSourceTest extends ValueSourceTest
                     'id2' => static::createMapItem('value2', 'value2b', 'id2', 20),
                     'id3' => static::createMapItem('value3', 'value3b', 'id3', 30),
                 ],
+                false,
+                '',
             ],
             'switchMatchNoDefault' => [
                 'value1',
@@ -34,6 +36,8 @@ class SwitchValueSourceTest extends ValueSourceTest
                 [
                     'id1' => static::createMapItem('value2', 'value2b', 'id1'),
                 ],
+                false,
+                '',
             ],
             'switchMatchDefault' => [
                 'value1',
@@ -48,6 +52,8 @@ class SwitchValueSourceTest extends ValueSourceTest
     }
 
     /**
+     * @param array<string,array{uuid:string,key:string,value:string,weight:int}> $cases
+     *
      * @test
      *
      * @dataProvider switchDataProvider
