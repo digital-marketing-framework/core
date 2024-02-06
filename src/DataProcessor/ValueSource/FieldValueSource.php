@@ -16,7 +16,7 @@ class FieldValueSource extends ValueSource
 
     public const DEFAULT_FIELD_NAME = '';
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $fieldName = $this->getConfig(static::KEY_FIELD_NAME);
         if ($fieldName === '') {

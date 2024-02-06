@@ -32,7 +32,7 @@ class FileValueSource extends ValueSource implements FileStorageAwareInterface
 
     public const DEFAULT_MIMETYPE = [];
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $fileName = $this->dataProcessor->processValue($this->getConfig(static::KEY_NAME), $this->context->copy());
         $fileIdentifier = $this->dataProcessor->processValue($this->getConfig(static::KEY_PATH), $this->context->copy());

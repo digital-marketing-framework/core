@@ -29,7 +29,7 @@ abstract class ValueSourceTest extends DataProcessorPluginTest
     /**
      * @param array<string,mixed> $config
      */
-    protected function processValueSource(array $config): string|null|ValueInterface
+    protected function processValueSource(array $config): string|ValueInterface|null
     {
         $dataProcessor = $this->registry->getDataProcessor();
         $context = new DataProcessorContext(new Data($this->data), new Configuration($this->configuration), $this->fieldTracker);

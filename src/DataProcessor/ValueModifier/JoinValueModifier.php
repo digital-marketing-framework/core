@@ -15,7 +15,7 @@ class JoinValueModifier extends ValueModifier
 
     public const DEFAULT_GLUE = ',';
 
-    public function modify(null|string|ValueInterface $value): null|string|ValueInterface
+    public function modify(string|ValueInterface|null $value): string|ValueInterface|null
     {
         if (!$this->proceed()) {
             return $value;

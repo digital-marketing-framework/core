@@ -16,7 +16,7 @@ class MapValueModifier extends ValueModifier
 
     public const DEFAULT_MAP = [];
 
-    protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
+    protected function modifyValue(string|ValueInterface|null $value): string|ValueInterface|null
     {
         if ($value === null) {
             return null;

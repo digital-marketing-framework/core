@@ -12,7 +12,7 @@ abstract class DataMapper extends DataProcessorPlugin implements DataMapperInter
 {
     abstract public function mapData(DataInterface $target): DataInterface;
 
-    protected function addField(DataInterface $data, string $fieldName, string|null|ValueInterface $value, bool $overwrite = false): bool
+    protected function addField(DataInterface $data, string $fieldName, string|ValueInterface|null $value, bool $overwrite = false): bool
     {
         if ($value !== null && ($overwrite || $data->fieldEmpty($fieldName))) {
             $data[$fieldName] = $value;

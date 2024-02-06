@@ -22,7 +22,7 @@ class MapReferenceValueModifier extends ValueModifier
 
     public const DEFAULT_INVERT = false;
 
-    protected function modifyValue(null|string|ValueInterface $value): null|string|ValueInterface
+    protected function modifyValue(string|ValueInterface|null $value): string|ValueInterface|null
     {
         if ($value === null) {
             return null;

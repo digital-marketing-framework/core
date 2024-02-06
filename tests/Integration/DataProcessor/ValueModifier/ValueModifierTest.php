@@ -30,7 +30,7 @@ abstract class ValueModifierTest extends DataProcessorPluginTest
     /**
      * @param array<string,mixed> $config
      */
-    protected function processValueModifier(array $config, string|null|ValueInterface $value): string|null|ValueInterface
+    protected function processValueModifier(array $config, string|ValueInterface|null $value): string|ValueInterface|null
     {
         $dataProcessor = $this->registry->getDataProcessor();
         $context = new DataProcessorContext(new Data($this->data), new Configuration($this->configuration), $this->fieldTracker);

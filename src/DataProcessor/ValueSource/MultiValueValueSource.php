@@ -20,7 +20,7 @@ class MultiValueValueSource extends ValueSource
         return new MultiValue();
     }
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $multiValue = $this->getMultiValue();
         $values = $this->getMapConfig(static::KEY_VALUES);

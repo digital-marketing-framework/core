@@ -9,7 +9,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 abstract class ValueSource extends DataProcessorPlugin implements ValueSourceInterface
 {
-    abstract public function build(): null|string|ValueInterface;
+    abstract public function build(): string|ValueInterface|null;
 
     public static function getSchema(): SchemaInterface
     {

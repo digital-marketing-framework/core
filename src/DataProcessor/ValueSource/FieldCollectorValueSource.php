@@ -97,7 +97,7 @@ class FieldCollectorValueSource extends ValueSource
         };
     }
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         $this->ignoreIfEmpty = $this->getConfig(static::KEY_IGNORE_IF_EMPTY);
         $this->unprocessedOnly = $this->getConfig(static::KEY_UNPROCESSED_ONLY);

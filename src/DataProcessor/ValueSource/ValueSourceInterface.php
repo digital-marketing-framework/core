@@ -8,7 +8,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 interface ValueSourceInterface extends DataProcessorPluginInterface
 {
-    public function build(): null|string|ValueInterface;
+    public function build(): string|ValueInterface|null;
 
     public static function getSchema(): SchemaInterface;
 

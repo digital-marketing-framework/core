@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class IsFalseComparison extends UnaryComparison
 {
-    protected function compareValue(string|null|ValueInterface $value): bool
+    protected function compareValue(string|ValueInterface|null $value): bool
     {
         return GeneralUtility::isFalse($value);
     }

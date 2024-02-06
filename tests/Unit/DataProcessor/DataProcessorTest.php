@@ -147,7 +147,7 @@ class DataProcessorTest extends TestCase
     /**
      * @param ?array<string,mixed> $config
      */
-    protected function addValueSource(string $keyword, string|null|ValueInterface $return, ?array $config = null, mixed $with = null): ValueSourceInterface&MockObject
+    protected function addValueSource(string $keyword, string|ValueInterface|null $return, ?array $config = null, mixed $with = null): ValueSourceInterface&MockObject
     {
         $valueSource = $this->createMock(ValueSourceInterface::class);
         if ($with !== null) {
@@ -167,7 +167,7 @@ class DataProcessorTest extends TestCase
     /**
      * @param ?array<string,mixed> $config
      */
-    protected function addValueModifier(string $keyword, string|null|ValueInterface $return, ?array $config = null, mixed $with = null): ValueModifierInterface&MockObject
+    protected function addValueModifier(string $keyword, string|ValueInterface|null $return, ?array $config = null, mixed $with = null): ValueModifierInterface&MockObject
     {
         $valueModifier = $this->createMock(ValueModifierInterface::class);
         if ($with !== null) {

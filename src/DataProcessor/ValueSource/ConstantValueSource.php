@@ -15,7 +15,7 @@ class ConstantValueSource extends ValueSource
 
     public const DEFAULT_VALUE = '';
 
-    public function build(): null|string|ValueInterface
+    public function build(): string|ValueInterface|null
     {
         return $this->getConfig(static::KEY_VALUE);
     }
