@@ -14,11 +14,22 @@ class SwitchValueSourceTest extends ValueSourceTest
     protected const CLASS_NAME = SwitchValueSource::class;
 
     /**
-     * @return array<string,array{string,string,array<string,array{uuid:string,key:string,value:string,weight:int}>,bool,string}>
+     * @return array<string,array{?string,?string,array<string,array{uuid:string,key:string,value:string,weight:int}>,bool,string}>
      */
     public function switchDataProvider(): array
     {
         return [
+            'originalValueIsNull' => [
+                null,
+                null,
+                [
+                    'id1' => static::createMapItem('value1', 'value1b', 'id1', 10),
+                    'id2' => static::createMapItem('value2', 'value2b', 'id2', 20),
+                    'id3' => static::createMapItem('value3', 'value3b', 'id3', 30),
+                ],
+                false,
+                '',
+            ],
             'switchMatch' => [
                 'value2',
                 'value2b',
