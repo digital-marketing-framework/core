@@ -68,7 +68,9 @@ class SwitchValueSource extends ValueSource
         $schema->addProperty(static::KEY_SWITCH, $switchSchema);
 
         $caseSchema = new StringSchema(static::DEFAULT_CASES_KEY);
+        $caseSchema->getRenderingDefinition()->setLabel('Case');
         $valueSchema = new StringSchema(static::DEFAULT_CASES_VALUE);
+        $valueSchema->getRenderingDefinition()->setLabel('Value');
         $casesSchema = new MapSchema($valueSchema, $caseSchema);
         $schema->addProperty(static::KEY_CASES, $casesSchema);
 
