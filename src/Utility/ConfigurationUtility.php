@@ -123,4 +123,14 @@ final class ConfigurationUtility
 
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
+
+    /**
+     * @param array<string> $additionalKeywords
+     */
+    public static function generateUuidForPackage(string $package, string $keyword, array $additionalKeywords = []): string
+    {
+        $parts = ['pkg', $package, $keyword, ...$additionalKeywords];
+
+        return implode('--', $parts);
+    }
 }
