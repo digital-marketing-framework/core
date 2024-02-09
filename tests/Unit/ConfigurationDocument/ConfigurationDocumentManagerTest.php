@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManager;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -247,6 +248,54 @@ class ConfigurationDocumentManagerTest extends TestCase
         $this->assertEquals(static::SYS_DEFAULTS_CONFIGURATION, $sysDefaults);
 
         $this->assertEquals($expectedResult, $stack);
+    }
+
+    /** @test */
+    public function getConfigurationStackFromIdentifierLoop(): void
+    {
+        $this->registerDocument('id1', 'documentContent1', [
+            'key1' => 'value1',
+            'metaData' => [
+                'includes' => $this->createIncludeList(['id2']),
+            ],
+        ]);
+        $this->registerDocument('id2', 'documentContent2', [
+            'key2' => 'value2',
+            'metaData' => [
+                'includes' => $this->createIncludeList(['id1']),
+            ],
+        ]);
+
+        $this->expectException(ConfigurationDocumentIncludeLoopException::class);
+
+        $this->subject->getConfigurationStackFromIdentifier('id1');
+    }
+
+    /** @test */
+    public function getConfigurationStackFromIdentifierNestedLoop(): void
+    {
+        $this->registerDocument('id1', 'documentContent1', [
+            'key1' => 'value1',
+            'metaData' => [
+                'includes' => $this->createIncludeList(['id2']),
+            ],
+        ]);
+        $this->registerDocument('id2', 'documentContent2', [
+            'key2' => 'value2',
+            'metaData' => [
+                'includes' => $this->createIncludeList(['id2']),
+            ],
+        ]);
+        $this->registerDocument('id3', 'documentContent3', [
+            'key3' => 'value3',
+            'metaData' => [
+                'includes' => $this->createIncludeList(['id1']),
+            ],
+        ]);
+
+        $this->expectException(ConfigurationDocumentIncludeLoopException::class);
+
+        $this->subject->getConfigurationStackFromIdentifier('id1');
     }
 
     // TODO implement more tests
