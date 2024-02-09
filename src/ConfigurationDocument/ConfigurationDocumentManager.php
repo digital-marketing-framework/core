@@ -209,11 +209,12 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     /**
      * @param array<string> $documentIdentifiers
+     * @param array<string> $allDocumentIdentifiers
      * @param array<string> $processedDocumentIdentifiers
      *
      * @return array<array<mixed>>
      */
-    protected function getIncludedConfigurations(array $documentIdentifiers, array $processedDocumentIdentifiers = []): array
+    protected function getIncludedConfigurations(array $documentIdentifiers, array &$allDocumentIdentifiers = [], array $processedDocumentIdentifiers = []): array
     {
         $includes = [];
         foreach ($documentIdentifiers as $documentIdentifier) {
@@ -224,10 +225,16 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
                 throw new ConfigurationDocumentIncludeLoopException(sprintf('Configuration document reference loop found: %s', implode(',', $subProcessedDocumentIdentifiers)));
             }
 
+            // NOTE when building a configuration stack, we only include each document once
+            if (in_array($documentIdentifier, $allDocumentIdentifiers)) {
+                continue;
+            }
+
             $configuration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier);
-            $subConfigurations = $this->getIncludedConfigurations($this->getIncludes($configuration), $subProcessedDocumentIdentifiers);
+            $subConfigurations = $this->getIncludedConfigurations($this->getIncludes($configuration), $allDocumentIdentifiers, $subProcessedDocumentIdentifiers);
             array_push($includes, ...$subConfigurations);
             $includes[] = $configuration;
+            $allDocumentIdentifiers[] = $documentIdentifier;
         }
 
         return $includes;
