@@ -3,8 +3,8 @@
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\IdentifierCollector\IdentifierCollectorSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\IdentifierCollector\IdentifierCollectorSchema;
 use DigitalMarketingFramework\Core\IdentifierCollector\IdentifierCollectorInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 
@@ -35,15 +35,21 @@ trait IdentifierCollectorRegistryTrait
         $this->deletePlugin($keyword, IdentifierCollectorInterface::class);
     }
 
-    public function getIdentifierCollectorSchema(): SchemaInterface
+    public function getIdentifierCollectorSchema(): ?SchemaInterface
     {
+        $identifierCollectorClasses = $this->getAllPluginClasses(IdentifierCollectorInterface::class);
+
+        if ($identifierCollectorClasses === []) {
+            return null;
+        }
+
         $schema = new ContainerSchema();
         $schema->getRenderingDefinition()->setLabel('Identification');
 
         $collectorSchema = new IdentifierCollectorSchema();
         $collectorSchema->getRenderingDefinition()->setSkipHeader(true);
         $collectorSchema->getRenderingDefinition()->setSkipInNavigation(true);
-        foreach ($this->getAllPluginClasses(IdentifierCollectorInterface::class) as $key => $class) {
+        foreach ($identifierCollectorClasses as $key => $class) {
             $collectorSchema->addItem($key, $class::getSchema());
         }
 

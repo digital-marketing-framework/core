@@ -57,6 +57,11 @@ class ContainerSchema extends Schema
         return $this->properties;
     }
 
+    public function getPropertyCount(): int
+    {
+        return count($this->getProperties());
+    }
+
     public function getProperty(string $name): ?ContainerProperty
     {
         return $this->properties[$name] ?? null;

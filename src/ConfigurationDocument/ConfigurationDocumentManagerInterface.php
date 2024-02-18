@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\Controller\ConfigurationEditorControllerInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
@@ -145,26 +146,4 @@ interface ConfigurationDocumentManagerInterface
      * @return array<array<string,mixed>>
      */
     public function getDefaultConfigurationStack(): array;
-
-    /**
-     * @param array<string,mixed> $mergedConfiguration
-     *
-     * @return array<string,mixed>
-     */
-    public function splitConfiguration(array $mergedConfiguration): array;
-
-    /**
-     * @param array<string,mixed> $configuration
-     *
-     * @return array<string,mixed>
-     */
-    public function mergeConfiguration(array $configuration, bool $inheritedConfigurationOnly = false): array;
-
-    /**
-     * @param array<string,mixed> $referenceMergedConfiguration
-     * @param array<string,mixed> $mergedConfiguration
-     *
-     * @return array<string,mixed>
-     */
-    public function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array;
 }

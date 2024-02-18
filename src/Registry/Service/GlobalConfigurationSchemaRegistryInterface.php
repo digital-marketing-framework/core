@@ -1,0 +1,31 @@
+<?php
+
+namespace DigitalMarketingFramework\Core\Registry\Service;
+
+use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
+use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineInterface;
+
+interface GlobalConfigurationSchemaRegistryInterface
+{
+    public function addGlobalConfigurationSchemaForPackage(string $packageName, SchemaInterface $schema): void;
+
+    public function addGlobalConfigurationSchema(SchemaDocument $globalConfigurationSchemaDocument): void;
+
+    public function getGlobalConfigurationSchema(): SchemaDocument;
+}

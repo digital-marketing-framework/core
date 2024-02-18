@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\C
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
@@ -30,52 +31,14 @@ trait ConfigurationSchemaRegistryTrait
 
     protected SchemaDocument $schemaDocument;
 
-    abstract public function getConfigurationDocumentManager(): ConfigurationDocumentManagerInterface;
+    /**
+     * @return array<string,string>
+     */
+    abstract protected function getIncludeValueSet(): array;
 
     public function addSchemaVersion(string $key, string $version): void
     {
         $this->schemaVersion[$key] = $version;
-    }
-
-    /**
-     * @return array<string,string>
-     */
-    protected function getIncludeValueSet(): array
-    {
-        $includes = [];
-        $configurationDocumentManager = $this->getConfigurationDocumentManager();
-        $documentIdentifiers = $configurationDocumentManager->getDocumentIdentifiers();
-        foreach ($documentIdentifiers as $documentIdentifier) {
-            $metaData = $configurationDocumentManager->getDocumentInformation($documentIdentifier);
-            $label = '[' . $documentIdentifier . ']';
-            if ($metaData['name'] !== $documentIdentifier) {
-                $label = $metaData['name'] . ' ' . $label;
-            }
-
-            $includes[$documentIdentifier] = $label;
-        }
-
-        uksort($includes, static function (string $key1, string $key2) {
-            $prefix1 = substr($key1, 0, 4);
-            $prefix2 = substr($key2, 0, 4);
-            if ($prefix1 === 'SYS:') {
-                if ($prefix2 !== 'SYS:') {
-                    return -1;
-                }
-            } elseif ($prefix2 === 'SYS:') {
-                return 1;
-            } elseif (preg_match('/^[A-Z]{3}:$/', $prefix1)) {
-                if (!preg_match('/^[A-Z]{3}:$/', $prefix2)) {
-                    return -1;
-                }
-            } elseif (preg_match('/^[A-Z]{3}:$/', $prefix2)) {
-                return -1;
-            }
-
-            return $key1 <=> $key2;
-        });
-
-        return $includes;
     }
 
     public function addConfigurationSchema(SchemaDocument $schemaDocument): void
@@ -123,7 +86,11 @@ trait ConfigurationSchemaRegistryTrait
         $valueMapsSchema = new MapSchema($valueMapSchema, $valuesMapKeySchema);
 
         $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
-        $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $this->getIdentifierCollectorSchema());
+
+        $identifierCollectorSchema = $this->getIdentifierCollectorSchema();
+        if ($identifierCollectorSchema instanceof SchemaInterface) {
+            $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $identifierCollectorSchema);
+        }
 
         foreach ($this->schemaVersion as $key => $version) {
             $schemaDocument->addVersion($key, $version);

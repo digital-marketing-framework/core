@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
@@ -83,11 +84,24 @@ abstract class Initialization implements InitializationInterface
         }
     }
 
+    protected function getGlobalConfigurationSchema(): ?SchemaInterface
+    {
+        return null;
+    }
+
     public function initMetaData(RegistryInterface $registry): void
     {
         $registry->addSchemaVersion($this->packageName, $this->schemaVersion);
 
         $registry->addPackageAlias($this->packageName, $this->packageAlias);
+
+        $globalConfigurationSchema = $this->getGlobalConfigurationSchema();
+        if ($globalConfigurationSchema !== null) {
+            $registry->addGlobalConfigurationSchemaForPackage(
+                $this->packageAlias !== '' ? $this->packageAlias : $this->packageName,
+                $globalConfigurationSchema
+            );
+        }
 
         $this->initConfigurationEditorScripts($registry);
         $this->initFrontendScripts($registry);

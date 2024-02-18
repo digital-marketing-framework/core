@@ -2,6 +2,11 @@
 
 namespace DigitalMarketingFramework\Core;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\EqualsComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ExistsComparison;
@@ -119,6 +124,31 @@ class CoreInitialization extends Initialization
             '/scripts/digital-marketing-framework.js',
         ],
     ];
+
+    protected function getGlobalConfigurationSchema(): ?SchemaInterface
+    {
+        $schema = new ContainerSchema();
+        $schema->getRenderingDefinition()->setLabel('Core');
+
+        $schema->addProperty('debug', new BooleanSchema(false));
+
+        $configurationStorageSchema = new ContainerSchema();
+        $configurationStorageSchema->getRenderingDefinition()->setNavigationItem(false);
+
+        $configurationStorageSchema->addProperty('folder', new StringSchema());
+
+        $defaultConfigurationDocumentSchema = new StringSchema();
+        $defaultConfigurationDocumentSchema->getAllowedValues()->addValue('', '-- NONE --');
+        $defaultConfigurationDocumentSchema->getAllowedValues()->addValueSet('document/all');
+        $defaultConfigurationDocumentSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
+        $configurationStorageSchema->addProperty('defaultConfigurationDocument', $defaultConfigurationDocumentSchema);
+
+        $configurationStorageSchema->addProperty('allowSaveToExtensionPaths', new BooleanSchema(false));
+
+        $schema->addProperty('configurationStorage', $configurationStorageSchema);
+
+        return $schema;
+    }
 
     public function __construct(string $packageAlias = '')
     {

@@ -17,6 +17,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryT
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
@@ -25,6 +26,7 @@ class Registry implements RegistryInterface
 {
     use GlobalConfigurationRegistryTrait;
     use AssetsRegistryTrait;
+    use GlobalConfigurationSchemaRegistryTrait;
 
     use LoggerFactoryRegistryTrait;
     use ContextRegistryTrait;

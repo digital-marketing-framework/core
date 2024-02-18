@@ -22,5 +22,5 @@ interface IdentifierCollectorRegistryInterface extends PluginRegistryInterface
 
     public function deleteIdentifierCollector(string $keyword): void;
 
-    public function getIdentifierCollectorSchema(): SchemaInterface;
+    public function getIdentifierCollectorSchema(): ?SchemaInterface;
 }
