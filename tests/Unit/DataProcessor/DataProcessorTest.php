@@ -240,7 +240,8 @@ class DataProcessorTest extends TestCase
     {
         $this->addDataMapper('testMapper', new Data(['foo' => 'bar']));
         $config = [];
-        $output = $this->subject->processDataMapper($config, new Data(), new Configuration([[]]));
+        $context = $this->subject->createContext(new Data(), new Configuration([[]]));
+        $output = $this->subject->processDataMapper($config, $context);
         $this->assertTrue($output instanceof DataInterface);
         $this->assertEmpty($output->toArray());
     }
@@ -253,7 +254,8 @@ class DataProcessorTest extends TestCase
             'notExistent' => ['configKeyA' => 'configValueA'],
         ];
         $this->expectExceptionMessage('DataMapper "notExistent" not found.');
-        $this->subject->processDataMapper($config, new Data(), new Configuration([[]]));
+        $context = $this->subject->createContext(new Data(), new Configuration([[]]));
+        $this->subject->processDataMapper($config, $context);
     }
 
     /** @test */
@@ -263,7 +265,8 @@ class DataProcessorTest extends TestCase
         $config = [
             'testMapper' => ['configKeyA' => 'configKeyB'],
         ];
-        $output = $this->subject->processDataMapper($config, new Data(), new Configuration([[]]));
+        $context = $this->subject->createContext(new Data(), new Configuration([[]]));
+        $output = $this->subject->processDataMapper($config, $context);
         $this->assertEquals(['foo' => 'bar'], $output->toArray());
     }
 
@@ -284,7 +287,8 @@ class DataProcessorTest extends TestCase
             'mapper1' => $mapperConfig1,
             'mapper2' => $mapperConfig2,
         ];
-        $output = $this->subject->processDataMapper($config, $data0, new Configuration([[]]));
+        $context = $this->subject->createContext($data0, new Configuration([[]]));
+        $output = $this->subject->processDataMapper($config, $context);
         $this->assertEquals(['abc' => 'xyz'], $output->toArray());
     }
 
