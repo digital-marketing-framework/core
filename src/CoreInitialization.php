@@ -22,7 +22,11 @@ use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\NotEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\OrEvaluation;
+use DigitalMarketingFramework\Core\DataProcessor\Evaluation\ReferenceEvaluation;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation;
+use DigitalMarketingFramework\Core\DataProcessor\Stream\DataMapperStream;
+use DigitalMarketingFramework\Core\DataProcessor\Stream\SequenceStream;
+use DigitalMarketingFramework\Core\DataProcessor\Stream\StreamInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\IndexValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\InsertDataValueModifier;
@@ -91,6 +95,7 @@ class CoreInitialization extends Initialization
                 FalseEvaluation::class,
                 NotEvaluation::class,
                 OrEvaluation::class,
+                ReferenceEvaluation::class,
                 TrueEvaluation::class,
             ],
             ComparisonInterface::class => [
@@ -108,6 +113,10 @@ class CoreInitialization extends Initialization
                 FieldMapDataMapper::class,
                 IgnoreEmptyFieldsDataMapper::class,
                 PassthroughFieldsDataMapper::class,
+            ],
+            StreamInterface::class => [
+                DataMapperStream::class,
+                SequenceStream::class,
             ],
         ],
     ];

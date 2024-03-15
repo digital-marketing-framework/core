@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Registry\Plugin;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\StreamSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
@@ -15,6 +16,7 @@ use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Stream\StreamInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 
@@ -177,6 +179,31 @@ trait DataProcessorRegistryTrait
         $schema = new DataMapperSchema();
         foreach ($this->getAllPluginClasses(DataMapperInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
+        }
+
+        return $schema;
+    }
+
+    public function registerStream(string $class, array $additionalArguments = [], string $keyword = ''): void
+    {
+        $this->registerPlugin(StreamInterface::class, $class, $additionalArguments, $keyword);
+    }
+
+    public function deleteStream(string $keyword): void
+    {
+        $this->deletePlugin($keyword, StreamInterface::class);
+    }
+
+    public function getStream(string $keyword, array $config, DataProcessorContextInterface $context): ?StreamInterface
+    {
+        return $this->getPlugin($keyword, StreamInterface::class, [$config, $context]);
+    }
+
+    public function getStreamSchema(): SchemaInterface
+    {
+        $schema = new StreamSchema();
+        foreach ($this->getAllPluginClasses(StreamInterface::class) as $key => $class) {
+            $schema->addItem($key, $class::getSchema(), $class::getLabel());
         }
 
         return $schema;

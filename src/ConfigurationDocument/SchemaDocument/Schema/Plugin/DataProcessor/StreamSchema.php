@@ -4,12 +4,12 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Sc
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
 
-class EvaluationSchema extends SwitchSchema
+class StreamSchema extends SwitchSchema
 {
-    public const TYPE = 'EVALUATION';
+    public const TYPE = 'STREAM';
 
     public function __construct(mixed $defaultValue = null)
     {
-        parent::__construct('evaluation', $defaultValue);
+        parent::__construct('stream', $defaultValue);
     }
 }

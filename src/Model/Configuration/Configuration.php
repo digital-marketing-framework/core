@@ -124,6 +124,26 @@ class Configuration implements ConfigurationInterface
         $this->unset($offset);
     }
 
+    public function getStreamConfiguration(string $id): ?array
+    {
+        $streams = $this->get(static::KEY_STREAMS);
+        if (isset($streams[$id])) {
+            return MapUtility::getItemValue($streams[$id]);
+        }
+
+        return null;
+    }
+
+    public function getEvaluationConfiguration(string $id): ?array
+    {
+        $conditions = $this->get(static::KEY_EVALUATIONS);
+        if (isset($conditions[$id])) {
+            return MapUtility::getItemValue($conditions[$id]);
+        }
+
+        return null;
+    }
+
     public function getValueMapConfiguration(string $id): ?array
     {
         $valueMaps = $this->get(static::KEY_VALUE_MAPS, []);

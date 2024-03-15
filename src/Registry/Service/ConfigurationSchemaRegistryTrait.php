@@ -6,12 +6,16 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\EvaluationReferenceSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\StreamReferenceSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\StreamSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
@@ -80,13 +84,22 @@ trait ConfigurationSchemaRegistryTrait
 
     public function addConfigurationSchema(SchemaDocument $schemaDocument): void
     {
-        $schemaDocument->addCustomType($this->getDataMapperSchema(), DataMapperSchema::TYPE);
+        // complex values
         $schemaDocument->addCustomType(new ValueSchema(), ValueSchema::TYPE);
         $schemaDocument->addCustomType($this->getValueSourceSchema(), ValueSourceSchema::TYPE);
         $schemaDocument->addCustomType($this->getValueModifierSchema(), ValueModifierSchema::TYPE);
+
+        // complex conditions
         $schemaDocument->addCustomType($this->getEvaluationSchema(), EvaluationSchema::TYPE);
+        $schemaDocument->addCustomType(new EvaluationReferenceSchema(), EvaluationReferenceSchema::TYPE);
         $schemaDocument->addCustomType($this->getComparisonSchema(), ComparisonSchema::TYPE);
 
+        // data set processing
+        $schemaDocument->addCustomType($this->getDataMapperSchema(), DataMapperSchema::TYPE);
+        $schemaDocument->addCustomType($this->getStreamSchema(), StreamSchema::TYPE);
+        $schemaDocument->addCustomType(new StreamReferenceSchema(), StreamReferenceSchema::TYPE);
+
+        // templating
         $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_PLAIN_TEXT), TemplateEngineInterface::TYPE_PLAIN_TEXT);
         $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_HTML), TemplateEngineInterface::TYPE_HTML);
 
@@ -122,7 +135,14 @@ trait ConfigurationSchemaRegistryTrait
         $valuesMapKeySchema->getRenderingDefinition()->setLabel('Value Map Name');
         $valueMapsSchema = new MapSchema($valueMapSchema, $valuesMapKeySchema);
 
+        $evaluationListSchema = new MapSchema(new CustomSchema(EvaluationSchema::TYPE));
+        $evaluationListSchema->getRenderingDefinition()->setLabel('Conditions');
+
+        $streamListSchema = new MapSchema(new CustomSchema(StreamSchema::TYPE));
+
         $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
+        $mainSchema->addProperty(ConfigurationInterface::KEY_STREAMS, $streamListSchema);
+        $mainSchema->addProperty(ConfigurationInterface::KEY_EVALUATIONS, $evaluationListSchema);
         $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $this->getIdentifierCollectorSchema());
 
         foreach ($this->schemaVersion as $key => $version) {

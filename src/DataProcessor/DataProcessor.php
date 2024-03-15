@@ -116,9 +116,8 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         return $evaluation->evaluate();
     }
 
-    public function processDataMapper(array $config, DataInterface $data, ConfigurationInterface $configuration): DataInterface
+    public function processDataMapper(array $config, DataProcessorContextInterface $context): DataInterface
     {
-        $context = $this->createContext($data, $configuration);
         $target = new Data();
         foreach ($config as $keyword => $dataMapperConfig) {
             $dataMapper = $this->registry->getDataMapper($keyword, $dataMapperConfig, $context);
@@ -130,6 +129,15 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         }
 
         return $target;
+    }
+
+    public function processStream(array $config, DataProcessorContextInterface $context): DataInterface
+    {
+        $keyword = SwitchSchema::getSwitchType($config);
+        $streamConfig = SwitchSchema::getSwitchConfiguration($config);
+        $stream = $this->registry->getStream($keyword, $streamConfig, $context);
+
+        return $stream->compute();
     }
 
     /**

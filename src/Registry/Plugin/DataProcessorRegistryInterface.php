@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Stream\StreamInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 
@@ -86,4 +87,18 @@ interface DataProcessorRegistryInterface extends PluginRegistryInterface
     public function getDataMapper(string $keyword, array $config, DataProcessorContextInterface $context): ?DataMapperInterface;
 
     public function getDataMapperSchema(): SchemaInterface;
+
+    /**
+     * @param array<mixed> $additionalArguments
+     */
+    public function registerStream(string $class, array $additionalArguments = [], string $keyword = ''): void;
+
+    public function deleteStream(string $keyword): void;
+
+    /**
+     * @param array<string,mixed> $config
+     */
+    public function getStream(string $keyword, array $config, DataProcessorContextInterface $context): ?StreamInterface;
+
+    public function getStreamSchema(): SchemaInterface;
 }

@@ -9,6 +9,10 @@ use ArrayAccess;
  */
 interface ConfigurationInterface extends ArrayAccess
 {
+    public const KEY_STREAMS = 'streams';
+
+    public const KEY_EVALUATIONS = 'evaluations';
+
     public const KEY_VALUE_MAPS = 'valueMaps';
 
     public const KEY_IDENTIFIER = 'identifier';
@@ -39,6 +43,16 @@ interface ConfigurationInterface extends ArrayAccess
     public function set(string $key, mixed $value): void;
 
     public function unset(string $key): void;
+
+    /**
+     * @return ?array<string,mixed>
+     */
+    public function getStreamConfiguration(string $id): ?array;
+
+    /**
+     * @return ?array<string,mixed>
+     */
+    public function getEvaluationConfiguration(string $id): ?array;
 
     /**
      * @return ?array<string, array{uuid:string,weight:int,key:string,value:string}>
