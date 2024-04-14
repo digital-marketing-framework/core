@@ -41,6 +41,21 @@ class ScalarValues
         ];
     }
 
+    public function setContextual(mixed $value = []): void
+    {
+        $this->values['contextual'] = $value;
+    }
+
+    public function addInputFieldContextSelection(mixed $value = []): void
+    {
+        $this->values['inputFieldContextSelection'] = $value;
+    }
+
+    public function addOutputFieldContextSelection(mixed $value = []): void
+    {
+        $this->values['outputFieldContextSelection'] = $value;
+    }
+
     public function reset(): void
     {
         $this->values = [];
@@ -103,6 +118,10 @@ class ScalarValues
                     // TODO do we need to do something about this? probably, because server-side evaluation is supposed to use the schema
                     //      however, if we evaluate a data object, then we have it to follow the references
                     //      maybe add a second parameter for the data object, optional
+                case 'contextual':
+                    // NOTE the context of the value is not easily accessible, not on the client side but especially not on the server side
+                    //      we would need to add more than just the data object to get everything right here
+                    //      however, the context is used for suggested values, not for allowed values. so, do we even need to take this into account?
                 default:
                     // TODO trigger an event so that other packages have a chance to implement their way of fetching/generating values (e.g. route references for the distributor)
                     break;

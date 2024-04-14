@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
@@ -33,6 +34,8 @@ class FieldValueSource extends ValueSource
 
         $fieldName = new StringSchema();
         $fieldName->getRenderingDefinition()->setLabel('Source Field Name');
+        $fieldName->getRenderingDefinition()->addRole(RenderingDefinitionInterface::ROLE_INPUT_FIELD);
+        $fieldName->getSuggestedValues()->setContextual();
         $schema->addProperty(static::KEY_FIELD_NAME, $fieldName);
 
         return $schema;

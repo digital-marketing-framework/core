@@ -5,6 +5,11 @@ namespace DigitalMarketingFramework\Core\Tests;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 use DigitalMarketingFramework\Core\Utility\MapUtility;
 
+/**
+ * TODO use MapUtility::createItem() and ListUtility::createItem()
+ *
+ * @deprecated
+ */
 trait ListMapTestTrait
 {
     /**

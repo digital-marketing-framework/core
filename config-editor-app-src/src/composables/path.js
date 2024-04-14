@@ -10,7 +10,10 @@ const getChildPaths = (store, path, currentPath, absolute) => {
   switch (schema.type) {
     case 'SWITCH': {
       const paths = [];
-      for (let index in schema.values) {
+      const values = schema.values.sort(
+        (childSchema1, childSchema2) => childSchema1.weight - childSchema2.weight
+      );
+      for (let index in values) {
         const childSchema = schema.values[index];
         if (childSchema.key === 'config') {
           const type = store.getValue(path + '/type', currentPath, true);

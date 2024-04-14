@@ -47,6 +47,7 @@ abstract class DataMapperTest extends DataProcessorPluginTest
         $dataProcessor = $this->registry->getDataProcessor();
 
         $context = $dataProcessor->createContext(new Data($this->data), new Configuration($this->configuration));
+
         return $dataProcessor->processDataMapper($config, $context);
     }
 

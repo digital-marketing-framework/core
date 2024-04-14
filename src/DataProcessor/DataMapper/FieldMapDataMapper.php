@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapper;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
@@ -40,6 +41,8 @@ class FieldMapDataMapper extends DataMapper
 
         $fieldMapKey = new StringSchema('fieldName');
         $fieldMapKey->getRenderingDefinition()->setLabel('Target Field Name');
+        $fieldMapKey->getRenderingDefinition()->addRole(RenderingDefinitionInterface::ROLE_OUTPUT_FIELD);
+        $fieldMapKey->getSuggestedValues()->setContextual();
         $fieldMapValue = new CustomSchema(ValueSchema::TYPE);
         $fieldMap = new MapSchema($fieldMapValue, $fieldMapKey);
         $fieldMap->setDynamicOrder(true);

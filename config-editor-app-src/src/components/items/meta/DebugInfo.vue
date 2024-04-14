@@ -11,10 +11,12 @@ import {
 } from "../../../helpers/type";
 import { useLabelProcessor } from "../../../composables/label";
 import { usePathProcessor } from "../../../composables/path";
+import { useValueSets } from '../../../composables/valueSets';
 
 const store = useDmfStore();
 const { getLabel } = useLabelProcessor(store);
 const { isSelected } = usePathProcessor(store);
+const { getSuggestedValues, getAllowedValues } = useValueSets(store);
 
 const props = defineProps({
     currentPath: {
@@ -40,6 +42,8 @@ const label = computed(() => getLabel(props.currentPath));
 const selected = computed(() => isSelected(props.currentPath));
 const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
 const value = computed(() => isScalar.value ? store.getValue(props.currentPath) : null);
+const suggestedValues = computed(() => isScalar.value ? getSuggestedValues(props.currentPath) : []);
+const allowedValues = computed(() => isScalar.value ? getAllowedValues(props.currentPath) : []);
 
 </script>
 
@@ -73,6 +77,14 @@ const value = computed(() => isScalar.value ? store.getValue(props.currentPath) 
             <tr v-if="isScalar">
                 <th class="tw-p-1 tw-align-top">Value</th>
                 <td class="tw-p-1 tw-align-top"><span class="tw-break-all">{{ value }}</span></td>
+            </tr>
+            <tr v-if="isScalar">
+                <th class="tw-p-1 tw-align-top">Suggested Values</th>
+                <td class="tw-p-1 tw-align-top"><span class="tw-break-all">{{ suggestedValues }}</span></td>
+            </tr>
+            <tr v-if="isScalar">
+                <th class="tw-p-1 tw-align-top">Allowed Values</th>
+                <td class="tw-p-1 tw-align-top"><span class="tw-break-all">{{ allowedValues }}</span></td>
             </tr>
             <tr v-if="isContainer">
                 <th class="tw-p-1 tw-align-top">Dynamic Container</th>

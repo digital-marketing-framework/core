@@ -126,7 +126,7 @@ class Configuration implements ConfigurationInterface
 
     public function getStreamConfiguration(string $id): ?array
     {
-        $streams = $this->get(static::KEY_STREAMS);
+        $streams = $this->get(static::KEY_STREAMS, []);
         if (isset($streams[$id])) {
             return MapUtility::getItemValue($streams[$id]);
         }

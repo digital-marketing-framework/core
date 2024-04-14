@@ -18,6 +18,10 @@ interface RenderingDefinitionInterface
 
     public const GROUP_SECONDARY = 'secondary';
 
+    public const ROLE_INPUT_FIELD = 'inputField';
+
+    public const ROLE_OUTPUT_FIELD = 'outputField';
+
     /**
      * @return ?array<string,mixed>
      */
@@ -54,4 +58,16 @@ interface RenderingDefinitionInterface
     public function getSkipHeader(): bool;
 
     public function addTrigger(string $triggerName): void;
+
+    /**
+     * @return array<string>
+     */
+    public function getRoles(): array;
+
+    /**
+     * @param array<string> $roles
+     */
+    public function setRoles(array $roles): void;
+
+    public function addRole(string $role): void;
 }

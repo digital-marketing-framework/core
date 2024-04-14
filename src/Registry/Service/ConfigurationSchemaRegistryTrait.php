@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Renderin
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\EvaluationReferenceSchema;
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\FieldContextSelectionSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\StreamReferenceSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
@@ -91,6 +92,7 @@ trait ConfigurationSchemaRegistryTrait
 
         // complex conditions
         $schemaDocument->addCustomType($this->getEvaluationSchema(), EvaluationSchema::TYPE);
+        $schemaDocument->addCustomType($this->getEvaluationSchema(withContext: true), EvaluationSchema::TYPE_WITH_CONTEXT);
         $schemaDocument->addCustomType(new EvaluationReferenceSchema(), EvaluationReferenceSchema::TYPE);
         $schemaDocument->addCustomType($this->getComparisonSchema(), ComparisonSchema::TYPE);
 
@@ -102,6 +104,10 @@ trait ConfigurationSchemaRegistryTrait
         // templating
         $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_PLAIN_TEXT), TemplateEngineInterface::TYPE_PLAIN_TEXT);
         $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_HTML), TemplateEngineInterface::TYPE_HTML);
+
+        // field context selection
+        $schemaDocument->addCustomType(new FieldContextSelectionSchema(true), FieldContextSelectionSchema::TYPE_INPUT);
+        $schemaDocument->addCustomType(new FieldContextSelectionSchema(false), FieldContextSelectionSchema::TYPE_OUTPUT);
 
         foreach ($this->getIncludeValueSet() as $documentIdentifier => $label) {
             $schemaDocument->addValueToValueSet('document/all', $documentIdentifier, $label);
@@ -135,7 +141,7 @@ trait ConfigurationSchemaRegistryTrait
         $valuesMapKeySchema->getRenderingDefinition()->setLabel('Value Map Name');
         $valueMapsSchema = new MapSchema($valueMapSchema, $valuesMapKeySchema);
 
-        $evaluationListSchema = new MapSchema(new CustomSchema(EvaluationSchema::TYPE));
+        $evaluationListSchema = new MapSchema(new CustomSchema(EvaluationSchema::TYPE_WITH_CONTEXT));
         $evaluationListSchema->getRenderingDefinition()->setLabel('Conditions');
 
         $streamListSchema = new MapSchema(new CustomSchema(StreamSchema::TYPE));

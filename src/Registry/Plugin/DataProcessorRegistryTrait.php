@@ -115,9 +115,9 @@ trait DataProcessorRegistryTrait
         return $this->getPlugin($keyword, EvaluationInterface::class, [$config, $context]);
     }
 
-    public function getEvaluationSchema(): SchemaInterface
+    public function getEvaluationSchema(bool $withContext = false): SchemaInterface
     {
-        $schema = new EvaluationSchema();
+        $schema = new EvaluationSchema(withContext: $withContext);
         foreach ($this->getAllPluginClasses(EvaluationInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }

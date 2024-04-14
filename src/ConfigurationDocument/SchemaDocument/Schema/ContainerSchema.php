@@ -62,11 +62,15 @@ class ContainerSchema extends Schema
         return $this->properties[$name] ?? null;
     }
 
-    public function removeProperty(string $name): void
+    public function removeProperty(string $name): ?ContainerProperty
     {
+        $property = null;
         if (isset($this->properties[$name])) {
+            $property = $this->properties[$name];
             unset($this->properties[$name]);
         }
+
+        return $property;
     }
 
     public function getValueSets(): array

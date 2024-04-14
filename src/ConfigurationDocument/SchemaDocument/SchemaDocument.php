@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\FieldDefinition\FieldListDefinition;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Value\ValueSet;
@@ -16,11 +17,13 @@ class SchemaDocument
     /**
      * @param array<string,SchemaInterface> $customTypes
      * @param array<string,ValueSet> $valueSets
+     * @param array<string,FieldListDefinition> $fieldContexts
      */
     public function __construct(
         protected ContainerSchema $mainSchema = new ContainerSchema(),
         protected array $customTypes = [],
         protected array $valueSets = [],
+        protected array $fieldContexts = [],
     ) {
     }
 
@@ -100,20 +103,6 @@ class SchemaDocument
     }
 
     /**
-     * @param array<string,mixed> $schemaDocument
-     */
-    protected function filterSchemaDocument(array &$schemaDocument): void
-    {
-        foreach ($schemaDocument as $key => $value) {
-            if ($value === null) {
-                unset($schemaDocument[$key]);
-            } elseif (is_array($value)) {
-                $this->filterSchemaDocument($schemaDocument[$key]);
-            }
-        }
-    }
-
-    /**
      * @return array<string,ValueSet>
      */
     protected function getAllValueSets(): array
@@ -140,18 +129,43 @@ class SchemaDocument
         return $valueSets;
     }
 
+    public function addFieldContext(string $name, FieldListDefinition $fields): void
+    {
+        $this->fieldContexts[$name] = $fields;
+    }
+
     /**
-     * @return array{valueSets:array<string,array<string,string>>,types:array<string,array<string,mixed>>,schema:array<string,mixed>}
+     * @param array<string,mixed> $schemaDocument
+     */
+    protected function filterSchemaDocument(array &$schemaDocument): void
+    {
+        foreach ($schemaDocument as $key => $value) {
+            if ($value === null) {
+                unset($schemaDocument[$key]);
+            } elseif (is_array($value)) {
+                $this->filterSchemaDocument($schemaDocument[$key]);
+            }
+        }
+    }
+
+    /**
+     * @return array{valueSets:array<string,array<string,string>>,types:array<string,array<string,mixed>>,fieldContexts:array<string,array<string,array{name:string,type:string,label:string,multiValue:?bool}>>,schema:array<string,mixed>}
      */
     public function toArray(): array
     {
         $schemaDocument = [
             'valueSets' => [],
             'types' => [],
+            'fieldContexts' => [],
             'schema' => $this->mainSchema->toArray(),
         ];
+
         foreach ($this->getAllValueSets() as $name => $set) {
             $schemaDocument['valueSets'][$name] = $set->toArray();
+        }
+
+        foreach ($this->fieldContexts as $name => $fieldContext) {
+            $schemaDocument['fieldContexts'][$name] = $fieldContext->toArray();
         }
 
         foreach ($this->customTypes as $type => $customTypeSchema) {

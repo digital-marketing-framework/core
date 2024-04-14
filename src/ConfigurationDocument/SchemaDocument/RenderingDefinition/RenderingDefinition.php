@@ -28,6 +28,9 @@ class RenderingDefinition implements RenderingDefinitionInterface
     /** @var array<string> */
     protected array $triggers = [];
 
+    /** @var array<string> */
+    protected array $roles = [];
+
     public function __construct()
     {
         $this->visibility = new AndCondition();
@@ -66,6 +69,10 @@ class RenderingDefinition implements RenderingDefinitionInterface
 
         if ($this->triggers !== []) {
             $render['triggers'] = $this->triggers;
+        }
+
+        if ($this->roles !== []) {
+            $render['roles'] = $this->roles;
         }
 
         if ($this->group !== null) {
@@ -158,5 +165,22 @@ class RenderingDefinition implements RenderingDefinitionInterface
     public function hideLabel(bool $hide = true): void
     {
         $this->hideLabel = $hide;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    public function addRole(string $role): void
+    {
+        if (!in_array($role, $this->roles)) {
+            $this->roles[] = $role;
+        }
     }
 }
