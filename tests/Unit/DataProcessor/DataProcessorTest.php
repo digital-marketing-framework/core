@@ -6,7 +6,7 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
@@ -40,9 +40,9 @@ class DataProcessorTest extends TestCase
     protected array $comparisons = [];
 
     /**
-     * @var array<EvaluationInterface&MockObject>
+     * @var array<ConditionInterface&MockObject>
      */
-    protected array $evaluations = [];
+    protected array $conditions = [];
 
     /**
      * @var array<DataMapperInterface&MockObject>
@@ -83,16 +83,16 @@ class DataProcessorTest extends TestCase
             return $this->comparisons[$keyword]['object'];
         }));
 
-        $this->registry->method('getEvaluation')->will($this->returnCallback(function (string $keyword, array $config) {
-            if (!isset($this->evaluations[$keyword])) {
+        $this->registry->method('getCondition')->will($this->returnCallback(function (string $keyword, array $config) {
+            if (!isset($this->conditions[$keyword])) {
                 return null;
             }
 
-            if (isset($this->evaluations[$keyword]['config'])) {
-                $this->assertEquals($this->evaluations[$keyword]['confgig'], $config);
+            if (isset($this->conditions[$keyword]['config'])) {
+                $this->assertEquals($this->conditions[$keyword]['confgig'], $config);
             }
 
-            return $this->evaluations[$keyword]['object'];
+            return $this->conditions[$keyword]['object'];
         }));
 
         $this->registry->method('getDataMapper')->will($this->returnCallback(function (string $keyword, array $config) {
@@ -207,21 +207,21 @@ class DataProcessorTest extends TestCase
     /**
      * @param ?array<string,mixed> $config
      */
-    protected function addEvaluation(string $keyword, bool $return, ?array $config = null, mixed $with = null): EvaluationInterface&MockObject
+    protected function addCondition(string $keyword, bool $return, ?array $config = null, mixed $with = null): ConditionInterface&MockObject
     {
-        $evaluation = $this->createMock(EvaluationInterface::class);
+        $condition = $this->createMock(ConditionInterface::class);
         if ($with !== null) {
-            $evaluation->method('evaluate')->with($with)->willReturn($return);
+            $condition->method('evaluate')->with($with)->willReturn($return);
         } else {
-            $evaluation->method('evaluate')->willReturn($return);
+            $condition->method('evaluate')->willReturn($return);
         }
 
-        $this->evaluations[$keyword]['object'] = $evaluation;
+        $this->conditions[$keyword]['object'] = $condition;
         if ($config !== null) {
-            $this->evaluations['config'] = $config;
+            $this->conditions['config'] = $config;
         }
 
-        return $evaluation;
+        return $condition;
     }
 
     /**
@@ -482,25 +482,25 @@ class DataProcessorTest extends TestCase
     }
 
     /** @test */
-    public function evaluationEmptyConfigurationWillThrowException(): void
+    public function conditionEmptyConfigurationWillThrowException(): void
     {
         $config = [];
         $this->expectExceptionMessage('no switch type found');
-        $this->subject->processEvaluation($config, $this->context);
+        $this->subject->processCondition($config, $this->context);
     }
 
     /** @test */
-    public function nonExistentEvaluationWillThrowException(): void
+    public function nonExistentConditionWillThrowException(): void
     {
-        $this->addEvaluation('testEvaluation', true);
+        $this->addCondition('testCondition', true);
         $config = [
-            'type' => 'nonExistentEvaluation',
+            'type' => 'nonExistentCondition',
             'config' => [
-                'nonExistentEvaluation' => [],
+                'nonExistentCondition' => [],
             ],
         ];
-        $this->expectExceptionMessage('Evaluation "nonExistentEvaluation" not found.');
-        $this->subject->processEvaluation($config, $this->context);
+        $this->expectExceptionMessage('Condition "nonExistentCondition" not found.');
+        $this->subject->processCondition($config, $this->context);
     }
 
     /**
@@ -508,16 +508,16 @@ class DataProcessorTest extends TestCase
      *
      * @dataProvider trueFalseDataProvider
      */
-    public function existentEvaluationWillBeUsed(bool $expectedResult): void
+    public function existentConditionWillBeUsed(bool $expectedResult): void
     {
-        $this->addEvaluation('testEvaluation', $expectedResult, ['evaluationConfigKey' => 'evaluationConfigValue']);
+        $this->addCondition('testCondition', $expectedResult, ['conditionConfigKey' => 'conditionConfigValue']);
         $config = [
-            'type' => 'testEvaluation',
+            'type' => 'testCondition',
             'config' => [
-                'testEvaluation' => ['evaluationConfigKey' => 'evaluationConfigValue'],
+                'testCondition' => ['conditionConfigKey' => 'conditionConfigValue'],
             ],
         ];
-        $output = $this->subject->processEvaluation($config, $this->context);
+        $output = $this->subject->processCondition($config, $this->context);
         $this->assertEquals($expectedResult, $output);
     }
 

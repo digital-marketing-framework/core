@@ -9,15 +9,19 @@ use ArrayAccess;
  */
 interface ConfigurationInterface extends ArrayAccess
 {
-    public const KEY_STREAMS = 'streams';
+    public const KEY_INTEGRATIONS = 'integrations';
 
-    public const KEY_EVALUATIONS = 'evaluations';
+    public const KEY_GENERAL_INTEGRATION = 'general';
+
+    public const KEY_DATA_PROCESSING = 'dataProcessing';
+
+    public const KEY_DATA_MAPPER_GROUPS = 'dataMapperGroups';
+
+    public const KEY_CONDITIONS = 'conditions';
 
     public const KEY_VALUE_MAPS = 'valueMaps';
 
-    public const KEY_IDENTIFIER = 'identifier';
-
-    public const KEY_IDENTIFIER_COLLECTORS = 'collectors';
+    public const KEY_IDENTIFIERS = 'identifiers';
 
     public function isReadonly(): bool;
 
@@ -45,14 +49,19 @@ interface ConfigurationInterface extends ArrayAccess
     public function unset(string $key): void;
 
     /**
-     * @return ?array<string,mixed>
+     * @return array<string,mixed>
      */
-    public function getStreamConfiguration(string $id): ?array;
+    public function getDataProcessingConfiguration(): array;
 
     /**
      * @return ?array<string,mixed>
      */
-    public function getEvaluationConfiguration(string $id): ?array;
+    public function getDataMapperGroupConfiguration(string $id): ?array;
+
+    /**
+     * @return ?array<string,mixed>
+     */
+    public function getConditionConfiguration(string $id): ?array;
 
     /**
      * @return ?array<string, array{uuid:string,weight:int,key:string,value:string}>
@@ -62,7 +71,29 @@ interface ConfigurationInterface extends ArrayAccess
     /**
      * @return array<string,mixed>
      */
-    public function getIdentifierCollectorConfiguration(string $identifierCollectorName): array;
+    public function getGeneralIntegrationConfiguration(): array;
 
-    public function identifierCollectorExists(string $identifierCollectorName): bool;
+    public function integrationExists(string $integrationName): bool;
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getIntegrationConfiguration(string $integrationName): array;
+
+    /**
+     * @return array<string,array<string,mixed>>
+     */
+    public function getAllIntegrationConfigurations(): array;
+
+    /**
+     * @return array<string>
+     */
+    public function getAllIntegrationNames(): array;
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getIdentifierCollectorConfiguration(string $integrationName, string $identifierCollectorName): array;
+
+    public function identifierCollectorExists(string $integrationName, string $identifierCollectorName): bool;
 }

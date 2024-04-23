@@ -1,6 +1,7 @@
 import { useFieldContextReference } from './fieldContextReference';
+import { usePathProcessor } from '../path';
 
-// *** stream processor ***
+// *** data mapper group processor ***
 
 const dataMapperProcessors = {
   fieldMap: (store, config, context, inputContext) => {
@@ -30,16 +31,16 @@ const dataMapperProcessors = {
   }
 };
 
-const streamProcessors = {
+const dataMapperGroupProcessors = {
   sequence: (store, config, inputContext) => {
     let context = inputContext;
     for (let listItemId in config.list) {
-      const subStreamId = config.list[listItemId].value;
-      context = processStream(store, subStreamId, context);
+      const subDataMapperGroupId = config.list[listItemId].value;
+      context = processDataMapperGroup(store, subDataMapperGroupId, context);
     }
     return context;
   },
-  dataMapper: (store, config, inputContext) => {
+  single: (store, config, inputContext) => {
     inputContext = inputContext || {};
     let context = {};
     for (let dataMapperType in config.data) {
@@ -54,47 +55,47 @@ const streamProcessors = {
 };
 
 // this kind of steam loop detection will stop working
-// if we ever introduced parallel stream in addition to sequences
-const streamLoopDetection = {};
+// if we ever introduced parallel data mapper groups in addition to sequences
+const dataMapperGroupLoopDetection = {};
 
-const processStream = (store, streamId, inputContext) => {
-  if (!streamId) {
-    console.warn('empty stream ID is invalid');
+const processDataMapperGroup = (store, dataMapperGroupId, inputContext) => {
+  if (!dataMapperGroupId) {
+    console.warn('empty data mapper group ID is invalid');
     return {};
   }
 
-  if (streamLoopDetection[streamId]) {
-    console.error('stream loop detected', streamLoopDetection);
+  if (dataMapperGroupLoopDetection[dataMapperGroupId]) {
+    console.error('data mapper group loop detected', dataMapperGroupLoopDetection);
     return {};
   }
-  streamLoopDetection[streamId] = true;
+  dataMapperGroupLoopDetection[dataMapperGroupId] = true;
 
-  const config = store.data.streams[streamId].value;
+  const config = store.data.dataProcessing.dataMapperGroups[dataMapperGroupId].value;
 
   if (typeof inputContext === 'undefined') {
     const contextName = config.inputContext;
     inputContext = contextName ? getContext(store, contextName) : undefined;
   }
 
-  const streamType = config.type;
-  const streamConfig = config.config[streamType];
+  const dataMapperGroupType = config.type;
+  const dataMapperGroupConfig = config.config[dataMapperGroupType];
 
-  const processor = streamProcessors[streamType];
+  const processor = dataMapperGroupProcessors[dataMapperGroupType];
 
   if (typeof processor === 'undefined') {
-    console.error('unknown stream type "' + streamType + '"');
-    delete streamLoopDetection[streamId];
+    console.error('unknown data mapper group type "' + dataMapperGroupType + '"');
+    delete dataMapperGroupLoopDetection[dataMapperGroupId];
     return {};
   }
 
   let result = {};
   try {
-    result = processor(store, streamConfig, inputContext);
+    result = processor(store, dataMapperGroupConfig, inputContext);
   } catch (error) {
     console.error(error);
   }
 
-  delete streamLoopDetection[streamId];
+  delete dataMapperGroupLoopDetection[dataMapperGroupId];
   return result;
 };
 
@@ -163,7 +164,7 @@ const getDistributorInputDefaultsAllContext = (store) => {
 };
 
 const getDistributorInputDataProviderAllContext = (store) => {
-  // TODO
+  // TODO implement data provider context processing
   return {};
 };
 
@@ -189,53 +190,55 @@ const getCollectorInputDefaultsContext = (store, name) => {
 };
 
 const getCollectorOutputAllContext = (store) => {
-  const { getCollectorKeywords } = useFieldContextReference(store);
+  const { getInboundRouteKeywords } = useFieldContextReference(store);
   const contexts = [];
-  const keywords = getCollectorKeywords();
-  for (let keyword in keywords) {
-    const context = getContext(store, 'collector.out.' + keyword);
-    contexts.push(context);
+  const keywords = getInboundRouteKeywords();
+  for (let integration in keywords) {
+    for (let keyword in keywords[integration]) {
+      const context = getContext(store, 'collector.out.' + integration + '.' + keyword);
+      contexts.push(context);
+    }
   }
   return combineContexts(contexts);
 };
 
 const getCollectorOutputContext = (store, name) => {
-  const keyword = name.substring('collector.out.'.length);
-  const collectorConfig = store.data.collector.collectors[keyword];
-  const streamId = collectorConfig.dataMap;
-  return processStream(store, streamId);
+  const [integration, keyword] = name.substring('collector.out.'.length).split('.');
+  const collectorConfig = store.data.integrations[integration].inboundRoutes[keyword];
+  const dataMapperGroupId = collectorConfig.dataMap;
+  return processDataMapperGroup(store, dataMapperGroupId);
 };
 
-// -- stream --
+// -- data mapper group --
 
-const getStreamInputDefaultsContext = (store, name) => {
-  const streamId = name.substring('stream.in.defaults.'.length);
-  const contextName = store.data.streams[streamId].value.inputContext;
+const getDataMapperGroupInputDefaultsContext = (store, name) => {
+  const dataMapperGroupId = name.substring('dataMapperGroup.in.defaults.'.length);
+  const contextName = store.data.dataProcessing.dataMapperGroups[dataMapperGroupId].value.inputContext;
   if (!contextName) {
     return {};
   }
   return getContext(store, contextName);
 };
 
-const getStreamOutputDefaultsContext = (store, name) => {
-  const streamId = name.substring('stream.out.defaults.'.length);
-  const contextName = store.data.streams[streamId].value.outputContext;
+const getDataMapperGroupOutputDefaultsContext = (store, name) => {
+  const dataMapperGroupId = name.substring('dataMapperGroup.out.defaults.'.length);
+  const contextName = store.data.dataProcessing.dataMapperGroups[dataMapperGroupId].value.outputContext;
   if (!contextName) {
     return {};
   }
   return getContext(store, contextName);
 };
 
-const getStreamOutputContext = (store, name) => {
-  const streamId = name.substring('stream.out.'.length);
-  return processStream(store, streamId);
+const getDataMapperGroupOutputContext = (store, name) => {
+  const dataMapperGroupId = name.substring('dataMapperGroup.out.'.length);
+  return processDataMapperGroup(store, dataMapperGroupId);
 };
 
 // -- condition --
 
 const getConditionInputDefaultsContext = (store, name) => {
-  const evaluationId = name.substring('evaluation.in.defaults.'.length);
-  const contextName = store.data.evaluations[evaluationId].value.inputContext;
+  const conditionId = name.substring('condition.in.defaults.'.length);
+  const contextName = store.data.dataProcessing.conditions[conditionId].value.inputContext;
   if (!contextName) {
     return {};
   }
@@ -243,22 +246,22 @@ const getConditionInputDefaultsContext = (store, name) => {
 };
 
 /*
-  distributor.in.defaults.XYZ()
+  distributor.in.defaults.EVENT.NAME
   distributor.in.defaults.all()
   distributor.in.dataProvider.all()
-  distributor.out.defaults.XYZ
-  distributor.out.XYZ#PQR()
-  distributor.out.cache()
+  distributor.out.defaults.INTEGRATION.ROUTE_KEYWORD
+  distributor.out.INTEGRATION.ROUTE_ID()
+  distributor.out.cache.cache()
 
-  collector.in.defaults.XYZ
-  collector.out.XYZ()
+  collector.in.defaults.INTEGRATION.ROUTE_KEYWORD
+  collector.out.INTEGRATION.ROUTE_KEYWORD()
   collector.out.all()
 
-  stream.in.defaults.XYZ
-  stream.out.defaults.XYZ
-  stream.out.XYZ
+  dataMapperGroup.in.defaults.ID
+  dataMapperGroup.out.defaults.ID
+  dataMapperGroup.out.ID()
 
-  condition.in.defaults.XYZ
+  condition.in.defaults.ID
 */
 const getContext = (store, name) => {
   if (name === '') {
@@ -287,18 +290,18 @@ const getContext = (store, name) => {
     } else if (name.startsWith('collector.out.')) {
       return getCollectorOutputContext(store, name);
     }
-  } else if (name.startsWith('stream.')) {
-    // -- stream --
-    if (name.startsWith('stream.in.defaults.')) {
-      return getStreamInputDefaultsContext(store, name);
-    } else if (name.startsWith('stream.out.defaults.')) {
-      return getStreamOutputDefaultsContext(store, name);
-    } else if (name.startsWith('stream.out.')) {
-      return getStreamOutputContext(store, name);
+  } else if (name.startsWith('dataMapperGroup.')) {
+    // -- data mapper group --
+    if (name.startsWith('dataMapperGroup.in.defaults.')) {
+      return getDataMapperGroupInputDefaultsContext(store, name);
+    } else if (name.startsWith('dataMapperGroup.out.defaults.')) {
+      return getDataMapperGroupOutputDefaultsContext(store, name);
+    } else if (name.startsWith('dataMapperGroup.out.')) {
+      return getDataMapperGroupOutputContext(store, name);
     }
-  } else if (name.startsWith('evaluation.')) {
-    // -- evaluation --
-    if (name.startsWith('evaluation.in.defaults.')) {
+  } else if (name.startsWith('condition.')) {
+    // -- condition --
+    if (name.startsWith('condition.in.defaults.')) {
       return getConditionInputDefaultsContext(store, name);
     }
   }
@@ -313,35 +316,58 @@ const getContext = (store, name) => {
 };
 
 const getActiveInputContextNames = (store, path) => {
-  if (path.startsWith('/streams/')) {
-    const streamId = path.split('/')[2];
-    return ['stream.in.defaults.' + streamId];
-  } else if (path.startsWith('/evaluations/')) {
-    const evaluationId = path.split('/')[2];
-    return ['evaluation.in.defaults.' + evaluationId];
-  } else if (path.startsWith('/distributor/')) {
+  const {
+    isOutboundRoutePath,
+    isInboundRoutePath,
+    isDataMapperGroupPath,
+    isConditionPath,
+    isPersonalizationPath
+  } = usePathProcessor(store);
+
+  const dataMapperGroupId = isDataMapperGroupPath(path);
+  if (dataMapperGroupId) {
+    return ['dataMapperGroup.in.defaults.' + dataMapperGroupId];
+  }
+
+  const conditionId = isConditionPath(path);
+  if (conditionId) {
+    return ['condition.in.defaults.' + conditionId];
+  }
+
+  if (isOutboundRoutePath(path)) {
     return ['distributor.in.defaults.all'];
-  } else if (path.startsWith('/collector/collectors/')) {
-    const collectorKeyword = path.split('/')[3];
-    return ['collector.in.defaults.' + collectorKeyword];
-  } else if (path.startsWith('/collector/')) {
+  }
+
+  const inboundRoute = isInboundRoutePath(path);
+  if (inboundRoute) {
+    return ['collector.in.defaults.' + inboundRoute.integration + '.' + inboundRoute.keyword];
+  }
+
+  if (isPersonalizationPath(path)) {
     return ['collector.out.all'];
   }
   return [];
 };
 
 const getActiveOutputContextNames = (store, path) => {
-  if (path.startsWith('/streams/')) {
-    const streamId = path.split('/')[2];
-    return ['stream.out.defaults.' + streamId];
-  } else if (path.startsWith('/distributor/routes/')) {
-    const routeId = path.split('/')[3];
-    const type = store.data.distributor.routes[routeId].value.type;
-    return ['distributor.out.defaults.' + type];
-  } else if (path.startsWith('/collector/collectors/')) {
-    // data collectors do not have a default output context
-    // return ['collector.out.defaults.' + path.split('/')[3]];
+  const { isOutboundRoutePath, isInboundRoutePath, isDataMapperGroupPath } = usePathProcessor(store);
+
+  const dataMapperGroupId = isDataMapperGroupPath(path);
+  if (dataMapperGroupId) {
+    return ['dataMapperGroup.out.defaults.' + dataMapperGroupId];
   }
+
+  const outboundRoute = isOutboundRoutePath(path);
+  if (outboundRoute) {
+    return ['distributor.out.defaults.' + outboundRoute.integration + '.' + outboundRoute.keyword];
+  }
+
+  const inboundRoute = isInboundRoutePath(path);
+  if (inboundRoute) {
+    // inbound routes do not have a default output context
+    // return ['collector.out.defaults.' + inboundRouteKeyword];
+  }
+
   return [];
 };
 
@@ -356,37 +382,41 @@ const getActiveOutputContext = (store, path) => {
 };
 
 const getInputContextNames = (store, path) => {
-  const { getCollectorKeywords, getStreamIds } = useFieldContextReference(store);
+  const { getInboundRouteKeywords, getDataMapperGroupIds } = useFieldContextReference(store);
   const result = {};
 
   const inputIdentifier = store.settings.contextIdentifier || 'all';
   result['distributor.in.defaults.' + inputIdentifier] = 'Distributor Input';
 
-  const collectorKeywords = getCollectorKeywords(store);
-  for (let key in collectorKeywords) {
-    result['collector.in.defaults.' + key] = 'Collector Input ' + (collectorKeywords[key] || key);
+  const collectorKeywords = getInboundRouteKeywords(store);
+  for (let integration in collectorKeywords) {
+    for (let key in collectorKeywords[integration]) {
+      result['collector.in.defaults.' + integration + '.' + key] = 'Collector Input ' + (collectorKeywords[integration][key] || key);
+    }
   }
 
   result['collector.out.all'] = 'Collector Output';
 
-  const streamIds = getStreamIds(store);
-  for (let id in streamIds) {
-    if (path.startsWith('/streams/' + id + '/')) {
+  const dataMapperGroupIds = getDataMapperGroupIds(store);
+  for (let id in dataMapperGroupIds) {
+    if (path.startsWith('/dataProcessing/dataMapperGroups/' + id + '/')) {
       continue;
     }
-    result['stream.out.' + id] = 'Stream Output ' + streamIds[id];
+    result['dataMapperGroup.out.' + id] = 'Data Mapper Output ' + dataMapperGroupIds[id];
   }
 
   return result;
 };
 
 const getOutputContextNames = (store) => {
-  const { getRouteKeywords } = useFieldContextReference(store);
+  const { getOutboundRouteKeywords } = useFieldContextReference(store);
   const result = {};
 
-  const routeKeywords = getRouteKeywords(store);
-  for (let key in routeKeywords) {
-    result['distributor.out.defaults.' + key] = 'Distributor Output ' + routeKeywords[key];
+  const routeKeywords = getOutboundRouteKeywords(store);
+  for (let integration in routeKeywords) {
+    for (let key in routeKeywords[integration]) {
+      result['distributor.out.defaults.' + integration + '.' + key] = 'Distributor Output ' + (routeKeywords[integration][key] || key);
+    }
   }
 
   return result;
@@ -404,6 +434,6 @@ export const useFieldContextRepository = (store) => {
     getActiveOutputContextNames: (path) => getActiveOutputContextNames(store, path),
     getActiveOutputContext: (path) => getActiveOutputContext(store, path),
 
-    processStream: (streamId) => processStream(store, streamId)
+    processDataMapperGroup: (dataMapperGroupId) => processDataMapperGroup(store, dataMapperGroupId)
   };
 };

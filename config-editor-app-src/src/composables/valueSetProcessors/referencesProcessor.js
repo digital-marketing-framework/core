@@ -15,7 +15,7 @@ const processor = (store, config, currentPath, add) => {
   config.forEach((reference) => {
     const { getAllPaths } = usePathProcessor(store);
     const { processLabel, getLabel, getValueLabel, prettifyLabel } = useLabelProcessor(store);
-    const paths = getAllPaths(reference.path, currentPath);
+    const paths = getAllPaths(reference.path, currentPath, reference.ignore);
     paths.forEach((path) => {
       switch (reference.type) {
         case 'key': {

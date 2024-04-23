@@ -12,7 +12,7 @@ class TaggableCacheWrapper implements CacheInterface
 
     protected const PREFIX_TAG = 'tag:';
 
-    protected const KEY_ALL_TAGS = 'TAGABLE_WRAPPPER__ALL_TAGS';
+    protected const KEY_ALL_TAGS = 'TAGGABLE_WRAPPER__ALL_TAGS';
 
     public function __construct(
         protected NonTaggableCacheInterface $cache,

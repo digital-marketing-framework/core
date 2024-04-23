@@ -7,13 +7,13 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\Configuration
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\FatalMigrationException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\MigrationException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 

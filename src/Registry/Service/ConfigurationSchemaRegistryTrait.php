@@ -3,26 +3,26 @@
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\EvaluationReferenceSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\FieldContextSelectionSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\StreamReferenceSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\StreamSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
+use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ConditionReferenceSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\FieldContextSelectionSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\DataMapperGroupReferenceSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ListSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\MapSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ConditionSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperGroupSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineInterface;
 
 trait ConfigurationSchemaRegistryTrait
@@ -83,6 +83,51 @@ trait ConfigurationSchemaRegistryTrait
         return $includes;
     }
 
+    protected function getIntegrationSchema(SchemaDocument $schemaDocument, ?string $integrationName = null, ?string $integrationLabel = null, ?int $weight = null): ContainerSchema
+    {
+        $mainSchema = $schemaDocument->getMainSchema();
+        $integrationsSchema = $mainSchema->getProperty(ConfigurationInterface::KEY_INTEGRATIONS)?->getSchema();
+        if (!$integrationsSchema instanceof ContainerSchema) {
+            $integrationsSchema = new ContainerSchema();
+            $mainSchema->addProperty(ConfigurationInterface::KEY_INTEGRATIONS, $integrationsSchema);
+        }
+
+        if ($integrationName === null) {
+            return $integrationsSchema;
+        }
+
+        $integrationImplementationSchema = $integrationsSchema->getProperty($integrationName)?->getSchema();
+        if (!$integrationImplementationSchema instanceof ContainerSchema) {
+            $integrationImplementationSchema = new ContainerSchema();
+            if ($integrationLabel !== null) {
+                $integrationImplementationSchema->getRenderingDefinition()->setLabel($integrationLabel);
+            }
+            $property = $integrationsSchema->addProperty($integrationName, $integrationImplementationSchema);
+            if ($weight !== null) {
+                $property->setWeight($weight);
+            }
+        }
+
+        return $integrationImplementationSchema;
+    }
+
+    protected function getGeneralIntegrationSchema(SchemaDocument $schemaDocument): ContainerSchema
+    {
+        return $this->getIntegrationSchema($schemaDocument, ConfigurationInterface::KEY_GENERAL_INTEGRATION, weight: 0);
+    }
+
+    protected function getDataProcessingSchema(SchemaDocument $schemaDocument): ContainerSchema
+    {
+        $mainSchema = $schemaDocument->getMainSchema();
+        $dataProcessingSchema = $mainSchema->getProperty(ConfigurationInterface::KEY_DATA_PROCESSING)?->getSchema();
+        if (!$dataProcessingSchema instanceof ContainerSchema) {
+            $dataProcessingSchema = new ContainerSchema();
+            $mainSchema->addProperty(ConfigurationInterface::KEY_DATA_PROCESSING, $dataProcessingSchema);
+        }
+
+        return $dataProcessingSchema;
+    }
+
     public function addConfigurationSchema(SchemaDocument $schemaDocument): void
     {
         // complex values
@@ -91,15 +136,15 @@ trait ConfigurationSchemaRegistryTrait
         $schemaDocument->addCustomType($this->getValueModifierSchema(), ValueModifierSchema::TYPE);
 
         // complex conditions
-        $schemaDocument->addCustomType($this->getEvaluationSchema(), EvaluationSchema::TYPE);
-        $schemaDocument->addCustomType($this->getEvaluationSchema(withContext: true), EvaluationSchema::TYPE_WITH_CONTEXT);
-        $schemaDocument->addCustomType(new EvaluationReferenceSchema(), EvaluationReferenceSchema::TYPE);
+        $schemaDocument->addCustomType($this->getConditionSchema(), ConditionSchema::TYPE);
+        $schemaDocument->addCustomType($this->getConditionSchema(withContext: true), ConditionSchema::TYPE_WITH_CONTEXT);
+        $schemaDocument->addCustomType(new ConditionReferenceSchema(), ConditionReferenceSchema::TYPE);
         $schemaDocument->addCustomType($this->getComparisonSchema(), ComparisonSchema::TYPE);
 
         // data set processing
         $schemaDocument->addCustomType($this->getDataMapperSchema(), DataMapperSchema::TYPE);
-        $schemaDocument->addCustomType($this->getStreamSchema(), StreamSchema::TYPE);
-        $schemaDocument->addCustomType(new StreamReferenceSchema(), StreamReferenceSchema::TYPE);
+        $schemaDocument->addCustomType($this->getDataMapperGroupSchema(), DataMapperGroupSchema::TYPE);
+        $schemaDocument->addCustomType(new DataMapperGroupReferenceSchema(), DataMapperGroupReferenceSchema::TYPE);
 
         // templating
         $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_PLAIN_TEXT), TemplateEngineInterface::TYPE_PLAIN_TEXT);
@@ -109,13 +154,21 @@ trait ConfigurationSchemaRegistryTrait
         $schemaDocument->addCustomType(new FieldContextSelectionSchema(true), FieldContextSelectionSchema::TYPE_INPUT);
         $schemaDocument->addCustomType(new FieldContextSelectionSchema(false), FieldContextSelectionSchema::TYPE_OUTPUT);
 
+        // document IDs
         foreach ($this->getIncludeValueSet() as $documentIdentifier => $label) {
             $schemaDocument->addValueToValueSet('document/all', $documentIdentifier, $label);
         }
 
+        // schema versions
+        foreach ($this->schemaVersion as $key => $version) {
+            $schemaDocument->addVersion($key, $version);
+        }
+
+        // main schema
         $mainSchema = $schemaDocument->getMainSchema();
         $mainSchema->getRenderingDefinition()->setLabel('Digital Marketing');
 
+        // meta data
         $metaDataSchema = new ContainerSchema();
         $metaDataSchema->getRenderingDefinition()->setLabel('Document');
 
@@ -136,30 +189,34 @@ trait ConfigurationSchemaRegistryTrait
 
         $mainSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_META_DATA, $metaDataSchema);
 
+        // data processing
+        $dataProcessingSchema = $this->getDataProcessingSchema($schemaDocument);
+
+        // data processing - value maps
         $valueMapSchema = new MapSchema(new StringSchema());
         $valuesMapKeySchema = new StringSchema('mapName');
         $valuesMapKeySchema->getRenderingDefinition()->setLabel('Value Map Name');
         $valueMapsSchema = new MapSchema($valueMapSchema, $valuesMapKeySchema);
+        $valueMapsSchema->getRenderingDefinition()->setLabel('Value Mapping');
+        $dataProcessingSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
 
-        $evaluationListSchema = new MapSchema(new CustomSchema(EvaluationSchema::TYPE_WITH_CONTEXT));
-        $evaluationListSchema->getRenderingDefinition()->setLabel('Conditions');
+        // data processing - conditions
+        $conditionListSchema = new MapSchema(new CustomSchema(ConditionSchema::TYPE_WITH_CONTEXT));
+        $dataProcessingSchema->addProperty(ConfigurationInterface::KEY_CONDITIONS, $conditionListSchema);
 
-        $streamListSchema = new MapSchema(new CustomSchema(StreamSchema::TYPE));
+        // data processing - data mapper groups
+        $dataMapperGroupListSchema = new MapSchema(new CustomSchema(DataMapperGroupSchema::TYPE));
+        $dataMapperGroupListSchema->getRenderingDefinition()->setLabel('Field Mapping');
+        $dataProcessingSchema->addProperty(ConfigurationInterface::KEY_DATA_MAPPER_GROUPS, $dataMapperGroupListSchema);
 
-        $mainSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
-        $mainSchema->addProperty(ConfigurationInterface::KEY_STREAMS, $streamListSchema);
-        $mainSchema->addProperty(ConfigurationInterface::KEY_EVALUATIONS, $evaluationListSchema);
-        $mainSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIER, $this->getIdentifierCollectorSchema());
-
-        foreach ($this->schemaVersion as $key => $version) {
-            $schemaDocument->addVersion($key, $version);
-        }
+        // identifier
+        $this->addIdentifierCollectorSchemas($schemaDocument);
     }
 
     /**
-     * This method will produce the schema document for this registry. There may be others.
-     * If you want to produce the schema for all registries, create your own SchemaDocument
-     * and call addConfigurationSchema() on all DMF registries in the system.
+     * NOTE This method will produce the schema document for this registry. There may be others.
+     *      If you want to produce the schema for all registries, create your own SchemaDocument
+     *      and call addConfigurationSchema() on all DMF registries in the system.
      */
     public function getConfigurationSchema(): SchemaDocument
     {

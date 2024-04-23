@@ -2,15 +2,15 @@
 
 namespace DigitalMarketingFramework\Core\IdentifierCollector;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
+use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
-use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 abstract class IdentifierCollector extends ConfigurablePlugin implements IdentifierCollectorInterface
 {
@@ -24,7 +24,14 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
         protected ConfigurationInterface $identifiersConfiguration
     ) {
         parent::__construct($keyword);
-        $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration($this->getKeyword());
+        $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration(static::getIntegrationName(), $this->getKeyword());
+    }
+
+    abstract public static function getIntegrationName(): string;
+
+    public static function getIntegrationLabel(): ?string
+    {
+        return null;
     }
 
     protected function proceed(): bool

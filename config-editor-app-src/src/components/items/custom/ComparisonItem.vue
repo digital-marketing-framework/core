@@ -1,6 +1,6 @@
 <script setup>
 
-import ContainerItem from '../ContainerItem.vue';
+import ContainerItem from '../container/container/ContainerItem.vue';
 
 defineProps({
     currentPath: {

@@ -1,7 +1,9 @@
-const getStreamIds = (store) => {
+import { getAbsolutePath } from '@/helpers/path'
+
+const getDataMapperGroupIds = (store) => {
   const ids = {};
-  for (let id in store.data.streams) {
-    ids[id] = store.data.streams[id].key;
+  for (let id in store.data.dataProcessing.dataMapperGroups) {
+    ids[id] = store.data.dataProcessing.dataMapperGroups[id].key;
   }
   return ids;
 };
@@ -19,19 +21,34 @@ const getStreamIds = (store) => {
 //   return names;
 // };
 
-const getRouteKeywords = (store) => {
-  return store.schemaDocument.valueSets['route/all'] || {};
+const getIntegrationRouteKeywords = (store, direction) => {
+  const result = {};
+  for (let name in store.schemaDocument.valueSets) {
+    const matches = name.match(new RegExp('^' + direction + '\\/([^/]+)\\/all$'));
+    if (matches !== null) {
+      const integration = matches[1];
+      result[integration] = {};
+      for (let key in store.schemaDocument.valueSets[name]) {
+        result[integration][key] = store.schemaDocument.valueSets[name][key];
+      }
+    }
+  }
+  return result;
 };
 
-const getCollectorKeywords = (store) => {
-  return store.schemaDocument.valueSets['dataCollector/all'] || {};
+const getOutboundRouteKeywords = (store) => {
+  return getIntegrationRouteKeywords(store, 'outboundRoutes');
+};
+
+const getInboundRouteKeywords = (store) => {
+  return getIntegrationRouteKeywords(store, 'inboundRoutes');
 };
 
 export const useFieldContextReference = (store) => {
   return {
-    getStreamIds: () => getStreamIds(store),
-    getRouteKeywords: () => getRouteKeywords(store),
+    getDataMapperGroupIds: () => getDataMapperGroupIds(store),
+    getOutboundRouteKeywords: () => getOutboundRouteKeywords(store),
     // getRouteNames: () => getRouteNames(store),
-    getCollectorKeywords: () => getCollectorKeywords(store)
+    getInboundRouteKeywords: () => getInboundRouteKeywords(store)
   };
 };

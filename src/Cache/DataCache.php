@@ -147,7 +147,7 @@ class DataCache implements DataCacheInterface
     /**
      * @param array<string> $tags
      */
-    public function store(IdentifierInterface $identifier, DataInterface $data, array $tags = [], bool $followReferences = false): void
+    public function store(IdentifierInterface $identifier, DataInterface $data, array $tags = [], bool $followReferences = false, int $timeoutInSeconds = -1): void
     {
         $key = $this->addKeyPrefix($identifier->getCacheKey());
         if ($followReferences) {
@@ -159,6 +159,7 @@ class DataCache implements DataCacheInterface
         $this->cache->store(
             $key,
             [static::CACHE_KEY_DATA => $data->pack()],
+            $timeoutInSeconds,
             $this->addTagPrefix($tags)
         );
     }
@@ -166,7 +167,7 @@ class DataCache implements DataCacheInterface
     /**
      * @param array<string> $tags
      */
-    public function storeReference(IdentifierInterface $source, IdentifierInterface $target, array $tags = []): void
+    public function storeReference(IdentifierInterface $source, IdentifierInterface $target, array $tags = [], int $timeoutInSeconds = -1): void
     {
         $tags[] = static::PREFIX;
         $tags[] = $source->getDomainKey();
@@ -177,6 +178,7 @@ class DataCache implements DataCacheInterface
         $this->cache->store(
             $this->addKeyPrefix($source->getCacheKey()),
             [static::CACHE_KEY_REFERENCE => $target->getCacheKey()],
+            $timeoutInSeconds,
             $this->addTagPrefix($tags)
         );
     }

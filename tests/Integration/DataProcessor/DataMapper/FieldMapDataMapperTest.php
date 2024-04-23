@@ -11,7 +11,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
  */
 class FieldMapDataMapperTest extends DataMapperTest
 {
-    protected const KEYWORD = 'fieldMap';
+    protected const KEYWORD = 'fields';
 
     public function mapDataProvider(): array
     {

@@ -1,7 +1,7 @@
 import { useDmfStore } from '../stores/dmf';
 import { ListUtility } from '../helpers/listValue';
 import { MapUtility } from '../helpers/mapValue';
-import { getAbsolutePath, isRoot } from '../helpers/path';
+import { getAbsolutePath, getLeafKey, isRoot } from '../helpers/path'
 import { useNavigation } from './navigation';
 
 const getChildPaths = (store, path, currentPath, absolute) => {
@@ -78,10 +78,68 @@ const getChildPathsGrouped = (store, path, currentPath, absolute) => {
   return result;
 };
 
-const getAllPaths = (store, pathPattern, currentPath) => {
+const pathMatchesSinglePattern = (path, pathPattern, excludeSubPaths) => {
+  if (!pathPattern) {
+    return false;
+  }
+  const pathParts = path.split('/');
+  const pathPatternParts = pathPattern.split('/');
+  while (pathPatternParts.length > 0) {
+    if (pathParts.length === 0) {
+      return false;
+    }
+
+    const pathPart = pathParts.shift();
+    const pathPatternPart = pathPatternParts.shift();
+    if (pathPatternPart !== '*' && pathPart !== pathPatternPart) {
+      return false;
+    }
+  }
+  if (pathParts.length === 0 && pathPatternParts.length === 0) {
+    return true;
+  }
+  return !excludeSubPaths;
+};
+
+const pathMatchesPattern = (path, pathPattern, excludeSubPaths) => {
+  if (!pathPattern) {
+    return false;
+  }
+  if (typeof pathPattern === 'string') {
+    pathPattern = [pathPattern];
+  }
+  for (let i = 0; i < pathPattern.length; i++) {
+    if (pathMatchesSinglePattern(path, pathPattern[i], excludeSubPaths)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const processPathPattern = (store, pathPattern, currentPath) => {
+  return pathPattern.replace(/\{[^}]+\}/, (match) => {
+    const referencePath = match.substring(1, match.length - 1);
+    let value = store.getValue(referencePath, currentPath);
+    if (typeof value === 'object') {
+      value = getLeafKey(referencePath, currentPath);
+    }
+    return typeof value === 'undefined' || value === '' ? '*' : value;
+  });
+};
+
+const getAllPaths = (store, pathPattern, currentPath, ignorePathPattern) => {
   pathPattern = getAbsolutePath(pathPattern, currentPath);
   if (pathPattern === '/') {
     return [pathPattern];
+  }
+  pathPattern = processPathPattern(store, pathPattern, currentPath);
+  if (typeof ignorePathPattern === 'string') {
+    ignorePathPattern = [ignorePathPattern];
+  }
+  if (typeof ignorePathPattern === 'object') {
+    for (let i = 0; i < ignorePathPattern.length; i++) {
+      ignorePathPattern[i] = processPathPattern(store, ignorePathPattern[i], currentPath);
+    }
   }
   let paths = [''];
   pathPattern
@@ -91,14 +149,22 @@ const getAllPaths = (store, pathPattern, currentPath) => {
       if (pathPart === '*') {
         const newPaths = [];
         paths.forEach((path) => {
-          getChildPaths(store, path).forEach((childPath) => {
-            newPaths.push(path + '/' + childPath);
-          });
+          if (!pathMatchesPattern(path, ignorePathPattern)) {
+            getChildPaths(store, path).forEach((childPath) => {
+              const newPath = path + '/' + childPath;
+              if (!pathMatchesPattern(newPath, ignorePathPattern)) {
+                newPaths.push(newPath);
+              }
+            });
+          }
         });
         paths = newPaths;
       } else {
         for (let index = 0; index < paths.length; index++) {
-          paths[index] = paths[index] + '/' + pathPart;
+          const newPath = paths[index] + '/' + pathPart;
+          if (!pathMatchesPattern(newPath, ignorePathPattern)) {
+            paths[index] = paths[index] + '/' + pathPart;
+          }
         }
       }
     });
@@ -106,13 +172,13 @@ const getAllPaths = (store, pathPattern, currentPath) => {
 };
 
 const isPathSelectable = (store, path, currentPath) => {
-  // TODO cachable?
+  // TODO cacheable?
   const { isNavigationItem, skipInNavigation } = useNavigation(store);
   return isNavigationItem(path, currentPath) && !skipInNavigation(path, currentPath);
 };
 
 const getClosestSelectablePath = (store, path, currentPath) => {
-  // TODO cachable?
+  // TODO cacheable?
   const { skipInNavigation, isNavigationItem } = useNavigation(store);
   const absolutePath = getAbsolutePath(path, currentPath);
   const pathParts = absolutePath === '/' ? [] : absolutePath.split('/');
@@ -135,6 +201,60 @@ const isSelected = (store, path, currentPath) =>
 
 const getSelectedPath = (store) => store.selectedPath;
 
+const isOutboundRoutePath = (store, path, currentPath) => {
+  // /integrations/NAME/outboundRoutes/ID/value/type
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/integrations\/([^/]+)\/outboundRoutes\/([^/]+)\//
+  );
+  if (matches === null) {
+    return false;
+  }
+  const integration = matches[1];
+  const id = matches[2];
+  return {
+    integration: integration,
+    keyword: store.data.integrations[integration].outboundRoutes[id].value.type
+  };
+};
+
+const isInboundRoutePath = (store, path, currentPath) => {
+  // /integrations/NAME/inboundRoutes/TYPE
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/integrations\/([^/]+)\/inboundRoutes\/([^/]+)\//
+  );
+  if (matches === null) {
+    return false;
+  }
+  return {
+    integration: matches[1],
+    keyword: matches[2]
+  };
+};
+
+const isDataMapperGroupPath = (store, path, currentPath) => {
+  // /dataProcessing/dataMapperGroup/ID
+  const matches = getAbsolutePath(path, currentPath).match(/^\/dataProcessing\/dataMapperGroups\/([^/]+)/);
+  if (matches === null) {
+    return false;
+  }
+  return matches[1];
+};
+
+const isConditionPath = (store, path, currentPath) => {
+  // /dataProcessing/conditions/ID
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/dataProcessing\/conditions\/([^/]+)/
+  );
+  if (matches === null) {
+    return false;
+  }
+  return matches[1];
+};
+
+const isPersonalizationPath = (store, path, currentPath) => {
+  return getAbsolutePath(path, currentPath).startsWith('/personalization/');
+};
+
 // actions
 
 const selectPath = (store, path, currentPath) => {
@@ -156,12 +276,19 @@ export const usePathProcessor = (store) => {
       getChildPaths(store, path, currentPath, absolute),
     getChildPathsGrouped: (path, currentPath, absolute) =>
       getChildPathsGrouped(store, path, currentPath, absolute),
-    getAllPaths: (pathPattern, currentPath) => getAllPaths(store, pathPattern, currentPath),
+    getAllPaths: (pathPattern, currentPath, ignorePathPattern) =>
+      getAllPaths(store, pathPattern, currentPath, ignorePathPattern),
     isPathSelectable: (path, currentPath) => isPathSelectable(store, path, currentPath),
     getClosestSelectablePath: (path, currentPath) =>
       getClosestSelectablePath(store, path, currentPath),
     isSelected: (path, currentPath) => isSelected(store, path, currentPath),
     getSelectedPath: () => getSelectedPath(store),
+
+    isOutboundRoutePath: (path, currentPath) => isOutboundRoutePath(store, path, currentPath),
+    isInboundRoutePath: (path, currentPath) => isInboundRoutePath(store, path, currentPath),
+    isDataMapperGroupPath: (path, currentPath) => isDataMapperGroupPath(store, path, currentPath),
+    isConditionPath: (path, currentPath) => isConditionPath(store, path, currentPath),
+    isPersonalizationPath: (path, currentPath) => isPersonalizationPath(store, path, currentPath),
 
     selectPath: (path, currentPath) => selectPath(store, path, currentPath),
     selectParentPath: () => selectParentPath(store)

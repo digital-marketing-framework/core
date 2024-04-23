@@ -81,7 +81,7 @@ abstract class DataProcessorPluginTest extends TestCase
      *
      * @return array{type:string,config:array<string,array<string,mixed>>}
      */
-    protected function getEvaluationConfiguration(array $config, ?string $keyword = null): array
+    protected function getConditionConfiguration(array $config, ?string $keyword = null): array
     {
         $keyword ??= static::KEYWORD;
 

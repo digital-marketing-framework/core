@@ -7,7 +7,7 @@ import { debounce } from '../utils/debounce.js';
 import { cached } from '../utils/processorCache.js';
 import { isRoot, getAbsolutePath, getPathParts, getLeafKey, isMetaData } from '../helpers/path';
 import { usePathProcessor } from '../composables/path';
-import { useEvaluation } from '../composables/conditions';
+import { useConditions } from '../composables/conditions';
 import { useDynamicProcessor } from '../composables/dynamicItem';
 import { useValidation } from '../composables/validation';
 import { useSwitch } from '../composables/switch';
@@ -360,7 +360,7 @@ export const useDmfStore = defineStore('dmf', {
         if (!schema.visibility) {
           return true;
         }
-        const { evaluate } = useEvaluation(this);
+        const { evaluate } = useConditions(this);
         return evaluate(schema.visibility, absolutePath);
       };
     }

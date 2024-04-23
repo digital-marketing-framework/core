@@ -2,11 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\Parser;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 abstract class ConfigurationDocumentParser implements ConfigurationDocumentParserInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
 {

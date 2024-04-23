@@ -39,7 +39,7 @@ const evaluate = (store, condition, currentPath) => {
   );
 };
 
-export const useEvaluation = (store) => {
+export const useConditions = (store) => {
   store = store || useDmfStore();
   return {
     evaluate: (config, currentPath) => evaluate(store, config, currentPath)

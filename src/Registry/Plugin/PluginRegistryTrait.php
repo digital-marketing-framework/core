@@ -2,11 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Plugin\ConfigurablePluginInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 trait PluginRegistryTrait
@@ -19,19 +20,23 @@ trait PluginRegistryTrait
      */
     protected array $pluginAdditionalArguments = [];
 
-    abstract protected function createObject(string $class, array $arguments = []): object;
+    abstract public function createObject(string $class, array $arguments = []): object;
 
     abstract protected function classValidation(string $class, string $interface): void;
 
     abstract protected function interfaceValidation(string $interface, string $parentInterface): void;
 
-    abstract protected function getConfigurationSchema(): SchemaDocument;
+    abstract public function getConfigurationSchema(): SchemaDocument;
+
+    abstract public function getSchemaProcessor(): SchemaProcessorInterface;
 
     public function processPluginAwareness(PluginInterface $plugin): void
     {
         if ($plugin instanceof ConfigurablePluginInterface) {
             $schema = $plugin::getSchema();
-            $defaults = $this->getConfigurationSchema()->getDefaultValue($schema);
+            $schemaDocument = $this->getConfigurationSchema();
+            $defaults = $this->getSchemaProcessor()->getDefaultValue($schemaDocument, $schema);
+
             if (!is_array($defaults)) {
                 throw new DigitalMarketingFrameworkException('default configuration has to be an array');
             }

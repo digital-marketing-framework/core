@@ -2,13 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ConditionSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 class ConditionValueSource extends ValueSource
 {
@@ -36,7 +36,7 @@ class ConditionValueSource extends ValueSource
             throw new DigitalMarketingFrameworkException('Condition value source - no condition given.');
         }
 
-        $evalResult = $this->dataProcessor->processEvaluation($if, $this->context->copy());
+        $evalResult = $this->dataProcessor->processCondition($if, $this->context->copy());
         $thenResult = $then === null ? null : $this->dataProcessor->processValue($then, $this->context->copy());
         $elseResult = $else === null ? null : $this->dataProcessor->processValue($else, $this->context->copy());
 
@@ -48,7 +48,7 @@ class ConditionValueSource extends ValueSource
         /** @var ContainerSchema $schema */
         $schema = parent::getSchema();
 
-        $ifSchema = new CustomSchema(EvaluationSchema::TYPE);
+        $ifSchema = new CustomSchema(ConditionSchema::TYPE);
         $ifSchema->getRenderingDefinition()->setLabel('if');
         $schema->addProperty(static::KEY_IF, $ifSchema);
 

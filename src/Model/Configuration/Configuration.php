@@ -124,19 +124,24 @@ class Configuration implements ConfigurationInterface
         $this->unset($offset);
     }
 
-    public function getStreamConfiguration(string $id): ?array
+    public function getDataProcessingConfiguration(): array
     {
-        $streams = $this->get(static::KEY_STREAMS, []);
-        if (isset($streams[$id])) {
-            return MapUtility::getItemValue($streams[$id]);
+        return $this->get(static::KEY_DATA_PROCESSING, []);
+    }
+
+    public function getDataMapperGroupConfiguration(string $id): ?array
+    {
+        $dataMapperGroups = $this->getDataProcessingConfiguration()[static::KEY_DATA_MAPPER_GROUPS] ?? [];
+        if (isset($dataMapperGroups[$id])) {
+            return MapUtility::getItemValue($dataMapperGroups[$id]);
         }
 
         return null;
     }
 
-    public function getEvaluationConfiguration(string $id): ?array
+    public function getConditionConfiguration(string $id): ?array
     {
-        $conditions = $this->get(static::KEY_EVALUATIONS);
+        $conditions = $this->getDataProcessingConfiguration()[static::KEY_CONDITIONS] ?? [];
         if (isset($conditions[$id])) {
             return MapUtility::getItemValue($conditions[$id]);
         }
@@ -146,7 +151,7 @@ class Configuration implements ConfigurationInterface
 
     public function getValueMapConfiguration(string $id): ?array
     {
-        $valueMaps = $this->get(static::KEY_VALUE_MAPS, []);
+        $valueMaps = $this->getDataProcessingConfiguration()[static::KEY_VALUE_MAPS] ?? [];
         if (isset($valueMaps[$id])) {
             return MapUtility::getItemValue($valueMaps[$id]);
         }
@@ -154,21 +159,38 @@ class Configuration implements ConfigurationInterface
         return null;
     }
 
-    /**
-     * @return array<string,mixed>
-     */
-    protected function getIdentifierConfiguration(bool $resolveNull = true): array
+    public function getGeneralIntegrationConfiguration(): array
     {
-        return $this->getMergedConfiguration($resolveNull)[static::KEY_IDENTIFIER] ?? [];
+        return $this->getIntegrationConfiguration(static::KEY_GENERAL_INTEGRATION);
     }
 
-    public function getIdentifierCollectorConfiguration(string $identifierCollectorName): array
+    public function integrationExists(string $integrationName): bool
     {
-        return $this->getIdentifierConfiguration()[static::KEY_IDENTIFIER_COLLECTORS][$identifierCollectorName] ?? [];
+        return isset($this->get(static::KEY_INTEGRATIONS, [])[$integrationName]);
     }
 
-    public function identifierCollectorExists(string $identifierCollectorName): bool
+    public function getIntegrationConfiguration(string $integrationName): array
     {
-        return isset($this->getIdentifierConfiguration()[static::KEY_IDENTIFIER_COLLECTORS][$identifierCollectorName]);
+        return $this->get(static::KEY_INTEGRATIONS, [])[$integrationName] ?? [];
+    }
+
+    public function getAllIntegrationConfigurations(): array
+    {
+        return $this->get(static::KEY_INTEGRATIONS, []);
+    }
+
+    public function getAllIntegrationNames(): array
+    {
+        return array_keys($this->getAllIntegrationConfigurations());
+    }
+
+    public function getIdentifierCollectorConfiguration(string $integrationName, string $identifierCollectorName): array
+    {
+        return $this->getIntegrationConfiguration($integrationName)[static::KEY_IDENTIFIERS][$identifierCollectorName] ?? [];
+    }
+
+    public function identifierCollectorExists(string $integrationName, string $identifierCollectorName): bool
+    {
+        return isset($this->getIntegrationConfiguration($integrationName)[static::KEY_IDENTIFIERS][$identifierCollectorName]);
     }
 }

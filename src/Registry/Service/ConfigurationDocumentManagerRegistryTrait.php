@@ -19,7 +19,7 @@ trait ConfigurationDocumentManagerRegistryTrait
 
     protected ConfigurationDocumentManagerInterface $configurationDocumentManager;
 
-    abstract protected function createObject(string $class, array $arguments = []): object;
+    abstract public function createObject(string $class, array $arguments = []): object;
 
     public function getConfigurationDocumentStorage(): ConfigurationDocumentStorageInterface
     {

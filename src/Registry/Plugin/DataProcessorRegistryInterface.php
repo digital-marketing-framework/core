@@ -2,15 +2,15 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorInterface;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
-use DigitalMarketingFramework\Core\DataProcessor\Stream\StreamInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroupInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 interface DataProcessorRegistryInterface extends PluginRegistryInterface
 {
@@ -49,16 +49,16 @@ interface DataProcessorRegistryInterface extends PluginRegistryInterface
     /**
      * @param array<mixed> $additionalArguments
      */
-    public function registerEvaluation(string $class, array $additionalArguments = [], string $keyword = ''): void;
+    public function registerCondition(string $class, array $additionalArguments = [], string $keyword = ''): void;
 
-    public function deleteEvaluation(string $keyword): void;
+    public function deleteCondition(string $keyword): void;
 
     /**
      * @param array<string,mixed> $configuration
      */
-    public function getEvaluation(string $keyword, array $configuration, DataProcessorContextInterface $context): ?EvaluationInterface;
+    public function getCondition(string $keyword, array $configuration, DataProcessorContextInterface $context): ?ConditionInterface;
 
-    public function getEvaluationSchema(): SchemaInterface;
+    public function getConditionSchema(): SchemaInterface;
 
     /**
      * @param array<mixed> $additionalArguments
@@ -91,14 +91,14 @@ interface DataProcessorRegistryInterface extends PluginRegistryInterface
     /**
      * @param array<mixed> $additionalArguments
      */
-    public function registerStream(string $class, array $additionalArguments = [], string $keyword = ''): void;
+    public function registerDataMapperGroup(string $class, array $additionalArguments = [], string $keyword = ''): void;
 
-    public function deleteStream(string $keyword): void;
+    public function deleteDataMapperGroup(string $keyword): void;
 
     /**
      * @param array<string,mixed> $config
      */
-    public function getStream(string $keyword, array $config, DataProcessorContextInterface $context): ?StreamInterface;
+    public function getDataMapperGroup(string $keyword, array $config, DataProcessorContextInterface $context): ?DataMapperGroupInterface;
 
-    public function getStreamSchema(): SchemaInterface;
+    public function getDataMapperGroupSchema(): SchemaInterface;
 }

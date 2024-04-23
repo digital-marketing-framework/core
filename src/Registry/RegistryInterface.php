@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\AssetsRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
@@ -26,6 +27,7 @@ interface RegistryInterface extends
     FileStorageRegistryInterface,
     TemplateEngineRegistryInterface,
 
+    SchemaProcessorRegistryInterface,
     DataProcessorRegistryInterface,
     IdentifierCollectorRegistryInterface
 {

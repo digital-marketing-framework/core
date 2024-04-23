@@ -1,7 +1,7 @@
 import { getAbsolutePath } from '../helpers/path';
 import { isContainerType, isScalarType } from '../helpers/type';
 import { useDmfStore } from '../stores/dmf';
-import { useEvaluation } from './conditions';
+import { useConditions } from './conditions';
 import { useLabelProcessor } from './label';
 import { WARNING_DOCUMENT_INVALID, useNotifications } from './notifications';
 import { usePathProcessor } from './path';
@@ -90,7 +90,7 @@ const _processValidations = (store, path, validations) => {
   if (!validations) {
     return '';
   }
-  const { evaluate } = useEvaluation(store);
+  const { evaluate } = useConditions(store);
   for (let index = 0; index < validations.length; index++) {
     if (!evaluate(validations[index]['condition'], path)) {
       return validations[index]['message'];
