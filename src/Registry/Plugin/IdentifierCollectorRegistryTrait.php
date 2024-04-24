@@ -40,12 +40,13 @@ trait IdentifierCollectorRegistryTrait
             $schema = $class::getSchema();
             $integration = $class::getIntegrationName();
             $integrationLabel = $class::getIntegrationLabel();
+            $integrationWeight = $class::getIntegrationWeight();
             $label = $class::getLabel();
 
             $schemaDocument->addValueToValueSet('identifierCollector/all', $keyword);
             $schemaDocument->addValueToValueSet('identifierCollector/' . $integration . '/all', $keyword);
 
-            $integrationSchema = $this->getIntegrationSchema($schemaDocument, $integration, $integrationLabel);
+            $integrationSchema = $this->getIntegrationSchema($schemaDocument, $integration, $integrationLabel, $integrationWeight);
             $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS);
             if (!$integrationIdentifierSchema instanceof ContainerSchema) {
                 $integrationIdentifierSchema = new ContainerSchema();

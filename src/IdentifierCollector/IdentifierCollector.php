@@ -34,6 +34,11 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
         return null;
     }
 
+    public static function getIntegrationWeight(): int
+    {
+        return static::WEIGHT;
+    }
+
     protected function proceed(): bool
     {
         return (bool)$this->getConfig(static::KEY_ENABLED);
