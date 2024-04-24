@@ -97,7 +97,7 @@ class ContainerSchema extends Schema
             } else {
                 $properties[] = [
                     'key' => $property->getName(),
-                    'weigth' => $property->getWeight(),
+                    'weight' => $property->getWeight(),
                     'value' => $property->getSchema()->toArray(),
                     'render' => $property->getRenderingDefinition()->toArray(),
                 ];
