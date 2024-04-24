@@ -1,7 +1,7 @@
-import { useDmfStore } from '../stores/dmf';
-import { ListUtility } from '../helpers/listValue';
-import { MapUtility } from '../helpers/mapValue';
-import { getAbsolutePath, getLeafKey, isRoot } from '../helpers/path'
+import { useDmfStore } from '@/stores/dmf';
+import { ListUtility } from '@/helpers/listValue';
+import { MapUtility } from '@/helpers/mapValue';
+import { getAbsolutePath, getLeafKey, isRoot } from '@/helpers/path';
 import { useNavigation } from './navigation';
 
 const getChildPaths = (store, path, currentPath, absolute) => {
@@ -251,8 +251,26 @@ const isConditionPath = (store, path, currentPath) => {
   return matches[1];
 };
 
-const isPersonalizationPath = (store, path, currentPath) => {
-  return getAbsolutePath(path, currentPath).startsWith('/personalization/');
+const isPersonalizationDataTransformationPath = (store, path, currentPath) => {
+  // /personalization/dataTransformations/ID
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/personalization\/dataTransformations\/([^/]+)/
+  );
+  if (matches === null) {
+    return false;
+  }
+  return matches[1];
+};
+
+const isPersonalizationContentModifierPath = (store, path, currentPath) => {
+  // /personalization/contentModifiers/ID
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/personalization\/contentModifiers\/([^/]+)/
+  );
+  if (matches === null) {
+    return false;
+  }
+  return matches[1];
 };
 
 // actions
@@ -288,7 +306,8 @@ export const usePathProcessor = (store) => {
     isInboundRoutePath: (path, currentPath) => isInboundRoutePath(store, path, currentPath),
     isDataMapperGroupPath: (path, currentPath) => isDataMapperGroupPath(store, path, currentPath),
     isConditionPath: (path, currentPath) => isConditionPath(store, path, currentPath),
-    isPersonalizationPath: (path, currentPath) => isPersonalizationPath(store, path, currentPath),
+    isPersonalizationDataTransformationPath: (path, currentPath) => isPersonalizationDataTransformationPath(store, path, currentPath),
+    isPersonalizationContentModifierPath: (path, currentPath) => isPersonalizationContentModifierPath(store, path, currentPath),
 
     selectPath: (path, currentPath) => selectPath(store, path, currentPath),
     selectParentPath: () => selectParentPath(store)

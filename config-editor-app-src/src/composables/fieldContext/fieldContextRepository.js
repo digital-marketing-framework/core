@@ -245,6 +245,23 @@ const getConditionInputDefaultsContext = (store, name) => {
   return getContext(store, contextName);
 };
 
+// -- content modifier --
+
+const getContentModifierInputDefaultContext = (store, name) => {
+  const contentModifierId = name.substring('personalization.contentModifiers.in.defaults.'.length);
+  const contentModifierConfig = store.data.personalization.contentModifiers[contentModifierId].value;
+  const contentModifierType = contentModifierConfig.type;
+  const dataTransformationId = contentModifierConfig.config[contentModifierType].dataTransformationId;
+  if (dataTransformationId === '') {
+    return getCollectorOutputAllContext(store);
+  }
+  const dataMapperGroupId = store.data.personalization.dataTransformations[dataTransformationId].value.dataMap;
+  if (dataMapperGroupId === '') {
+    return getCollectorOutputAllContext(store);
+  }
+  return getDataMapperGroupOutputContext(store, 'dataMapperGroup.out.' + dataMapperGroupId);
+};
+
 /*
   distributor.in.defaults.EVENT.NAME
   distributor.in.defaults.all()
@@ -304,6 +321,11 @@ const getContext = (store, name) => {
     if (name.startsWith('condition.in.defaults.')) {
       return getConditionInputDefaultsContext(store, name);
     }
+  } else if (name.startsWith('personalization.')) {
+    // -- personalization --
+    if (name.startsWith('personalization.contentModifiers.in.defaults.')) {
+      return getContentModifierInputDefaultContext(store, name);
+    }
   }
 
   if (staticContextExists(store, name)) {
@@ -321,7 +343,8 @@ const getActiveInputContextNames = (store, path) => {
     isInboundRoutePath,
     isDataMapperGroupPath,
     isConditionPath,
-    isPersonalizationPath
+    isPersonalizationDataTransformationPath,
+    isPersonalizationContentModifierPath
   } = usePathProcessor(store);
 
   const dataMapperGroupId = isDataMapperGroupPath(path);
@@ -343,8 +366,13 @@ const getActiveInputContextNames = (store, path) => {
     return ['collector.in.defaults.' + inboundRoute.integration + '.' + inboundRoute.keyword];
   }
 
-  if (isPersonalizationPath(path)) {
+  if (isPersonalizationDataTransformationPath(path)) {
     return ['collector.out.all'];
+  }
+
+  const personalizationContentModifierId = isPersonalizationContentModifierPath(path);
+  if (personalizationContentModifierId) {
+    return ['personalization.contentModifiers.in.defaults.' + personalizationContentModifierId];
   }
   return [];
 };
