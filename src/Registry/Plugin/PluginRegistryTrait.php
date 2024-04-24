@@ -12,7 +12,7 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 trait PluginRegistryTrait
 {
-    /** @var array<string,array<string,string>> */
+    /** @var array<class-string<PluginInterface>,array<string,class-string<PluginInterface>>> */
     protected array $pluginClasses = [];
 
     /**
@@ -45,9 +45,6 @@ trait PluginRegistryTrait
         }
     }
 
-    /**
-     * @param array<mixed> $arguments
-     */
     public function getPlugin(string $keyword, string $interface, array $arguments = []): ?PluginInterface
     {
         $class = $this->getPluginClass($interface, $keyword);
@@ -80,13 +77,11 @@ trait PluginRegistryTrait
         foreach (array_keys($this->getAllPluginClasses($interface)) as $keyword) {
             $result[$keyword] = $this->getPlugin($keyword, $interface, $arguments);
         }
+        $this->sortPlugins($result);
 
         return $result;
     }
 
-    /**
-     * @return array<string,string>
-     */
     public function getAllPluginClasses(string $interface): array
     {
         $classes = $this->pluginClasses[$interface] ?? [];
@@ -97,13 +92,10 @@ trait PluginRegistryTrait
         return $classes;
     }
 
-    /**
-     * @param array<PluginInterface> $plugins
-     */
     public function sortPlugins(array &$plugins): void
     {
         uasort($plugins, static function (PluginInterface $a, PluginInterface $b) {
-            return $a::getWeight() <=> $b::getWeight();
+            return $a->getConfiguredWeight() <=> $b->getConfiguredWeight();
         });
     }
 
