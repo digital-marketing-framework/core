@@ -3,6 +3,20 @@ import { ListUtility } from '@/helpers/listValue';
 import { MapUtility } from '@/helpers/mapValue';
 import { getAbsolutePath, getLeafKey, isRoot } from '@/helpers/path';
 import { useNavigation } from './navigation';
+import { useLabelProcessor } from '@/composables/label';
+
+const sorter = (store, currentPath, sortAlphabetically) => {
+  const { getLabel } = useLabelProcessor(store);
+  const labels = {};
+  return (schema1, schema2) => {
+    if (sortAlphabetically && schema1.weight === schema2.weight) {
+      labels[schema1.key] = labels[schema1.key] || getLabel(schema1.key, currentPath, schema1);
+      labels[schema2.key] = labels[schema2.key] || getLabel(schema2.key, currentPath, schema2);
+      return labels[schema1.key].localeCompare(labels[schema2.key]);
+    }
+    return schema1.weight - schema2.weight;
+  };
+};
 
 const getChildPaths = (store, path, currentPath, absolute) => {
   const schema = store.getSchema(path, currentPath, true);
@@ -10,9 +24,7 @@ const getChildPaths = (store, path, currentPath, absolute) => {
   switch (schema.type) {
     case 'SWITCH': {
       const paths = [];
-      const values = schema.values.sort(
-        (childSchema1, childSchema2) => childSchema1.weight - childSchema2.weight
-      );
+      const values = schema.values.sort(sorter(store, absolutePath, schema.sortAlphabetically));
       for (let index in values) {
         const childSchema = schema.values[index];
         if (childSchema.key === 'config') {
@@ -26,9 +38,7 @@ const getChildPaths = (store, path, currentPath, absolute) => {
     }
     case 'CONTAINER': {
       const paths = [];
-      const values = schema.values.sort(
-        (childSchema1, childSchema2) => childSchema1.weight - childSchema2.weight
-      );
+      const values = schema.values.sort(sorter(store, absolutePath, schema.sortAlphabetically));
       values.forEach((childSchema) => {
         paths.push(absolute ? absolutePath + '/' + childSchema.key : childSchema.key);
       });

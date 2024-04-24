@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
+use DigitalMarketingFramework\Core\Integration\IntegrationPluginInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
@@ -83,12 +84,19 @@ trait ConfigurationSchemaRegistryTrait
         return $includes;
     }
 
-    protected function getIntegrationSchema(SchemaDocument $schemaDocument, ?string $integrationName = null, ?string $integrationLabel = null, ?int $weight = null): ContainerSchema
-    {
+    protected function getIntegrationSchema(
+        SchemaDocument $schemaDocument,
+        ?string $integrationName = null,
+        ?string $integrationLabel = null,
+        ?int $weight = null,
+        ?string $icon = null
+    ): ContainerSchema {
         $mainSchema = $schemaDocument->getMainSchema();
         $integrationsSchema = $mainSchema->getProperty(ConfigurationInterface::KEY_INTEGRATIONS)?->getSchema();
         if (!$integrationsSchema instanceof ContainerSchema) {
             $integrationsSchema = new ContainerSchema();
+            $integrationsSchema->getRenderingDefinition()->sortAlphabetically(true);
+            $integrationsSchema->getRenderingDefinition()->setIcon('integrations');
             $mainSchema->addProperty(ConfigurationInterface::KEY_INTEGRATIONS, $integrationsSchema);
         }
 
@@ -102,6 +110,9 @@ trait ConfigurationSchemaRegistryTrait
             if ($integrationLabel !== null) {
                 $integrationImplementationSchema->getRenderingDefinition()->setLabel($integrationLabel);
             }
+            if ($icon !== null) {
+                $integrationImplementationSchema->getRenderingDefinition()->setIcon($icon);
+            }
             $property = $integrationsSchema->addProperty($integrationName, $integrationImplementationSchema);
             if ($weight !== null) {
                 $property->setWeight($weight);
@@ -111,9 +122,28 @@ trait ConfigurationSchemaRegistryTrait
         return $integrationImplementationSchema;
     }
 
+    /**
+     * @param class-string<IntegrationPluginInterface> $pluginClass
+     */
+    protected function getIntegrationSchemaForPluginClass(SchemaDocument $schemaDocument, string $pluginClass): ContainerSchema
+    {
+        return $this->getIntegrationSchema(
+            $schemaDocument,
+            $pluginClass::getIntegrationName(),
+            $pluginClass::getIntegrationLabel(),
+            $pluginClass::getIntegrationWeight(),
+            $pluginClass::getIntegrationIcon()
+        );
+    }
+
     protected function getGeneralIntegrationSchema(SchemaDocument $schemaDocument): ContainerSchema
     {
-        return $this->getIntegrationSchema($schemaDocument, ConfigurationInterface::KEY_GENERAL_INTEGRATION, weight: 0);
+        return $this->getIntegrationSchema(
+            $schemaDocument,
+            integrationName: ConfigurationInterface::KEY_GENERAL_INTEGRATION,
+            weight: IntegrationPluginInterface::INTEGRATION_WEIGHT_TOP,
+            icon: 'general'
+        );
     }
 
     protected function getDataProcessingSchema(SchemaDocument $schemaDocument): ContainerSchema

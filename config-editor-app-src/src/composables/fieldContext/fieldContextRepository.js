@@ -179,7 +179,7 @@ const getDistributorOutputDefaultsContext = (store, name) => {
 };
 
 const getDistributorOutputContext = (store, name) => {
-  // TODO
+  // TODO the distributor output context is currently not used anywhere (in this UI)
   return {};
 };
 
@@ -204,9 +204,10 @@ const getCollectorOutputAllContext = (store) => {
 
 const getCollectorOutputContext = (store, name) => {
   const [integration, keyword] = name.substring('collector.out.'.length).split('.');
+  const inputContext = getContext(store, 'collector.in.defaults.' + integration + '.' + keyword);
   const collectorConfig = store.data.integrations[integration].inboundRoutes[keyword];
   const dataMapperGroupId = collectorConfig.dataMap;
-  return processDataMapperGroup(store, dataMapperGroupId);
+  return processDataMapperGroup(store, dataMapperGroupId, inputContext);
 };
 
 // -- data mapper group --
@@ -279,6 +280,8 @@ const getContentModifierInputDefaultContext = (store, name) => {
   dataMapperGroup.out.ID()
 
   condition.in.defaults.ID
+
+  personalization.contentModifiers.in.defaults.ID
 */
 const getContext = (store, name) => {
   if (name === '') {

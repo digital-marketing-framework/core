@@ -39,17 +39,16 @@ trait IdentifierCollectorRegistryTrait
         foreach ($this->getAllPluginClasses(IdentifierCollectorInterface::class) as $keyword => $class) {
             $schema = $class::getSchema();
             $integration = $class::getIntegrationName();
-            $integrationLabel = $class::getIntegrationLabel();
-            $integrationWeight = $class::getIntegrationWeight();
             $label = $class::getLabel();
 
             $schemaDocument->addValueToValueSet('identifierCollector/all', $keyword);
             $schemaDocument->addValueToValueSet('identifierCollector/' . $integration . '/all', $keyword);
 
-            $integrationSchema = $this->getIntegrationSchema($schemaDocument, $integration, $integrationLabel, $integrationWeight);
+            $integrationSchema = $this->getIntegrationSchemaForPluginClass($schemaDocument, $class);
             $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS);
             if (!$integrationIdentifierSchema instanceof ContainerSchema) {
                 $integrationIdentifierSchema = new ContainerSchema();
+                $integrationIdentifierSchema->getRenderingDefinition()->setIcon('identification');
                 $integrationIdentifierSchema->getRenderingDefinition()->setLabel('Identification');
                 $integrationSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIERS, $integrationIdentifierSchema);
             }

@@ -39,8 +39,8 @@ const prettifyLabel = (label) => {
   return ucfirst(label);
 };
 
-const getLabel = (store, path, currentPath) => {
-  const schema = store.getSchema(path, currentPath, true);
+const getLabel = (store, path, currentPath, schema) => {
+  schema = schema || store.getSchema(path, currentPath, true);
 
   let label;
   if (schema.hideLabel) {

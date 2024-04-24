@@ -34,9 +34,14 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
         return null;
     }
 
+    public static function getIntegrationIcon(): ?string
+    {
+        return null;
+    }
+
     public static function getIntegrationWeight(): int
     {
-        return static::WEIGHT;
+        return static::INTEGRATION_WEIGHT_DEFAULT;
     }
 
     protected function proceed(): bool

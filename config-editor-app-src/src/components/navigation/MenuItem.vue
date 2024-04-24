@@ -5,16 +5,16 @@ import {
   DisclosurePanel
 } from '@headlessui/vue';
 import { computed } from "vue";
-import { useDmfStore } from '../../stores/dmf';
-import { useLabelProcessor } from '../../composables/label';
-import { getAbsolutePath, isRoot as _isRoot } from '../../helpers/path';
-import { isContainerType } from '../../helpers/type';
+import { useDmfStore } from '@/stores/dmf';
+import { useLabelProcessor } from '@/composables/label';
+import { getAbsolutePath, isRoot as _isRoot } from '@/helpers/path';
+import { isContainerType } from '@/helpers/type';
 
-import AngleDownIcon from '../icons/AngleDownIcon.vue';
-import ItemIcon from '../icons/ItemIcon.vue';
-import TransitionExpand from '../TransitionExpand.vue';
-import { useNavigation } from '../../composables/navigation';
-import { usePathProcessor } from '../../composables/path';
+import AngleDownIcon from '@/components/icons/AngleDownIcon.vue';
+import ItemIcon from '@/components/icons/ItemIcon.vue';
+import TransitionExpand from '@/components/TransitionExpand.vue';
+import { useNavigation } from '@/composables/navigation';
+import { usePathProcessor } from '@/composables/path';
 
 const store = useDmfStore();
 const { getLabel } = useLabelProcessor(store);
@@ -57,6 +57,7 @@ const navigationChildPaths = computed(() => getNavigationChildPaths(props.curren
                  }"
                  @click="selectPath(currentPath)">
                 <ItemIcon :item-type="schema.type"
+                          :custom-icon="schema.icon"
                           :active="selected" />
                 {{ label }}
             </div>

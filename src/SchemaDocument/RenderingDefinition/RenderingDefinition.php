@@ -13,6 +13,10 @@ class RenderingDefinition implements RenderingDefinitionInterface
 
     protected ?string $format = null;
 
+    protected ?string $icon = null;
+
+    protected bool $sortAlphabetically = false;
+
     protected ?bool $hideLabel = null;
 
     protected ?string $label = null;
@@ -45,6 +49,14 @@ class RenderingDefinition implements RenderingDefinitionInterface
         $render = [];
         if ($this->format !== null) {
             $render['format'] = $this->format;
+        }
+
+        if ($this->icon !== null) {
+            $render['icon'] = $this->icon;
+        }
+
+        if ($this->sortAlphabetically) {
+            $render['sortAlphabetically'] = true;
         }
 
         if ($this->hideLabel ?? false) {
@@ -172,6 +184,16 @@ class RenderingDefinition implements RenderingDefinitionInterface
     public function setFormat(string $format): void
     {
         $this->format = $format;
+    }
+
+    public function setIcon(string $icon): void
+    {
+        $this->icon = $icon;
+    }
+
+    public function sortAlphabetically(bool $sort = true): void
+    {
+        $this->sortAlphabetically = $sort;
     }
 
     public function hideLabel(bool $hide = true): void
