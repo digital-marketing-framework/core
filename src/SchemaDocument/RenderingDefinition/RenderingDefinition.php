@@ -181,14 +181,24 @@ class RenderingDefinition implements RenderingDefinitionInterface
         return $values;
     }
 
-    public function setFormat(string $format): void
+    public function setFormat(?string $format): void
     {
         $this->format = $format;
+    }
+
+    public function getFormat(): ?string
+    {
+        return $this->format;
     }
 
     public function setIcon(?string $icon): void
     {
         $this->icon = $icon;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
     }
 
     public function sortAlphabetically(bool $sort = true): void

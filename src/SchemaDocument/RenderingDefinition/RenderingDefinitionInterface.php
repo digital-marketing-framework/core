@@ -29,7 +29,11 @@ interface RenderingDefinitionInterface
 
     public function setFormat(string $format): void;
 
+    public function getFormat(): ?string;
+
     public function setIcon(?string $icon): void;
+
+    public function getIcon(): ?string;
 
     public function sortAlphabetically(bool $sort = true): void;
 
