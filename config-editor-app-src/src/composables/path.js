@@ -211,6 +211,19 @@ const isSelected = (store, path, currentPath) =>
 
 const getSelectedPath = (store) => store.selectedPath;
 
+const isDataProviderPath = (store, path, currentPath) => {
+  // /dataProcessing/dataProviders/NAME
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/dataProcessing\/dataProviders\/([^/]+)/
+  );
+  if (matches === null) {
+    return false;
+  }
+  return {
+    keyword: matches[1],
+  };
+};
+
 const isOutboundRoutePath = (store, path, currentPath) => {
   // /integrations/NAME/outboundRoutes/ID/value/type
   const matches = getAbsolutePath(path, currentPath).match(
@@ -223,6 +236,7 @@ const isOutboundRoutePath = (store, path, currentPath) => {
   const id = matches[2];
   return {
     integration: integration,
+    id: id,
     keyword: store.data.integrations[integration].outboundRoutes[id].value.type
   };
 };
@@ -312,6 +326,7 @@ export const usePathProcessor = (store) => {
     isSelected: (path, currentPath) => isSelected(store, path, currentPath),
     getSelectedPath: () => getSelectedPath(store),
 
+    isDataProviderPath: (path, currentPath) => isDataProviderPath(store, path, currentPath),
     isOutboundRoutePath: (path, currentPath) => isOutboundRoutePath(store, path, currentPath),
     isInboundRoutePath: (path, currentPath) => isInboundRoutePath(store, path, currentPath),
     isDataMapperGroupPath: (path, currentPath) => isDataMapperGroupPath(store, path, currentPath),

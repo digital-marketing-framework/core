@@ -139,10 +139,9 @@ abstract class Schema implements SchemaInterface
         $this->defaultValue = $value;
     }
 
-    public function setRequired(string $message = 'Required Field'): void
+    public function setRequired(string $message = 'Required Field', bool $strict = false): void
     {
-        // required fields should only be enforced in final documents, not in parent documents
-        $this->addSoftValidation(new NotEmptyCondition(), $message);
+        $this->addValidation(new NotEmptyCondition(), $message, $strict);
         $this->required = true;
     }
 

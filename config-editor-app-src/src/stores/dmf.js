@@ -246,6 +246,22 @@ export const useDmfStore = defineStore('dmf', {
         return this.getSchema(path + '/..', currentPath, resolveCustomType);
       };
     },
+    getSelectedSchema() {
+      return (path, currentPath, schema) => {
+        schema = this.resolveSchema(schema || this.getSchema(path, currentPath));
+        if (schema.type === 'SWITCH') {
+          const absolutePath = getAbsolutePath(path, currentPath);
+          const selectedType = this.getValue('type', absolutePath);
+          if (selectedType) {
+            const selectedSchema = this.getSchema('config/' + selectedType, absolutePath);
+            if (selectedSchema) {
+              return selectedSchema;
+            }
+          }
+        }
+        return schema;
+      };
+    },
 
     // value
     getValue(state) {

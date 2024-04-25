@@ -35,7 +35,7 @@ interface SchemaInterface
 
     public function addSoftValidation(Condition $condition, string $message): void;
 
-    public function setRequired(string $message = 'Required Field'): void;
+    public function setRequired(string $message = 'Required Field', bool $strict = false): void;
 
     /**
      * This method is oddly named, which is because its purpose is odd too.

@@ -13,6 +13,9 @@ abstract class DataMapperGroup extends DataProcessorPlugin implements DataMapper
 
     public static function getSchema(): SchemaInterface
     {
-        return new ContainerSchema();
+        $schema = new ContainerSchema();
+        $schema->getRenderingDefinition()->setIcon('data-mapper-group');
+
+        return $schema;
     }
 }

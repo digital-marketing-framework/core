@@ -15,7 +15,7 @@ interface ConfigurationDocumentManagerInterface
 
     public const KEY_DOCUMENT_NAME = 'name';
 
-    public const KEY_DOCUMENT_SOFT_VALIDATION = 'softValidation';
+    public const KEY_DOCUMENT_STRICT_VALIDATION = 'strictValidation';
 
     public const KEY_DOCUMENT_VERSION = 'version';
 

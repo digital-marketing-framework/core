@@ -3,11 +3,13 @@ import ItemIcon from '../../icons/ItemIcon.vue';
 import HeaderActions from '../meta/HeaderActions.vue';
 
 import { computed } from "vue";
-import { useDmfStore } from '../../../stores/dmf';
-import { useLabelProcessor } from '../../../composables/label';
+import { useDmfStore } from '@/stores/dmf';
+import { useLabelProcessor } from '@/composables/label';
+import { useIconProcessor } from '@/composables/icon';
 
 const store = useDmfStore();
 const { getLabel } = useLabelProcessor(store);
+const { getIcon } = useIconProcessor(store);
 
 const props = defineProps({
     currentPath: {
@@ -24,6 +26,7 @@ const props = defineProps({
 const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
 const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
 const label = computed(() => getLabel(props.currentPath));
+const customIcon = computed(() => getIcon(props.currentPath, undefined, schema.value));
 </script>
 
 <template>
@@ -36,6 +39,7 @@ const label = computed(() => getLabel(props.currentPath));
             <label :for="label"
                    class="tw-flex tw-items-center tw-text-sm tw-font-medium">
                 <ItemIcon :item-type="schema.type"
+                          :custom-icon="customIcon"
                           class="!tw-text-indigo-800 tw-mr-2.5" />
                 <span>{{ label }}</span>
             </label>

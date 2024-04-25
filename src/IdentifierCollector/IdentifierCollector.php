@@ -36,7 +36,7 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
 
     public static function getIntegrationIcon(): ?string
     {
-        return null;
+        return 'integration';
     }
 
     public static function getIntegrationWeight(): int
@@ -72,6 +72,7 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
     public static function getSchema(): SchemaInterface
     {
         $schema = new ContainerSchema();
+        $schema->getRenderingDefinition()->setIcon('identifier-collector');
 
         $label = static::getLabel();
         if ($label !== null) {

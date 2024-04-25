@@ -186,7 +186,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
         $this->format = $format;
     }
 
-    public function setIcon(string $icon): void
+    public function setIcon(?string $icon): void
     {
         $this->icon = $icon;
     }

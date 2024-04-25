@@ -15,11 +15,13 @@ import ItemIcon from '@/components/icons/ItemIcon.vue';
 import TransitionExpand from '@/components/TransitionExpand.vue';
 import { useNavigation } from '@/composables/navigation';
 import { usePathProcessor } from '@/composables/path';
+import { useIconProcessor } from '@/composables/icon';
 
 const store = useDmfStore();
 const { getLabel } = useLabelProcessor(store);
 const { getNavigationChildPaths, getContainerNavigationState, toggleContainerNavigationState } = useNavigation(store);
 const { isSelected, selectPath } = usePathProcessor(store);
+const { getIcon } = useIconProcessor(store);
 
 const props = defineProps({
     currentPath: {
@@ -35,6 +37,7 @@ const label = computed(() => getLabel(props.currentPath));
 const selected = computed(() => isSelected(props.currentPath));
 const containerNavigationState = computed(() => getContainerNavigationState(props.currentPath));
 const navigationChildPaths = computed(() => getNavigationChildPaths(props.currentPath));
+const customIcon = computed(() => getIcon(props.currentPath, undefined, schema.value));
 </script>
 
 <template>
@@ -57,7 +60,7 @@ const navigationChildPaths = computed(() => getNavigationChildPaths(props.curren
                  }"
                  @click="selectPath(currentPath)">
                 <ItemIcon :item-type="schema.type"
-                          :custom-icon="schema.icon"
+                          :custom-icon="customIcon"
                           :active="selected" />
                 {{ label }}
             </div>

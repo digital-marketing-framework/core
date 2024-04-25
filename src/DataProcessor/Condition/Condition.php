@@ -12,6 +12,9 @@ abstract class Condition extends DataProcessorPlugin implements ConditionInterfa
 
     public static function getSchema(): SchemaInterface
     {
-        return new ContainerSchema();
+        $schema = new ContainerSchema();
+        $schema->getRenderingDefinition()->setIcon('condition');
+
+        return $schema;
     }
 }

@@ -12,11 +12,13 @@ import {
 import { useLabelProcessor } from "../../../composables/label";
 import { usePathProcessor } from "../../../composables/path";
 import { useValueSets } from '../../../composables/valueSets';
+import { useIconProcessor } from '@/composables/icon'
 
 const store = useDmfStore();
 const { getLabel } = useLabelProcessor(store);
 const { isSelected } = usePathProcessor(store);
 const { getSuggestedValues, getAllowedValues } = useValueSets(store);
+const { getIcon } = useIconProcessor(store);
 
 const props = defineProps({
     currentPath: {
@@ -44,6 +46,7 @@ const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
 const value = computed(() => isScalar.value ? store.getValue(props.currentPath) : null);
 const suggestedValues = computed(() => isScalar.value ? getSuggestedValues(props.currentPath) : []);
 const allowedValues = computed(() => isScalar.value ? getAllowedValues(props.currentPath) : []);
+const icon = computed(() => getIcon(props.currentPath, undefined, schema.value));
 
 </script>
 
@@ -57,6 +60,10 @@ const allowedValues = computed(() => isScalar.value ? getAllowedValues(props.cur
             <tr>
                 <th class="tw-p-1 tw-align-top">Label</th>
                 <td class="tw-p-1 tw-align-top">{{ label }}</td>
+            </tr>
+            <tr v-if="icon">
+                <th class="tw-p-1 tw-align-top">Icon</th>
+                <td class="tw-p-1 tw-align-top">{{ icon }}</td>
             </tr>
             <tr>
                 <th class="tw-p-1 tw-align-top">Type</th>

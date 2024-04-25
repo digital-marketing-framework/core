@@ -15,5 +15,6 @@ class DataMapperGroupSchema extends SwitchSchema
         $this->addProperty('inputContext', new CustomSchema(FieldContextSelectionSchema::TYPE_INPUT))->setWeight(-2);
         $this->addProperty('outputContext', new CustomSchema(FieldContextSelectionSchema::TYPE_OUTPUT))->setWeight(-1);
         parent::__construct('dataMapperGroup', $defaultValue);
+        $this->getRenderingDefinition()->setIcon('data-mapper-group');
     }
 }
