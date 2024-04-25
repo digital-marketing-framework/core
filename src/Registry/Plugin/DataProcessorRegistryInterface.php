@@ -3,11 +3,11 @@
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroupInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorInterface;
-use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
-use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroupInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;

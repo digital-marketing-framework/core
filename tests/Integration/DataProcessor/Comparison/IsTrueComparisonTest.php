@@ -62,7 +62,7 @@ class IsTrueComparisonTest extends ComparisonTest
                 $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field7'], 'field'),
             ],
             [
-                true,
+                false,
                 $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field8'], 'field'),
             ],
             [
@@ -80,7 +80,7 @@ class IsTrueComparisonTest extends ComparisonTest
                 $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field9'], 'field'),
             ],
             [
-                true,
+                false,
                 $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field10'], 'field'),
             ],
             [

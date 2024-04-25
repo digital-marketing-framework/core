@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup;
 
-use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroup;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;

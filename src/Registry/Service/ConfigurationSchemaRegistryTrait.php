@@ -10,16 +10,16 @@ use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingD
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ConditionReferenceSchema;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\FieldContextSelectionSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\DataMapperGroupReferenceSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\FieldContextSelectionSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ListSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\MapSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ConditionSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperGroupSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
@@ -111,9 +111,11 @@ trait ConfigurationSchemaRegistryTrait
             if ($integrationLabel !== null) {
                 $integrationImplementationSchema->getRenderingDefinition()->setLabel($integrationLabel);
             }
+
             if ($icon !== null) {
                 $integrationImplementationSchema->getRenderingDefinition()->setIcon($icon);
             }
+
             $property = $integrationsSchema->addProperty($integrationName, $integrationImplementationSchema);
             if ($weight !== null) {
                 $property->setWeight($weight);

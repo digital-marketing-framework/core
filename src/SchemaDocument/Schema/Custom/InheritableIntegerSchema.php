@@ -28,7 +28,7 @@ class InheritableIntegerSchema extends ContainerSchema
         $this->getRenderingDefinition()->setSkipHeader(true);
 
         $inheritedDefaultValue = $defaultValue === null ? static::VALUE_INHERITED_YES : static::VALUE_INHERITED_NO;
-        $customDefaultValue = $defaultValue === null ? 0 : $defaultValue;
+        $customDefaultValue = $defaultValue ?? 0;
 
         $this->inheritedSchema = new StringSchema($inheritedDefaultValue);
         $this->inheritedSchema->getRenderingDefinition()->setLabel('Inherit cache lifetime');
@@ -46,12 +46,16 @@ class InheritableIntegerSchema extends ContainerSchema
         $this->addProperty(static::KEY_CUSTOM_VALUE, $this->customValueSchema);
     }
 
+    /**
+     * @param array{inherited?:bool,customValue?:int} $config
+     */
     public static function convert(array $config): ?int
     {
         $inherited = $config[static::KEY_INHERITED] ?? static::VALUE_INHERITED_YES;
         if ($inherited === static::VALUE_INHERITED_YES) {
             return null;
         }
+
         return $config[static::KEY_CUSTOM_VALUE] ?? 0;
     }
 }

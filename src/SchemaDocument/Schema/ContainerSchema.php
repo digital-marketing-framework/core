@@ -89,9 +89,9 @@ class ContainerSchema extends Schema
         foreach ($this->properties as $property) {
             if (SchemaDocument::$flattenSchema) {
                 $properties[] = [
-                        'key' => $property->getName(),
-                        'weight' => $property->getWeight(),
-                    ]
+                    'key' => $property->getName(),
+                    'weight' => $property->getWeight(),
+                ]
                     + $property->getSchema()->toArray()
                     + ($property->getRenderingDefinition()->toArray() ?? []);
             } else {

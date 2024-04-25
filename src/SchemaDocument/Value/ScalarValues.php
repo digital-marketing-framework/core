@@ -32,6 +32,9 @@ class ScalarValues
         $this->values['sets'][] = $name;
     }
 
+    /**
+     * @param string|array<string> $ignorePath
+     */
     public function addReference(string $path, string $type = self::REFERENCE_TYPE_KEY, string|array $ignorePath = [], string $label = ''): void
     {
         $reference = [
@@ -42,9 +45,11 @@ class ScalarValues
         if (is_string($ignorePath)) {
             $ignorePath = [$ignorePath];
         }
+
         if ($ignorePath !== []) {
             $reference['ignore'] = $ignorePath;
         }
+
         $this->values['references'][] = $reference;
     }
 

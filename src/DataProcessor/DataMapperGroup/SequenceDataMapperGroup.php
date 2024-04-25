@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup;
 
-use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroup;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\Data;

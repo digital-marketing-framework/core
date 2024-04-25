@@ -77,6 +77,7 @@ trait PluginRegistryTrait
         foreach (array_keys($this->getAllPluginClasses($interface)) as $keyword) {
             $result[$keyword] = $this->getPlugin($keyword, $interface, $arguments);
         }
+
         $this->sortPlugins($result);
 
         return $result;

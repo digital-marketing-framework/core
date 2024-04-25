@@ -10,6 +10,7 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 class IntegrationReferenceSchema extends ContainerSchema
 {
     public const KEY_INTEGRATION_REFERENCE = 'integrationReference';
+
     protected StringSchema $integrationReferenceSchema;
 
     public function __construct(
@@ -22,6 +23,7 @@ class IntegrationReferenceSchema extends ContainerSchema
         if ($required) {
             $this->integrationReferenceSchema->setRequired();
         }
+
         $this->integrationReferenceSchema->getAllowedValues()->addValue('', 'Please select');
         $this->integrationReferenceSchema->getAllowedValues()->addReference(
             sprintf('/%s/*', ConfigurationInterface::KEY_INTEGRATIONS),
@@ -35,13 +37,19 @@ class IntegrationReferenceSchema extends ContainerSchema
         $this->getRenderingDefinition()->setSkipHeader(true);
     }
 
+    /**
+     * @return array<string>
+     */
     protected function getIntegrationIgnorePath(): array
     {
         return [
-            sprintf('/%s/%s', ConfigurationInterface::KEY_INTEGRATIONS, ConfigurationInterface::KEY_GENERAL_INTEGRATION)
+            sprintf('/%s/%s', ConfigurationInterface::KEY_INTEGRATIONS, ConfigurationInterface::KEY_GENERAL_INTEGRATION),
         ];
     }
 
+    /**
+     * @param array{integrationReference?:string} $config
+     */
     public static function getIntegrationName(array $config): string
     {
         return $config[static::KEY_INTEGRATION_REFERENCE] ?? '';

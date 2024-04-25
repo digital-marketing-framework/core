@@ -5,7 +5,6 @@ namespace DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultV
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
-use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorPlugin;
 
 /**

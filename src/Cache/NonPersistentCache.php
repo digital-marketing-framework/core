@@ -79,7 +79,7 @@ class NonPersistentCache implements CacheInterface
     /**
      * @param array<string> $tags
      */
-    public function store(string $key, array $data, array $tags = []): void
+    public function store(string $key, array $data, int $timeoutInSeconds = -1, array $tags = []): void
     {
         $this->storage[$key] = new CacheEntry($key, $data, $tags);
     }

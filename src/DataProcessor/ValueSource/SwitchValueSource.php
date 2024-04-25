@@ -30,7 +30,7 @@ class SwitchValueSource extends ValueSource
 
     public const DEFAULT_DEFAULT = '';
 
-    public function build(): string|null
+    public function build(): ?string
     {
         $switchConfig = $this->getConfig(static::KEY_SWITCH);
         $switchValue = $this->dataProcessor->processValue($switchConfig, $this->context->copy());

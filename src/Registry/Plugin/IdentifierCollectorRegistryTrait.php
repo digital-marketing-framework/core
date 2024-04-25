@@ -4,8 +4,8 @@ namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\IdentifierCollector\IdentifierCollectorInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 trait IdentifierCollectorRegistryTrait
 {
@@ -45,13 +45,14 @@ trait IdentifierCollectorRegistryTrait
             $schemaDocument->addValueToValueSet('identifierCollector/' . $integration . '/all', $keyword);
 
             $integrationSchema = $this->getIntegrationSchemaForPluginClass($schemaDocument, $class);
-            $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS);
+            $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS)?->getSchema();
             if (!$integrationIdentifierSchema instanceof ContainerSchema) {
                 $integrationIdentifierSchema = new ContainerSchema();
                 $integrationIdentifierSchema->getRenderingDefinition()->setIcon('identification');
                 $integrationIdentifierSchema->getRenderingDefinition()->setLabel('Identification');
                 $integrationSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIERS, $integrationIdentifierSchema);
             }
+
             $property = $integrationIdentifierSchema->addProperty($keyword, $schema);
             $property->getRenderingDefinition()->setLabel($label);
         }

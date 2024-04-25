@@ -4,10 +4,10 @@ namespace DigitalMarketingFramework\Core\DataProcessor;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
-use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValueSource;

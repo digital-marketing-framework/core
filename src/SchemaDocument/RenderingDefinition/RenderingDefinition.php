@@ -96,7 +96,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
         }
 
         if ($this->description !== '') {
-            $render['description'] =$this->description;
+            $render['description'] = $this->description;
         }
 
         if ($this->hint !== '') {

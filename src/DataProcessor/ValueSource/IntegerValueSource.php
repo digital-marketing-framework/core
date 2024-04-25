@@ -13,8 +13,6 @@ class IntegerValueSource extends ValueSource
 {
     public const KEY_VALUE = 'value';
 
-    public const DEFAULT_VALUE = null;
-
     public function build(): string|ValueInterface|null
     {
         $value = $this->getConfig(static::KEY_VALUE);

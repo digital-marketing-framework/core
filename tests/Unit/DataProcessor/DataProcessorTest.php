@@ -3,10 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
-use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
