@@ -4,7 +4,6 @@ namespace DigitalMarketingFramework\Core\SchemaDocument\Schema;
 
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 class SwitchSchema extends ContainerSchema
 {
@@ -45,12 +44,13 @@ class SwitchSchema extends ContainerSchema
         return $this->typeSchema;
     }
 
-    public function getConfigSchema(?string $type = null): ?SchemaInterface
+    public function getConfigSchema(): ContainerSchema
     {
-        if ($type === null) {
-            return $this->configSchema;
-        }
+        return $this->configSchema;
+    }
 
+    public function getTypeSpecificConfigSchema(string $type): ?SchemaInterface
+    {
         return $this->configSchema->getProperty($type)?->getSchema();
     }
 
@@ -85,22 +85,5 @@ class SwitchSchema extends ContainerSchema
         }
 
         return $switchConfig[static::KEY_CONFIG][$type];
-    }
-
-    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
-    {
-        if ($value === null) {
-            return;
-        }
-
-        if (isset($value[static::KEY_TYPE])) {
-            $this->typeSchema->preSaveDataTransform($value[static::KEY_TYPE], $schemaDocument);
-        }
-
-        foreach ($this->configSchema->getProperties() as $property) {
-            if (isset($value[static::KEY_CONFIG][$property->getName()])) {
-                $property->getSchema()->preSaveDataTransform($value[static::KEY_CONFIG][$property->getName()], $schemaDocument);
-            }
-        }
     }
 }

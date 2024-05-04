@@ -167,8 +167,4 @@ abstract class Schema implements SchemaInterface
     {
         $this->addValidation($condition, $message, false);
     }
-
-    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
-    {
-    }
 }

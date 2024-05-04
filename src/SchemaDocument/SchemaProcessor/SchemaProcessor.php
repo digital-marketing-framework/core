@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\DefaultValueSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MergeSchemaProcessorInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
 
 class SchemaProcessor implements SchemaProcessorInterface
 {
@@ -55,5 +56,31 @@ class SchemaProcessor implements SchemaProcessorInterface
         }
 
         return $processor->getDefaultValue($schema);
+    }
+
+    /**
+     * This method is oddly named, which is because its purpose is odd too.
+     * Unfortunately, some configuration document producers need to adjust
+     * the PHP data according to its schema before they can perform the document production.
+     *
+     * For example, the empty PHP array [] can be interpreted as an empty list and an empty
+     * associative object, which is expressed differently in both YAML and JSON: "{}" vs "[]"
+     * That is why we need to read the schema to be able to tell, which empty array is supposed
+     * to become what kind of value in the produced document.
+     */
+    public function preSaveDataTransform(SchemaDocument $schemaDocument, mixed &$data, ?SchemaInterface $schema = null): void
+    {
+        if (!$schema instanceof SchemaInterface) {
+            $schema = $schemaDocument->getMainSchema();
+        }
+
+        $keyword = $this->getSchemaKeyword($schema);
+        $processor = $this->registry->getPreSaveDataTransformSchemaProcessor($keyword, $schemaDocument);
+
+        if (!$processor instanceof PreSaveDataTransformSchemaProcessorInterface) {
+            throw new DigitalMarketingFrameworkException(sprintf('No pre-save-data-transform processor found for keyword "%s"', $keyword));
+        }
+
+        $processor->preSaveDataTransform($data, $schema);
     }
 }

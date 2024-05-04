@@ -2,8 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\SchemaDocument\Schema;
 
-use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
-
 class CustomSchema extends Schema
 {
     public function __construct(
@@ -21,10 +19,5 @@ class CustomSchema extends Schema
     public function setType(string $type): void
     {
         $this->type = $type;
-    }
-
-    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
-    {
-        $schemaDocument->getCustomType($this->getType())->preSaveDataTransform($value, $schemaDocument);
     }
 }

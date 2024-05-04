@@ -76,23 +76,4 @@ class ListSchema extends Schema
             'item' => $this->getItemSchema()->toArray(),
         ];
     }
-
-    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
-    {
-        if ($value === null) {
-            return;
-        }
-
-        if (empty($value)) {
-            $value = (object)[];
-        } else {
-            foreach (array_keys($value) as $key) {
-                if (!isset($value[$key])) {
-                    continue;
-                }
-
-                $this->itemSchema->preSaveDataTransform($value[$key], $schemaDocument);
-            }
-        }
-    }
 }

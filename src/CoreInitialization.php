@@ -71,6 +71,12 @@ use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaPro
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MergeSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\ScalarMergeSchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\SwitchMergeSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\ContainerPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\CustomPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\DynamicListPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\NoOpPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\SwitchPreSaveDataTransformSchemaProcessor;
 
 class CoreInitialization extends Initialization
 {
@@ -153,6 +159,16 @@ class CoreInitialization extends Initialization
                 'map' => MapDefaultValueSchemaProcessor::class,
                 'string' => StringDefaultValueSchemaProcessor::class,
                 'switch' => SwitchDefaultValueSchemaProcessor::class,
+            ],
+            PreSaveDataTransformSchemaProcessorInterface::class => [
+                'boolean' => NoOpPreSaveDataTransformSchemaProcessor::class,
+                'container' => ContainerPreSaveDataTransformSchemaProcessor::class,
+                'custom' => CustomPreSaveDataTransformSchemaProcessor::class,
+                'integer' => NoOpPreSaveDataTransformSchemaProcessor::class,
+                'list' => DynamicListPreSaveDataTransformSchemaProcessor::class,
+                'map' => DynamicListPreSaveDataTransformSchemaProcessor::class,
+                'string' => NoOpPreSaveDataTransformSchemaProcessor::class,
+                'switch' => SwitchPreSaveDataTransformSchemaProcessor::class,
             ],
         ],
     ];

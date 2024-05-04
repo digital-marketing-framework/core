@@ -10,4 +10,6 @@ interface SchemaProcessorInterface
     public function merge(SchemaInterface $schemaA, SchemaInterface $schemaB): SchemaInterface;
 
     public function getDefaultValue(SchemaDocument $schemaDocument, ?SchemaInterface $schema = null): mixed;
+
+    public function preSaveDataTransform(SchemaDocument $schemaDocument, mixed &$data, ?SchemaInterface $schema = null): void;
 }

@@ -176,16 +176,4 @@ class SchemaDocument
 
         return $schemaDocument;
     }
-
-    /**
-     * @param array<string,mixed> $data
-     */
-    public function preSaveDataTransform(array &$data, ?SchemaInterface $schema = null): void
-    {
-        if (!$schema instanceof SchemaInterface) {
-            $schema = $this->mainSchema;
-        }
-
-        $schema->preSaveDataTransform($data, $this);
-    }
 }

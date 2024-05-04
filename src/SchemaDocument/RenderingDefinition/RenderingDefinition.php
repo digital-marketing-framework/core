@@ -226,10 +226,12 @@ class RenderingDefinition implements RenderingDefinitionInterface
             if ($label !== null) {
                 $reference['label'] = $label;
             }
+
             if ($icon !== null) {
                 $reference['icon'] = $icon;
             }
         }
+
         $this->references[] = $reference;
     }
 

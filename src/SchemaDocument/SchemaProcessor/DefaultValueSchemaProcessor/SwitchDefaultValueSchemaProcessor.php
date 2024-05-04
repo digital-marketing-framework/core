@@ -26,7 +26,7 @@ class SwitchDefaultValueSchemaProcessor extends DefaultValueSchemaProcessor
         }
 
         $type = $this->schemaProcessor->getDefaultValue($this->schemaDocument, $schema->getTypeSchema());
-        $config = $this->schemaProcessor->getDefaultValue($this->schemaDocument, $schema->getConfigSchema($type));
+        $config = $this->schemaProcessor->getDefaultValue($this->schemaDocument, $schema->getTypeSpecificConfigSchema($type));
         $value = [
             SwitchSchema::KEY_TYPE => $type,
             SwitchSchema::KEY_CONFIG => [

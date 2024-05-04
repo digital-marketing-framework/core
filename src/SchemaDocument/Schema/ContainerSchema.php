@@ -108,26 +108,4 @@ class ContainerSchema extends Schema
             'values' => $properties,
         ];
     }
-
-    public function preSaveDataTransform(mixed &$value, SchemaDocument $schemaDocument): void
-    {
-        if ($value === null) {
-            return;
-        }
-
-        if (!is_array($value) || $value === []) {
-            $value = (object)[];
-        } else {
-            foreach (array_keys($value) as $key) {
-                $property = $this->getProperty($key);
-                if ($property instanceof ContainerProperty) {
-                    // TODO unknown data should be allowed due to previous schema versions
-                    //      however, if we can run migrations first, this would be different
-                    //      eventually we do want to cleanup and/or validate a configuration completely
-                    //      but probably not in this method
-                    $property->getSchema()->preSaveDataTransform($value[$key], $schemaDocument);
-                }
-            }
-        }
-    }
 }

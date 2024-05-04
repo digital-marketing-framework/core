@@ -7,11 +7,14 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareT
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareTrait;
 
-abstract class ConfigurationDocumentParser implements ConfigurationDocumentParserInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
+abstract class ConfigurationDocumentParser implements ConfigurationDocumentParserInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface, SchemaProcessorAwareInterface
 {
     use GlobalConfigurationAwareTrait;
     use LoggerAwareTrait;
+    use SchemaProcessorAwareTrait;
 
     abstract public function parseDocument(string $document): array;
 
@@ -23,7 +26,7 @@ abstract class ConfigurationDocumentParser implements ConfigurationDocumentParse
     public function produceDocument(array $configuration, ?SchemaDocument $schemaDocument = null): string
     {
         if ($schemaDocument instanceof SchemaDocument) {
-            $schemaDocument->preSaveDataTransform($configuration);
+            $this->schemaProcessor->preSaveDataTransform($schemaDocument, $configuration);
         }
 
         return $this->doProduceDocument($configuration);

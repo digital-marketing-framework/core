@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Registry\Plugin;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\DefaultValueSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MergeSchemaProcessorInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorInterface;
 
@@ -47,7 +48,6 @@ trait SchemaProcessorRegistryTrait
         $this->deletePlugin($keyword, MergeSchemaProcessorInterface::class);
     }
 
-    // -- AllowedValuesSchemaProcessor --
     // -- DefaultValueSchemaProcessor --
 
     public function registerDefaultValueSchemaProcessor(string $class, array $additionalArguments = [], string $keyword = ''): void
@@ -66,6 +66,23 @@ trait SchemaProcessorRegistryTrait
     }
 
     // -- PreSaveDataSchemaProcessor --
+
+    public function registerPreSaveDataTransformSchemaProcessor(string $class, array $additionalArguments = [], string $keyword = ''): void
+    {
+        $this->registerPlugin(PreSaveDataTransformSchemaProcessorInterface::class, $class, $additionalArguments, $keyword);
+    }
+
+    public function getPreSaveDataTransformSchemaProcessor(string $keyword, SchemaDocument $schemaDocument): ?PreSaveDataTransformSchemaProcessorInterface
+    {
+        return $this->getPlugin($keyword, PreSaveDataTransformSchemaProcessorInterface::class, [$schemaDocument]);
+    }
+
+    public function deletePreSaveDataTransformSchemaProcessor(string $keyword): void
+    {
+        $this->deletePlugin($keyword, PreSaveDataTransformSchemaProcessorInterface::class);
+    }
+
+    // -- AllowedValuesSchemaProcessor --
     // -- SuggestedValuesSchemaProcessor --
     // -- ValidationSchemaProcessor --
 }
