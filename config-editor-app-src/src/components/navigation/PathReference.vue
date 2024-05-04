@@ -7,7 +7,7 @@ import ItemIcon from '@/components/icons/ItemIcon.vue';
 
 const store = useDmfStore();
 const { processLabel } = useLabelProcessor(store);
-const { selectPath } = usePathProcessor(store);
+const { selectPath, processPathPattern } = usePathProcessor(store);
 
 const props = defineProps({
     currentPath: {
@@ -30,12 +30,20 @@ const props = defineProps({
     }
 });
 
+const path = computed(() => processPathPattern(props.referencePath, props.currentPath));
 const icon = computed(() => props.referenceIcon || '');
-const label = computed(() => props.referenceLabel ? processLabel(props.referenceLabel, props.referencePath, props.currentPath, true) : '');
+const label = computed(() => {
+    if (!props.referenceLabel || !path.value) {
+        return '';
+    }
+    const result = processLabel(props.referenceLabel, path.value, props.currentPath, true);
+    return result || '';
+});
+const valid = computed(() => path.value && (label.value || icon.value));
 </script>
 
 <template>
-    <span @click="selectPath(referencePath, currentPath)">
+    <span v-if="valid" @click="selectPath(path, currentPath)">
         <span v-if="label">{{ label }}</span>
         <span v-if="icon">
             <ItemIcon item-type="reference" :custom-icon="icon" />

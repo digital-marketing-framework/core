@@ -126,15 +126,26 @@ const pathMatchesPattern = (path, pathPattern, excludeSubPaths) => {
   return false;
 };
 
-const processPathPattern = (store, pathPattern, currentPath) => {
-  return pathPattern.replace(/\{[^}]+\}/, (match) => {
-    const referencePath = match.substring(1, match.length - 1);
-    let value = store.getValue(referencePath, currentPath);
-    if (typeof value === 'object') {
-      value = getLeafKey(referencePath, currentPath);
-    }
-    return typeof value === 'undefined' || value === '' ? '*' : value;
-  });
+const processPathPattern = (store, pathPattern, currentPath, replaceInvalidValueWithWildcard) => {
+  try {
+    return pathPattern.replace(/\{[^}]+\}/, (match) => {
+      const referencePath = match.substring(1, match.length - 1);
+      let value = store.getValue(referencePath, currentPath);
+      if (typeof value === 'object') {
+        value = getLeafKey(referencePath, currentPath);
+      }
+      const valid = typeof value !== 'undefined' && value !== '';
+      if (!valid) {
+        if (replaceInvalidValueWithWildcard) {
+          return '*';
+        }
+        throw new Error('unable to resolve path pattern: "' + pathPattern + '"');
+      }
+      return value;
+    });
+  } catch (e) {
+    return undefined;
+  }
 };
 
 const getAllPaths = (store, pathPattern, currentPath, ignorePathPattern) => {
@@ -142,13 +153,13 @@ const getAllPaths = (store, pathPattern, currentPath, ignorePathPattern) => {
   if (pathPattern === '/') {
     return [pathPattern];
   }
-  pathPattern = processPathPattern(store, pathPattern, currentPath);
+  pathPattern = processPathPattern(store, pathPattern, currentPath, true);
   if (typeof ignorePathPattern === 'string') {
     ignorePathPattern = [ignorePathPattern];
   }
   if (typeof ignorePathPattern === 'object') {
     for (let i = 0; i < ignorePathPattern.length; i++) {
-      ignorePathPattern[i] = processPathPattern(store, ignorePathPattern[i], currentPath);
+      ignorePathPattern[i] = processPathPattern(store, ignorePathPattern[i], currentPath, true);
     }
   }
   let paths = [''];
@@ -325,6 +336,9 @@ export const usePathProcessor = (store) => {
       getClosestSelectablePath(store, path, currentPath),
     isSelected: (path, currentPath) => isSelected(store, path, currentPath),
     getSelectedPath: () => getSelectedPath(store),
+
+    processPathPattern: (pathPattern, currentPath, replaceInvalidValueWithWildcard) =>
+      processPathPattern(store, pathPattern, currentPath, replaceInvalidValueWithWildcard),
 
     isDataProviderPath: (path, currentPath) => isDataProviderPath(store, path, currentPath),
     isOutboundRoutePath: (path, currentPath) => isOutboundRoutePath(store, path, currentPath),

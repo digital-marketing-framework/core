@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom;
 
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Utility\MapUtility;
 
 class ConditionReferenceSchema extends ReferenceSchema
 {
@@ -15,6 +16,10 @@ class ConditionReferenceSchema extends ReferenceSchema
     ) {
         parent::__construct($defaultValue, $required, $firstEmptyOptionLabel);
         $this->getRenderingDefinition()->setLabel('Condition');
+        $this->getRenderingDefinition()->addReference(
+            sprintf('/%s/%s/{.}/%s', ConfigurationInterface::KEY_DATA_PROCESSING, ConfigurationInterface::KEY_CONDITIONS, MapUtility::KEY_VALUE),
+            sprintf('{../%s}', MapUtility::KEY_KEY)
+        );
     }
 
     protected function getReferencePath(): string
