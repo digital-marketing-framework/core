@@ -46,6 +46,11 @@ class InheritableIntegerSchema extends ContainerSchema
         $this->addProperty(static::KEY_CUSTOM_VALUE, $this->customValueSchema);
     }
 
+    public function addReference(string $path, ?string $label = null, ?string $icon = null): void
+    {
+        $this->inheritedSchema->getRenderingDefinition()->addReference($path, $label, $icon);
+    }
+
     /**
      * @param array{inherited?:bool,customValue?:int} $config
      */

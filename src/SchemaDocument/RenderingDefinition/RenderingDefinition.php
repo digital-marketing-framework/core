@@ -17,6 +17,11 @@ class RenderingDefinition implements RenderingDefinitionInterface
 
     protected bool $sortAlphabetically = false;
 
+    /**
+     * @var array<array{path:string,label?:string,icon?:string}>
+     */
+    protected array $references = [];
+
     protected ?bool $hideLabel = null;
 
     protected ?string $label = null;
@@ -57,6 +62,10 @@ class RenderingDefinition implements RenderingDefinitionInterface
 
         if ($this->sortAlphabetically) {
             $render['sortAlphabetically'] = true;
+        }
+
+        if ($this->references !== []) {
+            $render['references'] = $this->references;
         }
 
         if ($this->hideLabel ?? false) {
@@ -204,6 +213,34 @@ class RenderingDefinition implements RenderingDefinitionInterface
     public function sortAlphabetically(bool $sort = true): void
     {
         $this->sortAlphabetically = $sort;
+    }
+
+    public function addReference(string $path, ?string $label = null, ?string $icon = null): void
+    {
+        $reference = [
+            'path' => $path,
+        ];
+        if ($label === null && $icon === null) {
+            $reference['label'] = '{.}';
+        } else {
+            if ($label !== null) {
+                $reference['label'] = $label;
+            }
+            if ($icon !== null) {
+                $reference['icon'] = $icon;
+            }
+        }
+        $this->references[] = $reference;
+    }
+
+    public function getReferences(): array
+    {
+        return $this->references;
+    }
+
+    public function setReferences(array $references): void
+    {
+        $this->references = $references;
     }
 
     public function hideLabel(bool $hide = true): void

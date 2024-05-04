@@ -37,6 +37,18 @@ interface RenderingDefinitionInterface
 
     public function sortAlphabetically(bool $sort = true): void;
 
+    public function addReference(string $path, ?string $label = null, ?string $icon = null): void;
+
+    /**
+     * @return array<array{path:string,label?:string,icon?:string}>
+     */
+    public function getReferences(): array;
+
+    /**
+     * @param array<array{path:string,label?:string,icon?:string}> $references
+     */
+    public function setReferences(array $references): void;
+
     public function hideLabel(bool $hide = true): void;
 
     public function setLabel(?string $label): void;
