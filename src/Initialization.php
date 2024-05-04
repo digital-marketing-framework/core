@@ -37,8 +37,8 @@ abstract class Initialization implements InitializationInterface
 
     public function initPlugins(string $domain, RegistryInterface $registry): void
     {
-        $plugins = static::PLUGINS[$domain] ?? [];
-        foreach ($plugins as $interface => $plugins) {
+        $pluginLists = static::PLUGINS[$domain] ?? [];
+        foreach ($pluginLists as $interface => $plugins) {
             foreach ($plugins as $keyword => $class) {
                 $registry->registerPlugin(
                     $interface,

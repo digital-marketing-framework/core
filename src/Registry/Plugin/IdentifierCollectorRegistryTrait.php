@@ -38,13 +38,13 @@ trait IdentifierCollectorRegistryTrait
     {
         foreach ($this->getAllPluginClasses(IdentifierCollectorInterface::class) as $keyword => $class) {
             $schema = $class::getSchema();
-            $integration = $class::getIntegrationName();
+            $integrationInfo = $class::getDefaultIntegrationInfo();
             $label = $class::getLabel();
 
             $schemaDocument->addValueToValueSet('identifierCollector/all', $keyword);
-            $schemaDocument->addValueToValueSet('identifierCollector/' . $integration . '/all', $keyword);
+            $schemaDocument->addValueToValueSet('identifierCollector/' . $integrationInfo->getName() . '/all', $keyword);
 
-            $integrationSchema = $this->getIntegrationSchemaForPluginClass($schemaDocument, $class);
+            $integrationSchema = $this->getIntegrationSchemaForPlugin($schemaDocument, $integrationInfo);
             $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS)?->getSchema();
             if (!$integrationIdentifierSchema instanceof ContainerSchema) {
                 $integrationIdentifierSchema = new ContainerSchema();

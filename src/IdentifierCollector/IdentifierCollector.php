@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\IdentifierCollector;
 
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
+use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
@@ -18,30 +19,24 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
 
     protected const DEFAULT_ENABLED = false;
 
+    protected IntegrationInfo $integrationInfo;
+
     public function __construct(
         string $keyword,
         protected RegistryInterface $registry,
-        protected ConfigurationInterface $identifiersConfiguration
+        protected ConfigurationInterface $identifiersConfiguration,
+        ?IntegrationInfo $integrationInfo = null
     ) {
         parent::__construct($keyword);
-        $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration(static::getIntegrationName(), $this->getKeyword());
+        $this->integrationInfo = $integrationInfo ?? static::getDefaultIntegrationInfo();
+        $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration($this->integrationInfo->getName(), $this->getKeyword());
     }
 
-    abstract public static function getIntegrationName(): string;
+    abstract public static function getDefaultIntegrationInfo(): IntegrationInfo;
 
-    public static function getIntegrationLabel(): ?string
+    public function getIntegrationInfo(): IntegrationInfo
     {
-        return null;
-    }
-
-    public static function getIntegrationIcon(): ?string
-    {
-        return 'integration';
-    }
-
-    public static function getIntegrationWeight(): int
-    {
-        return static::INTEGRATION_WEIGHT_DEFAULT;
+        return $this->integrationInfo;
     }
 
     protected function proceed(): bool

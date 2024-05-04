@@ -23,6 +23,18 @@ class RestrictedTermsSchema extends SwitchSchema
 
     public const KEY_LIST = 'list';
 
+    public function __construct(
+        string $referencePath,
+        string $referenceType = ScalarValues::REFERENCE_TYPE_KEY,
+        mixed $defaultValue = null
+    ) {
+        parent::__construct('restrictedTerms', $defaultValue);
+        $this->addItem(static::KEY_ALL, new ContainerSchema());
+        $this->addItem(static::KEY_NONE, new ContainerSchema());
+        $this->addList(static::KEY_BLACKLIST, $referencePath, $referenceType);
+        $this->addList(static::KEY_WHITELIST, $referencePath, $referenceType);
+    }
+
     protected function addList(string $name, string $referencePath, string $referenceType): void
     {
         $listItemSchema = new StringSchema();
@@ -34,18 +46,6 @@ class RestrictedTermsSchema extends SwitchSchema
         $container = new ContainerSchema();
         $container->addProperty(static::KEY_LIST, $listSchema);
         $this->addItem($name, $container);
-    }
-
-    public function __construct(
-        string $referencePath,
-        string $referenceType = ScalarValues::REFERENCE_TYPE_KEY,
-        mixed $defaultValue = null
-    ) {
-        parent::__construct('restrictedTerms', $defaultValue);
-        $this->addItem(static::KEY_ALL, new ContainerSchema());
-        $this->addItem(static::KEY_NONE, new ContainerSchema());
-        $this->addList(static::KEY_BLACKLIST, $referencePath, $referenceType);
-        $this->addList(static::KEY_WHITELIST, $referencePath, $referenceType);
     }
 
     /**

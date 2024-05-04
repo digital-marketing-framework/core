@@ -3,7 +3,7 @@
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
-use DigitalMarketingFramework\Core\Integration\IntegrationPluginInterface;
+use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
@@ -125,17 +125,14 @@ trait ConfigurationSchemaRegistryTrait
         return $integrationImplementationSchema;
     }
 
-    /**
-     * @param class-string<IntegrationPluginInterface> $pluginClass
-     */
-    protected function getIntegrationSchemaForPluginClass(SchemaDocument $schemaDocument, string $pluginClass): ContainerSchema
+    protected function getIntegrationSchemaForPlugin(SchemaDocument $schemaDocument, IntegrationInfo $integrationInfo): ContainerSchema
     {
         return $this->getIntegrationSchema(
             $schemaDocument,
-            $pluginClass::getIntegrationName(),
-            $pluginClass::getIntegrationLabel(),
-            $pluginClass::getIntegrationWeight(),
-            $pluginClass::getIntegrationIcon()
+            $integrationInfo->getName(),
+            $integrationInfo->getLabel(),
+            $integrationInfo->getWeight(),
+            $integrationInfo->getIcon()
         );
     }
 
@@ -144,7 +141,7 @@ trait ConfigurationSchemaRegistryTrait
         return $this->getIntegrationSchema(
             $schemaDocument,
             integrationName: ConfigurationInterface::KEY_GENERAL_INTEGRATION,
-            weight: IntegrationPluginInterface::INTEGRATION_WEIGHT_TOP,
+            weight: IntegrationInfo::WEIGHT_TOP,
             icon: 'general'
         );
     }
