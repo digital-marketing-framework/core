@@ -29,7 +29,7 @@ interface DataProcessorInterface extends PluginInterface
     /**
      * @param array<string,mixed> $config
      */
-    public function processEvaluation(array $config, DataProcessorContextInterface $context): bool;
+    public function processCondition(array $config, DataProcessorContextInterface $context): bool;
 
     /**
      * @param array<string,mixed> $config
@@ -39,5 +39,10 @@ interface DataProcessorInterface extends PluginInterface
     /**
      * @param array<string,mixed> $config
      */
-    public function processDataMapper(array $config, DataInterface $data, ConfigurationInterface $configuration): DataInterface;
+    public function processDataMapper(array $config, DataProcessorContextInterface $context): DataInterface;
+
+    /**
+     * @param array<string,mixed> $config
+     */
+    public function processDataMapperGroup(array $config, DataProcessorContextInterface $context): DataInterface;
 }

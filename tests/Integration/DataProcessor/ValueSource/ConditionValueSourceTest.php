@@ -19,37 +19,37 @@ class ConditionValueSourceTest extends ValueSourceTest
     {
         return [
             [
-                $this->getEvaluationConfiguration([], 'true'),
+                $this->getConditionConfiguration([], 'true'),
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
                 'value1',
             ],
             [
-                $this->getEvaluationConfiguration([], 'true'),
+                $this->getConditionConfiguration([], 'true'),
                 null,
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
                 null,
             ],
             [
-                $this->getEvaluationConfiguration([], 'true'),
+                $this->getConditionConfiguration([], 'true'),
                 null,
                 null,
                 null,
             ],
             [
-                $this->getEvaluationConfiguration([], 'false'),
+                $this->getConditionConfiguration([], 'false'),
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
                 'value2',
             ],
             [
-                $this->getEvaluationConfiguration([], 'false'),
+                $this->getConditionConfiguration([], 'false'),
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
                 null,
                 null,
             ],
             [
-                $this->getEvaluationConfiguration([], 'false'),
+                $this->getConditionConfiguration([], 'false'),
                 null,
                 null,
                 null,

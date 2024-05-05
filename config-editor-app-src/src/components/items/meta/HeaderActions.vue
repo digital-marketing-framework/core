@@ -7,11 +7,11 @@ import {
 
 import { useTippy } from 'vue-tippy';
 import { computed } from "vue";
-import { useDmfStore } from '../../../stores/dmf';
-import { isContainerType, isDynamicContainerType } from '../../../helpers/type';
-import { useDynamicProcessor } from '../../../composables/dynamicItem';
-import { useRawProcessor } from '../../../composables/raw';
-import { useConfirmation } from '../../../composables/confirmation';
+import { useDmfStore } from '@/stores/dmf';
+import { isContainerType, isDynamicContainerType } from '@/helpers/type';
+import { useDynamicProcessor } from '@/composables/dynamicItem';
+import { useRawProcessor } from '@/composables/raw';
+import { useConfirmation } from '@/composables/confirmation';
 
 import BugIcon from '../../icons/BugIcon.vue';
 import CodeIcon from '../../icons/CodeIcon.vue';
@@ -22,6 +22,7 @@ import RotateLeftIcon from '../../icons/RotateLeftIcon.vue';
 import SortDownIcon from '../../icons/SortDownIcon.vue';
 import SortUpIcon from '../../icons/SortUpIcon.vue';
 import TrashIcon from '../../icons/TrashIcon.vue';
+import PathReference from '@/components/navigation/PathReference.vue';
 
 const store = useDmfStore();
 const {
@@ -58,6 +59,7 @@ const isDynamicContainer = computed(() => isDynamicContainerType(schema.value.ty
 const canMoveUp = computed(() => canMove.value && !isFirstChild(props.dynamicItemPath));
 const canMoveDown = computed(() => canMove.value && !isLastChild(props.dynamicItemPath));
 const canResetOverwrite = computed(() => !store.settings.readonly && store.canResetOverwrite(isDynamic.value ? props.dynamicItemPath : props.currentPath));
+const references = computed(() => schema.value.references || []);
 
 const reset = () => {
     requestConfirmation(
@@ -108,6 +110,14 @@ watch(
 
 <template>
     <div class="tw-flex tw-items-center tw-gap-x-2">
+        <div v-for="reference in references" :key="reference.path">
+            <PathReference
+                :current-path="currentPath"
+                :reference-path="reference.path"
+                :reference-label="reference.label"
+                :reference-icon="reference.icon"
+            />
+        </div>
         <div v-if="canResetOverwrite"
              @click="reset()"
              class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">

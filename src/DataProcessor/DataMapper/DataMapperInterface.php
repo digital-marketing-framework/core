@@ -2,13 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataProcessorPluginInterface;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
-use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 
-interface DataMapperInterface extends PluginInterface
+interface DataMapperInterface extends DataProcessorPluginInterface
 {
     public function mapData(DataInterface $target): DataInterface;
-
-    public static function getSchema(): SchemaInterface;
 }

@@ -2,14 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareTrait;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class FileValueSource extends ValueSource implements FileStorageAwareInterface

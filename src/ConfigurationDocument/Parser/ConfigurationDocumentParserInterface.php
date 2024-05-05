@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\Parser;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 interface ConfigurationDocumentParserInterface
 {

@@ -2,18 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 class IntegerValueSource extends ValueSource
 {
     public const KEY_VALUE = 'value';
-
-    public const DEFAULT_VALUE = null;
 
     public function build(): string|ValueInterface|null
     {

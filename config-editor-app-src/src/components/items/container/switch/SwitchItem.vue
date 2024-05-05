@@ -23,23 +23,16 @@ const props = defineProps({
     }
 });
 
-const type = computed(() => store.getValue('type', props.currentPath, true));
-const childPaths = computed(() => getChildPaths(props.currentPath).filter(childPath => childPath !== 'type' && childPath !== 'config/' + type.value));
+const childPaths = computed(() => getChildPaths(props.currentPath));
 </script>
 
 <template>
     <GenericContainerItem :currentPath="currentPath"
                           :dynamicItemPath="dynamicItemPath">
         <template #fieldsUi>
-            <GenericItem :currentPath="getAbsolutePath('type', currentPath)"
-                         :key="getAbsolutePath('type', currentPath)" />
-
             <GenericItem v-for="childPath in childPaths"
                          :key="getAbsolutePath(childPath, currentPath)"
                          :currentPath="getAbsolutePath(childPath, currentPath)" />
-
-            <GenericItem :currentPath="getAbsolutePath('config/' + type, currentPath)"
-                         :key="getAbsolutePath('config/' + type, currentPath)" />
         </template>
-    </GenericContainerItem>
+</GenericContainerItem>
 </template>

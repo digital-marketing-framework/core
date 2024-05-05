@@ -5,21 +5,23 @@ import {
   DisclosurePanel
 } from '@headlessui/vue';
 import { computed } from "vue";
-import { useDmfStore } from '../../stores/dmf';
-import { useLabelProcessor } from '../../composables/label';
-import { getAbsolutePath, isRoot as _isRoot } from '../../helpers/path';
-import { isContainerType } from '../../helpers/type';
+import { useDmfStore } from '@/stores/dmf';
+import { useLabelProcessor } from '@/composables/label';
+import { getAbsolutePath, isRoot as _isRoot } from '@/helpers/path';
+import { isContainerType } from '@/helpers/type';
 
-import AngleDownIcon from '../icons/AngleDownIcon.vue';
-import ItemIcon from '../icons/ItemIcon.vue';
-import TransitionExpand from '../TransitionExpand.vue';
-import { useNavigation } from '../../composables/navigation';
-import { usePathProcessor } from '../../composables/path';
+import AngleDownIcon from '@/components/icons/AngleDownIcon.vue';
+import ItemIcon from '@/components/icons/ItemIcon.vue';
+import TransitionExpand from '@/components/TransitionExpand.vue';
+import { useNavigation } from '@/composables/navigation';
+import { usePathProcessor } from '@/composables/path';
+import { useIconProcessor } from '@/composables/icon';
 
 const store = useDmfStore();
 const { getLabel } = useLabelProcessor(store);
 const { getNavigationChildPaths, getContainerNavigationState, toggleContainerNavigationState } = useNavigation(store);
 const { isSelected, selectPath } = usePathProcessor(store);
+const { getIcon } = useIconProcessor(store);
 
 const props = defineProps({
     currentPath: {
@@ -35,6 +37,7 @@ const label = computed(() => getLabel(props.currentPath));
 const selected = computed(() => isSelected(props.currentPath));
 const containerNavigationState = computed(() => getContainerNavigationState(props.currentPath));
 const navigationChildPaths = computed(() => getNavigationChildPaths(props.currentPath));
+const customIcon = computed(() => getIcon(props.currentPath, undefined, schema.value));
 </script>
 
 <template>
@@ -57,6 +60,7 @@ const navigationChildPaths = computed(() => getNavigationChildPaths(props.curren
                  }"
                  @click="selectPath(currentPath)">
                 <ItemIcon :item-type="schema.type"
+                          :custom-icon="customIcon"
                           :active="selected" />
                 {{ label }}
             </div>

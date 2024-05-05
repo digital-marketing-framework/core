@@ -2,10 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 
 class ConstantValueSource extends ValueSource
 {

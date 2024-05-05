@@ -114,7 +114,7 @@ class ConditionValueSourceTest extends ValueSourceTest
         }
 
         $this->dataProcessor->method('processValue')->withConsecutive(...$valueWith)->willReturnOnConsecutiveCalls(...$valueResults);
-        $this->dataProcessor->method('processEvaluation')->with($ifConfig)->willReturn($evalResult);
+        $this->dataProcessor->method('processCondition')->with($ifConfig)->willReturn($evalResult);
 
         $config = [
             ConditionValueSource::KEY_IF => $ifConfig,

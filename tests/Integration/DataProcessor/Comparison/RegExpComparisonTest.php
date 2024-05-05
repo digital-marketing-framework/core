@@ -64,7 +64,7 @@ class RegExpComparisonTest extends ComparisonTest
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value7'], 'constant'),
             ],
             [
-                true,
+                false,
                 $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
                 $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value4b'], 'constant'),
             ],

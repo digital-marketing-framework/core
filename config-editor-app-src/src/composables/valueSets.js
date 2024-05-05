@@ -3,6 +3,8 @@ import { EVENT_GET_VALUE_PROCESSORS, EVENT_SET_VALUE_PROCESSOR } from './valueSe
 import './valueSetProcessors/listProcessor';
 import './valueSetProcessors/referencesProcessor';
 import './valueSetProcessors/setsProcessor';
+import './valueSetProcessors/contextSelectionProcessor';
+import './valueSetProcessors/contextualProcessor';
 
 import { getAbsolutePath } from '../helpers/path';
 import { isNativeType } from '../helpers/type';

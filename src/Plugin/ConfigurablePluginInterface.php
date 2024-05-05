@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Plugin;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 interface ConfigurablePluginInterface extends PluginInterface
 {

@@ -10,6 +10,7 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareI
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\AssetsRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
@@ -19,6 +20,7 @@ use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
 
 class Registry implements RegistryInterface
@@ -34,6 +36,7 @@ class Registry implements RegistryInterface
     use FileStorageRegistryTrait;
     use TemplateEngineRegistryTrait;
 
+    use SchemaProcessorRegistryTrait;
     use DataProcessorRegistryTrait;
     use IdentifierCollectorRegistryTrait;
 
@@ -66,6 +69,10 @@ class Registry implements RegistryInterface
 
         if ($object instanceof TemplateEngineAwareInterface) {
             $object->setTemplateEngine($this->getTemplateEngine());
+        }
+
+        if ($object instanceof SchemaProcessorAwareInterface) {
+            $object->setSchemaProcessor($this->getSchemaProcessor());
         }
     }
 

@@ -46,6 +46,18 @@ abstract class AbstractListUtility
     /**
      * @param array<string,Item> $list
      *
+     * @return array<string>
+     */
+    public static function getIdsSorted(array $list): array
+    {
+        static::sort($list);
+
+        return array_keys($list);
+    }
+
+    /**
+     * @param array<string,Item> $list
+     *
      * @return array<string,Item>
      */
     public static function sort(array $list): array

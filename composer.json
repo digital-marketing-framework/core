@@ -83,8 +83,8 @@
             "@ci:php:tests:unit",
             "@ci:php:tests:integration"
         ],
-        "ci:php:tests:integration": "./vendor/bin/phpunit --bootstrap vendor/autoload.php --testdox --colors=always tests/Integration/",
-        "ci:php:tests:unit": "./vendor/bin/phpunit --bootstrap vendor/autoload.php --testdox --colors=always tests/Unit/",
+        "ci:php:tests:integration": "./vendor/bin/phpunit -d memory_limit=228M --bootstrap vendor/autoload.php --testdox --colors=always tests/Integration/",
+        "ci:php:tests:unit": "./vendor/bin/phpunit -d memory_limit=228M --bootstrap vendor/autoload.php --testdox --colors=always tests/Unit/",
         "ci:static": [
             "@ci:composer:static",
             "@ci:php:static"

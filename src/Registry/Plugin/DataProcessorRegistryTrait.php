@@ -2,21 +2,23 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\EvaluationSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\BinaryComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroupInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessor;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorInterface;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ComparisonSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ConditionSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperGroupSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 trait DataProcessorRegistryTrait
 {
@@ -24,7 +26,7 @@ trait DataProcessorRegistryTrait
 
     protected DataProcessorInterface $dataProcessor;
 
-    abstract protected function createObject(string $class, array $arguments = []): object;
+    abstract public function createObject(string $class, array $arguments = []): object;
 
     public function getDataProcessor(): DataProcessorInterface
     {
@@ -40,6 +42,8 @@ trait DataProcessorRegistryTrait
     {
         $this->dataProcessor = $dataProcessor;
     }
+
+    // -- ValueSource --
 
     public function registerValueSource(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
@@ -73,6 +77,8 @@ trait DataProcessorRegistryTrait
         return $schema;
     }
 
+    // -- ValueModifier --
+
     public function registerValueModifier(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
         $this->registerPlugin(ValueModifierInterface::class, $class, $additionalArguments, $keyword);
@@ -98,30 +104,34 @@ trait DataProcessorRegistryTrait
         return $schema;
     }
 
-    public function registerEvaluation(string $class, array $additionalArguments = [], string $keyword = ''): void
+    // -- Condition --
+
+    public function registerCondition(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
-        $this->registerPlugin(EvaluationInterface::class, $class, $additionalArguments, $keyword);
+        $this->registerPlugin(ConditionInterface::class, $class, $additionalArguments, $keyword);
     }
 
-    public function deleteEvaluation(string $keyword): void
+    public function deleteCondition(string $keyword): void
     {
-        $this->deletePlugin($keyword, EvaluationInterface::class);
+        $this->deletePlugin($keyword, ConditionInterface::class);
     }
 
-    public function getEvaluation(string $keyword, array $config, DataProcessorContextInterface $context): ?EvaluationInterface
+    public function getCondition(string $keyword, array $config, DataProcessorContextInterface $context): ?ConditionInterface
     {
-        return $this->getPlugin($keyword, EvaluationInterface::class, [$config, $context]);
+        return $this->getPlugin($keyword, ConditionInterface::class, [$config, $context]);
     }
 
-    public function getEvaluationSchema(): SchemaInterface
+    public function getConditionSchema(bool $withContext = false): SchemaInterface
     {
-        $schema = new EvaluationSchema();
-        foreach ($this->getAllPluginClasses(EvaluationInterface::class) as $key => $class) {
+        $schema = new ConditionSchema(withContext: $withContext);
+        foreach ($this->getAllPluginClasses(ConditionInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
         }
 
         return $schema;
     }
+
+    // -- Comparison --
 
     public function registerComparison(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
@@ -157,6 +167,8 @@ trait DataProcessorRegistryTrait
         return $schema;
     }
 
+    // -- DataMapper --
+
     public function registerDataMapper(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
         $this->registerPlugin(DataMapperInterface::class, $class, $additionalArguments, $keyword);
@@ -177,6 +189,33 @@ trait DataProcessorRegistryTrait
         $schema = new DataMapperSchema();
         foreach ($this->getAllPluginClasses(DataMapperInterface::class) as $key => $class) {
             $schema->addItem($key, $class::getSchema());
+        }
+
+        return $schema;
+    }
+
+    // -- DataMapperGroup --
+
+    public function registerDataMapperGroup(string $class, array $additionalArguments = [], string $keyword = ''): void
+    {
+        $this->registerPlugin(DataMapperGroupInterface::class, $class, $additionalArguments, $keyword);
+    }
+
+    public function deleteDataMapperGroup(string $keyword): void
+    {
+        $this->deletePlugin($keyword, DataMapperGroupInterface::class);
+    }
+
+    public function getDataMapperGroup(string $keyword, array $config, DataProcessorContextInterface $context): ?DataMapperGroupInterface
+    {
+        return $this->getPlugin($keyword, DataMapperGroupInterface::class, [$config, $context]);
+    }
+
+    public function getDataMapperGroupSchema(): SchemaInterface
+    {
+        $schema = new DataMapperGroupSchema();
+        foreach ($this->getAllPluginClasses(DataMapperGroupInterface::class) as $key => $class) {
+            $schema->addItem($key, $class::getSchema(), $class::getLabel());
         }
 
         return $schema;

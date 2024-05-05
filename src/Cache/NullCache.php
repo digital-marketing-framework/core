@@ -34,7 +34,7 @@ class NullCache implements NonTaggableCacheInterface
     /**
      * @param array<mixed> $data
      */
-    public function store(string $key, array $data): void
+    public function store(string $key, array $data, int $timeoutInSeconds = -1): void
     {
     }
 

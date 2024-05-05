@@ -2,12 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ListSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ListSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 class FirstOfValueSource extends ValueSource
 {

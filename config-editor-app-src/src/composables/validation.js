@@ -1,7 +1,7 @@
-import { getAbsolutePath } from '../helpers/path';
-import { isContainerType, isScalarType } from '../helpers/type';
-import { useDmfStore } from '../stores/dmf';
-import { useEvaluation } from './conditions';
+import { getAbsolutePath } from '@/helpers/path';
+import { isContainerType, isScalarType } from '@/helpers/type';
+import { useDmfStore } from '@/stores/dmf';
+import { useConditions } from './conditions';
 import { useLabelProcessor } from './label';
 import { WARNING_DOCUMENT_INVALID, useNotifications } from './notifications';
 import { usePathProcessor } from './path';
@@ -90,7 +90,7 @@ const _processValidations = (store, path, validations) => {
   if (!validations) {
     return '';
   }
-  const { evaluate } = useEvaluation(store);
+  const { evaluate } = useConditions(store);
   for (let index = 0; index < validations.length; index++) {
     if (!evaluate(validations[index]['condition'], path)) {
       return validations[index]['message'];
@@ -99,14 +99,14 @@ const _processValidations = (store, path, validations) => {
   return '';
 };
 
-const _processStrictValidations = (store, schema, path) =>
+const _processNecessaryValidations = (store, schema, path) =>
   _processValidations(store, path, schema.strictValidations);
 
-const _processSoftValidations = (store, schema, path) =>
+const _processOptionalValidations = (store, schema, path) =>
   _processValidations(store, path, schema.validations);
 
-const useSoftValidations = (store) =>
-  store.data.metaData.softValidation || !store.settings.globalDocument;
+const useOptionalValidations = (store) =>
+  store.data.metaData.strictValidation || !store.settings.globalDocument;
 
 const _validateSchemaWithoutChildren = (store, schema, value, path) => {
   let issue;
@@ -121,13 +121,13 @@ const _validateSchemaWithoutChildren = (store, schema, value, path) => {
     return issue;
   }
 
-  issue = _processStrictValidations(store, schema, path);
+  issue = _processNecessaryValidations(store, schema, path);
   if (issue) {
     return issue;
   }
 
-  if (useSoftValidations(store)) {
-    issue = _processSoftValidations(store, schema, path);
+  if (useOptionalValidations(store)) {
+    issue = _processOptionalValidations(store, schema, path);
     if (issue) {
       return issue;
     }
@@ -145,8 +145,36 @@ const clearIssues = (store, path, currentPath) => {
   });
 };
 
+const skipValidation = (store, path, currentPath) => {
+  if (!store.isVisible(path, currentPath)) {
+    return true;
+  }
+
+  const { isOutboundRoutePath, isInboundRoutePath, isDataProviderPath } = usePathProcessor(store);
+
+  const outboundRoute = isOutboundRoutePath(path, currentPath);
+  if (outboundRoute) {
+    return !store.data.integrations[outboundRoute.integration].outboundRoutes[outboundRoute.id].value.config[outboundRoute.keyword].enabled;
+  }
+
+  const inboundRoute = isInboundRoutePath(path, currentPath);
+  if (inboundRoute) {
+    return !store.data.integrations[inboundRoute.integration].inboundRoutes[inboundRoute.keyword].enabled;
+  }
+
+  const dataProvider = isDataProviderPath(path, currentPath);
+  if (dataProvider) {
+    return !store.data.dataProcessing.dataProviders[dataProvider.keyword].enabled;
+  }
+
+  return false;
+};
+
 const _validate = (store, path, currentPath) => {
   clearIssues(store, path, currentPath);
+  if (skipValidation(store, path, currentPath)) {
+    return;
+  }
   const absolutePath = getAbsolutePath(path, currentPath);
   const schema = store.getSchema(path, currentPath, true);
   const value = store.getValue(path, currentPath);

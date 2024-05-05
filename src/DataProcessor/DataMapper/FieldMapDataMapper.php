@@ -2,13 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Custom\ValueSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\CustomSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\MapSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\MapSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 
 class FieldMapDataMapper extends DataMapper
 {
@@ -40,6 +41,8 @@ class FieldMapDataMapper extends DataMapper
 
         $fieldMapKey = new StringSchema('fieldName');
         $fieldMapKey->getRenderingDefinition()->setLabel('Target Field Name');
+        $fieldMapKey->getRenderingDefinition()->addRole(RenderingDefinitionInterface::ROLE_OUTPUT_FIELD);
+        $fieldMapKey->getSuggestedValues()->setContextual();
         $fieldMapValue = new CustomSchema(ValueSchema::TYPE);
         $fieldMap = new MapSchema($fieldMapValue, $fieldMapKey);
         $fieldMap->setDynamicOrder(true);

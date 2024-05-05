@@ -10,19 +10,23 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsEmptyComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsFalseComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsTrueComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\AndCondition;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ComparisonCondition;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\FalseCondition;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\NotCondition;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\OrCondition;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ReferenceCondition;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\TrueCondition;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\ExcludeFieldsDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PrefixDataMapper;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\AndEvaluation;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\ComparisonEvaluation;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\FalseEvaluation;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\NotEvaluation;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\OrEvaluation;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\TrueEvaluation;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroupInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\SequenceDataMapperGroup;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\SingleDataMapperGroup;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\IndexValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\InsertDataValueModifier;
@@ -51,6 +55,28 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryDomain;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\BooleanDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\ContainerDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\CustomDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\DefaultValueSchemaProcessorInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\IntegerDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\ListDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\MapDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\StringDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\SwitchDefaultValueSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\ContainerMergeSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\CustomMergeSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\ListMergeSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MapMergeSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MergeSchemaProcessorInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\ScalarMergeSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\SwitchMergeSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\ContainerPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\CustomPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\DynamicListPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\NoOpPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\SwitchPreSaveDataTransformSchemaProcessor;
 
 class CoreInitialization extends Initialization
 {
@@ -85,13 +111,14 @@ class CoreInitialization extends Initialization
                 TrimValueModifier::class,
                 UpperCaseValueModifier::class,
             ],
-            EvaluationInterface::class => [
-                AndEvaluation::class,
-                ComparisonEvaluation::class,
-                FalseEvaluation::class,
-                NotEvaluation::class,
-                OrEvaluation::class,
-                TrueEvaluation::class,
+            ConditionInterface::class => [
+                AndCondition::class,
+                ComparisonCondition::class,
+                FalseCondition::class,
+                NotCondition::class,
+                OrCondition::class,
+                ReferenceCondition::class,
+                TrueCondition::class,
             ],
             ComparisonInterface::class => [
                 EqualsComparison::class,
@@ -108,6 +135,40 @@ class CoreInitialization extends Initialization
                 FieldMapDataMapper::class,
                 IgnoreEmptyFieldsDataMapper::class,
                 PassthroughFieldsDataMapper::class,
+            ],
+            DataMapperGroupInterface::class => [
+                SingleDataMapperGroup::class,
+                SequenceDataMapperGroup::class,
+            ],
+            MergeSchemaProcessorInterface::class => [
+                'boolean' => ScalarMergeSchemaProcessor::class,
+                'container' => ContainerMergeSchemaProcessor::class,
+                'custom' => CustomMergeSchemaProcessor::class,
+                'integer' => ScalarMergeSchemaProcessor::class,
+                'list' => ListMergeSchemaProcessor::class,
+                'map' => MapMergeSchemaProcessor::class,
+                'string' => ScalarMergeSchemaProcessor::class,
+                'switch' => SwitchMergeSchemaProcessor::class,
+            ],
+            DefaultValueSchemaProcessorInterface::class => [
+                'boolean' => BooleanDefaultValueSchemaProcessor::class,
+                'container' => ContainerDefaultValueSchemaProcessor::class,
+                'custom' => CustomDefaultValueSchemaProcessor::class,
+                'integer' => IntegerDefaultValueSchemaProcessor::class,
+                'list' => ListDefaultValueSchemaProcessor::class,
+                'map' => MapDefaultValueSchemaProcessor::class,
+                'string' => StringDefaultValueSchemaProcessor::class,
+                'switch' => SwitchDefaultValueSchemaProcessor::class,
+            ],
+            PreSaveDataTransformSchemaProcessorInterface::class => [
+                'boolean' => NoOpPreSaveDataTransformSchemaProcessor::class,
+                'container' => ContainerPreSaveDataTransformSchemaProcessor::class,
+                'custom' => CustomPreSaveDataTransformSchemaProcessor::class,
+                'integer' => NoOpPreSaveDataTransformSchemaProcessor::class,
+                'list' => DynamicListPreSaveDataTransformSchemaProcessor::class,
+                'map' => DynamicListPreSaveDataTransformSchemaProcessor::class,
+                'string' => NoOpPreSaveDataTransformSchemaProcessor::class,
+                'switch' => SwitchPreSaveDataTransformSchemaProcessor::class,
             ],
         ],
     ];

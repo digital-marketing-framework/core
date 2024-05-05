@@ -12,7 +12,7 @@ class TaggableCacheWrapper implements CacheInterface
 
     protected const PREFIX_TAG = 'tag:';
 
-    protected const KEY_ALL_TAGS = 'TAGABLE_WRAPPPER__ALL_TAGS';
+    protected const KEY_ALL_TAGS = 'TAGGABLE_WRAPPER__ALL_TAGS';
 
     public function __construct(
         protected NonTaggableCacheInterface $cache,
@@ -130,7 +130,7 @@ class TaggableCacheWrapper implements CacheInterface
      * @param array<mixed> $data
      * @param array<string> $tags
      */
-    public function store(string $key, array $data, array $tags = []): void
+    public function store(string $key, array $data, int $timeoutInSeconds = -1, array $tags = []): void
     {
         $this->purge($key);
         $this->cache->store(static::PREFIX_KEY . $key, [static::KEY_DATA => $data, static::KEY_TAGS => $tags]);

@@ -1,6 +1,6 @@
 <script setup>
 
-import SwitchItem from '../SwitchItem.vue';
+import SwitchItem from '../container/switch/SwitchItem.vue';
 
 defineProps({
     currentPath: {

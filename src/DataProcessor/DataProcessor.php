@@ -2,13 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SwitchSchema;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
-use DigitalMarketingFramework\Core\DataProcessor\Evaluation\EvaluationInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifierInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValueSource;
@@ -22,6 +21,7 @@ use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SwitchSchema;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 
@@ -104,21 +104,20 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         return $comparison->compare();
     }
 
-    public function processEvaluation(array $config, DataProcessorContextInterface $context): bool
+    public function processCondition(array $config, DataProcessorContextInterface $context): bool
     {
         $keyword = SwitchSchema::getSwitchType($config);
-        $evaluationConfig = SwitchSchema::getSwitchConfiguration($config);
-        $evaluation = $this->registry->getEvaluation($keyword, $evaluationConfig, $context);
-        if (!$evaluation instanceof EvaluationInterface) {
-            throw new DigitalMarketingFrameworkException(sprintf('Evaluation "%s" not found.', $keyword));
+        $conditionConfig = SwitchSchema::getSwitchConfiguration($config);
+        $condition = $this->registry->getCondition($keyword, $conditionConfig, $context);
+        if (!$condition instanceof ConditionInterface) {
+            throw new DigitalMarketingFrameworkException(sprintf('Condition "%s" not found.', $keyword));
         }
 
-        return $evaluation->evaluate();
+        return $condition->evaluate();
     }
 
-    public function processDataMapper(array $config, DataInterface $data, ConfigurationInterface $configuration): DataInterface
+    public function processDataMapper(array $config, DataProcessorContextInterface $context): DataInterface
     {
-        $context = $this->createContext($data, $configuration);
         $target = new Data();
         foreach ($config as $keyword => $dataMapperConfig) {
             $dataMapper = $this->registry->getDataMapper($keyword, $dataMapperConfig, $context);
@@ -130,6 +129,15 @@ class DataProcessor extends Plugin implements DataProcessorInterface
         }
 
         return $target;
+    }
+
+    public function processDataMapperGroup(array $config, DataProcessorContextInterface $context): DataInterface
+    {
+        $keyword = SwitchSchema::getSwitchType($config);
+        $dataMapperGroupConfig = SwitchSchema::getSwitchConfiguration($config);
+        $dataMapperGroup = $this->registry->getDataMapperGroup($keyword, $dataMapperGroupConfig, $context);
+
+        return $dataMapperGroup->compute();
     }
 
     /**

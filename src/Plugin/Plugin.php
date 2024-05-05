@@ -25,4 +25,9 @@ abstract class Plugin implements PluginInterface, LoggerAwareInterface
     {
         return static::WEIGHT;
     }
+
+    public function getConfiguredWeight(): int
+    {
+        return static::getWeight();
+    }
 }

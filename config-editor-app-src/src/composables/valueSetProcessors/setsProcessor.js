@@ -1,4 +1,5 @@
 import { EVENT_GET_VALUE_PROCESSORS, EVENT_SET_VALUE_PROCESSOR } from './events';
+import { useLabelProcessor } from '@/composables/label';
 
 const keyword = 'sets';
 
@@ -9,9 +10,11 @@ const keyword = 'sets';
  * ]
  */
 const processor = (store, config, currentPath, add) => {
-  const schemaDocument = store.schemaDocument;
+  const { processLabel } = useLabelProcessor(store);
+  const valueSets = store.schemaDocument.valueSets;
   config.forEach((setName) => {
-    const set = schemaDocument.valueSets[setName] || {};
+    const processedSetName = processLabel(setName, currentPath, null, true);
+    const set = valueSets[processedSetName] || {};
     Object.keys(set).forEach((value) => {
       add(value, set[value]);
     });

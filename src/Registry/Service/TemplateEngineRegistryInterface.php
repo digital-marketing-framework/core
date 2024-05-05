@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineInterface;
 
 interface TemplateEngineRegistryInterface

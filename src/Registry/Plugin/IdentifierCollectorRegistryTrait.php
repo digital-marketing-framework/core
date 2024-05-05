@@ -2,11 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\Plugin\IdentifierCollector\IdentifierCollectorSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\IdentifierCollector\IdentifierCollectorInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 trait IdentifierCollectorRegistryTrait
 {
@@ -35,20 +34,27 @@ trait IdentifierCollectorRegistryTrait
         $this->deletePlugin($keyword, IdentifierCollectorInterface::class);
     }
 
-    public function getIdentifierCollectorSchema(): SchemaInterface
+    protected function addIdentifierCollectorSchemas(SchemaDocument $schemaDocument): void
     {
-        $schema = new ContainerSchema();
-        $schema->getRenderingDefinition()->setLabel('Identification');
+        foreach ($this->getAllPluginClasses(IdentifierCollectorInterface::class) as $keyword => $class) {
+            $schema = $class::getSchema();
+            $integrationInfo = $class::getDefaultIntegrationInfo();
+            $label = $class::getLabel();
 
-        $collectorSchema = new IdentifierCollectorSchema();
-        $collectorSchema->getRenderingDefinition()->setSkipHeader(true);
-        $collectorSchema->getRenderingDefinition()->setSkipInNavigation(true);
-        foreach ($this->getAllPluginClasses(IdentifierCollectorInterface::class) as $key => $class) {
-            $collectorSchema->addItem($key, $class::getSchema());
+            $schemaDocument->addValueToValueSet('identifierCollector/all', $keyword);
+            $schemaDocument->addValueToValueSet('identifierCollector/' . $integrationInfo->getName() . '/all', $keyword);
+
+            $integrationSchema = $this->getIntegrationSchemaForPlugin($schemaDocument, $integrationInfo);
+            $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS)?->getSchema();
+            if (!$integrationIdentifierSchema instanceof ContainerSchema) {
+                $integrationIdentifierSchema = new ContainerSchema();
+                $integrationIdentifierSchema->getRenderingDefinition()->setIcon('identification');
+                $integrationIdentifierSchema->getRenderingDefinition()->setLabel('Identification');
+                $integrationSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIERS, $integrationIdentifierSchema);
+            }
+
+            $property = $integrationIdentifierSchema->addProperty($keyword, $schema);
+            $property->getRenderingDefinition()->setLabel($label);
         }
-
-        $schema->addProperty(ConfigurationInterface::KEY_IDENTIFIER_COLLECTORS, $collectorSchema);
-
-        return $schema;
     }
 }

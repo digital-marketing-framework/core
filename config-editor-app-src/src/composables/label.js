@@ -1,25 +1,31 @@
-import { getAbsolutePath, getLeafKey } from '../helpers/path';
-import { useDmfStore } from '../stores/dmf';
+import { getAbsolutePath, getLeafKey } from '@/helpers/path';
+import { useDmfStore } from '@/stores/dmf';
 import { useValueSets } from './valueSets';
 
-const processLabel = (store, label, path, currentPath) => {
+const processLabel = (store, label, path, currentPath, doNotPrettify) => {
   const absolutePath = getAbsolutePath(path, currentPath);
   let rawValueFound = false;
   let variableFound = true;
   while (variableFound) {
     variableFound = false;
-    label = label.replace(/\{[^}]+\}/, (match) => {
+    label = label.replace(/\{[^{}]+\}/, (match) => {
       variableFound = true;
       const referencePath = match.substring(1, match.length - 1);
       const value = store.getValue(referencePath, absolutePath);
-      const valueLabel = getValueLabel(store, value, referencePath, absolutePath);
-      if (value === valueLabel) {
+      let valueLabel;
+      if (typeof value === 'object') {
+        valueLabel = getLeafKey(referencePath, absolutePath);
         rawValueFound = true;
+      } else {
+        valueLabel = getValueLabel(store, value, referencePath, absolutePath);
+        if (value === valueLabel) {
+          rawValueFound = true;
+        }
       }
       return valueLabel;
     });
   }
-  return rawValueFound ? prettifyLabel(label) : label;
+  return rawValueFound && !doNotPrettify ? prettifyLabel(label) : label;
 };
 
 const prettifyLabel = (label) => {
@@ -33,8 +39,8 @@ const prettifyLabel = (label) => {
   return ucfirst(label);
 };
 
-const getLabel = (store, path, currentPath) => {
-  const schema = store.getSchema(path, currentPath, true);
+const getLabel = (store, path, currentPath, schema) => {
+  schema = schema || store.getSchema(path, currentPath, true);
 
   let label;
   if (schema.hideLabel) {
@@ -70,7 +76,7 @@ export const useLabelProcessor = (store) => {
   store = store || useDmfStore();
   return {
     getLabel: (path, currentPath) => getLabel(store, path, currentPath),
-    processLabel: (label, path, currentPath) => processLabel(store, label, path, currentPath),
+    processLabel: (label, path, currentPath, doNotPrettify) => processLabel(store, label, path, currentPath, doNotPrettify),
     prettifyLabel: (label) => prettifyLabel(label),
     getValueLabel: (value, path, currentPath) => getValueLabel(store, value, path, currentPath)
   };

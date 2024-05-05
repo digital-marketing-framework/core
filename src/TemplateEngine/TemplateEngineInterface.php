@@ -2,8 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\TemplateEngine;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 interface TemplateEngineInterface
 {

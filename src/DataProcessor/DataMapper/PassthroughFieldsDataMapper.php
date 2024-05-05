@@ -2,10 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\BooleanSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 class PassthroughFieldsDataMapper extends DataMapper
 {

@@ -23,12 +23,12 @@ interface DataCacheInterface
     /**
      * @param array<string> $tags
      */
-    public function store(IdentifierInterface $identifier, DataInterface $data, array $tags = [], bool $followReferences = false): void;
+    public function store(IdentifierInterface $identifier, DataInterface $data, array $tags = [], bool $followReferences = false, int $timeoutInSeconds = -1): void;
 
     /**
      * @param array<string> $tags
      */
-    public function storeReference(IdentifierInterface $source, IdentifierInterface $target, array $tags = []): void;
+    public function storeReference(IdentifierInterface $source, IdentifierInterface $target, array $tags = [], int $timeoutInSeconds = -1): void;
 
     public function purge(IdentifierInterface $identifier): void;
 

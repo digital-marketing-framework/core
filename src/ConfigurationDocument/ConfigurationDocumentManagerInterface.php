@@ -4,8 +4,8 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 interface ConfigurationDocumentManagerInterface
 {
@@ -15,7 +15,7 @@ interface ConfigurationDocumentManagerInterface
 
     public const KEY_DOCUMENT_NAME = 'name';
 
-    public const KEY_DOCUMENT_SOFT_VALIDATION = 'softValidation';
+    public const KEY_DOCUMENT_STRICT_VALIDATION = 'strictValidation';
 
     public const KEY_DOCUMENT_VERSION = 'version';
 
