@@ -37,7 +37,19 @@ trait ConfigurationSchemaRegistryTrait
 
     protected SchemaDocument $schemaDocument;
 
+    protected string $activeFieldContext = '';
+
     abstract public function getConfigurationDocumentManager(): ConfigurationDocumentManagerInterface;
+
+    public function getActiveFieldContext(): string
+    {
+        return $this->activeFieldContext;
+    }
+
+    public function setActiveFieldContext(string $fieldContext): void
+    {
+        $this->activeFieldContext = $fieldContext;
+    }
 
     public function addSchemaVersion(string $key, string $version): void
     {
