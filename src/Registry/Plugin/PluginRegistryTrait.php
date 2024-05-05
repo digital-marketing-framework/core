@@ -26,7 +26,7 @@ trait PluginRegistryTrait
 
     abstract protected function interfaceValidation(string $interface, string $parentInterface): void;
 
-    abstract public function getConfigurationSchema(): SchemaDocument;
+    abstract public function getConfigurationSchemaDocument(): SchemaDocument;
 
     abstract public function getSchemaProcessor(): SchemaProcessorInterface;
 
@@ -34,7 +34,7 @@ trait PluginRegistryTrait
     {
         if ($plugin instanceof ConfigurablePluginInterface) {
             $schema = $plugin::getSchema();
-            $schemaDocument = $this->getConfigurationSchema();
+            $schemaDocument = $this->getConfigurationSchemaDocument();
             $defaults = $this->getSchemaProcessor()->getDefaultValue($schemaDocument, $schema);
 
             if (!is_array($defaults)) {

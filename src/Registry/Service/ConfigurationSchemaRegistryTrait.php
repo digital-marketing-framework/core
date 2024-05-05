@@ -171,7 +171,7 @@ trait ConfigurationSchemaRegistryTrait
         return $dataProcessingSchema;
     }
 
-    public function addConfigurationSchema(SchemaDocument $schemaDocument): void
+    public function addConfigurationSchemaDocument(SchemaDocument $schemaDocument): void
     {
         // complex values
         $schemaDocument->addCustomType(new ValueSchema(), ValueSchema::TYPE);
@@ -276,11 +276,11 @@ trait ConfigurationSchemaRegistryTrait
      *      If you want to produce the schema for all registries, create your own SchemaDocument
      *      and call addConfigurationSchema() on all DMF registries in the system.
      */
-    public function getConfigurationSchema(): SchemaDocument
+    public function getConfigurationSchemaDocument(): SchemaDocument
     {
         if (!isset($this->schemaDocument)) {
             $this->schemaDocument = new SchemaDocument();
-            $this->addConfigurationSchema($this->schemaDocument);
+            $this->addConfigurationSchemaDocument($this->schemaDocument);
         }
 
         return $this->schemaDocument;
