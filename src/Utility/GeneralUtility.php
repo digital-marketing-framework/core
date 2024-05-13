@@ -251,6 +251,28 @@ final class GeneralUtility
         return $keyword;
     }
 
+    public static function slugify(string $string): string
+    {
+        $string = preg_replace_callback('/([A-Z]+)/', static function ($matches) {
+            return '-' . strtolower($matches[0]);
+        }, $string);
+        $string = preg_replace('/[^a-z0-9]+/', '-', $string);
+
+        return trim($string, '-');
+    }
+
+    public static function camelCaseToDashed(string $string): string
+    {
+        return static::slugify($string);
+    }
+
+    public static function dashedToCamelCase(string $string): string
+    {
+        return preg_replace_callback('/(-[a-z0-9])/', static function ($matches) {
+            return strtoupper(substr($matches[0], 1));
+        }, $string);
+    }
+
     public static function maskValue(string $value): string
     {
         if (preg_match('/@/', $value)) {

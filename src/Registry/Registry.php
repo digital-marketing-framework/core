@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\ApiRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\AssetsRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
@@ -39,6 +40,8 @@ class Registry implements RegistryInterface
     use SchemaProcessorRegistryTrait;
     use DataProcessorRegistryTrait;
     use IdentifierCollectorRegistryTrait;
+
+    use ApiRegistryTrait;
 
     protected function processObjectAwareness(object $object): void
     {
