@@ -22,10 +22,6 @@
 
   // helpers //
 
-  function ucfirst(keyword) {
-    return keyword === '' ? '' : keyword[0].toUpperCase() + keyword.substring(1)
-  }
-
   function deepExtend(out) {
     out = out || {}
     for (let i = 1; i < arguments.length; i++) {
@@ -45,16 +41,6 @@
     return out
   }
 
-  function camelCaseToDashed(keyword) {
-    return keyword.replace(/[A-Z]+/, (match) => '-' + match.toLowerCase())
-  }
-
-  function dashedToCamelCase(keyword) {
-    return keyword.replace(/-([a-z0-9])/, (match, firstCharacter) => {
-      return firstCharacter.toUpperCase()
-    })
-  }
-
   function fetchSettings() {
     const settingsScript = document.querySelector(
       '[data-dmf-selector="dmf-settings-json"]'
@@ -69,16 +55,17 @@
     }
   }
 
-  function getAjaxUrl(module, plugin) {
-    if (DMF.urls[module][plugin]) {
-      return DMF.urls[module][plugin]
-    }
-    return ''
+  function getAjaxUrl(pluginId) {
+    return DMF.urls[pluginId] || ''
   }
 
-  function fetchData(module, plugin) {
-    const url = getAjaxUrl(module, plugin)
-    return new Promise(async function (resolve) {
+  async function fetchData(pluginId) {
+    const url = getAjaxUrl(pluginId)
+    if (url === '') {
+      console.error('No URL found for plugin', pluginId)
+      return false
+    }
+    return await new Promise(async function (resolve) {
       if (typeof fetchCache[url] !== 'undefined') {
         if (typeof fetchCache[url].response !== 'undefined') {
           resolve(fetchCache[url].response)
@@ -96,9 +83,8 @@
           ],
         }
         const response = await fetch(url)
-        const dataString = await response.text()
-        const data = JSON.parse(dataString)
-        fetchCache[url].response = data
+        const responseData = await response.json()
+        fetchCache[url].response = responseData.status.code === 200 ? responseData.response : false
         fetchCache[url].callbacks.forEach((callback) => {
           callback()
         })
@@ -106,42 +92,26 @@
     })
   }
 
-  function getPluginSettings(module, plugin) {
-    DMF.pluginSettings[module] = DMF.pluginSettings[module] || {}
-    DMF.pluginSettings[module][plugin] =
-      DMF.pluginSettings[module][plugin] || {}
-    const pluginSettings = DMF.pluginSettings[module][plugin] || {}
+  async function sendData(pluginId, payload, context) {
+    const url = getAjaxUrl(pluginId)
+    const bodyData = { payload }
+    if (typeof context !== 'undefined') {
+      bodyData.context = context
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(bodyData)
+    })
+    return await response.json()
+  }
 
-    DMF.urls[module] = DMF.urls[module] || {}
-    const urlSettings = DMF.urls[module][plugin]
-      ? {
-          url: DMF.urls[module][plugin],
-        }
+  function getPluginSettings(pluginId) {
+    const pluginSettings = DMF.pluginSettings[pluginId] || {}
+    const urlSettings = DMF.urls[pluginId]
+      ? { url: DMF.urls[pluginId] }
       : {}
 
     return deepExtend({}, DMF.settings, pluginSettings, urlSettings)
-  }
-
-  function setupPlugin(module) {
-    if (typeof DMF[module] !== 'undefined') {
-      return
-    }
-    DMF[module] = function (plugin, name) {
-      if (typeof name !== 'undefined') {
-        plugin = plugin + '-' + name
-      }
-      const instance = {
-        settings: getPluginSettings(module, plugin),
-        fetchData: async () => await fetchData(module, plugin),
-        flushCache: () => DMF.flushCache(module, plugin),
-        onRefresh: (callback) => {
-          refreshCallbacks.push(() => {
-            callback.apply(plugin, [])
-          })
-        },
-      }
-      return instance
-    }
   }
 
   function initDMF() {
@@ -155,14 +125,6 @@
 
     if (typeof DMF.container === 'undefined') {
       DMF.container = document
-    }
-
-    for (let module in DMF.urls) {
-      setupPlugin(module)
-    }
-
-    for (let module in DMF.pluginSettings) {
-      setupPlugin(module)
     }
   }
 
@@ -181,11 +143,23 @@
     return
   }
 
+  DMF.pull = async function (pluginId) {
+    return await fetchData(pluginId)
+  }
+
+  DMF.push = async function(pluginId, payload, context) {
+    return await sendData(pluginId, payload, context)
+  }
+
   DMF.refresh = function () {
     this.flushCache()
     refreshCallbacks.forEach((callback) => {
       callback()
     })
+  }
+
+  DMF.onRefresh = function(callback) {
+    refreshCallbacks.push(callback);
   }
 
   DMF.markAsLoading = function (elements) {
@@ -200,46 +174,74 @@
     })
   }
 
-  DMF.fetchElements = function (module, plugin) {
-    const dataModule = camelCaseToDashed(module)
-    return DMF.container.querySelectorAll(
-      '[data-' + DMF.settings.prefix + '-' + dataModule + '="' + plugin + '"]'
-    )
+  DMF.fetchElements = function (pluginIdPattern, container) {
+    container = container || DMF.container
+    return container.querySelectorAll(['[data-' + DMF.settings.prefix + '-plugin^="' + pluginIdPattern + '"]'])
   }
 
-  DMF.getPluginType = function (module, element) {
-    return element.dataset[DMF.settings.prefix + ucfirst(module)]
+  function createPlugin(pluginId) {
+    return {
+      settings: getPluginSettings(pluginId),
+      flushCache: () => DMF.flushCache(pluginId),
+      onRefresh: (callback) => {
+        DMF.onRefresh(callback)
+      }
+    }
   }
 
-  DMF.getPluginName = function (module, element) {
-    return element.dataset[DMF.settings.prefix + ucfirst(module) + 'Name'] || ''
+  function createPullPlugin(pluginId) {
+    const plugin = createPlugin(pluginId)
+    plugin.pull = async () => await DMF.pull(pluginId)
+    return plugin
   }
 
-  DMF.getInstance = function (module, plugin, name) {
-    return DMF[module](plugin, name)
+  function createPushPlugin(pluginId) {
+    const plugin = createPlugin(pluginId)
+    plugin.push = async (payload, context) => await DMF.push(pluginId, payload, context)
+    return plugin
   }
 
-  DMF.getInstanceFromElement = function (module, element) {
-    const plugin = DMF.getPluginType(module, element)
-    const name = DMF.getPluginName(module, element)
-    return DMF.getInstance(module, plugin, name)
+  DMF.plugin = (pluginId) => {
+    return pluginId.startsWith('collector') ? createPullPlugin(pluginId) : createPushPlugin(pluginId)
   }
 
-  DMF.getAllPluginInstancesWithElements = function (module, plugin) {
+  DMF.getPluginFromElement = function (element) {
+    const pluginId = element.dataset[DMF.settings.prefix + 'Plugin']
+    return DMF.plugin(pluginId)
+  }
+
+  DMF.getAllPluginInstancesWithElements = function (pluginIdPattern, container) {
     const result = []
-    DMF.fetchElements(module, plugin).forEach((element) => {
-      const instance = DMF.getInstanceFromElement(module, element)
-      result.push({
-        element: element,
-        plugin: instance,
-      })
+    DMF.fetchElements(pluginIdPattern, container).forEach((element) => {
+      const plugin = DMF.getPluginFromElement(element)
+      result.push({ element, plugin })
     })
     return result
   }
 
-  DMF.flushCache = function (module, plugin) {
-    if (typeof module !== 'undefined' && typeof plugin !== 'undefined') {
-      const url = getAjaxUrl(module, plugin)
+  DMF.getPluginBehaviour = function(element, defaultValue) {
+    if (typeof defaultValue === 'undefined') {
+      defaultValue = 'none'
+    }
+    return element.dataset[DMF.settings.prefix + 'PluginBehaviour'] || defaultValue
+  }
+
+  DMF.getPluginSnippets = function(element, container) {
+    container = container || DMF.container
+    const snippets = {}
+    container.querySelectorAll('[data-' + DMF.settings.prefix + '-plugin-target][data-' + DMF.settings.prefix + '-plugin-snippet]').forEach(snippet => {
+      const pluginElement = container.querySelector(snippet.dataset[DMF.settings.prefix + 'PluginTarget'])
+      if (pluginElement === element) {
+        const snippetName = snippet.dataset[DMF.settings.prefix + 'PluginSnippet']
+        snippets[snippetName] = snippet
+      }
+    })
+    return snippets
+  }
+
+  DMF.flushCache = function (pluginId) {
+    if (typeof pluginId !== 'undefined') {
+      const url = getAjaxUrl(pluginId)
       delete fetchCache[url]
     } else {
       fetchCache = {}
