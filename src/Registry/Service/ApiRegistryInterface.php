@@ -19,4 +19,9 @@ interface ApiRegistryInterface
     public function registerApiRouteResolver(string $domain, RouteResolverInterface $routeResolver): void;
 
     public function getRegisteredApiRouteResolver(string $domain): ?RouteResolverInterface;
+
+    /**
+     * @return array{settings:array<string,mixed>,urls:array<string,string>,pluginSettings:array<string,array<string,mixed>>}
+     */
+    public function getFrontendSettings(): array;
 }

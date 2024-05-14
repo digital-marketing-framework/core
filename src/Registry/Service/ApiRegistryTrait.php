@@ -41,4 +41,15 @@ trait ApiRegistryTrait
     {
         return $this->routeResolver->getResolver($domain);
     }
+
+    public function getFrontendSettings(): array
+    {
+        return [
+            'settings' => [
+                'prefix' => 'dmf', // TODO make the markup data attribute name prefix configurable
+            ],
+            'urls' => [],
+            'pluginSettings' => [],
+        ];
+    }
 }

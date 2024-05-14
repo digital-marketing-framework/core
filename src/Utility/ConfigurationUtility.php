@@ -11,13 +11,14 @@ final class ConfigurationUtility
     /**
      * @param array<string,mixed> $target
      * @param array<string,mixed> $source
+     * @param array<string> $excludeKeys
      *
      * @return array<string,mixed>
      */
-    public static function mergeConfiguration(array $target, array $source, bool $resolveNull = true): array
+    public static function mergeConfiguration(array $target, array $source, bool $resolveNull = true, array $excludeKeys = self::MERGE_EXCLUDE_FIELDS): array
     {
         foreach ($source as $key => $value) {
-            if (in_array($key, static::MERGE_EXCLUDE_FIELDS)) {
+            if (in_array($key, $excludeKeys)) {
                 continue;
             }
 
@@ -26,7 +27,7 @@ final class ConfigurationUtility
                     $target[$key] = $value;
                 }
             } elseif (is_array($value) && is_array($target[$key])) {
-                $target[$key] = static::mergeConfiguration($target[$key], $value, $resolveNull);
+                $target[$key] = static::mergeConfiguration($target[$key], $value, $resolveNull, $excludeKeys);
             } elseif ($resolveNull && $value === null) {
                 unset($target[$key]);
             } else {
@@ -39,32 +40,34 @@ final class ConfigurationUtility
 
     /**
      * @param array<string,mixed> $configuration
+     * @param array<string> $excludeKeys
      *
      * @return array<string,mixed>
      */
-    public static function resolveNullInMergedConfiguration(array $configuration): array
+    public static function resolveNullInMergedConfiguration(array $configuration, array $excludeKeys = self::MERGE_EXCLUDE_FIELDS): array
     {
-        return static::mergeConfiguration($configuration, $configuration, true);
+        return static::mergeConfiguration($configuration, $configuration, true, $excludeKeys);
     }
 
     /**
      * @param array<array<string,mixed>> $configurationStack
+     * @param array<string> $excludeKeys
      *
      * @return array<string,mixed>
      */
-    public static function mergeConfigurationStack(array $configurationStack, bool $resolveNull = true): array
+    public static function mergeConfigurationStack(array $configurationStack, bool $resolveNull = true, array $excludeKeys = self::MERGE_EXCLUDE_FIELDS): array
     {
         $result = [];
         foreach ($configurationStack as $configuration) {
-            $result = static::mergeConfiguration($result, $configuration, resolveNull: false);
+            $result = static::mergeConfiguration($result, $configuration, resolveNull: false, excludeKeys: $excludeKeys);
         }
 
         if ($resolveNull) {
-            $result = static::resolveNullInMergedConfiguration($result);
+            $result = static::resolveNullInMergedConfiguration($result, $excludeKeys);
         }
 
         $lastConfiguration = $configurationStack[count($configurationStack) - 1];
-        foreach (static::MERGE_EXCLUDE_FIELDS as $mergeExcludeField) {
+        foreach ($excludeKeys as $mergeExcludeField) {
             if (isset($lastConfiguration[$mergeExcludeField])) {
                 $result[$mergeExcludeField] = $lastConfiguration[$mergeExcludeField];
             }
@@ -76,14 +79,15 @@ final class ConfigurationUtility
     /**
      * @param array<string,mixed> $parentConfiguration
      * @param array<string,mixed> $mergedConfiguration
+     * @param array<string> $excludeKeys
      *
      * @return array<string,mixed>
      */
-    public static function splitConfiguration(array $parentConfiguration, array $mergedConfiguration): array
+    public static function splitConfiguration(array $parentConfiguration, array $mergedConfiguration, array $excludeKeys = self::MERGE_EXCLUDE_FIELDS): array
     {
         $splitConfiguration = [];
         foreach ($mergedConfiguration as $key => $value) {
-            if (in_array($key, static::MERGE_EXCLUDE_FIELDS)) {
+            if (in_array($key, $excludeKeys)) {
                 $splitConfiguration[$key] = $value;
                 continue;
             }
@@ -91,7 +95,7 @@ final class ConfigurationUtility
             if (!array_key_exists($key, $parentConfiguration)) {
                 $splitConfiguration[$key] = $value;
             } elseif (is_array($value) && is_array($parentConfiguration[$key])) {
-                $splitSubConfiguration = static::splitConfiguration($parentConfiguration[$key], $value);
+                $splitSubConfiguration = static::splitConfiguration($parentConfiguration[$key], $value, $excludeKeys);
                 if ($splitSubConfiguration !== []) {
                     $splitConfiguration[$key] = $splitSubConfiguration;
                 }
@@ -103,7 +107,7 @@ final class ConfigurationUtility
         }
 
         foreach (array_keys($parentConfiguration) as $key) {
-            if (in_array($key, static::MERGE_EXCLUDE_FIELDS)) {
+            if (in_array($key, $excludeKeys)) {
                 continue;
             }
 
