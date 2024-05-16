@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\IdentifierCollector;
 
+use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
+use DigitalMarketingFramework\Core\Context\ContextAwareTrait;
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
@@ -13,8 +15,10 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
-abstract class IdentifierCollector extends ConfigurablePlugin implements IdentifierCollectorInterface
+abstract class IdentifierCollector extends ConfigurablePlugin implements IdentifierCollectorInterface, ContextAwareInterface
 {
+    use ContextAwareTrait;
+
     protected const KEY_ENABLED = 'enabled';
 
     protected const DEFAULT_ENABLED = false;
@@ -44,21 +48,21 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
         return (bool)$this->getConfig(static::KEY_ENABLED);
     }
 
-    abstract protected function prepareContext(ContextInterface $source, WriteableContextInterface $target): void;
+    abstract protected function prepareContext(WriteableContextInterface $context): void;
 
-    public function addContext(ContextInterface $source, WriteableContextInterface $target): void
+    public function addContext(WriteableContextInterface $context): void
     {
         if ($this->proceed()) {
-            $this->prepareContext($source, $target);
+            $this->prepareContext($context);
         }
     }
 
-    abstract protected function collect(ContextInterface $context): ?IdentifierInterface;
+    abstract protected function collect(): ?IdentifierInterface;
 
-    public function getIdentifier(ContextInterface $context): ?IdentifierInterface
+    public function getIdentifier(): ?IdentifierInterface
     {
         if ($this->proceed()) {
-            return $this->collect($context);
+            return $this->collect();
         }
 
         return null;

@@ -6,6 +6,17 @@ use BadMethodCallException;
 
 class RequestContext extends Context
 {
+    protected int $timestamp;
+
+    /**
+     * @param array<string,mixed> $data
+     */
+    public function __construct(array $data = [])
+    {
+        $this->timestamp = time();
+        parent::__construct($data);
+    }
+
     public function toArray(): never
     {
         throw new BadMethodCallException('Request context is not supposed to be processed/saved as a whole');
@@ -32,6 +43,7 @@ class RequestContext extends Context
             static::KEY_COOKIES => $this->getCookies(),
             static::KEY_IP_ADDRESS => $this->getIpAddress(),
             static::KEY_REQUEST_VARIABLES => $this->getRequestVariables(),
+            static::KEY_TIMESTAMP => $this->getTimestamp(),
             default => parent::offsetGet($offset),
         };
     }
@@ -58,7 +70,7 @@ class RequestContext extends Context
 
     public function getTimestamp(): ?int
     {
-        return time();
+        return $this->timestamp;
     }
 
     public function getRequestVariables(): array

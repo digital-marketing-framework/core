@@ -3,16 +3,19 @@
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\Context\ContextInterface;
+use DigitalMarketingFramework\Core\Context\ContextStack;
+use DigitalMarketingFramework\Core\Context\ContextStackInterface;
 use DigitalMarketingFramework\Core\Context\RequestContext;
 
 trait ContextRegistryTrait
 {
-    protected ContextInterface $context;
+    protected ContextStackInterface $context;
 
-    public function getContext(): ContextInterface
+    public function getContext(): ContextStackInterface
     {
         if (!isset($this->context)) {
-            $this->context = new RequestContext();
+            $this->context = new ContextStack();
+            $this->context->pushContext(new RequestContext());
         }
 
         return $this->context;
@@ -20,6 +23,18 @@ trait ContextRegistryTrait
 
     public function setContext(ContextInterface $context): void
     {
-        $this->context = $context;
+        $contextStack = $this->getContext();
+        $contextStack->clearStack();
+        $contextStack->pushContext($context);
+    }
+
+    public function pushContext(ContextInterface $context): void
+    {
+        $this->getContext()->pushContext($context);
+    }
+
+    public function popContext(): ?ContextInterface
+    {
+        return $this->getContext()->popContext();
     }
 }

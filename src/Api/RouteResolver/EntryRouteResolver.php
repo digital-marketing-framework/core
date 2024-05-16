@@ -16,6 +16,8 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
 {
     use GlobalConfigurationAwareTrait;
 
+    public const API_VERSION = '1';
+
     public const KEY_CONTEXT = 'context';
 
     public const KEY_PAYLOAD = 'payload';
@@ -35,7 +37,7 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
 
     public function getFullPath(string $path): string
     {
-        return '/' . $this->getBasePath() . '/' . trim($path, '/');
+        return '/' . $this->getBasePath() . '/v' . static::API_VERSION . '/' . trim($path, '/');
     }
 
     public function buildRequest(string $route, string $method = 'GET', ?array $data = null): ApiRequestInterface
@@ -101,11 +103,32 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
         // return new RootApiResponse($this->getAllResourceRoutes());
     }
 
+    protected function processApiVersion(string $path): string
+    {
+        $path = trim($path, '/');
+        $segments = explode('/', $path);
+        if ($segments === []) {
+            throw new ApiException('No API version provided', 404);
+        }
+
+        $versionSegment = array_shift($segments);
+        if (!str_starts_with($versionSegment, 'v')) {
+            throw new ApiException('No API version provided', 404);
+        }
+
+        if ($versionSegment !== 'v' . static::API_VERSION) {
+            throw new ApiException(sprintf('API version "%s" not installed.', $versionSegment), 400);
+        }
+
+        return implode('/', $segments);
+    }
+
     protected function resolveRoute(ApiRequestInterface $request): void
     {
+        $path = $this->processApiVersion($request->getPath());
         $routes = $this->getAllRoutes();
         foreach ($routes as $route) {
-            $variables = $route->matchPath($request->getPath());
+            $variables = $route->matchPath($path);
             if ($variables !== false) {
                 if (!in_array($request->getMethod(), $route->getMethods(), true)) {
                     throw new ApiException(sprintf('Method "%s" not supported by this route.', $request->getMethod()));
