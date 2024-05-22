@@ -2,11 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
+use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\RouteResolverInterface;
 
 interface ApiRegistryInterface
 {
+    public function getEndPointStorage(): EndPointStorageInterface;
+
+    public function setEndPointStorage(EndPointStorageInterface $endPointStorage): void;
+
     /**
      * @return array<string,RouteResolverInterface>
      */

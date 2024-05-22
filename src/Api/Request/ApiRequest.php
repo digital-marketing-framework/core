@@ -2,10 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Api\Request;
 
+use DigitalMarketingFramework\Core\Model\Api\EndPointInterface;
+
 class ApiRequest implements ApiRequestInterface
 {
     /** @var array<string,string> */
     protected array $variables = [];
+
+    protected string $apiVersion = '';
+
+    protected EndPointInterface $endPoint;
 
     /**
      * @param ?array<string,mixed> $payload
@@ -18,6 +24,26 @@ class ApiRequest implements ApiRequestInterface
         protected ?array $context = null,
     ) {
         $this->path = trim($this->path, '/');
+    }
+
+    public function getApiVersion(): string
+    {
+        return $this->apiVersion;
+    }
+
+    public function setApiVersion(string $apiVersion): void
+    {
+        $this->apiVersion = $apiVersion;
+    }
+
+    public function getEndPoint(): EndPointInterface
+    {
+        return $this->endPoint;
+    }
+
+    public function setEndPoint(EndPointInterface $endPoint): void
+    {
+        $this->endPoint = $endPoint;
     }
 
     public function setVariable(string $key, string $value): void

@@ -2,13 +2,30 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
+use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorage;
+use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\RouteResolverInterface;
 
 trait ApiRegistryTrait
 {
+    protected EndPointStorageInterface $endPointStorage;
     protected EntryRouteResolverInterface $routeResolver;
+
+    public function getEndPointStorage(): EndPointStorageInterface
+    {
+        if (!isset($this->endPointStorage)) {
+            $this->endPointStorage = $this->createObject(EndPointStorage::class);
+        }
+
+        return $this->endPointStorage;
+    }
+
+    public function setEndPointStorage(EndPointStorageInterface $endPointStorage): void
+    {
+        $this->endPointStorage = $endPointStorage;
+    }
 
     public function getApiRouteResolvers(): array
     {

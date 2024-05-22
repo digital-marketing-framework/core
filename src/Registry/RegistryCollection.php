@@ -44,11 +44,11 @@ class RegistryCollection implements RegistryCollectionInterface
         return $document;
     }
 
-    public function getFrontendScripts(): array
+    public function getFrontendScripts(bool $activeOnly = false): array
     {
         $frontendScripts = [];
         foreach ($this->collection as $registry) {
-            foreach ($registry->getFrontendScripts() as $type => $typeScripts) {
+            foreach ($registry->getFrontendScripts($activeOnly) as $type => $typeScripts) {
                 foreach ($typeScripts as $package => $paths) {
                     $scripts = $frontendScripts[$type][$package] ??= [];
                     array_push($scripts, ...$paths);

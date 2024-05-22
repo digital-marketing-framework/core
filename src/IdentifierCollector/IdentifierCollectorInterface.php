@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\IdentifierCollector;
 
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
-use DigitalMarketingFramework\Core\Integration\IntegrationPluginInterface;
+use DigitalMarketingFramework\Core\Plugin\IntegrationPluginInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 

@@ -3,6 +3,8 @@
 namespace DigitalMarketingFramework\Core\Api\RouteResolver;
 
 use DigitalMarketingFramework\Core\Api\ApiException;
+use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageAwareInterface;
+use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageAwareTrait;
 use DigitalMarketingFramework\Core\Api\Request\ApiRequest;
 use DigitalMarketingFramework\Core\Api\Request\ApiRequestInterface;
 use DigitalMarketingFramework\Core\Api\Response\ApiResponse;
@@ -11,10 +13,13 @@ use DigitalMarketingFramework\Core\Api\Response\RootApiResponse;
 use DigitalMarketingFramework\Core\Api\Route\SimpleRoute;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\Model\Api\EndPointInterface;
+use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
-class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigurationAwareInterface
+class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigurationAwareInterface, EndPointStorageAwareInterface
 {
     use GlobalConfigurationAwareTrait;
+    use EndPointStorageAwareTrait;
 
     public const API_VERSION = '1';
 
@@ -99,11 +104,11 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
 
     public function getRootResponse(): ApiResponseInterface
     {
-        return new RootApiResponse($this->getAllRoutes());
-        // return new RootApiResponse($this->getAllResourceRoutes());
+        // return new RootApiResponse($this->getAllRoutes());
+        return new RootApiResponse($this->getAllResourceRoutes());
     }
 
-    protected function processApiVersion(string $path): string
+    protected function processApiVersion(string $path, ApiRequestInterface $request): string
     {
         $path = trim($path, '/');
         $segments = explode('/', $path);
@@ -120,12 +125,14 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
             throw new ApiException(sprintf('API version "%s" not installed.', $versionSegment), 400);
         }
 
+        $request->setApiVersion(static::API_VERSION);
+
         return implode('/', $segments);
     }
 
     protected function resolveRoute(ApiRequestInterface $request): void
     {
-        $path = $this->processApiVersion($request->getPath());
+        $path = $this->processApiVersion($request->getPath(), $request);
         $routes = $this->getAllRoutes();
         foreach ($routes as $route) {
             $variables = $route->matchPath($path);
@@ -135,6 +142,18 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
                 }
 
                 $request->addVariables($variables);
+
+                $endPointSegment = $request->getVariable(static::VARIABLE_END_POINT);
+                if ($endPointSegment !== null) {
+                    $endPointName = GeneralUtility::dashedToCamelCase($endPointSegment);
+                    $endPoint = $this->endPointStorage->getEndPointByName($endPointName);
+
+                    if (!$endPoint instanceof EndPointInterface || !$endPoint->getEnabled()) {
+                        throw new ApiException('End point not found or disabled', 404);
+                    }
+
+                    $request->setEndPoint($endPoint);
+                }
 
                 return;
             }

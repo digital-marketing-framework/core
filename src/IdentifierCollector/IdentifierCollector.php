@@ -4,18 +4,19 @@ namespace DigitalMarketingFramework\Core\IdentifierCollector;
 
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextAwareTrait;
-use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
+use DigitalMarketingFramework\Core\Plugin\IntegrationPlugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
-abstract class IdentifierCollector extends ConfigurablePlugin implements IdentifierCollectorInterface, ContextAwareInterface
+abstract class IdentifierCollector extends IntegrationPlugin implements IdentifierCollectorInterface, ContextAwareInterface
 {
     use ContextAwareTrait;
 
@@ -23,17 +24,21 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
 
     protected const DEFAULT_ENABLED = false;
 
-    protected IntegrationInfo $integrationInfo;
-
     public function __construct(
-        string $keyword,
-        protected RegistryInterface $registry,
-        protected ConfigurationInterface $identifiersConfiguration,
-        ?IntegrationInfo $integrationInfo = null
+        string                           $keyword,
+        protected RegistryInterface      $registry,
+        protected ConfigurationInterface $identifierConfiguration,
+        ?IntegrationInfo                 $integrationInfo = null
     ) {
-        parent::__construct($keyword);
-        $this->integrationInfo = $integrationInfo ?? static::getDefaultIntegrationInfo();
-        $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration($this->integrationInfo->getName(), $this->getKeyword());
+        parent::__construct(
+            $keyword,
+            $integrationInfo ?? static::getDefaultIntegrationInfo(),
+            $identifierConfiguration
+        );
+        $this->configuration = $identifierConfiguration->getIdentifierCollectorConfiguration(
+            $this->integrationInfo->getName(),
+            $this->getKeyword()
+        );
     }
 
     abstract public static function getDefaultIntegrationInfo(): IntegrationInfo;

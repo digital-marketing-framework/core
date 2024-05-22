@@ -22,5 +22,9 @@ interface AssetsRegistryInterface
     /**
      * @return array<string,array<string,array<string>>>
      */
-    public function getFrontendScripts(): array;
+    public function getFrontendScripts(bool $onlyActive = false): array;
+
+    public function activateFrontendScript(string $type, string $package, string $path): void;
+
+    public function resetActiveFrontendScripts(): void;
 }

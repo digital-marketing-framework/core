@@ -2,8 +2,18 @@
 
 namespace DigitalMarketingFramework\Core\Api\Request;
 
+use DigitalMarketingFramework\Core\Model\Api\EndPointInterface;
+
 interface ApiRequestInterface
 {
+    public function getApiVersion(): string;
+
+    public function setApiVersion(string $apiVersion): void;
+
+    public function getEndPoint(): EndPointInterface;
+
+    public function setEndPoint(EndPointInterface $endPoint): void;
+
     public function getPath(): string;
 
     public function setPath(string $path): void;

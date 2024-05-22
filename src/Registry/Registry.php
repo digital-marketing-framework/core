@@ -2,7 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
+use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageAwareInterface;
 use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
@@ -76,6 +78,14 @@ class Registry implements RegistryInterface
 
         if ($object instanceof SchemaProcessorAwareInterface) {
             $object->setSchemaProcessor($this->getSchemaProcessor());
+        }
+
+        if ($object instanceof ConfigurationDocumentManagerAwareInterface) {
+            $object->setConfigurationDocumentManager($this->getConfigurationDocumentManager());
+        }
+
+        if ($object instanceof EndPointStorageAwareInterface) {
+            $object->setEndPointStorage($this->getEndPointStorage());
         }
     }
 

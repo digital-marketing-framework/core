@@ -30,7 +30,7 @@ interface RegistryCollectionInterface
     /**
      * @return array<string,array<string,array<string>>>
      */
-    public function getFrontendScripts(): array;
+    public function getFrontendScripts(bool $activeOnly = false): array;
 
     /**
      * @return array<string,array<string>>

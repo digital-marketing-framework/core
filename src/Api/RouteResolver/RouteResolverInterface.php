@@ -11,6 +11,8 @@ interface RouteResolverInterface
 {
     public const VARIABLE_DOMAIN = 'domain';
 
+    public const VARIABLE_END_POINT = 'end_point';
+
     public function resolveRequest(ApiRequestInterface $request): ApiResponseInterface;
 
     /**

@@ -45,6 +45,8 @@ trait IdentifierCollectorRegistryTrait
             $schemaDocument->addValueToValueSet('identifierCollector/' . $integrationInfo->getName() . '/all', $keyword);
 
             $integrationSchema = $this->getIntegrationSchemaForPlugin($schemaDocument, $integrationInfo);
+            $integrationInfo->addSchema($schemaDocument, $integrationSchema);
+
             $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS)?->getSchema();
             if (!$integrationIdentifierSchema instanceof ContainerSchema) {
                 $integrationIdentifierSchema = new ContainerSchema();

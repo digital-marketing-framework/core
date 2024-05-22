@@ -10,6 +10,9 @@ trait AssetsRegistryTrait
     /** @var array<string,array<string,array<string>>> */
     protected array $frontendScripts = [];
 
+    /** @var array<string,array<string,array<string,bool>>> */
+    protected array $activeFrontendScripts = [];
+
     public function addConfigurationEditorScripts(string $package, array $paths): void
     {
         $scripts = $this->configurationEditorScripts[$package] ?? [];
@@ -29,8 +32,33 @@ trait AssetsRegistryTrait
         $this->frontendScripts[$type][$package] = array_unique($scripts);
     }
 
-    public function getFrontendScripts(): array
+    public function activateFrontendScript(string $type, string $package, string $path): void
     {
-        return $this->frontendScripts;
+        $this->activeFrontendScripts[$type][$package][$path] = true;
+    }
+
+    public function resetActiveFrontendScripts(): void
+    {
+        $this->activeFrontendScripts = [];
+    }
+
+    public function getFrontendScripts(bool $onlyActive = false): array
+    {
+        if (!$onlyActive) {
+            return $this->frontendScripts;
+        }
+
+        $result = [];
+        foreach ($this->frontendScripts as $type => $packages) {
+            foreach ($packages as $package => $scripts) {
+                foreach ($scripts as $script) {
+                    if ($this->activeFrontendScripts[$type][$package][$script] ?? false) {
+                        $result[$type][$package][] = $script;
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }
