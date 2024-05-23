@@ -6,6 +6,18 @@
 
   const CLASS_LOADING = 'loading'
 
+  // general plugin attributes
+  const ATTRIBUTE_PLUGIN_BEHAVIOUR = 'PluginBehaviour'
+
+  // field hydration attributes
+  const ATTRIBUTE_FIELD = 'Field'
+  const ATTRIBUTE_FIELD_DEFAULT = 'FieldDefault'
+
+  // template hydration attributes
+  const ATTRIBUTE_PLUGIN_TEMPLATE = 'Template'
+  const ATTRIBUTE_DEFAULT_CONTENT = 'DefaultContent'
+  const ATTRIBUTE_HIDE_UNDEFINED_VARS = 'HideUndefinedVars'
+
   const DEFAULTS = {
     settings: {
       prefix: 'dmf',
@@ -143,7 +155,7 @@
     return
   }
 
-  DMF.pull = async function (pluginId) {
+  DMF.pull = async function(pluginId) {
     return await fetchData(pluginId)
   }
 
@@ -151,7 +163,7 @@
     return await sendData(pluginId, payload, context)
   }
 
-  DMF.refresh = function () {
+  DMF.refresh = function() {
     this.flushCache()
     refreshCallbacks.forEach((callback) => {
       callback()
@@ -162,19 +174,19 @@
     refreshCallbacks.push(callback);
   }
 
-  DMF.markAsLoading = function (elements) {
+  DMF.markAsLoading = function(elements) {
     elements.forEach((element) => {
       element.classList.add(CLASS_LOADING)
     })
   }
 
-  DMF.markAsLoaded = function (elements) {
+  DMF.markAsLoaded = function(elements) {
     elements.forEach((element) => {
       element.classList.remove(CLASS_LOADING)
     })
   }
 
-  DMF.fetchElements = function (pluginIdPattern, container) {
+  DMF.fetchElements = function(pluginIdPattern, container) {
     container = container || DMF.container
     return container.querySelectorAll(['[data-' + DMF.settings.prefix + '-plugin^="' + pluginIdPattern + '"]'])
   }
@@ -182,8 +194,19 @@
   function createPlugin(pluginId) {
     return {
       settings: getPluginSettings(pluginId),
-      flushCache: () => DMF.flushCache(pluginId),
-      onRefresh: (callback) => {
+      hydrate: function(element, variables) {
+        DMF.hydrateElement(element, variables)
+      },
+      markAsLoading: function(element) {
+        DMF.markAsLoading([element])
+      },
+      markAsLoaded: function(element) {
+        DMF.markAsLoaded([element])
+      },
+      flushCache: function() {
+        DMF.flushCache(pluginId)
+      },
+      onRefresh: function(callback) {
         DMF.onRefresh(callback)
       }
     }
@@ -191,26 +214,78 @@
 
   function createPullPlugin(pluginId) {
     const plugin = createPlugin(pluginId)
-    plugin.pull = async () => await DMF.pull(pluginId)
+
+    plugin.pull = async function() {
+      return await DMF.pull(pluginId)
+    }
+
+    plugin.pullAndHydrate = async function(
+      element,
+      markAsLoading = true,
+      defaultVariables = {},
+      refresh = true
+    ) {
+      const processElement = async () => {
+        if (markAsLoading) {
+          plugin.markAsLoading(element)
+        }
+        const variables = await this.pull()
+        plugin.hydrate(element, variables)
+        if (markAsLoading) {
+          plugin.markAsLoaded(element)
+        }
+      }
+
+      if (typeof defaultVariables === 'object' && defaultVariables !== null) {
+        this.hydrate(element, defaultVariables)
+      }
+
+      if (refresh) {
+        this.onRefresh(async () => {
+          await processElement()
+        })
+      }
+
+      await processElement();
+    }
+
     return plugin
   }
 
   function createPushPlugin(pluginId) {
     const plugin = createPlugin(pluginId)
-    plugin.push = async (payload, context) => await DMF.push(pluginId, payload, context)
+
+    plugin.push = async function(payload, context) {
+      return await DMF.push(pluginId, payload, context)
+    }
+
     return plugin
+  }
+
+  DMF.getPluginAttribute = function(element, name, defaultValue = null, write = false) {
+    let value = defaultValue
+
+    if (typeof element.dataset[DMF.settings.prefix + name] !== 'undefined') {
+      value = element.dataset[DMF.settings.prefix + name]
+    }
+
+    if (write) {
+      element.dataset[DMF.settings.prefix + name] = value
+    }
+
+    return value
   }
 
   DMF.plugin = (pluginId) => {
     return pluginId.startsWith('collector') ? createPullPlugin(pluginId) : createPushPlugin(pluginId)
   }
 
-  DMF.getPluginFromElement = function (element) {
+  DMF.getPluginFromElement = function(element) {
     const pluginId = element.dataset[DMF.settings.prefix + 'Plugin']
     return DMF.plugin(pluginId)
   }
 
-  DMF.getAllPluginInstancesWithElements = function (pluginIdPattern, container) {
+  DMF.getAllPluginInstancesWithElements = function(pluginIdPattern, container) {
     const result = []
     DMF.fetchElements(pluginIdPattern, container).forEach((element) => {
       const plugin = DMF.getPluginFromElement(element)
@@ -219,11 +294,8 @@
     return result
   }
 
-  DMF.getPluginBehaviour = function(element, defaultValue) {
-    if (typeof defaultValue === 'undefined') {
-      defaultValue = 'none'
-    }
-    return element.dataset[DMF.settings.prefix + 'PluginBehaviour'] || defaultValue
+  DMF.getPluginBehaviour = function(element, defaultValue = 'none') {
+    return DMF.getPluginAttribute(element, ATTRIBUTE_PLUGIN_BEHAVIOUR, defaultValue, false)
   }
 
   DMF.getPluginSnippets = function(element, container) {
@@ -239,7 +311,44 @@
     return snippets
   }
 
-  DMF.flushCache = function (pluginId) {
+  DMF.hydrateElement = function(element, variables) {
+    function processTemplate(element, variables) {
+      const template = DMF.getPluginAttribute(element, ATTRIBUTE_PLUGIN_TEMPLATE, element.innerHTML, true)
+      const defaultContent = DMF.getPluginAttribute(element, ATTRIBUTE_DEFAULT_CONTENT, element.innerHTML, true)
+      const hideUndefinedVariables = DMF.getPluginAttribute(element, ATTRIBUTE_HIDE_UNDEFINED_VARS, false)
+
+      let rendered = template
+      for (let field in variables) {
+        rendered = rendered.replace('{' + field + '}', variables[field])
+      }
+
+      if (hideUndefinedVariables) {
+        rendered = rendered.replace(/\{[^}]\}/, '')
+      }
+
+      if (rendered.match(/\{[^}]+\}/)) {
+        // if some placeholders could not be filled,
+        // the rendering is incomplete and will be discarded
+        rendered = defaultContent
+      }
+
+      element.innerHTML = rendered
+    }
+
+    function processField(element, variables) {
+      const field = DMF.getPluginAttribute(element, ATTRIBUTE_FIELD)
+      const fieldDefault = DMF.getPluginAttribute(element, ATTRIBUTE_FIELD_DEFAULT, element.innerHTML, true)
+      element.innerHTML = typeof variables[field] !== 'undefined' ? variables[field] : fieldDefault
+    }
+
+    if (DMF.getPluginAttribute(element, ATTRIBUTE_FIELD) !== null) {
+      processField(element, variables)
+    } else {
+      processTemplate(element, variables)
+    }
+  }
+
+  DMF.flushCache = function(pluginId) {
     if (typeof pluginId !== 'undefined') {
       const url = getAjaxUrl(pluginId)
       delete fetchCache[url]
