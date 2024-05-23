@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
-use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 

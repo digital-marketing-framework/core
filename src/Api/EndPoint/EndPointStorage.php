@@ -2,11 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\Api\EndPoint;
 
-use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Model\Api\EndPointInterface;
 
 class EndPointStorage implements EndPointStorageInterface
 {
+    /** @var array<string,EndPointInterface> */
     protected array $endpoints = [];
 
     public function getEndPointByName(string $name): ?EndPointInterface

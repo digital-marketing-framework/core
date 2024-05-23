@@ -14,19 +14,23 @@ class WriteableContextTest extends TestCase
     /**
      * @return array<array{0:array<string,mixed>}>
      */
-    public function toArrayProvider(): array
+    public static function toArrayProvider(): array
     {
         return [
-            [[]],
-            [[
+            'aTimestampWillAlwaysBePresent' => [[
+                'timestamp' => 1716453481,
+            ]],
+            'flatContext' => [[
                 'key1' => 'value1',
                 'key2' => 'value2',
+                'timestamp' => 1716453482,
             ]],
-            [[
+            'nestedContext' => [[
                 'key1' => [
                     'key1.1' => 'value1.1',
                     'key1.2' => 'value1.2',
                 ],
+                'timestamp' => 1716453483,
             ]],
         ];
     }
@@ -46,6 +50,14 @@ class WriteableContextTest extends TestCase
     }
 
     /** @test */
+    public function automaticTimestamp(): void
+    {
+        $this->subject = new WriteableContext();
+        $timestamp = $this->subject->getTimestamp();
+        $this->assertNotNull($timestamp);
+    }
+
+    /** @test */
     public function setGetOffset(): void
     {
         $this->subject = new WriteableContext();
@@ -59,10 +71,11 @@ class WriteableContextTest extends TestCase
     public function setCookie(): void
     {
         $this->subject = new WriteableContext();
+        $this->subject->setTimestamp(1716453484);
         $this->subject->setCookie('key1', 'value1');
 
         $result = $this->subject->toArray();
-        $this->assertEquals([ContextInterface::KEY_COOKIES => ['key1' => 'value1']], $result);
+        $this->assertEquals([ContextInterface::KEY_COOKIES => ['key1' => 'value1'], 'timestamp' => 1716453484], $result);
     }
 
     /** @test */
@@ -86,10 +99,11 @@ class WriteableContextTest extends TestCase
     public function setRequestVariable(): void
     {
         $this->subject = new WriteableContext();
+        $this->subject->setTimestamp(1716453485);
         $this->subject->setRequestVariable('key1', 'value1');
 
         $result = $this->subject->toArray();
-        $this->assertEquals([ContextInterface::KEY_REQUEST_VARIABLES => ['key1' => 'value1']], $result);
+        $this->assertEquals([ContextInterface::KEY_REQUEST_VARIABLES => ['key1' => 'value1'], 'timestamp' => 1716453485], $result);
     }
 
     /** @test */
@@ -208,7 +222,7 @@ class WriteableContextTest extends TestCase
     }
 
     /** @test */
-    public function copyInvalidTimestampFromContext(): void
+    public function copyInvalidTimestampFromContextWillNotOverrideOwnTimestamp(): void
     {
         $this->subject = new WriteableContext();
 
@@ -217,7 +231,7 @@ class WriteableContextTest extends TestCase
         $sourceContext->expects($this->once())->method('getTimestamp')->willReturn(null);
 
         $this->subject->copyTimestampFromContext($sourceContext);
-        $this->assertNull($this->subject->getTimestamp());
-        $this->assertFalse(isset($this->subject[ContextInterface::KEY_TIMESTAMP]));
+        $this->assertNotNull($this->subject->getTimestamp());
+        $this->assertTrue(isset($this->subject[ContextInterface::KEY_TIMESTAMP]));
     }
 }

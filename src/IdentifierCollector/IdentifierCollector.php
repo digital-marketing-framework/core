@@ -8,13 +8,11 @@ use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
-use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
 use DigitalMarketingFramework\Core\Plugin\IntegrationPlugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 abstract class IdentifierCollector extends IntegrationPlugin implements IdentifierCollectorInterface, ContextAwareInterface
 {
@@ -25,10 +23,10 @@ abstract class IdentifierCollector extends IntegrationPlugin implements Identifi
     protected const DEFAULT_ENABLED = false;
 
     public function __construct(
-        string                           $keyword,
-        protected RegistryInterface      $registry,
+        string $keyword,
+        protected RegistryInterface $registry,
         protected ConfigurationInterface $identifierConfiguration,
-        ?IntegrationInfo                 $integrationInfo = null
+        ?IntegrationInfo $integrationInfo = null
     ) {
         parent::__construct(
             $keyword,

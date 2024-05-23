@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\Api\RouteResolver\RouteResolverInterface;
 trait ApiRegistryTrait
 {
     protected EndPointStorageInterface $endPointStorage;
+
     protected EntryRouteResolverInterface $routeResolver;
 
     public function getEndPointStorage(): EndPointStorageInterface

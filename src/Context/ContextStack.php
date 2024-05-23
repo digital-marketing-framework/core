@@ -13,6 +13,7 @@ class ContextStack implements ContextStackInterface
         protected array $stack = [],
     ) {
     }
+
     public function pushContext(ContextInterface $context): void
     {
         $this->stack[] = $context;
@@ -39,6 +40,7 @@ class ContextStack implements ContextStackInterface
         if ($depth === 0) {
             throw new BadMethodCallException('Context stack is empty');
         }
+
         return $this->stack[$depth - 1];
     }
 

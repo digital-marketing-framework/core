@@ -8,6 +8,8 @@ use DigitalMarketingFramework\Core\Plugin\ConfigurablePluginInterface;
 use DigitalMarketingFramework\Core\Plugin\IntegrationPluginInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -50,14 +52,18 @@ trait PluginRegistryTrait
         if ($plugin instanceof IntegrationPluginInterface) {
             $schemaDocument ??= $this->getConfigurationSchemaDocument();
             $integrationName = $plugin->getIntegrationInfo()->getName();
-            $schema = $schemaDocument->getMainSchema()
+
+            $integrationContainerSchema = $schemaDocument->getMainSchema()
                 ->getProperty(ConfigurationInterface::KEY_INTEGRATIONS)
-                ?->getSchema()
-                ?->getProperty($integrationName)
                 ?->getSchema();
 
+            if (!$integrationContainerSchema instanceof ContainerSchema) {
+                throw new DigitalMarketingFrameworkException('integration configuration not found');
+            }
+
+            $schema = $integrationContainerSchema->getProperty($integrationName)?->getSchema();
             $defaults = null;
-            if ($schema !== null) {
+            if ($schema instanceof SchemaInterface) {
                 $defaults = $this->getSchemaProcessor()->getDefaultValue($schemaDocument, $schema);
             }
 

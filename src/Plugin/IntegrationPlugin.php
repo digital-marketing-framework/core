@@ -4,8 +4,6 @@ namespace DigitalMarketingFramework\Core\Plugin;
 
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 abstract class IntegrationPlugin extends ConfigurablePlugin implements IntegrationPluginInterface
 {
@@ -18,8 +16,10 @@ abstract class IntegrationPlugin extends ConfigurablePlugin implements Integrati
         $this->integrationConfiguration = $configuration->getIntegrationConfiguration($integrationInfo->getName());
     }
 
+    /** @var array<string,mixed> */
     protected array $integrationConfiguration = [];
 
+    /** @var array<string,mixed> */
     protected array $defaultIntegrationConfiguration = [];
 
     public function setDefaultIntegrationConfiguration(array $defaultIntegrationConfiguration): void

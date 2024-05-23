@@ -111,13 +111,13 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
     protected function processApiVersion(string $path, ApiRequestInterface $request): string
     {
         $path = trim($path, '/');
-        $segments = explode('/', $path);
+        $segments = GeneralUtility::castValueToArray($path, '/');
         if ($segments === []) {
             throw new ApiException('No API version provided', 404);
         }
 
         $versionSegment = array_shift($segments);
-        if (!str_starts_with($versionSegment, 'v')) {
+        if (!str_starts_with((string)$versionSegment, 'v')) {
             throw new ApiException('No API version provided', 404);
         }
 

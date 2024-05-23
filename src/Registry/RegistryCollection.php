@@ -32,6 +32,7 @@ class RegistryCollection implements RegistryCollectionInterface
         if (!isset($this->collection[RegistryDomain::CORE])) {
             throw new DigitalMarketingFrameworkException('Registry collection must have at least the core registry added!');
         }
+
         return $this->collection;
     }
 
@@ -41,6 +42,7 @@ class RegistryCollection implements RegistryCollectionInterface
         foreach ($this->collection as $registry) {
             $registry->addConfigurationSchemaDocument($document);
         }
+
         return $document;
     }
 
@@ -56,6 +58,7 @@ class RegistryCollection implements RegistryCollectionInterface
                 }
             }
         }
+
         return $frontendScripts;
     }
 
@@ -69,12 +72,13 @@ class RegistryCollection implements RegistryCollectionInterface
                 $configurationEditorScripts[$package] = array_unique($scripts);
             }
         }
+
         return $configurationEditorScripts;
     }
 
     public function getFrontendSettings(): array
     {
-        $frontendSettingsList = array_map(function(RegistryInterface $registry) {
+        $frontendSettingsList = array_map(static function (RegistryInterface $registry) {
             return $registry->getFrontendSettings();
         }, $this->collection);
 
