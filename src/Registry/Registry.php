@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Registry;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageAwareInterface;
 use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
@@ -21,6 +22,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryT
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
@@ -30,6 +32,7 @@ class Registry implements RegistryInterface
 {
     use GlobalConfigurationRegistryTrait;
     use AssetsRegistryTrait;
+    use GlobalConfigurationSchemaRegistryTrait;
 
     use LoggerFactoryRegistryTrait;
     use ContextRegistryTrait;
@@ -82,6 +85,10 @@ class Registry implements RegistryInterface
 
         if ($object instanceof ConfigurationDocumentManagerAwareInterface) {
             $object->setConfigurationDocumentManager($this->getConfigurationDocumentManager());
+        }
+
+        if ($object instanceof ConfigurationDocumentParserAwareInterface) {
+            $object->setConfigurationDocumentParser($this->getConfigurationDocumentParser());
         }
 
         if ($object instanceof EndPointStorageAwareInterface) {

@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ConvertValueTypesSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\DefaultValueSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MergeSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
@@ -56,6 +57,14 @@ interface SchemaProcessorRegistryInterface extends PluginRegistryInterface
     public function getPreSaveDataTransformSchemaProcessor(string $keyword, SchemaDocument $schemaDocument): ?PreSaveDataTransformSchemaProcessorInterface;
 
     public function deletePreSaveDataTransformSchemaProcessor(string $keyword): void;
+
+    // -- ConvertValueTypesSchemaProcessor --
+
+    public function registerConvertValuesSchemaProcessor(string $class, array $additionalArguments = [], string $keyword = ''): void;
+
+    public function getConvertValuesSchemaProcessor(string $keyword, SchemaDocument $schemaDocument): ?ConvertValueTypesSchemaProcessorInterface;
+
+    public function deleteConvertValuesSchemaProcessor(string $keyword): void;
 
     // -- TODO AllowedValuesSchemaProcessor --
     // -- TODO SuggestedValuesSchemaProcessor --

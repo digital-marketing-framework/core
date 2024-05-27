@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ConvertValueTypesSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\DefaultValueSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MergeSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
@@ -82,5 +83,27 @@ class SchemaProcessor implements SchemaProcessorInterface
         }
 
         $processor->preSaveDataTransform($data, $schema);
+    }
+
+    /**
+     * Use this service to convert the types of values where needed.
+     *
+     * Some systems don't save values type-safe. For example, a boolean true could be stored as integer 1 or even string '1'.
+     * This processor will cast those value types so that they are matching their intended type again.
+     */
+    public function convertValueTypes(SchemaDocument $schemaDocument, mixed &$data, ?SchemaInterface $schema = null): void
+    {
+        if (!$schema instanceof SchemaInterface) {
+            $schema = $schemaDocument->getMainSchema();
+        }
+
+        $keyword = $this->getSchemaKeyword($schema);
+        $processor = $this->registry->getConvertValuesSchemaProcessor($keyword, $schemaDocument);
+
+        if (!$processor instanceof ConvertValueTypesSchemaProcessorInterface) {
+            throw new DigitalMarketingFrameworkException(sprintf('No convert-values processor found for keyword "%s"', $keyword));
+        }
+
+        $processor->convertValueTypes($data, $schema);
     }
 }

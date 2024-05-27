@@ -295,41 +295,6 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $this->getConfigurationStackFromIdentifier($documentIdentifier);
     }
 
-    public function splitConfiguration(array $mergedConfiguration): array
-    {
-        $configurationStack = $this->getConfigurationStackFromConfiguration($mergedConfiguration);
-        array_pop($configurationStack);
-        $parentConfiguration = ConfigurationUtility::mergeConfigurationStack($configurationStack);
-
-        return ConfigurationUtility::splitConfiguration($parentConfiguration, $mergedConfiguration);
-    }
-
-    public function mergeConfiguration(array $configuration, bool $inheritedConfigurationOnly = false): array
-    {
-        $configurationStack = $this->getConfigurationStackFromConfiguration($configuration);
-        if ($inheritedConfigurationOnly) {
-            array_pop($configurationStack);
-        }
-
-        return ConfigurationUtility::mergeConfigurationStack($configurationStack);
-    }
-
-    public function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array
-    {
-        $oldIncludes = $this->getIncludes($referenceMergedConfiguration);
-        $newIncludes = $this->getIncludes($mergedConfiguration);
-        $this->setIncludes($mergedConfiguration, $oldIncludes);
-        $splitConfiguration = $this->splitConfiguration($mergedConfiguration);
-
-        $this->setIncludes($splitConfiguration, $newIncludes);
-        $configurationStack = $this->getConfigurationStackFromConfiguration($splitConfiguration);
-        if ($inheritedConfigurationOnly) {
-            array_pop($configurationStack);
-        }
-
-        return ConfigurationUtility::mergeConfigurationStack($configurationStack);
-    }
-
     public function addMigration(ConfigurationDocumentMigrationInterface $migration): void
     {
         $this->migrations[$migration->getKey()][$migration->getSourceVersion()] = $migration;

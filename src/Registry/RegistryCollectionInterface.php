@@ -26,6 +26,8 @@ interface RegistryCollectionInterface
 
     public function getConfigurationSchemaDocument(): SchemaDocument;
 
+    public function getGlobalConfigurationSchemaDocument(): SchemaDocument;
+
     /**
      * @return array<string,array<string,array<string>>>
      */

@@ -12,4 +12,6 @@ interface SchemaProcessorInterface
     public function getDefaultValue(SchemaDocument $schemaDocument, ?SchemaInterface $schema = null): mixed;
 
     public function preSaveDataTransform(SchemaDocument $schemaDocument, mixed &$data, ?SchemaInterface $schema = null): void;
+
+    public function convertValueTypes(SchemaDocument $schemaDocument, mixed &$data, ?SchemaInterface $schema = null): void;
 }

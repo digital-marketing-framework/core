@@ -13,12 +13,14 @@ use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryI
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryInterface;
 
 interface RegistryInterface extends
     GlobalConfigurationRegistryInterface,
     AssetsRegistryInterface,
+    GlobalConfigurationSchemaRegistryInterface,
 
     LoggerFactoryRegistryInterface,
     ContextRegistryInterface,

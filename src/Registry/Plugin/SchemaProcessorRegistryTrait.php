@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ConvertValueTypesSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\DefaultValueSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\MergeSchemaProcessor\MergeSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
@@ -80,6 +81,23 @@ trait SchemaProcessorRegistryTrait
     public function deletePreSaveDataTransformSchemaProcessor(string $keyword): void
     {
         $this->deletePlugin($keyword, PreSaveDataTransformSchemaProcessorInterface::class);
+    }
+
+    // -- ConvertValueTypesSchemaProcessor --
+
+    public function registerConvertValuesSchemaProcessor(string $class, array $additionalArguments = [], string $keyword = ''): void
+    {
+        $this->registerPlugin(ConvertValueTypesSchemaProcessorInterface::class, $class, $additionalArguments, $keyword);
+    }
+
+    public function getConvertValuesSchemaProcessor(string $keyword, SchemaDocument $schemaDocument): ?ConvertValueTypesSchemaProcessorInterface
+    {
+        return $this->getPlugin($keyword, ConvertValueTypesSchemaProcessorInterface::class, [$schemaDocument]);
+    }
+
+    public function deleteConvertValuesSchemaProcessor(string $keyword): void
+    {
+        $this->deletePlugin($keyword, ConvertValueTypesSchemaProcessorInterface::class);
     }
 
     // -- AllowedValuesSchemaProcessor --

@@ -46,6 +46,16 @@ class RegistryCollection implements RegistryCollectionInterface
         return $document;
     }
 
+    public function getGlobalConfigurationSchemaDocument(): SchemaDocument
+    {
+        $document = new SchemaDocument();
+        foreach ($this->collection as $registry) {
+            $registry->addGlobalConfigurationSchemaDocument($document);
+        }
+
+        return $document;
+    }
+
     public function getFrontendScripts(bool $activeOnly = false): array
     {
         $frontendScripts = [];
