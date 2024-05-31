@@ -1,0 +1,32 @@
+@layer base {
+
+  @font-face {
+    font-family: "Caveat";
+    font-display: swap;
+    font-style: normal;
+    font-weight: 700;
+    src: url("../fonts/caveat/Caveat-Bold.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Caveat";
+    font-display: swap;
+    font-style: normal;
+    font-weight: 600;
+    src: url("../fonts/caveat/Caveat-SemiBold.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Caveat";
+    font-display: swap;
+    font-style: normal;
+    font-weight: 500;
+    src: url("../fonts/caveat/Caveat-Medium.ttf") format("truetype");
+  }
+  @font-face {
+    font-family: "Caveat";
+    font-display: swap;
+    font-style: normal;
+    font-weight: 400;
+    src: url("../fonts/caveat/Caveat-Regular.ttf") format("truetype");
+  }
+
+}
