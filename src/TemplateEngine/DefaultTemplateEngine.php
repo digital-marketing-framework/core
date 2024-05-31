@@ -3,7 +3,6 @@
 namespace DigitalMarketingFramework\Core\TemplateEngine;
 
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
-use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
@@ -26,10 +25,6 @@ class DefaultTemplateEngine implements TemplateEngineInterface
         TemplateEngineInterface::FORMAT_HTML => 'Template (HTML)',
     ];
 
-    /**
-     * @param array<string,mixed> $config
-     * @param array<string,string|ValueInterface> $data
-     */
     public function render(array $config, array $data): string
     {
         $template = $config[static::KEY_TEMPLATE];

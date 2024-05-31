@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-trait AssetsRegistryTrait
+trait ScriptAssetsRegistryTrait
 {
     /** @var array<string,array<string>> */
     protected array $configurationEditorScripts = [];

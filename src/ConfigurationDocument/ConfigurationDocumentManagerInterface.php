@@ -23,7 +23,7 @@ interface ConfigurationDocumentManagerInterface
 
     public function getParser(): ConfigurationDocumentParserInterface;
 
-    public function getStaticStorage(): ?ConfigurationDocumentStorageInterface;
+    public function getStaticStorage(): ConfigurationDocumentStorageInterface;
 
     public function tidyDocument(string $document, SchemaDocument $schemaDocument): string;
 

@@ -13,7 +13,7 @@ use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcesso
 interface ConvertValueTypesSchemaProcessorInterface extends SchemaProcessorPluginInterface
 {
     /**
-     * @param SchemaInterface $schema
+     * @param SchemaType $schema
      */
     public function convertValueTypes(mixed &$data, SchemaInterface $schema): void;
 }

@@ -15,7 +15,7 @@ use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ApiRegistryTrait;
-use DigitalMarketingFramework\Core\Registry\Service\AssetsRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\AssetServiceRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryTrait;
@@ -24,15 +24,22 @@ use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\ResourceServiceRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\ScriptAssetsRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\StaticConfigurationDocumentRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\TemplateRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistryTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
 
 class Registry implements RegistryInterface
 {
     use GlobalConfigurationRegistryTrait;
-    use AssetsRegistryTrait;
+    use ScriptAssetsRegistryTrait;
     use GlobalConfigurationSchemaRegistryTrait;
+    use ResourceServiceRegistryTrait;
+    use TemplateRegistryTrait;
 
     use LoggerFactoryRegistryTrait;
     use ContextRegistryTrait;
@@ -40,7 +47,11 @@ class Registry implements RegistryInterface
     use ConfigurationSchemaRegistryTrait;
     use ConfigurationDocumentManagerRegistryTrait;
     use FileStorageRegistryTrait;
+
+    use AssetServiceRegistryTrait;
     use TemplateEngineRegistryTrait;
+    use VendorResourceServiceRegistryTrait;
+    use StaticConfigurationDocumentRegistryTrait;
 
     use SchemaProcessorRegistryTrait;
     use DataProcessorRegistryTrait;
@@ -48,7 +59,23 @@ class Registry implements RegistryInterface
 
     use ApiRegistryTrait;
 
-    protected function processObjectAwareness(object $object): void
+    protected RegistryCollectionInterface $registryCollection;
+
+    public function getRegistryCollection(): RegistryCollectionInterface
+    {
+        if (!isset($this->registryCollection)) {
+            throw new RegistryException('No registry collection found');
+        }
+
+        return $this->registryCollection;
+    }
+
+    public function setRegistryCollection(RegistryCollectionInterface $registryCollection): void
+    {
+        $this->registryCollection = $registryCollection;
+    }
+
+    public function processObjectAwareness(object $object): void
     {
         if ($object instanceof GlobalConfigurationAwareInterface) {
             $object->setGlobalConfiguration($this->getGlobalConfiguration());

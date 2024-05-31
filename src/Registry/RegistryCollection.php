@@ -20,11 +20,27 @@ class RegistryCollection implements RegistryCollectionInterface
     public function addRegistry(string $domain, RegistryInterface $registry): void
     {
         $this->collection[$domain] = $registry;
+        $registry->setRegistryCollection($this);
     }
 
-    public function getRegistry(string $domain): ?RegistryInterface
+    public function getRegistry(string $domain = RegistryDomain::CORE): RegistryInterface
     {
-        return $this->collection[$domain] ?? null;
+        if (!isset($this->collection[$domain])) {
+            throw new RegistryException(sprintf('Registry for domain "%s" not found', $domain));
+        }
+
+        return $this->collection[$domain];
+    }
+
+    public function getRegistryByClass(string $class): RegistryInterface
+    {
+        foreach ($this->collection as $registry) {
+            if ($registry instanceof $class) {
+                return $registry;
+            }
+        }
+
+        throw new RegistryException(sprintf('Registry "%s" not found', $class));
     }
 
     public function getAllRegistries(): array

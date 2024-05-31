@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\TemplateEngine;
 
-use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 interface TemplateEngineInterface
@@ -17,7 +16,7 @@ interface TemplateEngineInterface
 
     /**
      * @param array<string,mixed> $config
-     * @param array<string,string|ValueInterface> $data
+     * @param array<string,mixed> $data
      */
     public function render(array $config, array $data): string;
 

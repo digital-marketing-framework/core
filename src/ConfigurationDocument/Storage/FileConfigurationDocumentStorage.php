@@ -10,9 +10,6 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
 {
     use FileStorageAwareTrait;
 
-    /** @var array<string,mixed> */
-    protected array $storageConfiguration = [];
-
     abstract protected function getFileExtension(): string;
 
     public function getDocument(string $documentIdentifier, bool $metaDataOnly = false): string
@@ -76,7 +73,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         return preg_replace('/[^a-zA-Z0-9]+$/', '', $baseName);
     }
 
-    public function getDocumentIdentiferFromBaseName(string $baseName, bool $newFile = true): string
+    public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string
     {
         $folder = $this->getStorageFolderIdentifier();
         $baseName = $this->buildFileBaseName($baseName);
@@ -104,7 +101,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         return rtrim((string)$this->getStorageConfiguration('folder', ''), '/');
     }
 
-    public function initalizeConfigurationDocumentStorage(): void
+    public function initializeConfigurationDocumentStorage(): void
     {
         $folderIdentifier = $this->getStorageFolderIdentifier();
         if ($folderIdentifier !== '' && !$this->fileStorage->folderExists($folderIdentifier)) {

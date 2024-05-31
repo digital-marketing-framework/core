@@ -5,7 +5,6 @@ namespace DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertV
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerProperty;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ConvertValueTypesSchemaProcessor;
 
 /**
  * @extends ConvertValueTypesSchemaProcessor<ContainerSchema>

@@ -60,8 +60,14 @@ interface SchemaProcessorRegistryInterface extends PluginRegistryInterface
 
     // -- ConvertValueTypesSchemaProcessor --
 
+    /**
+     * @param array<mixed> $additionalArguments
+     */
     public function registerConvertValuesSchemaProcessor(string $class, array $additionalArguments = [], string $keyword = ''): void;
 
+    /**
+     * @return ?ConvertValueTypesSchemaProcessorInterface<SchemaInterface>
+     */
     public function getConvertValuesSchemaProcessor(string $keyword, SchemaDocument $schemaDocument): ?ConvertValueTypesSchemaProcessorInterface;
 
     public function deleteConvertValuesSchemaProcessor(string $keyword): void;

@@ -16,7 +16,7 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
 
     abstract public function getDocumentIdentifiers(): array;
 
-    abstract public function getDocumentIdentiferFromBaseName(string $baseName, bool $newFile = true): string;
+    abstract public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string;
 
     public function getShortIdentifier(string $documentIdentifier): string
     {
@@ -29,7 +29,7 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
 
     abstract public function deleteDocument(string $documentIdentifier): void;
 
-    abstract public function isReadOnly(string $identifier): bool;
+    abstract public function isReadOnly(string $documentIdentifier): bool;
 
     protected function getStorageConfiguration(?string $key = null, mixed $default = null): mixed
     {
@@ -41,7 +41,7 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
         return $config;
     }
 
-    public function initalizeConfigurationDocumentStorage(): void
+    public function initializeConfigurationDocumentStorage(): void
     {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-interface AssetsRegistryInterface
+interface ScriptAssetsRegistryInterface
 {
     /**
      * @param array<string> $paths

@@ -6,6 +6,10 @@ use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 interface InitializationInterface
 {
+    public function getPackageAlias(): string;
+
+    public function getFullPackageName(): string;
+
     public function initPlugins(string $domain, RegistryInterface $registry): void;
 
     public function initServices(string $domain, RegistryInterface $registry): void;

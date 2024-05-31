@@ -15,7 +15,16 @@ interface RegistryCollectionInterface
     /**
      * @param 'core'|'distributor'|'collector' $domain
      */
-    public function getRegistry(string $domain): ?RegistryInterface;
+    public function getRegistry(string $domain): RegistryInterface;
+
+    /**
+     * @template RegistryClass of RegistryInterface
+     *
+     * @param class-string<RegistryClass> $class
+     *
+     * @return RegistryClass
+     */
+    public function getRegistryByClass(string $class): RegistryInterface;
 
     /**
      * @return array{core:RegistryInterface,distributor?:RegistryInterface,collector?:RegistryInterface}
