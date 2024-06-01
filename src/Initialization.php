@@ -3,9 +3,9 @@
 namespace DigitalMarketingFramework\Core;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchemaInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 abstract class Initialization implements InitializationInterface
 {
@@ -41,7 +41,8 @@ abstract class Initialization implements InitializationInterface
     public function __construct(
         protected string $packageName,
         protected string $schemaVersion,
-        protected string $packageAlias = ''
+        protected string $packageAlias = '',
+        protected ?GlobalConfigurationSchemaInterface $globalConfigurationSchema = null,
     ) {
     }
 
@@ -136,9 +137,14 @@ abstract class Initialization implements InitializationInterface
         }
     }
 
-    protected function getGlobalConfigurationSchema(): ?SchemaInterface
+    public function getGlobalConfigurationSchema(): ?GlobalConfigurationSchemaInterface
     {
-        return null;
+        return $this->globalConfigurationSchema;
+    }
+
+    public function setGlobalConfigurationSchema(?GlobalConfigurationSchemaInterface $globalConfigurationSchema): void
+    {
+        $this->globalConfigurationSchema = $globalConfigurationSchema;
     }
 
     public function initMetaData(RegistryInterface $registry): void
@@ -147,8 +153,13 @@ abstract class Initialization implements InitializationInterface
 
         $registry->addPackageAlias($this->packageName, $this->packageAlias);
 
+        $package = $this->getFullPackageName();
+        if ($package !== $this->packageName) {
+            $registry->addPackageAlias($package, $this->packageAlias);
+        }
+
         $globalConfigurationSchema = $this->getGlobalConfigurationSchema();
-        if ($globalConfigurationSchema instanceof SchemaInterface) {
+        if ($globalConfigurationSchema instanceof GlobalConfigurationSchemaInterface) {
             $registry->addGlobalConfigurationSchemaForPackage(
                 $this->packageAlias !== '' ? $this->packageAlias : $this->packageName,
                 $globalConfigurationSchema

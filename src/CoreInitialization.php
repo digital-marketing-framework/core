@@ -56,14 +56,9 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSour
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\Registry\RegistryDomain;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\IntegerSchema;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\BooleanConvertValueTypesSchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ContainerConvertValueTypesSchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ConvertValueTypesSchemaProcessorInterface;
@@ -223,43 +218,8 @@ class CoreInitialization extends Initialization
         );
     }
 
-    protected function getGlobalConfigurationSchema(): ?SchemaInterface
-    {
-        $schema = new ContainerSchema();
-        $schema->getRenderingDefinition()->setLabel('Core');
-
-        $schema->addProperty('debug', new BooleanSchema(false));
-
-        $configurationStorageSchema = new ContainerSchema();
-        $configurationStorageSchema->getRenderingDefinition()->setNavigationItem(false);
-
-        $configurationStorageSchema->addProperty('folder', new StringSchema());
-
-        $defaultConfigurationDocumentSchema = new StringSchema();
-        $defaultConfigurationDocumentSchema->getAllowedValues()->addValue('', '-- NONE --');
-        $defaultConfigurationDocumentSchema->getAllowedValues()->addValueSet('document/all');
-        $defaultConfigurationDocumentSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
-        $configurationStorageSchema->addProperty('defaultConfigurationDocument', $defaultConfigurationDocumentSchema);
-
-        $configurationStorageSchema->addProperty('allowSaveToExtensionPaths', new BooleanSchema(false));
-
-        $schema->addProperty('configurationStorage', $configurationStorageSchema);
-
-        $apiSchema = new ContainerSchema();
-        $apiSchema->getRenderingDefinition()->setLabel('API');
-        $apiSchema->getRenderingDefinition()->setNavigationItem(false);
-
-        $apiSchema->addProperty('enabled', new BooleanSchema(false));
-        $apiSchema->addProperty('basePath', new StringSchema('digital-marketing-framework/api'));
-        $apiSchema->addProperty('pid', new IntegerSchema(0));
-
-        $schema->addProperty('api', $apiSchema);
-
-        return $schema;
-    }
-
     public function __construct(string $packageAlias = '')
     {
-        parent::__construct('core', '1.0.0', $packageAlias);
+        parent::__construct('core', '1.0.0', $packageAlias, new CoreGlobalConfigurationSchema());
     }
 }

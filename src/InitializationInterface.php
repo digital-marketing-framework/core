@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core;
 
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchemaInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 interface InitializationInterface
@@ -17,4 +18,8 @@ interface InitializationInterface
     public function initGlobalConfiguration(string $domain, RegistryInterface $registry): void;
 
     public function initMetaData(RegistryInterface $registry): void;
+
+    public function getGlobalConfigurationSchema(): ?GlobalConfigurationSchemaInterface;
+
+    public function setGlobalConfigurationSchema(?GlobalConfigurationSchemaInterface $globalConfigurationSchema): void;
 }
