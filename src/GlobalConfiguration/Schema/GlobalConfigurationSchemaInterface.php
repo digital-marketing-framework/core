@@ -6,4 +6,5 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
 interface GlobalConfigurationSchemaInterface extends SchemaInterface
 {
+    public function getWeight(): int;
 }

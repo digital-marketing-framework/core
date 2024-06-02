@@ -37,6 +37,11 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     protected ContainerSchema $apiSchema;
 
+    public function getWeight(): int
+    {
+        return 50;
+    }
+
     protected function getConfigurationStorageSchema(): ContainerSchema
     {
         $configurationStorageSchema = new ContainerSchema();
@@ -74,7 +79,7 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
     {
         parent::__construct();
 
-        $this->getRenderingDefinition()->setLabel('Core');
+        $this->getRenderingDefinition()->setLabel('General');
 
         $this->addProperty(static::KEY_DEBUG, new BooleanSchema(static::DEFAULT_DEBUG));
 

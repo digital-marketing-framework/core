@@ -2,12 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 trait GlobalConfigurationSchemaRegistryTrait
 {
-    /** @var array<string,SchemaInterface> */
+    /** @var array<string,GlobalConfigurationSchemaInterface> */
     protected array $globalConfigurationSchemaList = [];
 
     protected SchemaDocument $globalConfigurationSchemaDocument;
@@ -17,7 +18,7 @@ trait GlobalConfigurationSchemaRegistryTrait
      */
     abstract protected function getIncludeValueSet(): array;
 
-    public function addGlobalConfigurationSchemaForPackage(string $packageName, SchemaInterface $schema): void
+    public function addGlobalConfigurationSchemaForPackage(string $packageName, GlobalConfigurationSchemaInterface $schema): void
     {
         $this->globalConfigurationSchemaList[$packageName] = $schema;
     }
@@ -32,7 +33,8 @@ trait GlobalConfigurationSchemaRegistryTrait
         $mainSchema->getRenderingDefinition()->setLabel('Global Settings');
 
         foreach ($this->globalConfigurationSchemaList as $key => $schema) {
-            $mainSchema->addProperty($key, $schema);
+            $property = $mainSchema->addProperty($key, $schema);
+            $property->setWeight($schema->getWeight());
         }
     }
 
