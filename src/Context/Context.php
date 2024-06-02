@@ -14,6 +14,11 @@ abstract class Context extends ArrayObject implements ContextInterface
      */
     public function __construct(array $data = [])
     {
+        // the timestamp should always be present
+        if (!isset($data[static::KEY_TIMESTAMP])) {
+            $data[static::KEY_TIMESTAMP] = time();
+        }
+
         parent::__construct($data);
     }
 

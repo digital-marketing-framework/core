@@ -3,9 +3,13 @@
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Plugin\ConfigurablePluginInterface;
+use DigitalMarketingFramework\Core\Plugin\IntegrationPluginInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -32,6 +36,7 @@ trait PluginRegistryTrait
 
     public function processPluginAwareness(PluginInterface $plugin): void
     {
+        $schemaDocument = null;
         if ($plugin instanceof ConfigurablePluginInterface) {
             $schema = $plugin::getSchema();
             $schemaDocument = $this->getConfigurationSchemaDocument();
@@ -42,6 +47,31 @@ trait PluginRegistryTrait
             }
 
             $plugin->setDefaultConfiguration($defaults);
+        }
+
+        if ($plugin instanceof IntegrationPluginInterface) {
+            $schemaDocument ??= $this->getConfigurationSchemaDocument();
+            $integrationName = $plugin->getIntegrationInfo()->getName();
+
+            $integrationContainerSchema = $schemaDocument->getMainSchema()
+                ->getProperty(ConfigurationInterface::KEY_INTEGRATIONS)
+                ?->getSchema();
+
+            if (!$integrationContainerSchema instanceof ContainerSchema) {
+                throw new DigitalMarketingFrameworkException('integration configuration not found');
+            }
+
+            $schema = $integrationContainerSchema->getProperty($integrationName)?->getSchema();
+            $defaults = null;
+            if ($schema instanceof SchemaInterface) {
+                $defaults = $this->getSchemaProcessor()->getDefaultValue($schemaDocument, $schema);
+            }
+
+            if (!is_array($defaults)) {
+                throw new DigitalMarketingFrameworkException('default integration configuration has to be an array');
+            }
+
+            $plugin->setDefaultIntegrationConfiguration($defaults);
         }
     }
 

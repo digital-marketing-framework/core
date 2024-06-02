@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Integration;
 
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class IntegrationInfo
@@ -87,5 +89,9 @@ class IntegrationInfo
     public function setOutboundRouteListLabel(string $outboundRouteListLabel): void
     {
         $this->outboundRouteListLabel = $outboundRouteListLabel;
+    }
+
+    public function addSchema(SchemaDocument $schemaDocument, ContainerSchema $integrationSchema): void
+    {
     }
 }

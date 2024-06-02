@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\StaticConfigurationDocumentStorage;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
 
 trait ConfigurationDocumentManagerRegistryTrait
@@ -15,7 +16,7 @@ trait ConfigurationDocumentManagerRegistryTrait
 
     protected ConfigurationDocumentParserInterface $configurationDocumentParser;
 
-    protected ?ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage = null;
+    protected ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage;
 
     protected ConfigurationDocumentManagerInterface $configurationDocumentManager;
 
@@ -33,24 +34,30 @@ trait ConfigurationDocumentManagerRegistryTrait
     public function setConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $configurationDocumentStorage): void
     {
         $this->configurationDocumentStorage = $configurationDocumentStorage;
-        $this->configurationDocumentStorage->initalizeConfigurationDocumentStorage();
+        $this->configurationDocumentStorage->initializeConfigurationDocumentStorage();
     }
 
-    public function getStaticConfigurationDocumentStorage(): ?ConfigurationDocumentStorageInterface
+    public function getStaticConfigurationDocumentStorage(): ConfigurationDocumentStorageInterface
     {
+        if (!isset($this->staticConfigurationDocumentStorage)) {
+            $this->setStaticConfigurationDocumentStorage(
+                $this->createObject(StaticConfigurationDocumentStorage::class, [$this])
+            );
+        }
+
         return $this->staticConfigurationDocumentStorage;
     }
 
     public function setStaticConfigurationDocumentStorage(?ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void
     {
         $this->staticConfigurationDocumentStorage = $staticConfigurationDocumentStorage;
-        $this->staticConfigurationDocumentStorage?->initalizeConfigurationDocumentStorage();
+        $this->staticConfigurationDocumentStorage?->initializeConfigurationDocumentStorage();
     }
 
     public function getConfigurationDocumentParser(): ConfigurationDocumentParserInterface
     {
         if (!isset($this->configurationDocumentParser)) {
-            throw new RegistryException('Configuration document storage not defined');
+            throw new RegistryException('Configuration document parser not defined');
         }
 
         return $this->configurationDocumentParser;
@@ -67,7 +74,6 @@ trait ConfigurationDocumentManagerRegistryTrait
             $configurationDocumentStorage = $this->getConfigurationDocumentStorage();
             $configurationDocumentParser = $this->getConfigurationDocumentParser();
             $staticConfigurationDocumentStorage = $this->getStaticConfigurationDocumentStorage();
-            /** @var ConfigurationDocumentManager */
             $configurationDocumentManager = $this->createObject(
                 ConfigurationDocumentManager::class,
                 [
@@ -93,5 +99,46 @@ trait ConfigurationDocumentManagerRegistryTrait
     public function addSchemaMigration(ConfigurationDocumentMigrationInterface $migration): void
     {
         $this->getConfigurationDocumentManager()->addMigration($migration);
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    protected function getIncludeValueSet(): array
+    {
+        $includes = [];
+        $configurationDocumentManager = $this->getConfigurationDocumentManager();
+        $documentIdentifiers = $configurationDocumentManager->getDocumentIdentifiers();
+        foreach ($documentIdentifiers as $documentIdentifier) {
+            $metaData = $configurationDocumentManager->getDocumentInformation($documentIdentifier);
+            $label = '[' . $documentIdentifier . ']';
+            if ($metaData['name'] !== $documentIdentifier) {
+                $label = $metaData['name'] . ' ' . $label;
+            }
+
+            $includes[$documentIdentifier] = $label;
+        }
+
+        uksort($includes, static function (string $key1, string $key2) {
+            $prefix1 = substr($key1, 0, 4);
+            $prefix2 = substr($key2, 0, 4);
+            if ($prefix1 === 'SYS:') {
+                if ($prefix2 !== 'SYS:') {
+                    return -1;
+                }
+            } elseif ($prefix2 === 'SYS:') {
+                return 1;
+            } elseif (preg_match('/^[A-Z]{3}:$/', $prefix1)) {
+                if (!preg_match('/^[A-Z]{3}:$/', $prefix2)) {
+                    return -1;
+                }
+            } elseif (preg_match('/^[A-Z]{3}:$/', $prefix2)) {
+                return -1;
+            }
+
+            return $key1 <=> $key2;
+        });
+
+        return $includes;
     }
 }

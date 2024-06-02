@@ -72,6 +72,7 @@ const updateTextArea = (textarea, stage, settings, start) => {
     const startButton = document.createElement('BUTTON');
     textarea.parentNode.insertBefore(startButton, textarea.nextSibling);
     startButton.innerHTML = 'configure';
+    startButton.type = 'button';
     startButton.classList.add('btn', 'btn-default');
 
     startButton.addEventListener('click', () => {

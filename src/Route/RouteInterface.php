@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Route;
 
-use DigitalMarketingFramework\Core\Integration\IntegrationPluginInterface;
+use DigitalMarketingFramework\Core\Plugin\IntegrationPluginInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\FieldDefinition\FieldDefinition;
 
 interface RouteInterface extends IntegrationPluginInterface

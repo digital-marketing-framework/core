@@ -2,34 +2,41 @@
 
 namespace DigitalMarketingFramework\Core\IdentifierCollector;
 
-use DigitalMarketingFramework\Core\Context\ContextInterface;
+use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
+use DigitalMarketingFramework\Core\Context\ContextAwareTrait;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
-use DigitalMarketingFramework\Core\Plugin\ConfigurablePlugin;
+use DigitalMarketingFramework\Core\Plugin\IntegrationPlugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
-abstract class IdentifierCollector extends ConfigurablePlugin implements IdentifierCollectorInterface
+abstract class IdentifierCollector extends IntegrationPlugin implements IdentifierCollectorInterface, ContextAwareInterface
 {
+    use ContextAwareTrait;
+
     protected const KEY_ENABLED = 'enabled';
 
     protected const DEFAULT_ENABLED = false;
 
-    protected IntegrationInfo $integrationInfo;
-
     public function __construct(
         string $keyword,
         protected RegistryInterface $registry,
-        protected ConfigurationInterface $identifiersConfiguration,
+        protected ConfigurationInterface $identifierConfiguration,
         ?IntegrationInfo $integrationInfo = null
     ) {
-        parent::__construct($keyword);
-        $this->integrationInfo = $integrationInfo ?? static::getDefaultIntegrationInfo();
-        $this->configuration = $identifiersConfiguration->getIdentifierCollectorConfiguration($this->integrationInfo->getName(), $this->getKeyword());
+        parent::__construct(
+            $keyword,
+            $integrationInfo ?? static::getDefaultIntegrationInfo(),
+            $identifierConfiguration
+        );
+        $this->configuration = $identifierConfiguration->getIdentifierCollectorConfiguration(
+            $this->integrationInfo->getName(),
+            $this->getKeyword()
+        );
     }
 
     abstract public static function getDefaultIntegrationInfo(): IntegrationInfo;
@@ -44,21 +51,21 @@ abstract class IdentifierCollector extends ConfigurablePlugin implements Identif
         return (bool)$this->getConfig(static::KEY_ENABLED);
     }
 
-    abstract protected function prepareContext(ContextInterface $source, WriteableContextInterface $target): void;
+    abstract protected function prepareContext(WriteableContextInterface $context): void;
 
-    public function addContext(ContextInterface $source, WriteableContextInterface $target): void
+    public function addContext(WriteableContextInterface $context): void
     {
         if ($this->proceed()) {
-            $this->prepareContext($source, $target);
+            $this->prepareContext($context);
         }
     }
 
-    abstract protected function collect(ContextInterface $context): ?IdentifierInterface;
+    abstract protected function collect(): ?IdentifierInterface;
 
-    public function getIdentifier(ContextInterface $context): ?IdentifierInterface
+    public function getIdentifier(): ?IdentifierInterface
     {
         if ($this->proceed()) {
-            return $this->collect($context);
+            return $this->collect();
         }
 
         return null;

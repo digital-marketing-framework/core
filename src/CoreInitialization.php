@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticCoreSystemConfigurationDocumentDiscovery;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticResourceConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\EqualsComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ExistsComparison;
@@ -54,7 +56,17 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSour
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\Registry\RegistryDomain;
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\BooleanConvertValueTypesSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ContainerConvertValueTypesSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\ConvertValueTypesSchemaProcessorInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\CustomConvertValueTypesSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\DynamicListConvertValueTypesSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\IntegerConvertValueTypesSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\StringConvertValueTypesSchemaProcessor;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\SwitchConvertValueTypesSchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\BooleanDefaultValueSchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\ContainerDefaultValueSchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\DefaultValueSchemaProcessor\CustomDefaultValueSchemaProcessor;
@@ -170,6 +182,16 @@ class CoreInitialization extends Initialization
                 'string' => NoOpPreSaveDataTransformSchemaProcessor::class,
                 'switch' => SwitchPreSaveDataTransformSchemaProcessor::class,
             ],
+            ConvertValueTypesSchemaProcessorInterface::class => [
+                'boolean' => BooleanConvertValueTypesSchemaProcessor::class,
+                'container' => ContainerConvertValueTypesSchemaProcessor::class,
+                'custom' => CustomConvertValueTypesSchemaProcessor::class,
+                'integer' => IntegerConvertValueTypesSchemaProcessor::class,
+                'list' => DynamicListConvertValueTypesSchemaProcessor::class,
+                'map' => DynamicListConvertValueTypesSchemaProcessor::class,
+                'string' => StringConvertValueTypesSchemaProcessor::class,
+                'switch' => SwitchConvertValueTypesSchemaProcessor::class,
+            ],
         ],
     ];
 
@@ -177,12 +199,27 @@ class CoreInitialization extends Initialization
 
     protected const FRONTEND_SCRIPTS = [
         'core' => [
-            '/scripts/digital-marketing-framework.js',
+            'digital-marketing-framework.js',
         ],
     ];
 
+    public function initPlugins(string $domain, RegistryInterface $registry): void
+    {
+        parent::initPlugins($domain, $registry);
+
+        $registry->registerResourceService($registry->getVendorResourceService());
+
+        $registry->registerStaticConfigurationDocumentDiscovery(
+            $registry->createObject(StaticResourceConfigurationDocumentDiscovery::class, [$registry])
+        );
+
+        $registry->registerStaticConfigurationDocumentDiscovery(
+            $registry->createObject(StaticCoreSystemConfigurationDocumentDiscovery::class, [$registry])
+        );
+    }
+
     public function __construct(string $packageAlias = '')
     {
-        parent::__construct('core', '1.0.0', $packageAlias);
+        parent::__construct('core', '1.0.0', $packageAlias, new CoreGlobalConfigurationSchema());
     }
 }

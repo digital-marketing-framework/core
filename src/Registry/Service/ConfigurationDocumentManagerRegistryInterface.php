@@ -21,9 +21,9 @@ interface ConfigurationDocumentManagerRegistryInterface
 
     public function setConfigurationDocumentManager(ConfigurationDocumentManagerInterface $configurationDocumentManager): void;
 
-    public function getStaticConfigurationDocumentStorage(): ?ConfigurationDocumentStorageInterface;
+    public function getStaticConfigurationDocumentStorage(): ConfigurationDocumentStorageInterface;
 
-    public function setStaticConfigurationDocumentStorage(?ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void;
+    public function setStaticConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void;
 
     public function addSchemaMigration(ConfigurationDocumentMigrationInterface $migration): void;
 }

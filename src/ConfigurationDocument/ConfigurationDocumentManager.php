@@ -14,7 +14,6 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareT
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
-use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 
 class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
@@ -28,7 +27,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function __construct(
         protected ConfigurationDocumentStorageInterface $storage,
         protected ConfigurationDocumentParserInterface $parser,
-        protected ?ConfigurationDocumentStorageInterface $staticStorage = null,
+        protected ConfigurationDocumentStorageInterface $staticStorage,
     ) {
     }
 
@@ -37,7 +36,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $this->storage;
     }
 
-    public function getStaticStorage(): ?ConfigurationDocumentStorageInterface
+    public function getStaticStorage(): ConfigurationDocumentStorageInterface
     {
         return $this->staticStorage;
     }
@@ -50,10 +49,6 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     protected function getStorageForDocumentIdentifier(string $documentIdentifier): ConfigurationDocumentStorageInterface
     {
         if (preg_match('/^[A-Z]{2,}:/', $documentIdentifier)) {
-            if (!$this->staticStorage instanceof ConfigurationDocumentStorageInterface) {
-                throw new DigitalMarketingFrameworkException('No static document storage found.');
-            }
-
             return $this->staticStorage;
         }
 
@@ -98,7 +93,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string
     {
-        return $this->storage->getDocumentIdentiferFromBaseName($baseName, $newFile);
+        return $this->storage->getDocumentIdentifierFromBaseName($baseName, $newFile);
     }
 
     public function getDocumentInformation(string $documentIdentifier): array
@@ -120,7 +115,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
      */
     public function getDocumentIdentifiers(): array
     {
-        $identifiers = $this->staticStorage?->getDocumentIdentifiers() ?? [];
+        $identifiers = $this->staticStorage->getDocumentIdentifiers();
         foreach ($this->storage->getDocumentIdentifiers() as $identifier) {
             if (!in_array($identifier, $identifiers)) {
                 $identifiers[] = $identifier;
@@ -140,8 +135,8 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
 
     public function getDocumentFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): string
     {
-        $document = $this->staticStorage?->getDocument($documentIdentifier, $metaDataOnly);
-        if ($document !== null && $document !== '') {
+        $document = $this->staticStorage->getDocument($documentIdentifier, $metaDataOnly);
+        if ($document !== '') {
             return $document;
         }
 
@@ -249,7 +244,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     {
         // TODO Trigger migrations here?
         //      Should each configuration be migrated with its parents or on its own?
-        //      What if some version cannot be reached? Distringuish between fatal issues and non-fatal issues?
+        //      What if some version cannot be reached? Distinguish between fatal issues and non-fatal issues?
         $includes = $this->getIncludes($configuration);
         array_unshift($includes, 'SYS:defaults');
         $includedConfigurations = $this->getIncludedConfigurations($includes);
@@ -293,41 +288,6 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         }
 
         return $this->getConfigurationStackFromIdentifier($documentIdentifier);
-    }
-
-    public function splitConfiguration(array $mergedConfiguration): array
-    {
-        $configurationStack = $this->getConfigurationStackFromConfiguration($mergedConfiguration);
-        array_pop($configurationStack);
-        $parentConfiguration = ConfigurationUtility::mergeConfigurationStack($configurationStack);
-
-        return ConfigurationUtility::splitConfiguration($parentConfiguration, $mergedConfiguration);
-    }
-
-    public function mergeConfiguration(array $configuration, bool $inheritedConfigurationOnly = false): array
-    {
-        $configurationStack = $this->getConfigurationStackFromConfiguration($configuration);
-        if ($inheritedConfigurationOnly) {
-            array_pop($configurationStack);
-        }
-
-        return ConfigurationUtility::mergeConfigurationStack($configurationStack);
-    }
-
-    public function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array
-    {
-        $oldIncludes = $this->getIncludes($referenceMergedConfiguration);
-        $newIncludes = $this->getIncludes($mergedConfiguration);
-        $this->setIncludes($mergedConfiguration, $oldIncludes);
-        $splitConfiguration = $this->splitConfiguration($mergedConfiguration);
-
-        $this->setIncludes($splitConfiguration, $newIncludes);
-        $configurationStack = $this->getConfigurationStackFromConfiguration($splitConfiguration);
-        if ($inheritedConfigurationOnly) {
-            array_pop($configurationStack);
-        }
-
-        return ConfigurationUtility::mergeConfigurationStack($configurationStack);
     }
 
     public function addMigration(ConfigurationDocumentMigrationInterface $migration): void

@@ -3,26 +3,68 @@
 namespace DigitalMarketingFramework\Core\ConfigurationDocument\Storage;
 
 use BadMethodCallException;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticConfigurationDocumentDiscoveryInterface;
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
-abstract class StaticConfigurationDocumentStorage extends ConfigurationDocumentStorage
+class StaticConfigurationDocumentStorage extends ConfigurationDocumentStorage
 {
+    public function __construct(
+        protected RegistryInterface $registry,
+    ) {
+    }
+
+    protected function getDiscovery(string $documentIdentifier): ?StaticConfigurationDocumentDiscoveryInterface
+    {
+        foreach ($this->registry->getStaticConfigurationDocumentDiscoveries() as $discovery) {
+            if ($discovery->match($documentIdentifier)) {
+                return $discovery;
+            }
+        }
+
+        return null;
+    }
+
+    public function getDocumentIdentifiers(): array
+    {
+        $result = [];
+        foreach ($this->registry->getStaticConfigurationDocumentDiscoveries() as $discovery) {
+            $ids = $discovery->getIdentifiers();
+            foreach ($ids as $id) {
+                if (!in_array($id, $result)) {
+                    $result[] = $id;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string
+    {
+        throw new BadMethodCallException('Base name generation is not supported for static documents');
+    }
+
+    public function getDocument(string $documentIdentifier, bool $metaDataOnly = false): string
+    {
+        $discovery = $this->getDiscovery($documentIdentifier);
+
+        return $discovery instanceof StaticConfigurationDocumentDiscoveryInterface
+            ? $discovery->getContent($documentIdentifier, $metaDataOnly)
+            : '';
+    }
+
     public function setDocument(string $documentIdentifier, string $document): void
     {
-        throw new BadMethodCallException('Static configuration document storages cannot write configuration documents');
+        $this->getDiscovery($documentIdentifier)?->setContent($documentIdentifier, $document);
     }
 
     public function deleteDocument(string $documentIdentifier): void
     {
-        throw new BadMethodCallException('Static configuration document storages cannot delete configuration documents');
-    }
-
-    public function getDocumentIdentiferFromBaseName(string $baseName, bool $newFile = true): string
-    {
-        throw new BadMethodCallException('Static configuration document storages do not have document base names');
+        throw new BadMethodCallException('Static documents cannot be deleted');
     }
 
     public function isReadOnly(string $documentIdentifier): bool
     {
-        return true;
+        return $this->getDiscovery($documentIdentifier)?->readonly($documentIdentifier) ?? true;
     }
 }

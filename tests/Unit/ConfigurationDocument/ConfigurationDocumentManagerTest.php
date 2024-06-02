@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigurationDocumentManagerTest extends TestCase
 {
+    protected ConfigurationDocumentStorageInterface&MockObject $staticStorage;
+
     protected ConfigurationDocumentStorageInterface&MockObject $storage;
 
     protected ConfigurationDocumentParserInterface&MockObject $parser;
@@ -25,6 +27,7 @@ class ConfigurationDocumentManagerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->staticStorage = $this->createMock(ConfigurationDocumentStorageInterface::class);
         $this->storage = $this->createMock(ConfigurationDocumentStorageInterface::class);
         $this->parser = $this->createMock(ConfigurationDocumentParserInterface::class);
 
@@ -49,7 +52,7 @@ class ConfigurationDocumentManagerTest extends TestCase
         });
 
         $this->registerDocument('SYS:defaults', 'sysDefaultDocumentContent', static::SYS_DEFAULTS_CONFIGURATION);
-        $this->subject = new ConfigurationDocumentManager($this->storage, $this->parser);
+        $this->subject = new ConfigurationDocumentManager($this->storage, $this->parser, $this->staticStorage);
     }
 
     /**
