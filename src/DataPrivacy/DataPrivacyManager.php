@@ -27,6 +27,7 @@ class DataPrivacyManager extends DataPrivacyPlugin implements DataPrivacyManager
         if ($keyword === '') {
             $keyword = GeneralUtility::getPluginKeyword($plugin::class, DataPrivacyPluginInterface::class);
         }
+
         $plugin->setKeyword($keyword);
 
         $this->plugins[$keyword] = $plugin;

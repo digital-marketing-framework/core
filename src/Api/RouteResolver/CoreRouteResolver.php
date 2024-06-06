@@ -26,6 +26,7 @@ class CoreRouteResolver implements CoreRouteResolverInterface, DataPrivacyManage
         $permissions = $this->dataPrivacyManager->getAllPossiblePermissions();
         $granted = $this->dataPrivacyManager->getGrantedPermissions();
         $denied = $this->dataPrivacyManager->getAllDeniedPermissions();
+
         return new ApiResponse([
             'all' => $permissions,
             'granted' => $granted,
@@ -36,6 +37,7 @@ class CoreRouteResolver implements CoreRouteResolverInterface, DataPrivacyManage
     public function resolveRequest(ApiRequestInterface $request): ApiResponseInterface
     {
         $action = $request->getVariable(static::VARIABLE_ACTION);
+
         return match ($action) {
             static::ACTION_PERMISSIONS => $this->getPermissionsResponse(),
             default => throw new ApiException(sprintf('Core API action "%s" unknown.', $action)),
@@ -58,7 +60,7 @@ class CoreRouteResolver implements CoreRouteResolverInterface, DataPrivacyManage
     {
         return new SimpleRoute(
             id: implode(':', [static::SEGMENT_CORE, static::ACTION_PERMISSIONS]),
-            path:implode('/', [static::ACTION_PERMISSIONS]),
+            path: implode('/', [static::ACTION_PERMISSIONS]),
             constants: [
                 static::VARIABLE_DOMAIN => static::SEGMENT_CORE,
                 static::VARIABLE_ACTION => static::ACTION_PERMISSIONS,

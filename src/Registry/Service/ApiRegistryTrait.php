@@ -6,7 +6,6 @@ use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorage;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolverInterface;
-use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 
 trait ApiRegistryTrait
 {
@@ -44,15 +43,18 @@ trait ApiRegistryTrait
         ];
     }
 
+    /**
+     * @param array{settings:array<string,mixed>,urls:array<string,string>,pluginSettings:array<string,array<string,mixed>>} $settings
+     */
     protected function addPermissionsRouteSettings(array &$settings): void
     {
         $entryRouteResolver = $this->getRegistryCollection()->getApiEntryRouteResolver();
         $coreRouteResolver = $this->getCoreApiRouteResolver();
         $route = $coreRouteResolver->getPermissionsRoute();
-        $settings = $coreRouteResolver->getPermissionsFrontendSettings();
+        $permissionSettings = $coreRouteResolver->getPermissionsFrontendSettings();
 
         $id = $route->getId();
-        $settings['pluginSettings'][$id] = $settings;
+        $settings['pluginSettings'][$id] = $permissionSettings;
         $settings['urls'][$id] = $entryRouteResolver->getFullPath($route->getPath());
     }
 

@@ -4,7 +4,6 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolverInterface;
-use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\RouteResolverInterface;
 
 interface ApiRegistryInterface
