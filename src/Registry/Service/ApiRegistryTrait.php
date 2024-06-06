@@ -4,15 +4,24 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorage;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
-use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolver;
+use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolver;
+use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolverInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
-use DigitalMarketingFramework\Core\Api\RouteResolver\RouteResolverInterface;
 
 trait ApiRegistryTrait
 {
     protected EndPointStorageInterface $endPointStorage;
 
-    protected EntryRouteResolverInterface $routeResolver;
+    protected CoreRouteResolverInterface $coreRouteResolver;
+
+    public function getCoreApiRouteResolver(): CoreRouteResolverInterface
+    {
+        if (!isset($this->coreRouteResolver)) {
+            $this->coreRouteResolver = $this->createObject(CoreRouteResolver::class, [$this]);
+        }
+
+        return $this->coreRouteResolver;
+    }
 
     public function getEndPointStorage(): EndPointStorageInterface
     {
@@ -30,44 +39,35 @@ trait ApiRegistryTrait
 
     public function getApiRouteResolvers(): array
     {
-        return [];
+        return [
+            'core' => $this->getCoreApiRouteResolver(),
+        ];
     }
 
-    public function getApiEntryRouteResolver(): EntryRouteResolverInterface
+    protected function addPermissionsRouteSettings(array &$settings): void
     {
-        if (!isset($this->routeResolver)) {
-            $this->routeResolver = $this->createObject(EntryRouteResolver::class);
-            foreach ($this->getApiRouteResolvers() as $domain => $resolver) {
-                $this->routeResolver->registerResolver($domain, $resolver);
-            }
-        }
+        $entryRouteResolver = $this->getRegistryCollection()->getApiEntryRouteResolver();
+        $coreRouteResolver = $this->getCoreApiRouteResolver();
+        $route = $coreRouteResolver->getPermissionsRoute();
+        $settings = $coreRouteResolver->getPermissionsFrontendSettings();
 
-        return $this->routeResolver;
-    }
-
-    public function setApiEntryRouteResolver(EntryRouteResolverInterface $routeResolver): void
-    {
-        $this->routeResolver = $routeResolver;
-    }
-
-    public function registerApiRouteResolver(string $domain, RouteResolverInterface $routeResolver): void
-    {
-        $this->getApiEntryRouteResolver()->registerResolver($domain, $routeResolver);
-    }
-
-    public function getRegisteredApiRouteResolver(string $domain): ?RouteResolverInterface
-    {
-        return $this->routeResolver->getResolver($domain);
+        $id = $route->getId();
+        $settings['pluginSettings'][$id] = $settings;
+        $settings['urls'][$id] = $entryRouteResolver->getFullPath($route->getPath());
     }
 
     public function getFrontendSettings(): array
     {
-        return [
+        $settings = [
             'settings' => [
                 'prefix' => 'dmf', // TODO make the markup data attribute name prefix configurable
             ],
             'urls' => [],
             'pluginSettings' => [],
         ];
+
+        $this->addPermissionsRouteSettings($settings);
+
+        return $settings;
     }
 }

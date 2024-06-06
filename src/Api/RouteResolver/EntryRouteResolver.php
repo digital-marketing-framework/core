@@ -58,14 +58,16 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
      */
     protected function getRootRoutes(): array
     {
-        return [new SimpleRoute(
-            id: 'root',
-            path: '',
-            constants: [
-                'domain' => 'root',
-            ],
-            methods: ['GET']
-        )];
+        return [
+            new SimpleRoute(
+                id: static::SEGMENT_ROOT,
+                path: '',
+                constants: [
+                    static::VARIABLE_DOMAIN => static::SEGMENT_ROOT,
+                ],
+                methods: ['GET']
+            ),
+        ];
     }
 
     public function getAllRoutes(): array

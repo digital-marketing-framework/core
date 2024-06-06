@@ -7,6 +7,8 @@ use DigitalMarketingFramework\Core\Cache\DataCacheAwareInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
+use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
+use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
@@ -20,6 +22,7 @@ use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryTrait;
@@ -40,6 +43,7 @@ class Registry implements RegistryInterface
     use GlobalConfigurationSchemaRegistryTrait;
     use ResourceServiceRegistryTrait;
     use TemplateRegistryTrait;
+    use DataPrivacyManagerRegistryTrait;
 
     use LoggerFactoryRegistryTrait;
     use ContextRegistryTrait;
@@ -121,6 +125,15 @@ class Registry implements RegistryInterface
         if ($object instanceof EndPointStorageAwareInterface) {
             $object->setEndPointStorage($this->getEndPointStorage());
         }
+
+        if ($object instanceof DataPrivacyManagerAwareInterface) {
+            $object->setDataPrivacyManager($this->getDataPrivacyManager());
+        }
+    }
+
+    public function addServiceContext(WriteableContextInterface $context): void
+    {
+        $this->getDataPrivacyManager()->addContext($context);
     }
 
     public function createObject(string $class, array $arguments = []): object

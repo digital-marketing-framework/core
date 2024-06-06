@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticCoreSystemConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticResourceConfigurationDocumentDiscovery;
+use DigitalMarketingFramework\Core\DataPrivacy\UnregulatedDataPrivacyPlugin;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\EqualsComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ExistsComparison;
@@ -216,6 +217,13 @@ class CoreInitialization extends Initialization
         $registry->registerStaticConfigurationDocumentDiscovery(
             $registry->createObject(StaticCoreSystemConfigurationDocumentDiscovery::class, [$registry])
         );
+
+        $enableUnregulatedDataPrivacyPlugin = $registry->getGlobalConfiguration()->get('core', [])[CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY][CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY_ENABLE_UNREGULATED] ?? false;
+        if ($enableUnregulatedDataPrivacyPlugin) {
+            $registry->getDataPrivacyManager()->addPlugin(
+                $registry->createObject(UnregulatedDataPrivacyPlugin::class)
+            );
+        }
     }
 
     public function __construct(string $packageAlias = '')

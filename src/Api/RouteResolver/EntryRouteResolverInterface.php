@@ -6,6 +6,8 @@ use DigitalMarketingFramework\Core\Api\Request\ApiRequestInterface;
 
 interface EntryRouteResolverInterface extends RouteResolverInterface
 {
+    public const SEGMENT_ROOT = 'root';
+
     public function enabled(): bool;
 
     public function getBasePath(): string;

@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
+use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryInterface;
@@ -11,6 +12,7 @@ use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryInterface;
@@ -28,6 +30,7 @@ interface RegistryInterface extends
     GlobalConfigurationSchemaRegistryInterface,
     ResourceServiceRegistryInterface,
     TemplateRegistryInterface,
+    DataPrivacyManagerRegistryInterface,
 
     LoggerFactoryRegistryInterface,
     ContextRegistryInterface,
@@ -62,4 +65,6 @@ interface RegistryInterface extends
     public function createObject(string $class, array $arguments = []): object;
 
     public function processObjectAwareness(object $object): void;
+
+    public function addServiceContext(WriteableContextInterface $context): void;
 }
