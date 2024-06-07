@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\Context\ContextAwareTrait;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 abstract class DataPrivacyPlugin implements DataPrivacyPluginInterface, ContextAwareInterface, GlobalConfigurationAwareInterface
 {
@@ -21,6 +22,11 @@ abstract class DataPrivacyPlugin implements DataPrivacyPluginInterface, ContextA
     abstract public function addContext(WriteableContextInterface $context): void;
 
     abstract public function getAllPossiblePermissions(): array;
+
+    public function getLabel(): string
+    {
+        return GeneralUtility::getLabelFromValue($this->getKeyword());
+    }
 
     public function getKeyword(): string
     {

@@ -6,6 +6,8 @@ use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 
 interface DataPrivacyPluginInterface
 {
+    public function getLabel(): string;
+
     public function getKeyword(): string;
 
     public function setKeyword(string $keyword): void;

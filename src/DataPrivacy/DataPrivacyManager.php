@@ -76,9 +76,11 @@ class DataPrivacyManager extends DataPrivacyPlugin implements DataPrivacyManager
     public function getPermissionLabels(): array
     {
         $labels = [];
+        $idPluginMap = [];
         foreach ($this->plugins as $plugin) {
             foreach ($plugin->getPermissionLabels() as $id => $label) {
-                $labels[$id] = $label;
+                $idPluginMap[$id][] = $plugin->getLabel();
+                $labels[$id] = $label . ' (' . implode(', ', $idPluginMap[$id]) . ')';
             }
         }
 
