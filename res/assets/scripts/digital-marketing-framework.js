@@ -31,6 +31,7 @@
   // state //
 
   const refreshCallbacks = []
+  const permissionChangeCallbacks = []
   let fetchCache = {}
   let DMF = null
 
@@ -174,6 +175,9 @@
 
   DMF.permissionUpdate = function() {
     this.refresh()
+    permissionChangeCallbacks.forEach((callback) => {
+      callback()
+    })
   }
 
   DMF.getPermissions = async function() {
@@ -182,11 +186,15 @@
 
   DMF.checkPermission = async function(permission) {
     const permissions = await DMF.getPermissions()
-    return permissions.granted.includes(permission);
+    return permissions.granted.includes(permission)
   }
 
   DMF.onRefresh = function(callback) {
-    refreshCallbacks.push(callback);
+    refreshCallbacks.push(callback)
+  }
+
+  DMF.onPermissionChange = function(callback) {
+    permissionChangeCallbacks.push(callback)
   }
 
   DMF.markAsLoading = function(elements) {
@@ -280,7 +288,7 @@
         })
       }
 
-      await processElement();
+      await processElement()
     }
 
     return plugin
