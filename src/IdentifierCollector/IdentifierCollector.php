@@ -5,6 +5,8 @@ namespace DigitalMarketingFramework\Core\IdentifierCollector;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextAwareTrait;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
+use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
+use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareTrait;
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
@@ -12,15 +14,20 @@ use DigitalMarketingFramework\Core\Plugin\IntegrationPlugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\DataPrivacyPermissionSelectionSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 
-abstract class IdentifierCollector extends IntegrationPlugin implements IdentifierCollectorInterface, ContextAwareInterface
+abstract class IdentifierCollector extends IntegrationPlugin implements IdentifierCollectorInterface, ContextAwareInterface, DataPrivacyManagerAwareInterface
 {
     use ContextAwareTrait;
+    use DataPrivacyManagerAwareTrait;
 
     protected const KEY_ENABLED = 'enabled';
 
     protected const DEFAULT_ENABLED = false;
+
+    protected const KEY_REQUIRED_PERMISSION = 'requiredPermission';
 
     public function __construct(
         string $keyword,
@@ -48,7 +55,13 @@ abstract class IdentifierCollector extends IntegrationPlugin implements Identifi
 
     protected function proceed(): bool
     {
-        return (bool)$this->getConfig(static::KEY_ENABLED);
+        if (!$this->getConfig(static::KEY_ENABLED)) {
+            return false;
+        }
+
+        $permission = $this->getConfig(static::KEY_REQUIRED_PERMISSION);
+
+        return $this->dataPrivacyManager->getPermission($permission);
     }
 
     abstract protected function prepareContext(WriteableContextInterface $context): void;
@@ -82,6 +95,8 @@ abstract class IdentifierCollector extends IntegrationPlugin implements Identifi
         }
 
         $schema->addProperty(static::KEY_ENABLED, new BooleanSchema(static::DEFAULT_ENABLED));
+
+        $schema->addProperty(static::KEY_REQUIRED_PERMISSION, new CustomSchema(DataPrivacyPermissionSelectionSchema::TYPE));
 
         return $schema;
     }

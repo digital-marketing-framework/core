@@ -45,13 +45,11 @@ class DataPrivacyManager extends DataPrivacyPlugin implements DataPrivacyManager
         $permissions = [];
         foreach ($this->plugins as $plugin) {
             foreach ($plugin->getAllPossiblePermissions() as $permission) {
-                if (!in_array($permission, $permissions)) {
-                    $permissions[] = $permission;
-                }
+                $permissions[] = $plugin->getKeyword() . ':' . $permission;
             }
         }
 
-        return array_unique($permissions);
+        return $permissions;
     }
 
     public function getGrantedPermissions(): array
@@ -59,13 +57,11 @@ class DataPrivacyManager extends DataPrivacyPlugin implements DataPrivacyManager
         $permissions = [];
         foreach ($this->plugins as $plugin) {
             foreach ($plugin->getGrantedPermissions() as $permission) {
-                if (!in_array($permission, $permissions)) {
-                    $permissions[] = $permission;
-                }
+                $permissions[] = $plugin->getKeyword() . ':' . $permission;
             }
         }
 
-        return array_unique($permissions);
+        return $permissions;
     }
 
     public function getAllDeniedPermissions(): array
@@ -76,11 +72,9 @@ class DataPrivacyManager extends DataPrivacyPlugin implements DataPrivacyManager
     public function getPermissionLabels(): array
     {
         $labels = [];
-        $idPluginMap = [];
-        foreach ($this->plugins as $plugin) {
+        foreach ($this->plugins as $keyword => $plugin) {
             foreach ($plugin->getPermissionLabels() as $id => $label) {
-                $idPluginMap[$id][] = $plugin->getLabel();
-                $labels[$id] = $label . ' (' . implode(', ', $idPluginMap[$id]) . ')';
+                $labels[$keyword . ':' . $id] = $label . ' (' . $plugin->getLabel() . ')';
             }
         }
 
@@ -90,9 +84,9 @@ class DataPrivacyManager extends DataPrivacyPlugin implements DataPrivacyManager
     public function getPermissionDefaults(): array
     {
         $permissions = [];
-        foreach ($this->plugins as $plugin) {
+        foreach ($this->plugins as $keyword => $plugin) {
             foreach ($plugin->getPermissionDefaults() as $id => $default) {
-                $permissions[$id] = $default;
+                $permissions[$keyword . ':' . $id] = $default;
             }
         }
 
