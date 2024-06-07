@@ -33,9 +33,17 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_API_BASE_PATH = 'digital-marketing-framework/api';
 
+    public const KEY_DATA_PRIVACY = 'dataPrivacy';
+
+    public const KEY_DATA_PRIVACY_ENABLE_UNREGULATED = 'enableUnregulated';
+
+    public const DEFAULT_DATA_PRIVACY_ENABLE_UNREGULATED = false;
+
     protected ContainerSchema $configurationStorageSchema;
 
     protected ContainerSchema $apiSchema;
+
+    protected ContainerSchema $dataPrivacySchema;
 
     public function getWeight(): int
     {
@@ -75,10 +83,22 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         return $apiSchema;
     }
 
+    protected function getDataPrivacySchema(): ContainerSchema
+    {
+        $dataPrivacySchema = new ContainerSchema();
+        $dataPrivacySchema->getRenderingDefinition()->setLabel('Data Privacy');
+        // $dataPrivacySchema->getRenderingDefinition()->setNavigationItem(false);
+
+        $enableUnregulatedSchema = new BooleanSchema(static::DEFAULT_DATA_PRIVACY_ENABLE_UNREGULATED);
+        $enableUnregulatedSchema->getRenderingDefinition()->setLabel('Enable unregulated Data Privacy Plugin');
+        $dataPrivacySchema->addProperty(static::KEY_DATA_PRIVACY_ENABLE_UNREGULATED, $enableUnregulatedSchema);
+
+        return $dataPrivacySchema;
+    }
+
     public function __construct()
     {
         parent::__construct();
-
         $this->getRenderingDefinition()->setLabel('General');
 
         $this->addProperty(static::KEY_DEBUG, new BooleanSchema(static::DEFAULT_DEBUG));
@@ -88,5 +108,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
         $this->apiSchema = $this->getApiSchema();
         $this->addProperty(static::KEY_API, $this->apiSchema);
+
+        $this->dataPrivacySchema = $this->getDataPrivacySchema();
+        $this->addProperty(static::KEY_DATA_PRIVACY, $this->dataPrivacySchema);
     }
 }

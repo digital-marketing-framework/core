@@ -52,5 +52,5 @@ interface RegistryCollectionInterface
      */
     public function getFrontendSettings(): array;
 
-    public function addApiRouteResolvers(EntryRouteResolverInterface $entryResolver): void;
+    public function getApiEntryRouteResolver(): EntryRouteResolverInterface;
 }

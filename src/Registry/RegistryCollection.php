@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
+use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
@@ -111,12 +112,15 @@ class RegistryCollection implements RegistryCollectionInterface
         return ConfigurationUtility::mergeConfigurationStack($frontendSettingsList, excludeKeys: []);
     }
 
-    public function addApiRouteResolvers(EntryRouteResolverInterface $entryResolver): void
+    public function getApiEntryRouteResolver(): EntryRouteResolverInterface
     {
+        $entryRouteResolver = $this->getRegistry()->createObject(EntryRouteResolver::class);
         foreach ($this->collection as $registry) {
-            foreach ($registry->getApiRouteResolvers() as $domain => $resolver) {
-                $entryResolver->registerResolver($domain, $resolver);
+            foreach ($registry->getApiRouteResolvers() as $domain => $routeResolver) {
+                $entryRouteResolver->registerResolver($domain, $routeResolver);
             }
         }
+
+        return $entryRouteResolver;
     }
 }

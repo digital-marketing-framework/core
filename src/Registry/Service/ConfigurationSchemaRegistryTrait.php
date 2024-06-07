@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ConditionReferenceSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\DataMapperGroupReferenceSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\DataPrivacyPermissionSelectionSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\FieldContextSelectionSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\ValueSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\CustomSchema;
@@ -22,6 +23,7 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\Da
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\DataMapperSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueModifierSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Plugin\DataProcessor\ValueSourceSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineInterface;
@@ -133,6 +135,11 @@ trait ConfigurationSchemaRegistryTrait
         return $dataProcessingSchema;
     }
 
+    protected function getDataPrivacySchema(): SchemaInterface
+    {
+        return new DataPrivacyPermissionSelectionSchema($this->getDataPrivacyManager()->getPermissionLabels());
+    }
+
     public function addConfigurationSchemaDocument(SchemaDocument $schemaDocument): void
     {
         // complex values
@@ -150,6 +157,9 @@ trait ConfigurationSchemaRegistryTrait
         $schemaDocument->addCustomType($this->getDataMapperSchema(), DataMapperSchema::TYPE);
         $schemaDocument->addCustomType($this->getDataMapperGroupSchema(), DataMapperGroupSchema::TYPE);
         $schemaDocument->addCustomType(new DataMapperGroupReferenceSchema(), DataMapperGroupReferenceSchema::TYPE);
+
+        // data privacy
+        $schemaDocument->addCustomType($this->getDataPrivacySchema(), DataPrivacyPermissionSelectionSchema::TYPE);
 
         // templating
         $schemaDocument->addCustomType($this->getTemplateSchema(TemplateEngineInterface::FORMAT_PLAIN_TEXT), TemplateEngineInterface::TYPE_PLAIN_TEXT);

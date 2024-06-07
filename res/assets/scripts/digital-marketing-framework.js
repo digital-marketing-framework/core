@@ -18,6 +18,8 @@
   const ATTRIBUTE_DEFAULT_CONTENT = 'DefaultContent'
   const ATTRIBUTE_HIDE_UNDEFINED_VARS = 'HideUndefinedVars'
 
+  const SETTINGS_REQUIRED_PERMISSION = 'requiredPermission'
+
   const DEFAULTS = {
     settings: {
       prefix: 'dmf',
@@ -29,6 +31,7 @@
   // state //
 
   const refreshCallbacks = []
+  const permissionChangeCallbacks = []
   let fetchCache = {}
   let DMF = null
 
@@ -170,8 +173,28 @@
     })
   }
 
+  DMF.permissionUpdate = function() {
+    this.refresh()
+    permissionChangeCallbacks.forEach((callback) => {
+      callback()
+    })
+  }
+
+  DMF.getPermissions = async function() {
+    return await DMF.pull('core:permissions')
+  }
+
+  DMF.checkPermission = async function(permission) {
+    const permissions = await DMF.getPermissions()
+    return permissions.granted.includes(permission)
+  }
+
   DMF.onRefresh = function(callback) {
-    refreshCallbacks.push(callback);
+    refreshCallbacks.push(callback)
+  }
+
+  DMF.onPermissionChange = function(callback) {
+    permissionChangeCallbacks.push(callback)
   }
 
   DMF.markAsLoading = function(elements) {
@@ -195,7 +218,7 @@
     return {
       settings: getPluginSettings(pluginId),
       hydrate: function(element, variables) {
-        DMF.hydrateElement(element, variables)
+        DMF.hydrate(element, variables)
       },
       markAsLoading: function(element) {
         DMF.markAsLoading([element])
@@ -208,6 +231,16 @@
       },
       onRefresh: function(callback) {
         DMF.onRefresh(callback)
+      },
+      getPermissions: async function() {
+        return await DMF.getPermissions()
+      },
+      checkPermission: async function(permission) {
+        if (typeof permission === 'undefined') {
+          permission = this.settings[SETTINGS_REQUIRED_PERMISSION]
+        }
+
+        return await DMF.checkPermission(permission)
       }
     }
   }
@@ -215,8 +248,17 @@
   function createPullPlugin(pluginId) {
     const plugin = createPlugin(pluginId)
 
-    plugin.pull = async function() {
-      return await DMF.pull(pluginId)
+    plugin.pull = async function(bypassPermissions = false) {
+      let proceed = true
+      if (!bypassPermissions && typeof this.settings[SETTINGS_REQUIRED_PERMISSION] !== 'undefined') {
+        proceed = await this.checkPermission()
+      }
+
+      if (proceed) {
+        return await DMF.pull(pluginId)
+      }
+
+      return false
     }
 
     plugin.pullAndHydrate = async function(
@@ -246,7 +288,7 @@
         })
       }
 
-      await processElement();
+      await processElement()
     }
 
     return plugin
@@ -277,7 +319,7 @@
   }
 
   DMF.plugin = (pluginId) => {
-    return pluginId.startsWith('collector') ? createPullPlugin(pluginId) : createPushPlugin(pluginId)
+    return pluginId.startsWith('distributor') ? createPushPlugin(pluginId) : createPullPlugin(pluginId)
   }
 
   DMF.getPluginFromElement = function(element) {
@@ -311,7 +353,7 @@
     return snippets
   }
 
-  DMF.hydrateElement = function(element, variables) {
+  DMF.hydrate = function(element, variables) {
     function processTemplate(element, variables) {
       const template = DMF.getPluginAttribute(element, ATTRIBUTE_PLUGIN_TEMPLATE, element.innerHTML, true)
       const defaultContent = DMF.getPluginAttribute(element, ATTRIBUTE_DEFAULT_CONTENT, element.innerHTML, true)
