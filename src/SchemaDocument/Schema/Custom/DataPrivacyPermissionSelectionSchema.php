@@ -18,10 +18,13 @@ class DataPrivacyPermissionSelectionSchema extends StringSchema
     {
         parent::__construct();
 
+        $this->setRequired();
+
         foreach ($permissions as $permission => $label) {
             $this->addValueToValueSet(static::VALUE_SET_PERMISSION_ALL, $permission, $label);
         }
 
+        $this->getAllowedValues()->addValue('', 'Please select');
         $this->getAllowedValues()->addValueSet(static::VALUE_SET_PERMISSION_ALL);
         $this->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
     }
