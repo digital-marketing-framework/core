@@ -266,6 +266,20 @@ const isInboundRoutePath = (store, path, currentPath) => {
   };
 };
 
+const isIdentifierCollectorPath = (store, path, currentPath) => {
+  // /integrations/NAME/identifiers/TYPE
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/integrations\/([^/]+)\/identifiers\/([^/]+)\//
+  );
+  if (matches === null) {
+    return false;
+  }
+  return {
+    integration: matches[1],
+    keyword: matches[2]
+  };
+};
+
 const isDataMapperGroupPath = (store, path, currentPath) => {
   // /dataProcessing/dataMapperGroup/ID
   const matches = getAbsolutePath(path, currentPath).match(/^\/dataProcessing\/dataMapperGroups\/([^/]+)/);
@@ -343,6 +357,7 @@ export const usePathProcessor = (store) => {
     isDataProviderPath: (path, currentPath) => isDataProviderPath(store, path, currentPath),
     isOutboundRoutePath: (path, currentPath) => isOutboundRoutePath(store, path, currentPath),
     isInboundRoutePath: (path, currentPath) => isInboundRoutePath(store, path, currentPath),
+    isIdentifierCollectorPath: (path, currentPath) => isIdentifierCollectorPath(store, path, currentPath),
     isDataMapperGroupPath: (path, currentPath) => isDataMapperGroupPath(store, path, currentPath),
     isConditionPath: (path, currentPath) => isConditionPath(store, path, currentPath),
     isPersonalizationDataTransformationPath: (path, currentPath) => isPersonalizationDataTransformationPath(store, path, currentPath),

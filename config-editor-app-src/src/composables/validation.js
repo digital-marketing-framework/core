@@ -150,7 +150,7 @@ const skipValidation = (store, path, currentPath) => {
     return true;
   }
 
-  const { isOutboundRoutePath, isInboundRoutePath, isDataProviderPath } = usePathProcessor(store);
+  const { isOutboundRoutePath, isInboundRoutePath, isIdentifierCollectorPath, isDataProviderPath } = usePathProcessor(store);
 
   const outboundRoute = isOutboundRoutePath(path, currentPath);
   if (outboundRoute) {
@@ -160,6 +160,11 @@ const skipValidation = (store, path, currentPath) => {
   const inboundRoute = isInboundRoutePath(path, currentPath);
   if (inboundRoute) {
     return !store.data.integrations[inboundRoute.integration].inboundRoutes[inboundRoute.keyword].enabled;
+  }
+
+  const identifierCollector = isIdentifierCollectorPath(path, currentPath);
+  if (identifierCollector) {
+    return !store.data.integrations[identifierCollector.integration].identifiers[identifierCollector.keyword].enabled;
   }
 
   const dataProvider = isDataProviderPath(path, currentPath);
