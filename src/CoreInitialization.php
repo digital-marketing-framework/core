@@ -12,6 +12,11 @@ use DigitalMarketingFramework\Core\DataProcessor\Comparison\InComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsEmptyComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsFalseComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsTrueComparison;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\NotEqualsComparison;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\NotExistsComparison;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\NotInComparison;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\NotIsEmptyComparison;
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\NotRegExpComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Condition\AndCondition;
 use DigitalMarketingFramework\Core\DataProcessor\Condition\ComparisonCondition;
@@ -135,12 +140,17 @@ class CoreInitialization extends Initialization
             ],
             ComparisonInterface::class => [
                 EqualsComparison::class,
+                NotEqualsComparison::class,
                 ExistsComparison::class,
+                NotExistsComparison::class,
                 InComparison::class,
+                NotInComparison::class,
                 IsEmptyComparison::class,
-                IsFalseComparison::class,
+                NotIsEmptyComparison::class,
                 IsTrueComparison::class,
+                IsFalseComparison::class,
                 RegExpComparison::class,
+                NotRegExpComparison::class,
             ],
             DataMapperInterface::class => [
                 PrefixDataMapper::class,

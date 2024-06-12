@@ -27,14 +27,14 @@ abstract class Comparison extends DataProcessorPlugin implements ComparisonInter
         return true;
     }
 
-    protected function compareAnyEmpty(): bool
+    protected function compareAnyEmpty(bool $secondOperandEmpty = true): bool
     {
-        return true;
+        return $secondOperandEmpty;
     }
 
-    protected function compareAllEmpty(): bool
+    protected function compareAllEmpty(bool $secondOperandEmpty = true): bool
     {
-        return true;
+        return $secondOperandEmpty;
     }
 
     public static function getSchema(): SchemaInterface

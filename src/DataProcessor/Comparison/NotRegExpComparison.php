@@ -3,27 +3,26 @@
 namespace DigitalMarketingFramework\Core\DataProcessor\Comparison;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
-class IsFalseComparison extends UnaryComparison
+class NotRegExpComparison extends RegExpComparison
 {
     public static function getLabel(): ?string
     {
-        return 'is false';
+        return 'does not match regular expression';
     }
 
     protected function compareAnyEmpty(bool $secondOperandEmpty = true): bool
     {
-        return true;
+        return !parent::compareAnyEmpty($secondOperandEmpty);
     }
 
     protected function compareAllEmpty(bool $secondOperandEmpty = true): bool
     {
-        return true;
+        return !parent::compareAllEmpty($secondOperandEmpty);
     }
 
-    protected function compareValue(string|ValueInterface|null $value): bool
+    protected function compareValues(string|ValueInterface|null $a, string|ValueInterface|null $b): bool
     {
-        return GeneralUtility::isFalse($value);
+        return !parent::compareValues($a, $b);
     }
 }

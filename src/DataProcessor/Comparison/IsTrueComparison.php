@@ -7,14 +7,9 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class IsTrueComparison extends UnaryComparison
 {
-    protected function compareAnyEmpty(): bool
+    public static function getLabel(): ?string
     {
-        return false;
-    }
-
-    protected function compareAllEmpty(): bool
-    {
-        return false;
+        return 'is true';
     }
 
     protected function compareValue(string|ValueInterface|null $value): bool

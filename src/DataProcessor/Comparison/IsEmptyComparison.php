@@ -7,6 +7,11 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class IsEmptyComparison extends UnaryComparison
 {
+    public static function getLabel(): ?string
+    {
+        return 'is empty';
+    }
+
     public static function handleMultiValuesIndividually(): bool
     {
         return false;

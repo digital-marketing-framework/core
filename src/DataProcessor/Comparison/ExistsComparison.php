@@ -6,6 +6,11 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 
 class ExistsComparison extends UnaryComparison
 {
+    public static function getLabel(): ?string
+    {
+        return 'exists';
+    }
+
     public static function handleMultiValuesIndividually(): bool
     {
         return false;

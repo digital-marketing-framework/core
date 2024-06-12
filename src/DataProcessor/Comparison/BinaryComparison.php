@@ -21,7 +21,7 @@ abstract class BinaryComparison extends Comparison
     protected function compareAny(MultiValueInterface $a, string|ValueInterface|null $b): bool
     {
         if (GeneralUtility::isEmpty($a)) {
-            return $this->compareAnyEmpty();
+            return $this->compareAnyEmpty(GeneralUtility::isEmpty($b));
         }
 
         foreach ($a as $subValue) {
@@ -36,7 +36,7 @@ abstract class BinaryComparison extends Comparison
     protected function compareAll(MultiValueInterface $a, string|ValueInterface|null $b): bool
     {
         if (GeneralUtility::isEmpty($a)) {
-            return $this->compareAllEmpty();
+            return $this->compareAllEmpty(GeneralUtility::isEmpty($b));
         }
 
         foreach ($a as $subValue) {

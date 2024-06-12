@@ -12,6 +12,16 @@ abstract class UnaryComparison extends Comparison
 
     public const DEFAULT_VALUE = null;
 
+    protected function compareAnyEmpty(bool $secondOperandEmpty = true): bool
+    {
+        return false;
+    }
+
+    protected function compareAllEmpty(bool $secondOperandEmpty = true): bool
+    {
+        return false;
+    }
+
     protected function compareValue(string|ValueInterface|null $value): bool
     {
         return true;
@@ -20,7 +30,7 @@ abstract class UnaryComparison extends Comparison
     protected function compareAny(MultiValueInterface $value): bool
     {
         if (GeneralUtility::isEmpty($value)) {
-            return $this->compareAnyEmpty();
+            return $this->compareAnyEmpty(true);
         }
 
         foreach ($value as $subValue) {
@@ -35,7 +45,7 @@ abstract class UnaryComparison extends Comparison
     protected function compareAll(MultiValueInterface $value): bool
     {
         if (GeneralUtility::isEmpty($value)) {
-            return $this->compareAllEmpty();
+            return $this->compareAllEmpty(true);
         }
 
         foreach ($value as $subValue) {
