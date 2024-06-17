@@ -34,6 +34,7 @@ abstract class ValueModifier extends DataProcessorPlugin implements ValueModifie
         if ($value instanceof MultiValueInterface) {
             $multiValueClass = $value::class;
             $modifiedValue = new $multiValueClass();
+            $modifiedValue->setGlue($value->getGlue());
             foreach ($value as $index => $subValue) {
                 $modifiedSubValue = $this->modify($subValue);
                 if ($modifiedSubValue !== null) {
