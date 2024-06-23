@@ -4,9 +4,6 @@ coding-standards:
     parallel:
         matrix:
             -
-                check:
-                    - static
-                    - dynamic
                 php_version:
                     - 8.1
                     - 8.2
@@ -30,4 +27,4 @@ coding-standards:
     image: 'php:${php_version}'
     stage: coding-standards
     script:
-        - 'composer ci:${check}'
+        - 'composer ci'

@@ -15,9 +15,6 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                check:
-                    - static
-                    - dynamic
                 php_version:
                     - 8.1
                     - 8.2
@@ -50,4 +47,4 @@ jobs:
                 run: "composer install --no-progress\n"
             -
                 name: 'Run command'
-                run: "composer ci:${{ matrix.check }}\n"
+                run: "composer ci\n"
