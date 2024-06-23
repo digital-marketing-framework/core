@@ -7,8 +7,8 @@ workflow:
         -
             if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
 stages:
-    - coding-standards
-coding-standards:
+    - code-quality
+code-quality:
     parallel:
         matrix:
             -
@@ -33,6 +33,6 @@ coding-standards:
         - 'awk ''/^error_reporting = E_ALL/{print "error_reporting = E_ALL & ~E_DEPRECATED"; next}1'' /usr/local/etc/php/php.ini > temp.ini && mv temp.ini /usr/local/etc/php/php.ini'
         - 'composer install --no-progress --ignore-platform-req=ext-intl'
     image: 'php:${php_version}'
-    stage: coding-standards
+    stage: code-quality
     script:
         - 'composer ci'
