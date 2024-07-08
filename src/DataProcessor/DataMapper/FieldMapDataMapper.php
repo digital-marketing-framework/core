@@ -21,7 +21,9 @@ class FieldMapDataMapper extends DataMapper
 
     public function mapData(DataInterface $target): DataInterface
     {
-        $baseContext = $this->context->copy(false);
+        // TODO should we have a local field tracker that gets reset for every data mapper
+        //      and a global field tracker that is shared between all data mappers?
+        $baseContext = $this->context->copy(keepFieldTracker: true);
         foreach ($this->getMapConfig(static::KEY_FIELDS) as $fieldName => $valueConfig) {
             $context = $baseContext->copy();
             $value = $this->dataProcessor->processValue($valueConfig, $context);

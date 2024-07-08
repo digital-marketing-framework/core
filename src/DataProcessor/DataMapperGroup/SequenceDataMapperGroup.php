@@ -38,7 +38,7 @@ class SequenceDataMapperGroup extends DataMapperGroup
         $subGroupIds = $this->getListConfig(static::KEY_SEQUENCE_LIST);
         $data = $subGroupIds === [] ? new Data() : $this->context->getData();
         foreach ($subGroupIds as $groupId) {
-            $context = $this->context->copy(keepFieldTracker: false, data: $data);
+            $context = $this->context->copy(keepFieldTracker: true, data: $data);
             $this->loopDetection($groupId, $context);
             $context[static::KEY_DATA_MAPPER_LOOP_DETECTION][$groupId] = true;
 
