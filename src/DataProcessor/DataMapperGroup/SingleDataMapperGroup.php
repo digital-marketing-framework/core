@@ -16,7 +16,7 @@ class SingleDataMapperGroup extends DataMapperGroup
     {
         return $this->dataProcessor->processDataMapper(
             $this->getConfig(static::KEY_DATA_MAPPER),
-            $this->context->copy(keepFieldTracker: false)
+            $this->context->copy(keepFieldTracker: true)
         );
     }
 

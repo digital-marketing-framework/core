@@ -26,13 +26,20 @@ class SwitchDefaultValueSchemaProcessor extends DefaultValueSchemaProcessor
         }
 
         $type = $this->schemaProcessor->getDefaultValue($this->schemaDocument, $schema->getTypeSchema());
-        $config = $this->schemaProcessor->getDefaultValue($this->schemaDocument, $schema->getTypeSpecificConfigSchema($type));
-        $value = [
-            SwitchSchema::KEY_TYPE => $type,
-            SwitchSchema::KEY_CONFIG => [
-                $type => $config,
-            ],
-        ];
+        if ($type === '') {
+            $value = [
+                SwitchSchema::KEY_TYPE => '',
+                SwitchSchema::KEY_CONFIG => [],
+            ];
+        } else {
+            $config = $this->schemaProcessor->getDefaultValue($this->schemaDocument, $schema->getTypeSpecificConfigSchema($type));
+            $value = [
+                SwitchSchema::KEY_TYPE => $type,
+                SwitchSchema::KEY_CONFIG => [
+                    $type => $config,
+                ],
+            ];
+        }
 
         foreach ($schema->getProperties() as $property) {
             $propertyName = $property->getName();

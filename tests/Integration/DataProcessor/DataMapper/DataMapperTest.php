@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataMapper;
 
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
+use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContext;
 use DigitalMarketingFramework\Core\DataProcessor\FieldTracker;
 use DigitalMarketingFramework\Core\DataProcessor\FieldTrackerInterface;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifier;
@@ -46,7 +47,7 @@ abstract class DataMapperTest extends DataProcessorPluginTest
         $config[static::KEYWORD] = $dataMapperConfig;
         $dataProcessor = $this->registry->getDataProcessor();
 
-        $context = $dataProcessor->createContext(new Data($this->data), new Configuration($this->configuration));
+        $context = new DataProcessorContext(new Data($this->data), new Configuration($this->configuration), $this->fieldTracker);
 
         return $dataProcessor->processDataMapper($config, $context);
     }

@@ -29,7 +29,9 @@ const getChildPaths = (store, path, currentPath, absolute) => {
         const childSchema = schema.values[index];
         if (childSchema.key === 'config') {
           const type = store.getValue(path + '/type', currentPath, true);
-          paths.push(absolute ? absolutePath + '/config/' + type : 'config/' + type);
+          if (type) {
+            paths.push(absolute ? absolutePath + '/config/' + type : 'config/' + type);
+          }
         } else {
           paths.push(absolute ? absolutePath + '/' + childSchema.key : childSchema.key);
         }

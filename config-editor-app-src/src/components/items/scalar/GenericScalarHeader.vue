@@ -26,6 +26,8 @@ const props = defineProps({
 const parentSchema = computed(() => store.getSchema('..', props.currentPath, true));
 const isDynamicItem = computed(() => isDynamicChild(props.currentPath));
 const label = computed(() => getLabel(props.currentPath));
+const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
+const description = computed(() => schema.value.description || '');
 </script>
 
 <template>
@@ -43,4 +45,7 @@ const label = computed(() => getLabel(props.currentPath));
         <HeaderActions :currentPath="currentPath"
                        :dynamicItemPath="dynamicItemPath" />
     </header>
+    <div class="tw-pt-3 tw-text-xs tw-text-indigo-800 tw-opacity-80"
+        v-if="description">{{ description }}
+    </div>
 </template>
