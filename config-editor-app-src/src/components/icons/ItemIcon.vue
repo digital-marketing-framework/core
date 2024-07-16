@@ -28,7 +28,8 @@ const props = defineProps({
 });
 
 // TODO how to deal with custom icons?
-const type = computed(() => props.customIcon || props.itemType);
+//const type = computed(() => props.customIcon || props.itemType);
+const type = computed(() => props.itemType);
 
 const iconClassName = computed(() => {
     return ["tw-h-4 tw-w-4 tw-shrink-0", {
