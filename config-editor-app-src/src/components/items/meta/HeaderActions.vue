@@ -17,6 +17,7 @@ import BugIcon from '../../icons/BugIcon.vue';
 import CodeIcon from '../../icons/CodeIcon.vue';
 import CopyIcon from '../../icons/CopyIcon.vue';
 import DebugInfo from './DebugInfo.vue';
+import HintIcon from '../../icons/HintIcon.vue';
 import PlusIcon from '../../icons/PlusIcon.vue';
 import RotateLeftIcon from '../../icons/RotateLeftIcon.vue';
 import SortDownIcon from '../../icons/SortDownIcon.vue';
@@ -60,6 +61,16 @@ const canMoveUp = computed(() => canMove.value && !isFirstChild(props.dynamicIte
 const canMoveDown = computed(() => canMove.value && !isLastChild(props.dynamicItemPath));
 const canResetOverwrite = computed(() => !store.settings.readonly && store.canResetOverwrite(isDynamic.value ? props.dynamicItemPath : props.currentPath));
 const references = computed(() => schema.value.references || []);
+
+const hint = computed(() => schema.value.hint || '');
+const hintToggle = ref();
+useTippy(hintToggle, {
+    content: hint,
+    theme: 'light',
+    delay: [0, null],
+    allowHTML: true,
+    appendTo: 'parent',
+});
 
 const reset = () => {
     requestConfirmation(
@@ -110,6 +121,11 @@ watch(
 
 <template>
     <div class="tw-flex tw-items-center tw-gap-x-2">
+        <div ref="hintToggle"
+                class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500"
+                v-if="hint">
+            <HintIcon class="tw-w-3 tw-h-3" />
+        </div>
         <div v-for="reference in references" :key="reference.path">
             <PathReference
                 :current-path="currentPath"

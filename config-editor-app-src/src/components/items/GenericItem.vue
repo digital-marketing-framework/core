@@ -64,9 +64,6 @@ const isVisible = computed(() => store.isVisible(props.currentPath));
 const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
 const issueFound = computed(() => hasIssues(props.currentPath));
 const issue = computed(() => getIssue(props.currentPath));
-
-const description = computed(() => schema.value.description || '');
-const hint = computed(() => schema.value.hint || '');
 </script>
 <template>
     <div class="tw-w-full tw-max-w-3xl"
@@ -75,9 +72,6 @@ const hint = computed(() => schema.value.hint || '');
              'tw-border-r-red-400 todo-class-overwritten': !isContainer && isOverwritten
          }"
          v-if="isVisible">
-
-        <p v-if="description">Description: {{ description }}</p>
-        <p v-if="hint"><span>Hint: {{ hint }}</span></p>
 
         <!-- use if needed: -->
         <!--

@@ -50,12 +50,12 @@ const label = computed(() => getLabel(props.currentPath));
                     <label :for="'input_' + currentPath"
                            class="tw-font-medium">{{ label }}</label>
                 </div>
+                <HeaderActions v-if="!schema.skipHeader"
+                           :currentPath="currentPath"
+                           :dynamicItemPath="dynamicItemPath" />
             </div>
         </template>
         <template #fieldFooter>
-            <HeaderActions v-if="!schema.skipHeader"
-                           :currentPath="currentPath"
-                           :dynamicItemPath="dynamicItemPath" />
         </template>
     </GenericScalarItem>
 </template>
