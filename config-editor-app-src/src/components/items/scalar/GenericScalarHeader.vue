@@ -27,7 +27,7 @@ const parentSchema = computed(() => store.getSchema('..', props.currentPath, tru
 const isDynamicItem = computed(() => isDynamicChild(props.currentPath));
 const label = computed(() => getLabel(props.currentPath));
 const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
-const description = computed(() => schema.value.description || 'Additional data can be provided for outbound routes, like form submissions. The data is derived from the context of the request that triggered the route, like the website language or the timestamp or request cookies or headers.');
+const description = computed(() => schema.value.description || '');
 </script>
 
 <template>
