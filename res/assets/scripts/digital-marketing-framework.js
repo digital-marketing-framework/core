@@ -26,6 +26,7 @@
     },
     urls: {},
     pluginSettings: {},
+    content: {},
   }
 
   // state //
@@ -36,6 +37,10 @@
   let DMF = null
 
   // helpers //
+
+  function ucfirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
 
   function deepExtend(out) {
     out = out || {}
@@ -216,6 +221,7 @@
 
   function createPlugin(pluginId) {
     return {
+      id: pluginId,
       settings: getPluginSettings(pluginId),
       hydrate: function(element, variables) {
         DMF.hydrate(element, variables)
@@ -304,27 +310,62 @@
     return plugin
   }
 
-  DMF.getPluginAttribute = function(element, name, defaultValue = null, write = false) {
+  DMF.getPluginAttribute = function(element, name, defaultValue = '', write = false) {
+    const scalar = typeof defaultValue !== 'object'
     let value = defaultValue
 
     if (typeof element.dataset[DMF.settings.prefix + name] !== 'undefined') {
       value = element.dataset[DMF.settings.prefix + name]
+      if (!scalar) {
+        value = JSON.parse(value)
+      }
     }
 
     if (write) {
-      element.dataset[DMF.settings.prefix + name] = value
+      element.dataset[DMF.settings.prefix + name] = typeof value !== 'object' ? value : JSON.stringify(value)
     }
 
     return value
   }
 
-  DMF.plugin = (pluginId) => {
+  DMF.plugin = function(pluginId) {
     return pluginId.startsWith('distributor') ? createPushPlugin(pluginId) : createPullPlugin(pluginId)
+  }
+
+  DMF.updateElementFromPlugin = function(plugin, element) {
+    const elementId = element === document.body ? '<page>' : element.id
+    const updateElementSetting = (element, key, value) => {
+      const dataKey = DMF.settings.prefix + ucfirst(key)
+      if (typeof element.dataset[dataKey] === 'undefined') {
+        element.dataset[dataKey] = typeof value !== 'object' ? value : JSON.stringify(value)
+      }
+    }
+
+    if (typeof DMF.content[plugin.id] !== 'undefined' && typeof DMF.content[plugin.id][elementId] !== 'undefined') {
+      updateElementSetting(element, 'plugin', plugin.id)
+      for (let key in DMF.content[plugin.id][element.id]) {
+        updateElementSetting(element, key, DMF.content[plugin.id][elementId][key])
+      }
+    }
   }
 
   DMF.getPluginFromElement = function(element) {
     const pluginId = element.dataset[DMF.settings.prefix + 'Plugin']
-    return DMF.plugin(pluginId)
+    const plugin = DMF.plugin(pluginId)
+    DMF.updateElementFromPlugin(plugin, element)
+    return plugin
+  }
+
+  DMF.updateAllKnownElements = function() {
+    for (let pluginId in DMF.content) {
+      for (let elementId in DMF.content[pluginId]) {
+        const element = elementId === '<page>' ? document.body : DMF.container.getElementById(elementId)
+        if (element) {
+          const plugin = DMF.plugin(pluginId)
+          DMF.updateElementFromPlugin(plugin, element)
+        }
+      }
+    }
   }
 
   DMF.getAllPluginInstancesWithElements = function(pluginIdPattern, container) {
@@ -400,6 +441,8 @@
   }
 
   // ready //
+
+  DMF.updateAllKnownElements()
 
   window.DMF = DMF
 

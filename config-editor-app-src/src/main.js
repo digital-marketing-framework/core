@@ -1,12 +1,7 @@
 import './assets/tailwind.css';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 
-import {
-  EVENT_APP_OPEN,
-  EVENT_APP_CLOSE,
-  EVENT_APP_SAVE,
-  linkEnvironment
-} from './utils/environmentLinker.js';
+import { linkEnvironments } from './utils/environmentLinker.js';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
@@ -14,8 +9,7 @@ import { useDmfStore } from './stores/dmf.js';
 
 // import { plugin as VueTippy } from 'vue-tippy';
 import App from './App.vue';
-
-let store = null;
+import { clearCache } from '@/utils/processorCache';
 
 function initApp(stage) {
   const app = createApp(App);
@@ -35,21 +29,27 @@ function initApp(stage) {
 }
 
 const init = async () => {
-  const environment = await linkEnvironment();
-  store = initApp(environment.stage);
-  store.$patch(environment);
 
-  document.addEventListener(EVENT_APP_SAVE, () => {
-    store.save();
-  });
+  linkEnvironments((environment) => {
+    const store = initApp(environment.stage);
+    store.$patch(environment);
 
-  document.addEventListener(EVENT_APP_OPEN, (e) => {
-    store.receiveData(e.detail);
-    store.open();
-  });
-
-  document.addEventListener(EVENT_APP_CLOSE, () => {
-    store.close();
+    return {
+      save: () => {
+        store.save();
+      },
+      open: (data, inheritedData) => {
+        store.$patch(environment);
+        clearCache();
+        store.receiveData({ data, inheritedData });
+        store.open();
+        store.triggerRerender();
+        console.log(store.schemaDocument);
+      },
+      close: () => {
+        store.close();
+      }
+    };
   });
 };
 

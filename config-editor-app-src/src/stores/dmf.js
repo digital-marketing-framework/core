@@ -1,17 +1,17 @@
 import { defineStore } from 'pinia';
 import { nextTick } from 'vue';
 import { watch } from 'vue';
-import { cloneValue, mergeValue, valuesEqual } from '../helpers/value';
-import { isNativeType } from '../helpers/type';
-import { debounce } from '../utils/debounce.js';
-import { cached } from '../utils/processorCache.js';
-import { isRoot, getAbsolutePath, getPathParts, getLeafKey, isMetaData } from '../helpers/path';
-import { usePathProcessor } from '../composables/path';
-import { useConditions } from '../composables/conditions';
-import { useDynamicProcessor } from '../composables/dynamicItem';
-import { useValidation } from '../composables/validation';
-import { useSwitch } from '../composables/switch';
-import { useDefaults } from '../composables/defaults';
+import { cloneValue, mergeValue, valuesEqual } from '@/helpers/value';
+import { isNativeType } from '@/helpers/type';
+import { debounce } from '@/utils/debounce';
+import { cached } from '@/utils/processorCache';
+import { isRoot, getAbsolutePath, getPathParts, getLeafKey, isMetaData } from '@/helpers/path';
+import { usePathProcessor } from '@/composables/path';
+import { useConditions } from '@/composables/conditions';
+import { useDynamicProcessor } from '@/composables/dynamicItem';
+import { useValidation } from '@/composables/validation';
+import { useSwitch } from '@/composables/switch';
+import { useDefaults } from '@/composables/defaults';
 
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
