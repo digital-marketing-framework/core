@@ -424,7 +424,7 @@
       element.innerHTML = typeof variables[field] !== 'undefined' ? variables[field] : fieldDefault
     }
 
-    if (DMF.getPluginAttribute(element, ATTRIBUTE_FIELD) !== null) {
+    if (DMF.getPluginAttribute(element, ATTRIBUTE_FIELD, '') !== '') {
       processField(element, variables)
     } else {
       processTemplate(element, variables)
