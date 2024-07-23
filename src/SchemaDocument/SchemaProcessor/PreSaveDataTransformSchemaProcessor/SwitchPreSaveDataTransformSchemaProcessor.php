@@ -20,9 +20,13 @@ class SwitchPreSaveDataTransformSchemaProcessor extends PreSaveDataTransformSche
             $this->schemaProcessor->preSaveDataTransform($this->schemaDocument, $data[SwitchSchema::KEY_TYPE], $schema->getTypeSchema());
         }
 
-        foreach ($schema->getConfigSchema()->getProperties() as $property) {
-            if (isset($data[SwitchSchema::KEY_CONFIG][$property->getName()])) {
-                $this->schemaProcessor->preSaveDataTransform($this->schemaDocument, $data[SwitchSchema::KEY_CONFIG][$property->getName()], $property->getSchema());
+        if (($data[SwitchSchema::KEY_CONFIG] ?? []) === []) {
+            $data[SwitchSchema::KEY_CONFIG] = (object)[];
+        } else {
+            foreach ($schema->getConfigSchema()->getProperties() as $property) {
+                if (isset($data[SwitchSchema::KEY_CONFIG][$property->getName()])) {
+                    $this->schemaProcessor->preSaveDataTransform($this->schemaDocument, $data[SwitchSchema::KEY_CONFIG][$property->getName()], $property->getSchema());
+                }
             }
         }
     }
