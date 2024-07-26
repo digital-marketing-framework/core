@@ -75,12 +75,26 @@
     }
   }
 
-  function getAjaxUrl(pluginId) {
-    return DMF.urls[pluginId] || ''
+  function getAjaxUrl(pluginId, arguments = {}) {
+    if (!DMF.urls[pluginId]) {
+      console.error('No URL found for plugin', pluginId)
+      return '';
+    }
+
+    let url = DMF.urls[pluginId]
+    let parameters = []
+    for (let key in arguments) {
+      parameters.push(key + '=' + encodeURIComponent(arguments[key]))
+    }
+    if (parameters.length > 0) {
+      url += '?' + parameters.join('&')
+    }
+
+    return url
   }
 
-  async function fetchData(pluginId) {
-    const url = getAjaxUrl(pluginId)
+  async function fetchData(pluginId, arguments = {}) {
+    const url = getAjaxUrl(pluginId, arguments)
     if (url === '') {
       console.error('No URL found for plugin', pluginId)
       return false
@@ -163,8 +177,8 @@
     return
   }
 
-  DMF.pull = async function(pluginId) {
-    return await fetchData(pluginId)
+  DMF.pull = async function(pluginId, arguments = {}) {
+    return await fetchData(pluginId, arguments)
   }
 
   DMF.push = async function(pluginId, payload, context) {
@@ -254,14 +268,14 @@
   function createPullPlugin(pluginId) {
     const plugin = createPlugin(pluginId)
 
-    plugin.pull = async function(bypassPermissions = false) {
+    plugin.pull = async function(arguments = {}, bypassPermissions = false) {
       let proceed = true
       if (!bypassPermissions && typeof this.settings[SETTINGS_REQUIRED_PERMISSION] !== 'undefined') {
         proceed = await this.checkPermission()
       }
 
       if (proceed) {
-        return await DMF.pull(pluginId)
+        return await DMF.pull(pluginId, arguments)
       }
 
       return false
@@ -269,6 +283,7 @@
 
     plugin.pullAndHydrate = async function(
       element,
+      arguments = {},
       markAsLoading = true,
       defaultVariables = {},
       refresh = true
@@ -277,11 +292,13 @@
         if (markAsLoading) {
           plugin.markAsLoading(element)
         }
-        const variables = await this.pull()
+        const variables = await this.pull(arguments)
         plugin.hydrate(element, variables)
         if (markAsLoading) {
           plugin.markAsLoaded(element)
         }
+
+        return variables
       }
 
       if (typeof defaultVariables === 'object' && defaultVariables !== null) {
@@ -294,7 +311,7 @@
         })
       }
 
-      await processElement()
+      return await processElement()
     }
 
     return plugin

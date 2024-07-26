@@ -23,6 +23,20 @@ interface ApiRequestInterface
     public function setMethod(string $method): void;
 
     /**
+     * @return array<string,mixed>
+     */
+    public function getArguments(): array;
+
+    /**
+     * @param array<string,mixed> $arguments
+     */
+    public function setArguments(array $arguments): void;
+
+    public function setArgument(string $name, mixed $value): void;
+
+    public function removeArgument(string $name): void;
+
+    /**
      * @return ?array<string,mixed>
      */
     public function getPayload(): ?array;

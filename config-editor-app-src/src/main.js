@@ -44,7 +44,6 @@ const init = async () => {
         store.receiveData({ data, inheritedData });
         store.open();
         store.triggerRerender();
-        console.log(store.schemaDocument);
       },
       close: () => {
         store.close();
