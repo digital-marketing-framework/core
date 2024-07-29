@@ -19,7 +19,7 @@ const includesChanged = (store) => {
       () => {
         updateIncludes(store);
       },
-      'apply changes'
+      'Apply changes'
     );
   } else {
     unsetWarning(WARNING_INCLUDES_CHANGED);

@@ -88,25 +88,33 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                         </div>
                     </div>
 
-                    <ul v-if="store.messages.length > 0">
+                    <ul class="tw-p-4 sm:tw-px-6"
+                        v-if="store.messages.length > 0">
                         <TimedMessage v-for="(message, index) in store.messages"
                                       :key="index"
                                       :index="index" />
                     </ul>
 
-                    <ul v-if="warnings.length > 0">
-                        <li v-for="(warning, index) in warnings"
+                    <ul class="tw-p-4 sm:tw-px-6"
+                        v-if="warnings.length > 0">
+                        <li class="tw-bg-red-500 tw-rounded tw-px-4 tw-py-3 tw-w-full tw-max-w-3xl"
+                            v-for="(warning, index) in warnings"
                             :key="index">
                             <button type="button"
+                                    class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600"
                                     v-if="warning.action && !warning.actionLabel"
                                     @click="warning.action()">
-                                {{ warning.message }}
+                                    {{ warning.message }}
                             </button>
-                            <span v-else>
-                                {{ warning.message }}<span v-if="warning.actionLabel">:
-                                    <button v-if="warning.action"
-                                            type="button"
-                                            @click="warning.action()">{{ warning.actionLabel }}</button>
+                            <span class="tw-flex tw-items-center tw-justify-between"
+                                v-else>
+                                <span class="tw-text-sm text-white tw-font-semibold">{{ warning.message }}</span>
+                                <span v-if="warning.actionLabel">
+                                    <button type="button"
+                                        class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600"
+                                        v-if="warning.action"
+                                        @click="warning.action()">{{ warning.actionLabel }}
+                                    </button>
                                     <span v-else>{{ warning.actionLabel }}</span>
                                 </span>
                             </span>

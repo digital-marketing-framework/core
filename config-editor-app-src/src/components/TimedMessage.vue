@@ -43,7 +43,10 @@ onUnmounted(() => {
 });
 </script>
 <template>
-    <li :class="message.type">
-        {{ message.text }} <button type="button>" @click="remove()">X</button>
+    <li :class="message.type" class="tw-bg-blue-300 tw-rounded tw-px-4 tw-py-3 tw-w-full tw-max-w-3xl">
+        <span class="tw-flex tw-items-center tw-justify-between">
+            <span class="tw-text-sm tw-font-semibold">{{ message.text }}</span>
+            <button type="button>" @click="remove()">X</button>
+        </span>
     </li>
 </template>
