@@ -14,6 +14,7 @@ class ApiRequest implements ApiRequestInterface
     protected EndPointInterface $endPoint;
 
     /**
+     * @param array<string,mixed> $arguments
      * @param ?array<string,mixed> $payload
      * @param ?array<string,mixed> $context
      */
