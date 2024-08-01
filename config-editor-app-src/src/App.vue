@@ -97,7 +97,7 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
 
                     <ul class="tw-p-4 sm:tw-px-6"
                         v-if="warnings.length > 0">
-                        <li class="tw-bg-red-500 tw-rounded tw-px-4 tw-py-3 tw-w-full tw-max-w-3xl"
+                        <li class="tw-border tw-border-red-700 tw-rounded tw-px-4 tw-py-3 tw-w-full tw-max-w-3xl tw-mb-3"
                             v-for="(warning, index) in warnings"
                             :key="index">
                             <button type="button"
@@ -108,7 +108,7 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                             </button>
                             <span class="tw-flex tw-items-center tw-justify-between"
                                 v-else>
-                                <span class="tw-text-sm text-white tw-font-semibold">{{ warning.message }}</span>
+                                <span class="tw-text-sm tw-font-semibold">{{ warning.message }}</span>
                                 <span v-if="warning.actionLabel">
                                     <button type="button"
                                         class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600"

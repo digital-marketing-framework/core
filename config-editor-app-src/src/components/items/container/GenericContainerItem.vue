@@ -51,7 +51,8 @@ const rawView = computed(() => isRawView(props.currentPath));
             <template #disclosureButton>
                 <DisclosureButton v-if="!selected"
                                   class="tw-p-1"
-                                  @click="toggleContainerState(currentPath)">
+                                  @click="toggleContainerState(currentPath)"
+                                  :data-current-path="currentPath">
                     <AngleDownIcon class="tw-w-3 tw-h-3"
                                    :class="{
                                        '-tw-rotate-90': !open
