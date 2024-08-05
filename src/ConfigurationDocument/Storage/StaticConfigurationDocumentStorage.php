@@ -65,6 +65,6 @@ class StaticConfigurationDocumentStorage extends ConfigurationDocumentStorage
 
     public function isReadOnly(string $documentIdentifier): bool
     {
-        return $this->getDiscovery($documentIdentifier)?->readonly($documentIdentifier) ?? true;
+        return $this->getDiscovery($documentIdentifier)?->isReadonly($documentIdentifier) ?? true;
     }
 }

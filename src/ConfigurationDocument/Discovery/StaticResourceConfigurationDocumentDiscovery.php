@@ -59,7 +59,7 @@ class StaticResourceConfigurationDocumentDiscovery implements StaticConfiguratio
         return false;
     }
 
-    public function readonly(string $identifier): bool
+    public function isReadonly(string $identifier): bool
     {
         return !($this->globalConfiguration->get('core', [])['configurationStorage']['allowSaveToExtensionPaths'] ?? false);
     }

@@ -13,7 +13,7 @@ interface StaticConfigurationDocumentDiscoveryInterface
 
     public function exists(string $identifier): bool;
 
-    public function readonly(string $identifier): bool;
+    public function isReadonly(string $identifier): bool;
 
     public function getContent(string $identifier, bool $metaDataOnly = false): ?string;
 
