@@ -11,7 +11,7 @@ class MapValueModifierTest extends ValueModifierTest
     protected const CLASS_NAME = MapValueModifier::class;
 
     protected const DEFAULT_CONFIG = [
-        MapValueModifier::KEY_MAP => MapValueModifier::DEFAULT_MAP,
+        MapValueModifier::KEY_MAP => [],
     ];
 
     /**

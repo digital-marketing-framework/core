@@ -74,7 +74,7 @@ trait ConfigurationDocumentManagerRegistryTrait
             $configurationDocumentStorage = $this->getConfigurationDocumentStorage();
             $configurationDocumentParser = $this->getConfigurationDocumentParser();
             $staticConfigurationDocumentStorage = $this->getStaticConfigurationDocumentStorage();
-            $configurationDocumentManager = $this->createObject(
+            $this->configurationDocumentManager = $this->createObject(
                 ConfigurationDocumentManager::class,
                 [
                     $configurationDocumentStorage,
@@ -82,7 +82,6 @@ trait ConfigurationDocumentManagerRegistryTrait
                     $staticConfigurationDocumentStorage,
                 ]
             );
-            $this->configurationDocumentManager = $configurationDocumentManager;
         }
 
         return $this->configurationDocumentManager;

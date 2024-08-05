@@ -21,8 +21,6 @@ class ConcatenationValueSource extends ValueSource
 
     public const KEY_VALUES = 'values';
 
-    public const DEFAULT_VALUES = [];
-
     public function build(): string|ValueInterface|null
     {
         $glue = GeneralUtility::parseSeparatorString($this->getConfig(static::KEY_GLUE));

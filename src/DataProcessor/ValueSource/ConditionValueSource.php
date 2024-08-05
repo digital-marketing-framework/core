@@ -16,15 +16,9 @@ class ConditionValueSource extends ValueSource
 
     public const KEY_IF = 'if';
 
-    public const DEFAULT_IF = null;
-
     public const KEY_THEN = 'then';
 
-    public const DEFAULT_THEN = null;
-
     public const KEY_ELSE = 'else';
-
-    public const DEFAULT_ELSE = null;
 
     public function build(): string|ValueInterface|null
     {
