@@ -82,26 +82,37 @@ const updateTextArea = (textarea, stage, settings, start) => {
   textarea.style.display = 'none';
 };
 
-const createStage = () => {
+const createStage = (isFixed) => {
   const stage = document.createElement('DIV');
   stage.classList.add('dmf-configuration-document-editor-stage');
-  stage.style.position = 'fixed';
+  if(isFixed) {
+    stage.style.position = 'fixed';
+    stage.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    stage.style.zIndex = '9990';
+  } else {
+    stage.style.position = 'absolute';
+  }
   stage.style.inset = '0';
-  stage.style.backgroundColor = 'rgba(0,0,0,0.5)';
-  stage.style.zIndex = '9990';
   stage.style.display = 'none';
   return stage;
 };
 
 const setupEmbedded = (textarea) => {
-  const stage = createStage();
+  const stage = createStage(false);
+  const form = getDocumentForm(textarea);
+  form.parentNode.insertBefore(stage, form.nextSibling);
+  return stage;
+};
+
+const setupFullscreen = (textarea) => {
+  const stage = createStage(true);
   const form = getDocumentForm(textarea);
   form.parentNode.insertBefore(stage, form.nextSibling);
   return stage;
 };
 
 const setupModal = () => {
-  const stage = createStage();
+  const stage = createStage(true);
   document.body.appendChild(stage);
   return stage;
 };
@@ -196,6 +207,11 @@ export const linkEnvironment = async () => {
   if (settings.mode === 'modal') {
     stage = setupModal();
     updateTextArea(textarea, stage, settings, start);
+  } else if (settings.mode == 'fullscreen') {
+    stage = setupFullscreen(textarea, settings, start);
+    setTimeout(() => {
+      start(textarea, stage, settings);
+    }, 0);
   } else {
     stage = setupEmbedded(textarea, settings, start);
     setTimeout(() => {

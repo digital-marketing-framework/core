@@ -39,7 +39,8 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
     <main class="tw-absolute tw-flex tw-flex-col tw-overflow-hidden tw-bg-white"
           :class="{
               'tw-inset-4 tw-rounded': store.settings.mode === 'modal',
-              'tw-inset-0': store.settings.mode === 'embedded',
+              'tw-inset-0 tw-w-full tw-h-full': store.settings.mode === 'embedded',
+              'tw-inset-0': store.settings.mode === 'fullscreen',
           }"
           v-if="showApp">
         <div class="tw-flex tw-grow tw-h-full">
@@ -77,12 +78,14 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                                     @click="store.close()"
                                     class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600">
                                 <span v-if="store.settings.mode === 'embedded'">Close</span>
+                                <span v-else-if="store.settings.mode === 'fullscreen'">Close</span>
                                 <span v-else-if="store.settings.mode === 'modal'">Discard</span>
                             </button>
                             <button type="button"
                                     @click="store.save()"
                                     class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600">
                                 <span v-if="store.settings.mode === 'embedded'">Save</span>
+                                <span v-else-if="store.settings.mode === 'fullscreen'">Save</span>
                                 <span v-else-if="store.settings.mode === 'modal'">Confirm</span>
                             </button>
                         </div>
