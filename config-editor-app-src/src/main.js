@@ -11,10 +11,14 @@ import { useDmfStore } from './stores/dmf.js';
 import App from './App.vue';
 import { clearCache } from '@/utils/processorCache';
 
+// let appCount = 0;
+
 function initApp(stage) {
   const app = createApp(App);
 
   app.use(createPinia());
+
+  // app.provide('appId', appCount++);
 
   // app.use(VueTippy, {
   //   defaultProps: {
@@ -39,7 +43,7 @@ const init = async () => {
         store.save();
       },
       open: (data, inheritedData) => {
-        store.$patch(environment);
+        // store.$patch(environment);
         clearCache();
         store.receiveData({ data, inheritedData });
         store.open();

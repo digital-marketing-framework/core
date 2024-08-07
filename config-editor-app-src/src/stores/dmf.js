@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { nextTick } from 'vue';
 import { watch } from 'vue';
+// import { inject } from 'vue';
 import { cloneValue, mergeValue, valuesEqual } from '@/helpers/value';
 import { isNativeType } from '@/helpers/type';
 import { debounce } from '@/utils/debounce';
@@ -13,6 +14,7 @@ import { useValidation } from '@/composables/validation';
 import { useSwitch } from '@/composables/switch';
 import { useDefaults } from '@/composables/defaults';
 
+// export const useDmfStore = defineStore('dmf-' + inject('appId'), {
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
     // app state
