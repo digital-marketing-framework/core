@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Identifier\IdentifierInterface;
 use DigitalMarketingFramework\Core\Plugin\IntegrationPlugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\Icon;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom\DataPrivacyPermissionSelectionSchema;
@@ -87,7 +88,7 @@ abstract class IdentifierCollector extends IntegrationPlugin implements Identifi
     public static function getSchema(): SchemaInterface
     {
         $schema = new ContainerSchema();
-        $schema->getRenderingDefinition()->setIcon('identifier-collector');
+        $schema->getRenderingDefinition()->setIcon(Icon::IDENTIFIER_COLLECTOR);
 
         $label = static::getLabel();
         if ($label !== null) {

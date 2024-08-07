@@ -6,6 +6,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
+use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\Icon;
 use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
@@ -73,7 +74,7 @@ trait ConfigurationSchemaRegistryTrait
         if (!$integrationsSchema instanceof ContainerSchema) {
             $integrationsSchema = new ContainerSchema();
             $integrationsSchema->getRenderingDefinition()->sortAlphabetically(true);
-            $integrationsSchema->getRenderingDefinition()->setIcon('integrations');
+            $integrationsSchema->getRenderingDefinition()->setIcon(Icon::INTEGRATIONS);
             $mainSchema->addProperty(ConfigurationInterface::KEY_INTEGRATIONS, $integrationsSchema);
         }
 
@@ -128,7 +129,7 @@ trait ConfigurationSchemaRegistryTrait
         $dataProcessingSchema = $mainSchema->getProperty(ConfigurationInterface::KEY_DATA_PROCESSING)?->getSchema();
         if (!$dataProcessingSchema instanceof ContainerSchema) {
             $dataProcessingSchema = new ContainerSchema();
-            $dataProcessingSchema->getRenderingDefinition()->setIcon('data-processing');
+            $dataProcessingSchema->getRenderingDefinition()->setIcon(Icon::DATA_PROCESSING);
             $mainSchema->addProperty(ConfigurationInterface::KEY_DATA_PROCESSING, $dataProcessingSchema);
         }
 
@@ -185,23 +186,23 @@ trait ConfigurationSchemaRegistryTrait
 
         // meta data
         $metaDataSchema = new ContainerSchema();
-        $metaDataSchema->getRenderingDefinition()->setIcon('document');
+        $metaDataSchema->getRenderingDefinition()->setIcon(Icon::DOCUMENT);
         $metaDataSchema->getRenderingDefinition()->setLabel('Document');
 
         $nameSchema = new StringSchema();
-        $nameSchema->getRenderingDefinition()->setIcon('document-name');
+        $nameSchema->getRenderingDefinition()->setIcon(Icon::DOCUMENT_NAME);
         $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_DOCUMENT_NAME, $nameSchema);
 
         $strictValidationSchema = new BooleanSchema(false);
         $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_DOCUMENT_STRICT_VALIDATION, $strictValidationSchema);
 
         $includeSchema = new StringSchema();
-        $includeSchema->getRenderingDefinition()->setIcon('document-include');
+        $includeSchema->getRenderingDefinition()->setIcon(Icon::DOCUMENT_INCLUDE);
         $includeSchema->getAllowedValues()->addValueSet('document/all');
         $includeSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $includeSchema->getRenderingDefinition()->setLabel('Document');
         $includeListSchema = new ListSchema($includeSchema);
-        $includeListSchema->getRenderingDefinition()->setIcon('document-includes');
+        $includeListSchema->getRenderingDefinition()->setIcon(Icon::DOCUMENT_INCLUDES);
         $includeListSchema->getRenderingDefinition()->setNavigationItem(false);
         $includeListSchema->setDynamicOrder(true);
         $metaDataSchema->addProperty(ConfigurationDocumentManagerInterface::KEY_INCLUDES, $includeListSchema);
@@ -217,25 +218,25 @@ trait ConfigurationSchemaRegistryTrait
         $valueMapValueSchema = new StringSchema();
         $valueMapValueSchema->getRenderingDefinition()->setLabel(sprintf('Mapped Value ({../%s})', MapUtility::KEY_KEY));
         $valueMapSchema = new MapSchema($valueMapValueSchema, $valueMapKeySchema);
-        $valueMapSchema->getRenderingDefinition()->setIcon('value-map');
+        $valueMapSchema->getRenderingDefinition()->setIcon(Icon::VALUE_MAP);
 
         $valueMapsKeySchema = new StringSchema('valueMapName');
         $valueMapsKeySchema->getRenderingDefinition()->setLabel('Value Map Name');
 
         $valueMapsSchema = new MapSchema($valueMapSchema, $valueMapsKeySchema);
         $valueMapsSchema->getRenderingDefinition()->setLabel('Value Mappings');
-        $valueMapsSchema->getRenderingDefinition()->setIcon('value-maps');
+        $valueMapsSchema->getRenderingDefinition()->setIcon(Icon::VALUE_MAPS);
 
         $dataProcessingSchema->addProperty(ConfigurationInterface::KEY_VALUE_MAPS, $valueMapsSchema);
 
         // data processing - conditions
         $conditionListSchema = new MapSchema(new CustomSchema(ConditionSchema::TYPE_WITH_CONTEXT));
-        $conditionListSchema->getRenderingDefinition()->setIcon('conditions');
+        $conditionListSchema->getRenderingDefinition()->setIcon(Icon::CONDITIONS);
         $dataProcessingSchema->addProperty(ConfigurationInterface::KEY_CONDITIONS, $conditionListSchema);
 
         // data processing - data mapper groups
         $dataMapperGroupListSchema = new MapSchema(new CustomSchema(DataMapperGroupSchema::TYPE));
-        $dataMapperGroupListSchema->getRenderingDefinition()->setIcon('data-mapper-groups');
+        $dataMapperGroupListSchema->getRenderingDefinition()->setIcon(Icon::DATA_MAPPER_GROUPS);
         $dataMapperGroupListSchema->getRenderingDefinition()->setLabel('Field Mappings');
         $dataProcessingSchema->addProperty(ConfigurationInterface::KEY_DATA_MAPPER_GROUPS, $dataMapperGroupListSchema);
 
