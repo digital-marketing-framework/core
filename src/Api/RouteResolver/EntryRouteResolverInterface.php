@@ -15,9 +15,10 @@ interface EntryRouteResolverInterface extends RouteResolverInterface
     public function getFullPath(string $path): string;
 
     /**
+     * @param array<string,mixed> $arguments
      * @param ?array<string,mixed> $data
      */
-    public function buildRequest(string $route, string $method = 'GET', ?array $data = null): ApiRequestInterface;
+    public function buildRequest(string $route, string $method = 'GET', array $arguments = [], ?array $data = null): ApiRequestInterface;
 
     public function registerResolver(string $domain, RouteResolverInterface $resolver): void;
 

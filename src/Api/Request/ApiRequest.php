@@ -14,12 +14,14 @@ class ApiRequest implements ApiRequestInterface
     protected EndPointInterface $endPoint;
 
     /**
+     * @param array<string,mixed> $arguments
      * @param ?array<string,mixed> $payload
      * @param ?array<string,mixed> $context
      */
     public function __construct(
         protected string $path,
         protected string $method = 'GET',
+        protected array $arguments = [],
         protected ?array $payload = null,
         protected ?array $context = null,
     ) {
@@ -86,6 +88,30 @@ class ApiRequest implements ApiRequestInterface
     public function setMethod(string $method): void
     {
         $this->method = $method;
+    }
+
+    public function getArguments(): array
+    {
+        return $this->arguments;
+    }
+
+    public function setArguments(array $arguments): void
+    {
+        $this->arguments = $arguments;
+    }
+
+    public function setArgument(string $name, mixed $value): void
+    {
+        if ($value === null) {
+            unset($this->arguments[$name]);
+        } else {
+            $this->arguments[$name] = $value;
+        }
+    }
+
+    public function removeArgument(string $name): void
+    {
+        $this->setArgument($name, null);
     }
 
     public function getPayload(): ?array

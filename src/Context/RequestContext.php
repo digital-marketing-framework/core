@@ -77,4 +77,9 @@ class RequestContext extends Context
     {
         return $_SERVER;
     }
+
+    public function getRequestArguments(): array
+    {
+        return $_GET;
+    }
 }

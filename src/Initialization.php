@@ -17,7 +17,7 @@ abstract class Initialization implements InitializationInterface
 
     protected const PARTIAL_FOLDER_PATTERN = 'PKG:%s/res/%s';
 
-    /** @var array<string,array<class-string<PluginInterface>,array<string|int,class-string<PluginInterface>>>> */
+    /** @var array<"core"|"distributor"|"collector",array<class-string<PluginInterface>,array<string|int,class-string<PluginInterface>>>> */
     protected const PLUGINS = [];
 
     /** @var array<class-string<ConfigurationDocumentMigrationInterface>> */

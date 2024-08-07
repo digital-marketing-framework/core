@@ -24,6 +24,11 @@ class WriteableContext extends Context implements WriteableContextInterface
         $this[static::KEY_REQUEST_VARIABLES][$name] = $value;
     }
 
+    public function setRequestArgument(string $name, string $value): void
+    {
+        $this[static::KEY_REQUEST_ARGUMENTS][$name] = $value;
+    }
+
     public function setTimestamp(int $timestamp): void
     {
         $this[static::KEY_TIMESTAMP] = $timestamp;
@@ -82,6 +87,18 @@ class WriteableContext extends Context implements WriteableContextInterface
         $value = $context->getRequestVariable($name);
         if ($value !== null) {
             $this->setRequestVariable($name, $value);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function copyRequestArgumentFromContext(ContextInterface $context, string $name): bool
+    {
+        $value = $context->getRequestArgument($name);
+        if ($value !== null) {
+            $this->setRequestArgument($name, $value);
 
             return true;
         }

@@ -56,4 +56,14 @@ abstract class Context extends ArrayObject implements ContextInterface
     {
         return $this->getRequestVariables()[$name] ?? null;
     }
+
+    public function getRequestArguments(): array
+    {
+        return $this[static::KEY_REQUEST_ARGUMENTS] ?? [];
+    }
+
+    public function getRequestArgument(string $name): mixed
+    {
+        return $this->getRequestArguments()[$name] ?? null;
+    }
 }

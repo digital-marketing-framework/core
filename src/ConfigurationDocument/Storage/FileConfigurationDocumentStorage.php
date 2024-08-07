@@ -64,7 +64,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     protected function buildFileBaseName(string $documentBaseName): string
     {
         $baseName = $documentBaseName;
-        $baseName = preg_replace_callback('/[A-Z]+/', static function (array $matches) {
+        $baseName = preg_replace_callback('/[A-Z]+/', static function (array $matches): string {
             return '-' . strtolower($matches[0]);
         }, $baseName);
         $baseName = preg_replace('/[^a-zA-Z0-9]+/', '-', $baseName);

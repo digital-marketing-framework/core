@@ -17,8 +17,6 @@ class FieldMapDataMapper extends DataMapper
 
     public const KEY_FIELDS = 'fields';
 
-    public const DEFAULT_FIELDS = [];
-
     public function mapData(DataInterface $target): DataInterface
     {
         // TODO should we have a local field tracker that gets reset for every data mapper

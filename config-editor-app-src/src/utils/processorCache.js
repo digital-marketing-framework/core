@@ -36,3 +36,7 @@ export const cached = (domain, keys, uncached, keepReference) => {
   }
   return result;
 };
+
+export const clearCache = () => {
+  cache = {};
+};

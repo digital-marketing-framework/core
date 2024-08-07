@@ -280,7 +280,7 @@ class QueueProcessorTest extends TestCase
         $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
         $this->worker->expects($this->exactly(2))->method('processJob')
             ->withConsecutive([$job1], [$job2])
-            ->willReturnCallback(static function ($job) use ($job1, $errorMessage) {
+            ->willReturnCallback(static function ($job) use ($job1, $errorMessage): bool {
                 if ($job === $job1) {
                     throw new QueueException($errorMessage);
                 }

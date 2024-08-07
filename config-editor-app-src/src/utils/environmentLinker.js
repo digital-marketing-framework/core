@@ -1,9 +1,6 @@
-import { cloneValue } from '../helpers/value';
+import { cloneValue } from '@/helpers/value';
 
 export const EVENT_INIT = 'dmf-configuration-editor-init';
-export const EVENT_APP_OPEN = 'dmf-configuration-editor-app-open';
-export const EVENT_APP_CLOSE = 'dmf-configuration-editor-app-close';
-export const EVENT_APP_SAVE = 'dmf-configuration-editor-app-save';
 
 const RAW_LANGUAGE = 'YAML';
 
@@ -123,22 +120,6 @@ const getSettings = (textarea) => {
   return settings;
 };
 
-const getInitialTextArea = async () => {
-  return new Promise((resolve) => {
-    const textarea = document.querySelector('textarea.dmf-configuration-document');
-    if (textarea !== null && textarea.dataset.app === 'true') {
-      setTimeout(() => {
-        resolve(textarea);
-      }, 0);
-    } else {
-      document.addEventListener(EVENT_INIT, () => {
-        const textarea = document.querySelector('textarea.dmf-configuration-document');
-        resolve(textarea);
-      });
-    }
-  });
-};
-
 const triggerFormSave = (textarea) => {
   getDocumentForm(textarea)?.submit();
 };
@@ -147,14 +128,15 @@ const triggerFormDiscard = (textarea) => {
   getDocumentForm(textarea)?.querySelector('[data-role="close"]')?.click();
 };
 
-export const linkEnvironment = async () => {
-  let textarea, settings, stage, schemaDocument;
+const initEnvironment = async (textarea, link) => {
+  let settings, stage, schemaDocument;
   let data, inheritedData, referenceData;
+  let app;
 
   const onSave = async (newData) => {
     await save(textarea, settings, newData);
     if (settings.mode === 'modal') {
-      document.dispatchEvent(new Event(EVENT_APP_CLOSE));
+      app.close();
     } else {
       triggerFormSave(textarea);
     }
@@ -176,20 +158,13 @@ export const linkEnvironment = async () => {
     }
   };
 
-  textarea = await getInitialTextArea();
   settings = getSettings(textarea);
   schemaDocument = await getSchema(settings);
 
   const start = async () => {
     const response = await getData(textarea, settings);
     referenceData = cloneValue(response.configuration);
-    const appEvent = new CustomEvent(EVENT_APP_OPEN, {
-      detail: {
-        data: response.configuration,
-        inheritedData: response.inheritedConfiguration
-      }
-    });
-    document.dispatchEvent(appEvent);
+    app.open(response.configuration, response.inheritedConfiguration);
     stage.style.display = 'block';
   };
 
@@ -203,17 +178,25 @@ export const linkEnvironment = async () => {
     }, 0);
   }
 
-  document.addEventListener(EVENT_INIT, () => {
-    textarea = document.querySelector('textarea.dmf-configuration-document');
-    updateTextArea(textarea, stage, settings, start);
-  });
-
-  return {
+  app = link({
     settings: settings,
     stage: stage,
     schemaDocument: schemaDocument,
     onSave: onSave,
     onIncludeChange: onIncludeChange,
     onClose: onClose
-  };
+  });
+};
+
+export const linkEnvironments = (link) => {
+  function updateTextAreas() {
+    document.querySelectorAll('textarea.dmf-configuration-document').forEach((textarea) => {
+      if (!textarea.dataset.init) {
+        textarea.dataset.init = '1';
+        initEnvironment(textarea, link);
+      }
+    });
+  }
+  document.addEventListener(EVENT_INIT, updateTextAreas);
+  updateTextAreas();
 };

@@ -253,7 +253,7 @@ final class GeneralUtility
 
     public static function slugify(string $string): string
     {
-        $string = preg_replace_callback('/([A-Z]+)/', static function ($matches) {
+        $string = preg_replace_callback('/([A-Z]+)/', static function ($matches): string {
             return '-' . strtolower($matches[0]);
         }, $string);
         $string = preg_replace('/[^a-z0-9]+/', '-', $string);
@@ -268,7 +268,7 @@ final class GeneralUtility
 
     public static function dashedToCamelCase(string $string): string
     {
-        return preg_replace_callback('/(-[a-z0-9])/', static function ($matches) {
+        return preg_replace_callback('/(-[a-z0-9])/', static function ($matches): string {
             return strtoupper(substr($matches[0], 1));
         }, $string);
     }
@@ -374,10 +374,10 @@ final class GeneralUtility
     public static function getLabelFromValue(string $value): string
     {
         $label = $value;
-        $label = preg_replace_callback('/[A-Z]+/', static function (array $matches) {
+        $label = preg_replace_callback('/[A-Z]+/', static function (array $matches): string {
             return ' ' . $matches[0];
         }, $label);
-        $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', static function (array $matches) {
+        $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', static function (array $matches): string {
             return ' ' . ucfirst($matches[1]);
         }, $label);
         $label = preg_replace('/[^a-zA-Z0-9]$/', '', $label);
