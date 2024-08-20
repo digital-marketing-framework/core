@@ -115,7 +115,7 @@ class TaggableCacheWrapper implements CacheInterface
      */
     protected function fetchKeysByTags(array $tags): array
     {
-        $tagDataList = $this->cache->fetchMultiple(array_map(static function ($tag) {
+        $tagDataList = $this->cache->fetchMultiple(array_map(static function ($tag): string {
             return static::PREFIX_TAG . $tag;
         }, $tags));
         $keys = [];

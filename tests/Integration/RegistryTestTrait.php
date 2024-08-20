@@ -48,8 +48,10 @@ trait RegistryTestTrait
         // init plugins
         $coreInitialization = new CoreInitialization();
         $coreInitialization->initMetaData($this->registry);
-        $coreInitialization->initGlobalConfiguration(RegistryDomain::CORE, $this->registry);
-        $coreInitialization->initServices(RegistryDomain::CORE, $this->registry);
+        // NOTE core initialization has no global config or services to initialize customly
+        //      but other integrations will want to call those methods on their init object
+        // $coreInitialization->initGlobalConfiguration(RegistryDomain::CORE, $this->registry);
+        // $coreInitialization->initServices(RegistryDomain::CORE, $this->registry);
         $coreInitialization->initPlugins(RegistryDomain::CORE, $this->registry);
     }
 }

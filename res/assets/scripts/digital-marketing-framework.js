@@ -26,6 +26,7 @@
     },
     urls: {},
     pluginSettings: {},
+    content: {},
   }
 
   // state //
@@ -36,6 +37,10 @@
   let DMF = null
 
   // helpers //
+
+  function ucfirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
 
   function deepExtend(out) {
     out = out || {}
@@ -70,12 +75,26 @@
     }
   }
 
-  function getAjaxUrl(pluginId) {
-    return DMF.urls[pluginId] || ''
+  function getAjaxUrl(pluginId, arguments = {}) {
+    if (!DMF.urls[pluginId]) {
+      console.error('No URL found for plugin', pluginId)
+      return '';
+    }
+
+    let url = DMF.urls[pluginId]
+    let parameters = []
+    for (let key in arguments) {
+      parameters.push(key + '=' + encodeURIComponent(arguments[key]))
+    }
+    if (parameters.length > 0) {
+      url += '?' + parameters.join('&')
+    }
+
+    return url
   }
 
-  async function fetchData(pluginId) {
-    const url = getAjaxUrl(pluginId)
+  async function fetchData(pluginId, arguments = {}) {
+    const url = getAjaxUrl(pluginId, arguments)
     if (url === '') {
       console.error('No URL found for plugin', pluginId)
       return false
@@ -158,8 +177,8 @@
     return
   }
 
-  DMF.pull = async function(pluginId) {
-    return await fetchData(pluginId)
+  DMF.pull = async function(pluginId, arguments = {}) {
+    return await fetchData(pluginId, arguments)
   }
 
   DMF.push = async function(pluginId, payload, context) {
@@ -216,6 +235,7 @@
 
   function createPlugin(pluginId) {
     return {
+      id: pluginId,
       settings: getPluginSettings(pluginId),
       hydrate: function(element, variables) {
         DMF.hydrate(element, variables)
@@ -248,14 +268,14 @@
   function createPullPlugin(pluginId) {
     const plugin = createPlugin(pluginId)
 
-    plugin.pull = async function(bypassPermissions = false) {
+    plugin.pull = async function(arguments = {}, bypassPermissions = false) {
       let proceed = true
       if (!bypassPermissions && typeof this.settings[SETTINGS_REQUIRED_PERMISSION] !== 'undefined') {
         proceed = await this.checkPermission()
       }
 
       if (proceed) {
-        return await DMF.pull(pluginId)
+        return await DMF.pull(pluginId, arguments)
       }
 
       return false
@@ -263,6 +283,7 @@
 
     plugin.pullAndHydrate = async function(
       element,
+      arguments = {},
       markAsLoading = true,
       defaultVariables = {},
       refresh = true
@@ -271,11 +292,13 @@
         if (markAsLoading) {
           plugin.markAsLoading(element)
         }
-        const variables = await this.pull()
+        const variables = await this.pull(arguments)
         plugin.hydrate(element, variables)
         if (markAsLoading) {
           plugin.markAsLoaded(element)
         }
+
+        return variables
       }
 
       if (typeof defaultVariables === 'object' && defaultVariables !== null) {
@@ -288,7 +311,7 @@
         })
       }
 
-      await processElement()
+      return await processElement()
     }
 
     return plugin
@@ -304,27 +327,62 @@
     return plugin
   }
 
-  DMF.getPluginAttribute = function(element, name, defaultValue = null, write = false) {
+  DMF.getPluginAttribute = function(element, name, defaultValue = '', write = false) {
+    const scalar = typeof defaultValue !== 'object'
     let value = defaultValue
 
     if (typeof element.dataset[DMF.settings.prefix + name] !== 'undefined') {
       value = element.dataset[DMF.settings.prefix + name]
+      if (!scalar) {
+        value = JSON.parse(value)
+      }
     }
 
     if (write) {
-      element.dataset[DMF.settings.prefix + name] = value
+      element.dataset[DMF.settings.prefix + name] = typeof value !== 'object' ? value : JSON.stringify(value)
     }
 
     return value
   }
 
-  DMF.plugin = (pluginId) => {
+  DMF.plugin = function(pluginId) {
     return pluginId.startsWith('distributor') ? createPushPlugin(pluginId) : createPullPlugin(pluginId)
+  }
+
+  DMF.updateElementFromPlugin = function(plugin, element) {
+    const elementId = element === document.body ? '<page>' : element.id
+    const updateElementSetting = (element, key, value) => {
+      const dataKey = DMF.settings.prefix + ucfirst(key)
+      if (typeof element.dataset[dataKey] === 'undefined') {
+        element.dataset[dataKey] = typeof value !== 'object' ? value : JSON.stringify(value)
+      }
+    }
+
+    if (typeof DMF.content[plugin.id] !== 'undefined' && typeof DMF.content[plugin.id][elementId] !== 'undefined') {
+      updateElementSetting(element, 'plugin', plugin.id)
+      for (let key in DMF.content[plugin.id][element.id]) {
+        updateElementSetting(element, key, DMF.content[plugin.id][elementId][key])
+      }
+    }
   }
 
   DMF.getPluginFromElement = function(element) {
     const pluginId = element.dataset[DMF.settings.prefix + 'Plugin']
-    return DMF.plugin(pluginId)
+    const plugin = DMF.plugin(pluginId)
+    DMF.updateElementFromPlugin(plugin, element)
+    return plugin
+  }
+
+  DMF.updateAllKnownElements = function() {
+    for (let pluginId in DMF.content) {
+      for (let elementId in DMF.content[pluginId]) {
+        const element = elementId === '<page>' ? document.body : DMF.container.getElementById(elementId)
+        if (element) {
+          const plugin = DMF.plugin(pluginId)
+          DMF.updateElementFromPlugin(plugin, element)
+        }
+      }
+    }
   }
 
   DMF.getAllPluginInstancesWithElements = function(pluginIdPattern, container) {
@@ -383,7 +441,7 @@
       element.innerHTML = typeof variables[field] !== 'undefined' ? variables[field] : fieldDefault
     }
 
-    if (DMF.getPluginAttribute(element, ATTRIBUTE_FIELD) !== null) {
+    if (DMF.getPluginAttribute(element, ATTRIBUTE_FIELD, '') !== '') {
       processField(element, variables)
     } else {
       processTemplate(element, variables)
@@ -400,6 +458,8 @@
   }
 
   // ready //
+
+  DMF.updateAllKnownElements()
 
   window.DMF = DMF
 

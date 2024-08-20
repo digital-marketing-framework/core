@@ -11,12 +11,7 @@ class ScalarValues
     public const REFERENCE_TYPE_VALUE = 'value';
 
     /** @var array<string,mixed> */
-    protected array $values;
-
-    public function __construct()
-    {
-        $this->reset();
-    }
+    protected array $values = [];
 
     public function addValue(string|int|bool $value, ?string $label = null): void
     {

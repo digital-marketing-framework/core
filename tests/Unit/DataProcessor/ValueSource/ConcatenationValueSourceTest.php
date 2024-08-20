@@ -17,7 +17,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
 
     protected const DEFAULT_CONFIG = [
         ConcatenationValueSource::KEY_GLUE => ConcatenationValueSource::DEFAULT_GLUE,
-        ConcatenationValueSource::KEY_VALUES => ConcatenationValueSource::DEFAULT_VALUES,
+        ConcatenationValueSource::KEY_VALUES => [],
     ];
 
     /** @test */

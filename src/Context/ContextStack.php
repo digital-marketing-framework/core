@@ -79,6 +79,16 @@ class ContextStack implements ContextStackInterface
         return $this->getActiveContext()->getRequestVariable($name);
     }
 
+    public function getRequestArguments(): array
+    {
+        return $this->getActiveContext()->getRequestArguments();
+    }
+
+    public function getRequestArgument(string $name): ?string
+    {
+        return $this->getActiveContext()->getRequestArgument($name);
+    }
+
     public function offsetExists(mixed $offset): bool
     {
         return $this->getActiveContext()->offsetExists($offset);

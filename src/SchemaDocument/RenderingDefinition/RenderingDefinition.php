@@ -112,7 +112,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
             $render['hint'] = $this->hint;
         }
 
-        return empty($render) ? null : $render;
+        return $render === [] ? null : $render;
     }
 
     public function setLabel(?string $label): void

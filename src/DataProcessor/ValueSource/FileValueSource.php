@@ -18,19 +18,11 @@ class FileValueSource extends ValueSource implements FileStorageAwareInterface
 
     public const KEY_NAME = 'name';
 
-    public const DEFAULT_NAME = [];
-
     public const KEY_PATH = 'path';
-
-    public const DEFAULT_PATH = [];
 
     public const KEY_URL = 'url';
 
-    public const DEFAULT_URL = [];
-
     public const KEY_MIMETYPE = 'mimetype';
-
-    public const DEFAULT_MIMETYPE = [];
 
     public function build(): string|ValueInterface|null
     {

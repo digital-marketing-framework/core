@@ -17,6 +17,8 @@ interface ContextInterface extends ArrayAccess
 
     public const KEY_REQUEST_VARIABLES = 'request_variables';
 
+    public const KEY_REQUEST_ARGUMENTS = 'request_arguments';
+
     /**
      * @return array<string,mixed>
      */
@@ -39,4 +41,11 @@ interface ContextInterface extends ArrayAccess
     public function getRequestVariables(): array;
 
     public function getRequestVariable(string $name): ?string;
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getRequestArguments(): array;
+
+    public function getRequestArgument(string $name): mixed;
 }

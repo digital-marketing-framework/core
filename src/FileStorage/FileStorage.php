@@ -121,11 +121,11 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
             $list = [];
         }
 
-        $list = array_map(static function (string $file) use ($path) {
+        $list = array_map(static function (string $file) use ($path): string {
             return $path . '/' . $file;
         }, $list);
 
-        return array_filter($list, static function (string $file) {
+        return array_filter($list, static function (string $file): bool {
             return is_file($file);
         });
     }

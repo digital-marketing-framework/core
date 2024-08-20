@@ -45,12 +45,12 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
         return '/' . $this->getBasePath() . '/v' . static::API_VERSION . '/' . trim($path, '/');
     }
 
-    public function buildRequest(string $route, string $method = 'GET', ?array $data = null): ApiRequestInterface
+    public function buildRequest(string $route, string $method = 'GET', array $arguments = [], ?array $data = null): ApiRequestInterface
     {
         $context = $data[static::KEY_CONTEXT] ?? null;
         $payload = $data[static::KEY_PAYLOAD] ?? null;
 
-        return new ApiRequest($route, $method, $payload, $context);
+        return new ApiRequest($route, $method, $arguments, $payload, $context);
     }
 
     /**

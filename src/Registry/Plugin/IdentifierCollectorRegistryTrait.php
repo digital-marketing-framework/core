@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\IdentifierCollector\IdentifierCollectorInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\Icon;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
@@ -50,7 +51,7 @@ trait IdentifierCollectorRegistryTrait
             $integrationIdentifierSchema = $integrationSchema->getProperty(ConfigurationInterface::KEY_IDENTIFIERS)?->getSchema();
             if (!$integrationIdentifierSchema instanceof ContainerSchema) {
                 $integrationIdentifierSchema = new ContainerSchema();
-                $integrationIdentifierSchema->getRenderingDefinition()->setIcon('identification');
+                $integrationIdentifierSchema->getRenderingDefinition()->setIcon(Icon::IDENTIFICATION);
                 $integrationIdentifierSchema->getRenderingDefinition()->setLabel('Identification');
                 $integrationSchema->addProperty(ConfigurationInterface::KEY_IDENTIFIERS, $integrationIdentifierSchema);
             }
