@@ -15,7 +15,7 @@ class IntegrationReferenceSchema extends ContainerSchema
 
     public function __construct(
         mixed $defaultValue = null,
-        bool $required = true
+        bool $required = true,
     ) {
         parent::__construct($defaultValue);
 

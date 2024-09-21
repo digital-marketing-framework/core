@@ -17,7 +17,7 @@ class CoreRouteResolver implements CoreRouteResolverInterface, DataPrivacyManage
     use DataPrivacyManagerAwareTrait;
 
     public function __construct(
-        protected RegistryInterface $registry
+        protected RegistryInterface $registry,
     ) {
     }
 

@@ -12,7 +12,7 @@ class ConditionReferenceSchema extends ReferenceSchema
     public function __construct(
         ?string $defaultValue = null,
         bool $required = true,
-        ?string $firstEmptyOptionLabel = null
+        ?string $firstEmptyOptionLabel = null,
     ) {
         parent::__construct($defaultValue, $required, $firstEmptyOptionLabel);
         $this->getRenderingDefinition()->setLabel('Condition');

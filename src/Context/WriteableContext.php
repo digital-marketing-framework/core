@@ -123,7 +123,7 @@ class WriteableContext extends Context implements WriteableContextInterface
         string $path = '/',
         string $domain = '',
         bool $secure = true,
-        bool $httponly = true
+        bool $httponly = true,
     ): void {
         $this->setCookie($name, $value);
         if ($this->isResponsive()) {

@@ -34,7 +34,7 @@ abstract class IdentifierCollector extends IntegrationPlugin implements Identifi
         string $keyword,
         protected RegistryInterface $registry,
         protected ConfigurationInterface $identifierConfiguration,
-        ?IntegrationInfo $integrationInfo = null
+        ?IntegrationInfo $integrationInfo = null,
     ) {
         parent::__construct(
             $keyword,

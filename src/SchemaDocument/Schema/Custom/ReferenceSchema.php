@@ -11,7 +11,7 @@ abstract class ReferenceSchema extends StringSchema
     public function __construct(
         ?string $defaultValue = null,
         bool $required = true,
-        ?string $firstEmptyOptionLabel = null
+        ?string $firstEmptyOptionLabel = null,
     ) {
         parent::__construct($defaultValue);
 
