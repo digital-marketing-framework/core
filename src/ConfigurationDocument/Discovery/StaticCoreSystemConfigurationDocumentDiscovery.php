@@ -39,7 +39,7 @@ class StaticCoreSystemConfigurationDocumentDiscovery extends StaticSystemConfigu
         return match ($identifier) {
             'SYS:defaults' => $this->buildDefaults($schemaDocument),
             'SYS:reset' => $this->buildReset($schemaDocument),
-            default => throw new DigitalMarketingFrameworkException(sprintf('Unknown system configuration document identifier "%s"', $identifier))
+            default => throw new DigitalMarketingFrameworkException(sprintf('Unknown system configuration document identifier "%s"', $identifier)),
         };
     }
 
@@ -48,7 +48,7 @@ class StaticCoreSystemConfigurationDocumentDiscovery extends StaticSystemConfigu
         return match ($identifier) {
             'SYS:defaults' => 'Defaults',
             'SYS:reset' => 'Reset',
-            default => throw new DigitalMarketingFrameworkException(sprintf('Unknown system configuration document identifier "%s"', $identifier))
+            default => throw new DigitalMarketingFrameworkException(sprintf('Unknown system configuration document identifier "%s"', $identifier)),
         };
     }
 }

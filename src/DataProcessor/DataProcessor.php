@@ -32,7 +32,7 @@ class DataProcessor extends Plugin implements DataProcessorInterface
     public const KEY_MODIFIERS = 'modifiers';
 
     public function __construct(
-        protected RegistryInterface $registry
+        protected RegistryInterface $registry,
     ) {
     }
 

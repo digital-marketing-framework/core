@@ -14,7 +14,7 @@ class DataProcessorContext extends ArrayObject implements DataProcessorContextIn
     public function __construct(
         protected DataInterface $data,
         protected ConfigurationInterface $configuration,
-        protected FieldTrackerInterface $fieldTracker = new FieldTracker()
+        protected FieldTrackerInterface $fieldTracker = new FieldTracker(),
     ) {
         parent::__construct([
             'data' => $data,

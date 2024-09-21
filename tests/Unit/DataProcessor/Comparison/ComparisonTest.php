@@ -41,7 +41,7 @@ abstract class ComparisonTest extends DataProcessorPluginTest
         ?array $secondOperand = null,
         mixed $secondOperandResult = null,
         ?string $anyAll = null,
-        ?array $defaultConfig = null
+        ?array $defaultConfig = null,
     ): void {
         if ($defaultConfig === null) {
             $defaultConfig = static::DEFAULT_CONFIG;

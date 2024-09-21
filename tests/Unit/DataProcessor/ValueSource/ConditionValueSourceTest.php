@@ -99,7 +99,7 @@ class ConditionValueSourceTest extends ValueSourceTest
         mixed $elseResult,
         array $ifConfig = [],
         ?array $thenConfig = null,
-        ?array $elseConfig = null
+        ?array $elseConfig = null,
     ): void {
         $valueWith = [];
         $valueResults = [];

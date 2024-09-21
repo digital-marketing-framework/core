@@ -26,7 +26,7 @@ class RestrictedTermsSchema extends SwitchSchema
     public function __construct(
         string $referencePath,
         string $referenceType = ScalarValues::REFERENCE_TYPE_KEY,
-        mixed $defaultValue = null
+        mixed $defaultValue = null,
     ) {
         parent::__construct('restrictedTerms', $defaultValue);
         $this->addItem(static::KEY_ALL, new ContainerSchema());

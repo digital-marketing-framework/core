@@ -12,7 +12,7 @@ abstract class Plugin implements PluginInterface, LoggerAwareInterface
     public const WEIGHT = 10;
 
     public function __construct(
-        protected string $keyword
+        protected string $keyword,
     ) {
     }
 
