@@ -65,6 +65,14 @@ class Registry implements RegistryInterface
 
     protected RegistryCollectionInterface $registryCollection;
 
+    /**
+     * If a project-specific initialization is necessary, this method can be used.
+     * Called by the registry collection service.
+     */
+    public function init(): void
+    {
+    }
+
     public function getRegistryCollection(): RegistryCollectionInterface
     {
         if (!isset($this->registryCollection)) {

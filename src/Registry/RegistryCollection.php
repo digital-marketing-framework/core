@@ -22,6 +22,18 @@ class RegistryCollection implements RegistryCollectionInterface
     public function __construct(
         protected array $collection = [],
     ) {
+        $this->fetchRegistries();
+        foreach ($this->collection as $registry) {
+            $registry->init();
+        }
+    }
+
+    /**
+     * A project-specific registry collection might be able to fetch all relevant registries itself.
+     * This can be done in this method, which will also trigger the initialization of the registries automatically.
+     */
+    protected function fetchRegistries(): void
+    {
     }
 
     public function addRegistry(string $domain, RegistryInterface $registry): void
