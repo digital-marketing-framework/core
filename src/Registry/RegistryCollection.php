@@ -4,18 +4,36 @@ namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
+use DigitalMarketingFramework\Core\Context\ContextInterface;
+use DigitalMarketingFramework\Core\Context\ContextStack;
+use DigitalMarketingFramework\Core\Context\ContextStackInterface;
+use DigitalMarketingFramework\Core\Context\RequestContext;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 class RegistryCollection implements RegistryCollectionInterface
 {
+    protected ContextStackInterface $context;
+
     /**
      * @param array{core?:RegistryInterface,distributor?:RegistryInterface,collector?:RegistryInterface} $collection
      */
     public function __construct(
         protected array $collection = [],
     ) {
+        $this->fetchRegistries();
+        foreach ($this->collection as $registry) {
+            $registry->init();
+        }
+    }
+
+    /**
+     * A project-specific registry collection might be able to fetch all relevant registries itself.
+     * This can be done in this method, which will also trigger the initialization of the registries automatically.
+     */
+    protected function fetchRegistries(): void
+    {
     }
 
     public function addRegistry(string $domain, RegistryInterface $registry): void
@@ -51,6 +69,33 @@ class RegistryCollection implements RegistryCollectionInterface
         }
 
         return $this->collection;
+    }
+
+    public function getContext(): ContextStackInterface
+    {
+        if (!isset($this->context)) {
+            $this->context = new ContextStack();
+            $this->context->pushContext(new RequestContext());
+        }
+
+        return $this->context;
+    }
+
+    public function setContext(ContextInterface $context): void
+    {
+        $contextStack = $this->getContext();
+        $contextStack->clearStack();
+        $contextStack->pushContext($context);
+    }
+
+    public function pushContext(ContextInterface $context): void
+    {
+        $this->getContext()->pushContext($context);
+    }
+
+    public function popContext(): ?ContextInterface
+    {
+        return $this->getContext()->popContext();
     }
 
     public function getConfigurationSchemaDocument(): SchemaDocument
