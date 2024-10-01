@@ -6,7 +6,7 @@ class CustomSchema extends Schema
 {
     public function __construct(
         protected string $type,
-        mixed $defaultValue = null
+        mixed $defaultValue = null,
     ) {
         parent::__construct($defaultValue);
     }

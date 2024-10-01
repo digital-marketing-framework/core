@@ -67,7 +67,7 @@ trait ConfigurationSchemaRegistryTrait
         ?string $integrationName = null,
         ?string $integrationLabel = null,
         ?int $weight = null,
-        ?string $icon = null
+        ?string $icon = null,
     ): ContainerSchema {
         $mainSchema = $schemaDocument->getMainSchema();
         $integrationsSchema = $mainSchema->getProperty(ConfigurationInterface::KEY_INTEGRATIONS)?->getSchema();

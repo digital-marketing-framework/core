@@ -13,8 +13,8 @@ code-quality:
         matrix:
             -
                 php_version:
-                    - 8.1
-                    - 8.2
+                    - '8.1'
+                    - '8.2'
     cache:
         key:
             files:

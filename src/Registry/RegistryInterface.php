@@ -50,6 +50,8 @@ interface RegistryInterface extends
 
     ApiRegistryInterface
 {
+    public function init(): void;
+
     public function getRegistryCollection(): RegistryCollectionInterface;
 
     public function setRegistryCollection(RegistryCollectionInterface $registryCollection): void;

@@ -527,7 +527,7 @@ class NonPersistentQueueTest extends TestCase
         string $method,
         array $arguments = [],
         string $expectedStatusMessage = '',
-        bool $expectedSkipped = false
+        bool $expectedSkipped = false,
     ): void {
         $this->subject->addJob($this->createJob(['value1'], $initialStatus));
         $this->subject->addJob($this->createJob(['value2'], $unrelatedStatus));

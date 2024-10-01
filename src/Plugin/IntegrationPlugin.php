@@ -10,7 +10,7 @@ abstract class IntegrationPlugin extends ConfigurablePlugin implements Integrati
     public function __construct(
         string $keyword,
         protected IntegrationInfo $integrationInfo,
-        ConfigurationInterface $configuration
+        ConfigurationInterface $configuration,
     ) {
         parent::__construct($keyword);
         $this->integrationConfiguration = $configuration->getIntegrationConfiguration($integrationInfo->getName());

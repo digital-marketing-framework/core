@@ -92,7 +92,7 @@ class EqualsComparisonTest extends ComparisonTest
         mixed $firstOperandResult,
         ?array $secondOperand = null,
         mixed $secondOperandResult = null,
-        ?string $anyAll = null
+        ?string $anyAll = null,
     ): void {
         $this->runComparisonTest($expectedResult, $firstOperand, $firstOperandResult, $secondOperand, $secondOperandResult, $anyAll);
     }

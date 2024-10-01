@@ -7,7 +7,7 @@ class VendorResourceService extends ResourceService implements VendorResourceSer
     public const IDENTIFIER_PREFIX = 'PKG';
 
     public function __construct(
-        protected string $vendorPath = 'vendor'
+        protected string $vendorPath = 'vendor',
     ) {
     }
 

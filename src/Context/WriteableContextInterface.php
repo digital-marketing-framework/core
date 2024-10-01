@@ -37,7 +37,7 @@ interface WriteableContextInterface extends ContextInterface
         string $path = '/',
         string $domain = '',
         bool $secure = true,
-        bool $httponly = true
+        bool $httponly = true,
     ): void;
 
     /**

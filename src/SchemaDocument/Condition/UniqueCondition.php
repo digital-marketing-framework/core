@@ -9,7 +9,7 @@ class UniqueCondition extends Condition
 {
     public function __construct(
         protected string $valuePath,
-        protected string $pathPattern
+        protected string $pathPattern,
     ) {
         parent::__construct('unique');
     }

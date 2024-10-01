@@ -3,9 +3,10 @@
 namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
+use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
-interface RegistryCollectionInterface
+interface RegistryCollectionInterface extends ContextRegistryInterface
 {
     /**
      * @param 'core'|'distributor'|'collector' $domain
