@@ -33,6 +33,7 @@ const childPaths = computed(() => getChildPaths(props.currentPath));
                           :dynamicItemPath="dynamicItemPath">
         <template #fieldsUi>
             <div v-for="path in childPaths"
+                 class="tw-relative"
                  :key="currentPath + '/' + path">
                 <GenericItem :currentPath="getAbsolutePath(path, currentPath)"
                              :key="currentPath + '/' + path" />

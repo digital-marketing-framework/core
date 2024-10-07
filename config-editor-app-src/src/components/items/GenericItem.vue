@@ -8,6 +8,7 @@ import StringSwitchTypeItem from './container/switch/StringSwitchTypeItem.vue';
 import StringItem from './scalar/StringItem.vue';
 import IntegerItem from './scalar/IntegerItem.vue';
 import BooleanItem from './scalar/BooleanItem.vue';
+import ResetOverwriteAction from './meta/ResetOverwriteAction.vue';
 
 // current custom types:
 // VALUE
@@ -68,10 +69,12 @@ const issue = computed(() => getIssue(props.currentPath));
 <template>
     <div class="tw-w-full tw-max-w-3xl"
          :class="{
-             'tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded': !isContainer,
-             'tw-border-r-red-400 todo-class-overwritten': !isContainer && isOverwritten
+             'tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded': !isContainer
          }"
          v-if="isVisible">
+        <ResetOverwriteAction :currentPath="currentPath"
+                        :dynamicItemPath="dynamicItemPath"
+                        v-if="isOverwritten" />
 
         <!-- use if needed: -->
         <!--

@@ -1,0 +1,37 @@
+.custom-class-overwritten {
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  height: 1.5rem;
+}
+.custom-class-overwritten:before {
+  content: '';
+  position: absolute;
+  left: -0.5rem;
+  top: 0;
+  bottom: 0;
+  width: 0.5rem;
+  @apply tw-border-l-gray-200;
+  border-left-width: 0.2rem;
+  transition: all 0.5s;
+}
+.custom-class-overwritten.custom-class-overwritten-parent:before {
+  border-style: dashed;
+}
+.custom-class-overwritten:hover:before {
+  @apply tw-border-l-gray-400;
+}
+
+.custom-class-overwritten .resetOverwrite {
+  position: absolute;
+  left: -30px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.custom-class-overwritten:hover .resetOverwrite {
+  opacity: 1;
+}
+
+.custom-class-readonly {
+  /* TODO */
+}
