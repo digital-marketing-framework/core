@@ -11,22 +11,41 @@
   top: 0;
   bottom: 0;
   width: 0.5rem;
-  @apply tw-border-l-gray-200;
   border-left-width: 0.2rem;
   transition: all 0.5s;
-}
-.custom-class-overwritten.custom-class-overwritten-parent:before {
-  border-style: dashed;
+  @apply tw-border-l-gray-200;
 }
 .custom-class-overwritten:hover:before {
   @apply tw-border-l-gray-400;
 }
 
+/* Item type: Scalar */
+.custom-class-overwritten.item-type-scalar:before {
+  @apply tw-border-l-green-200;
+}
+.custom-class-overwritten.item-type-scalar:hover:before {
+  @apply tw-border-l-green-400;
+}
+
+/* Item type: Container */
+.custom-class-overwritten.item-type-container:before {
+  border-style: dotted;
+}
+
+/* Item type: Dynamic Container */
+.custom-class-overwritten.item-type-dynamic-container:before {
+  @apply tw-border-l-purple-300;
+}
+.custom-class-overwritten.item-type-dynamic-container:hover:before {
+  @apply tw-border-l-purple-500;
+}
+
 .custom-class-overwritten .resetOverwrite {
   position: absolute;
-  left: -30px;
+  left: -1.75rem;
   opacity: 0;
   transition: opacity 0.5s;
+  cursor: pointer;
 }
 .custom-class-overwritten:hover .resetOverwrite {
   opacity: 1;
