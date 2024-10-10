@@ -1,0 +1,56 @@
+.custom-class-overwritten {
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  height: 1.5rem;
+}
+.custom-class-overwritten:before {
+  content: '';
+  position: absolute;
+  left: -0.5rem;
+  top: 0;
+  bottom: 0;
+  width: 0.5rem;
+  border-left-width: 0.2rem;
+  transition: all 0.5s;
+  @apply tw-border-l-gray-200;
+}
+.custom-class-overwritten:hover:before {
+  @apply tw-border-l-gray-400;
+}
+
+/* Item type: Scalar */
+.custom-class-overwritten.item-type-scalar:before {
+  @apply tw-border-l-green-200;
+}
+.custom-class-overwritten.item-type-scalar:hover:before {
+  @apply tw-border-l-green-400;
+}
+
+/* Item type: Container */
+.custom-class-overwritten.item-type-container:before {
+  border-style: dotted;
+}
+
+/* Item type: Dynamic Container */
+.custom-class-overwritten.item-type-dynamic-container:before {
+  @apply tw-border-l-purple-300;
+}
+.custom-class-overwritten.item-type-dynamic-container:hover:before {
+  @apply tw-border-l-purple-500;
+}
+
+.custom-class-overwritten .resetOverwrite {
+  position: absolute;
+  left: -1.75rem;
+  opacity: 0;
+  transition: opacity 0.5s;
+  cursor: pointer;
+}
+.custom-class-overwritten:hover .resetOverwrite {
+  opacity: 1;
+}
+
+.custom-class-readonly {
+  /* TODO */
+}

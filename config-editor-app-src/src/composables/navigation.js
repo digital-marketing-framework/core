@@ -84,13 +84,9 @@ const getContainerNavigationState = (store, path, currentPath) => {
 // actions
 
 const expandContainer = (store, path, currentPath) => {
-  // TODO a changed container state is not taken into account immediately
-  //      it is only read when the component is re-rendered
-  //      that is also why the opening animation is missing
-  //      how to open the Disclosure thingy properly?
-  // TODO disabled for now as the re-render resets the scroll position...
-  // setContainerState(store, path, currentPath, true);
-  // store.triggerRerender();
+  const absolutePath = getAbsolutePath(path, currentPath);
+  const discloseBtn = document.querySelector('[data-current-path="' + absolutePath + '"]');
+  discloseBtn?.click();
 };
 
 const setContainerState = (store, path, currentPath, open) => {
