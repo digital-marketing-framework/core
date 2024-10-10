@@ -84,7 +84,14 @@
     let url = DMF.urls[pluginId]
     let parameters = []
     for (let key in arguments) {
-      parameters.push(key + '=' + encodeURIComponent(arguments[key]))
+      const value = arguments[key]
+      if (typeof value === 'object') {
+        for (let subKey in value) {
+          parameters.push(key + '[]=' + encodeURIComponent(value[subKey]))
+        }
+      } else {
+        parameters.push(key + '=' + encodeURIComponent(arguments[key]))
+      }
     }
     if (parameters.length > 0) {
       url += '?' + parameters.join('&')
