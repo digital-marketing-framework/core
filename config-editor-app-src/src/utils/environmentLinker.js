@@ -55,6 +55,10 @@ const getDocumentForm = (textarea) => {
   return textarea.closest('form');
 };
 
+const getStageContainer = () => {
+  return document.getElementById('stage-container');
+};
+
 const save = async (textarea, settings, data) => {
   await setData(textarea, settings, data);
 };
@@ -94,17 +98,17 @@ const createStage = (isFixed) => {
   return stage;
 };
 
-const setupEmbedded = (textarea) => {
+const setupEmbedded = () => {
   const stage = createStage(false);
-  const form = getDocumentForm(textarea);
-  form.parentNode.insertBefore(stage, form.nextSibling);
+  const stageContainer = getStageContainer();
+  stageContainer.appendChild(stage);
   return stage;
 };
 
-const setupFullscreen = (textarea) => {
+const setupFullscreen = () => {
   const stage = createStage(true);
-  const form = getDocumentForm(textarea);
-  form.parentNode.insertBefore(stage, form.nextSibling);
+  const stageContainer = getStageContainer();
+  stageContainer.appendChild(stage);
   return stage;
 };
 
@@ -183,12 +187,12 @@ const initEnvironment = async (textarea, link) => {
     stage = setupModal();
     updateTextArea(textarea, stage, settings, start);
   } else if (settings.mode == 'fullscreen') {
-    stage = setupFullscreen(textarea, settings, start);
+    stage = setupFullscreen(settings, start);
     setTimeout(() => {
       start(textarea, stage, settings);
     }, 0);
   } else {
-    stage = setupEmbedded(textarea, settings, start);
+    stage = setupEmbedded(settings, start);
     setTimeout(() => {
       start(textarea, stage, settings);
     }, 0);
