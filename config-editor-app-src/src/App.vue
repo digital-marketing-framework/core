@@ -8,6 +8,7 @@ import { useDocument } from "./composables/document";
 
 import ArrowLeftLongIcon from './components/icons/ArrowLeftLongIcon.vue';
 import MediatisLogo from './components/icons/MediatisLogo.vue';
+import SpinnerIcon from './components/icons/SpinnerIcon.vue';
 import TimedMessage from './components/TimedMessage.vue';
 import ConfirmationDialog from "./components/ConfirmationDialog.vue";
 import MenuItem from './components/navigation/MenuItem.vue';
@@ -84,9 +85,18 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                             <button type="button"
                                     @click="store.save()"
                                     class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-blue-600 tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-500 focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-blue-600">
-                                <span v-if="store.settings.mode === 'embedded'">Save</span>
-                                <span v-else-if="store.settings.mode === 'fullscreen'">Save</span>
-                                <span v-else-if="store.settings.mode === 'modal'">Confirm</span>
+                                <span v-if="store.settings.mode === 'embedded'">
+                                    <SpinnerIcon v-if="store.isSaving" />
+                                    Save
+                                </span>
+                                <span v-else-if="store.settings.mode === 'fullscreen'">
+                                    <SpinnerIcon v-if="store.isSaving" />
+                                    Save
+                                </span>
+                                <span v-else-if="store.settings.mode === 'modal'">
+                                    <SpinnerIcon v-if="store.isSaving" />
+                                    Confirm
+                                </span>
                             </button>
                         </div>
                     </div>
