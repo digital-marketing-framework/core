@@ -86,7 +86,7 @@ const getContainerNavigationState = (store, path, currentPath) => {
 const expandContainer = (store, path, currentPath) => {
   const absolutePath = getAbsolutePath(path, currentPath);
   const discloseBtn = document.querySelector('[data-current-path="' + absolutePath + '"]');
-  discloseBtn?.click();
+  if(discloseBtn.dataset.headlessuiState !== "open") discloseBtn?.click();
 };
 
 const setContainerState = (store, path, currentPath, open) => {
