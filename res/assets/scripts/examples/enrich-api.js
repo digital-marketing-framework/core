@@ -2,10 +2,6 @@
 
   // wait until DMF core is initialised so that you can add API functionality
   async function initDMF() {
-    if (window.DMF) {
-      console.warn('Missed DMF init event, script must run earlier.')
-      return await startDMF()
-    }
     return new Promise(resolve => {
       document.addEventListener('dmf-init', event => {
         resolve(event.detail.DMF)
