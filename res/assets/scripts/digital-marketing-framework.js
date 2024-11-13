@@ -67,7 +67,10 @@
         console.error(e.message)
         return null
       }
+    } else if (window.DMF) {
+      return window.DMF;
     }
+    return null;
   }
 
   function getAjaxUrl(pluginId, arguments = {}) {
@@ -457,6 +460,12 @@
       DMF.onRescan(callback, pluginIdPattern)
     }
     return plugins
+  }
+
+  DMF.pullAndHydrateAll = function(pluginIdPattern = '') {
+    DMF.plugins(pluginIdPattern, (plugin) => {
+      plugin.pullAndHydrate()
+    })
   }
 
   let number = 1
