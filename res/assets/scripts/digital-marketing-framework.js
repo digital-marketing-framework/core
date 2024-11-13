@@ -21,7 +21,9 @@
   // state //
 
   const refreshCallbacks = []
+  const rescanCallbacks = []
   const permissionChangeCallbacks = []
+  const plugins = {}
   let fetchCache = {}
   let DMF = null
 
@@ -159,6 +161,7 @@
 
     if (typeof DMF.container === 'undefined') {
       DMF.container = document
+      DMF.containers = {}
     }
   }
 
@@ -203,6 +206,13 @@
     })
   }
 
+  DMF.rescan = function(container) {
+    const newPlugins = DMF.updateAllKnownElements(container)
+    rescanCallbacks.forEach((callback) => {
+      callback(newPlugins)
+    })
+  }
+
   DMF.permissionUpdate = function() {
     this.refresh()
     permissionChangeCallbacks.forEach((callback) => {
@@ -221,6 +231,20 @@
 
   DMF.onRefresh = function(callback) {
     refreshCallbacks.push(callback)
+  }
+
+  DMF.onRescan = function(callback, pluginIdPattern = '') {
+    rescanCallbacks.push((plugins) => {
+      if (pluginIdPattern = '') {
+        callback(plugins)
+      } else {
+        plugins.forEach((plugin) => {
+          if (plugin.id.startsWith(pluginIdPattern)) {
+            callback(plugin)
+          }
+        })
+      }
+    })
   }
 
   DMF.onPermissionChange = function(callback) {
@@ -254,35 +278,74 @@
   }
 
   DMF.show = function(element) {
-    element.style.display = ''
+    if (element) {
+      element.style.display = ''
+    }
   }
 
   DMF.hide = function(element) {
-    element.style.display = 'none'
+    if (element) {
+      element.style.display = 'none'
+    }
   }
 
-  function createPlugin(pluginId, element = null, contentSettings = {}) {
+  function createPlugin(pluginId, element = null, container = null, contentSettings = {}) {
+    if (!container && element) {
+      container = DMF.containers[element.id]
+    }
     return {
       id: pluginId,
       settings: getPluginSettings(pluginId, contentSettings),
+      container: container || DMF.container,
       element: element,
+      snippets: null,
       getSnippets: function(container = null) {
-        return DMF.getPluginSnippets(this, container)
+        if (this.snippets === null) {
+          this.snippets = DMF.getPluginSnippets(this, container || this.container)
+        }
+        return this.snippets
+      },
+      resolveElement: function(element) {
+        if (typeof element === 'string') {
+          return this.snippet(element)
+        }
+        return element || this.element
+      },
+      is: function(pluginIdPattern) {
+        return this.id.startsWith(pluginIdPattern)
+      },
+      snippet: function(name, container = null) {
+        return this.getSnippets(container)[name]
+      },
+      snippetSettings: function(element) {
+        element = this.resolveElement(element)
+        return DMF.getSettingsFromElement(element)
+      },
+      on: function(eventName, callback, element = null) {
+        element = this.resolveElement(element)
+        if (element) {
+          element.addEventListener(eventName, callback)
+        }
       },
       show: function(element = null) {
-        DMF.show(element || this.element)
+        element = this.resolveElement(element)
+        DMF.show(element)
       },
       hide: function(element = null) {
-        DMF.hide(element || this.element)
+        element = this.resolveElement(element)
+        DMF.hide(element)
       },
       hydrate: function(variables, element = null) {
-        DMF.hydrate(this, variables, element || this.element)
+        element = this.resolveElement(element)
+        DMF.hydrate(this, variables, element)
       },
       markAsLoading: function(element = null) {
-        DMF.markAsLoading([element || this.element])
+        element = this.resolveElement(element)
+        DMF.markAsLoading([element])
       },
       markAsLoaded: function(element = null) {
-        DMF.markAsLoaded([element || this.element])
+        element = this.resolveElement(element)
+        DMF.markAsLoaded([element])
       },
       flushCache: function() {
         DMF.flushCache(pluginId)
@@ -303,8 +366,8 @@
     }
   }
 
-  function createPullPlugin(pluginId, element = null, contentSettings = {}) {
-    const plugin = createPlugin(pluginId, element, contentSettings)
+  function createPullPlugin(pluginId, element = null, container = null, contentSettings = {}) {
+    const plugin = createPlugin(pluginId, element, container, contentSettings)
 
     plugin.pull = async function(arguments = {}, bypassPermissions = false) {
       let proceed = true
@@ -322,7 +385,7 @@
     plugin.pullAndHydrate = async function(
       arguments = {},
       markAsLoading = true,
-      defaultVariables = {},
+      defaultVariables = false,
       refresh = true
     ) {
       const processElement = async () => {
@@ -354,8 +417,8 @@
     return plugin
   }
 
-  function createPushPlugin(pluginId, element = null, contentSettings = {}) {
-    const plugin = createPlugin(pluginId, element, contentSettings)
+  function createPushPlugin(pluginId, element = null, container = null, contentSettings = {}) {
+    const plugin = createPlugin(pluginId, element, container, contentSettings)
 
     plugin.push = async function(payload, context) {
       return await DMF.push(pluginId, payload, context)
@@ -364,12 +427,13 @@
     return plugin
   }
 
-  DMF.plugin = function(pluginId, element = null, contentSettings = {}) {
-    const plugin = pluginId.startsWith('distributor') ? createPushPlugin(pluginId, element, contentSettings) : createPullPlugin(pluginId, element, contentSettings)
-    return plugin
+  DMF.plugin = function(pluginId, element = null, container = null, contentSettings = {}) {
+    return pluginId.startsWith('distributor')
+      ? createPushPlugin(pluginId, element, container, contentSettings)
+      : createPullPlugin(pluginId, element, container, contentSettings)
   }
 
-  DMF.plugins = function(pluginIdPattern = '') {
+  DMF.plugins = function(pluginIdPattern = '', callback) {
     DMF.updateAllKnownElements()
     const plugins = []
     for (let pluginId in DMF.content) {
@@ -379,22 +443,66 @@
           if (element) {
             for (let i = 0; i < DMF.content[pluginId][elementId].length; i++) {
               const contentSettings = DMF.content[pluginId][elementId][i]
-              const plugin = DMF.plugin(pluginId, element, contentSettings)
+              const plugin = DMF.plugin(pluginId, element, null, contentSettings)
               plugins.push(plugin)
             }
           }
         }
       }
     }
+    if (callback) {
+      plugins.forEach((plugin) => {
+        callback(plugin)
+      })
+      DMF.onRescan(callback, pluginIdPattern)
+    }
     return plugins
+  }
+
+  let number = 1
+  function getUniqueId(container = null) {
+    container = container || DMF.container
+    let id
+    do {
+      id = 'dmf-element-' + number
+      number++
+    } while (container.getElementById(id) !== null)
+    return id
+  }
+
+  DMF.getSettingsFromElement = function(element) {
+    const settings = {}
+    const pluginKey = DMF.settings.prefix + 'Plugin'
+    const attributePrefix = DMF.settings.prefix + 'Attribute'
+    for (let key in element.dataset) {
+      const value = element.dataset[key]
+      if (key.startsWith(DMF.settings.prefix) && key !== pluginKey) {
+        if (key === attributePrefix) {
+          continue;
+        }
+        if (key.startsWith(attributePrefix)) {
+          settings.attributes = settings.attributes || {}
+          const attributeName = lcfirst(key.substring(attributePrefix.length))
+          settings.attributes[attributeName] = value
+        } else {
+          settings[lcfirst(key.replace(DMF.settings.prefix, ''))] = value
+        }
+      }
+    }
+    return settings
   }
 
   DMF.updateAllKnownElements = function(container) {
     container = container || DMF.container
     const pluginElements = container.querySelectorAll('[data-' + DMF.settings.prefix + '-plugin]')
+    const plugins = []
     for (let i = 0; i < pluginElements.length; i++) {
       const element = pluginElements[i]
       const pluginId = element.dataset[DMF.settings.prefix + 'Plugin']
+
+      if (!element.id) {
+        element.id = getUniqueId(container)
+      }
 
       if (element.dataset[DMF.settings.prefix + 'SettingsUpdated']) {
         continue
@@ -408,18 +516,15 @@
         DMF.content[pluginId][element.id] = []
       }
 
-      const settings = {}
-      for (let key in element.dataset) {
-        const value = element.dataset[key]
-
-        if (key.startsWith(DMF.settings.prefix) && key !== DMF.settings.prefix + 'Plugin') {
-          settings[lcfirst(key.replace(DMF.settings.prefix, ''))] = value
-        }
-      }
+      const settings = DMF.getSettingsFromElement(element)
 
       DMF.content[pluginId][element.id].push(settings)
+      DMF.containers[element.id] = container
       element.dataset[DMF.settings.prefix + 'SettingsUpdated'] = true
+
+      plugins.push(DMF.plugin(pluginId, element, container, settings))
     }
+    return plugins
   }
 
   DMF.getPluginSnippets = function(plugin, container = null) {
@@ -439,50 +544,62 @@
     return snippets
   }
 
+  DMF.render = function(template, variables, defaultContent = '') {
+    if (!variables) {
+      return defaultContent
+    }
+    let rendered = template
+    for (let field in variables) {
+      rendered = rendered.replace('{{' + field + '}}', variables[field])
+    }
+    rendered = rendered.replace(/\{\{[^}]+\}\}/, '')
+    return rendered
+  }
+
+  function processTemplate(element, settings, variables) {
+    const template = settings.content
+    const defaultContent = settings.defaultContent ?? element.innerHTML
+    element.dataset[DMF.settings.prefix + 'DefaultContent'] = defaultContent
+    element.innerHTML = DMF.render(template, variables, defaultContent)
+  }
+
+  function processAttributes(element, settings, variables) {
+    for (let name in settings.attributes) {
+      template = settings.attributes[name]
+      const value = DMF.render(template, variables)
+      if (value) {
+        element.setAttribute(name, value) // TODO transform camelCase name to dashed-case
+      }
+    }
+  }
+
   DMF.hydrate = function(plugin, variables, element = null) {
     element ??= plugin.element
+
     if (!element) {
-      console.error('no element to hydrate found for plugin', plugin.id)
+      console.warn('No element to hydrate found')
       return
     }
-    function processTemplate(element, variables) {
-      // TODO use a template engine
-      const settings = deepExtend({}, {
-        template: element.innerHTML,
-        defaultContent: element.innerHTML,
-        hideUndefinedVariables: false
-      }, plugin.settings)
 
-      let rendered = settings.template
-      for (let field in variables) {
-        rendered = rendered.replace('{' + field + '}', variables[field])
-      }
+    const isPluginElement = plugin.element && (element === plugin.element)
+    const elementSettings = DMF.getSettingsFromElement(element)
+    const settings = isPluginElement ? deepExtend({}, plugin.settings, elementSettings) : elementSettings
 
-      if (settings.hideUndefinedVariables) {
-        rendered = rendered.replace(/\{[^}]\}/, '')
-      }
-
-      if (rendered.match(/\{[^}]+\}/)) {
-        // if some placeholders could not be filled,
-        // the rendering is incomplete and will be discarded
-        rendered = settings.defaultContent
-      }
-
-      element.innerHTML = rendered
+    if (settings.content) {
+      processTemplate(element, settings, variables)
+    }
+    if (settings.attributes) {
+      processAttributes(element, settings, variables)
     }
 
-    function processField(element, variables) {
-      const settings = deepExtend({}, plugin.settings, {
-        fieldDefault: element.innerHTML
-      })
-      element.innerHTML = typeof variables[field] !== 'undefined' ? variables[field] : fieldDefault
-    }
-
-    if (plugin.settings.field) {
-      processField(element, variables)
-    } else {
-      processTemplate(element, variables)
-    }
+    element.querySelectorAll('[data-' + DMF.settings.prefix + '-content]').forEach((subElement) => {
+      const subSettings = DMF.getSettingsFromElement(subElement)
+      processTemplate(subElement, subSettings, variables)
+    })
+    element.querySelectorAll('[data-' + DMF.settings.prefix + '-attribute]').forEach((subElement) => {
+      const subSettings = DMF.getSettingsFromElement(subElement)
+      processAttributes(subElement, subSettings, variables)
+    })
   }
 
   DMF.flushCache = function(pluginId) {

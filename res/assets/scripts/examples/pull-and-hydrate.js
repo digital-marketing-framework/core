@@ -1,4 +1,4 @@
-;(function () {
+;(async function () {
 
   // wait until DMF is fully initialised
   async function loadDMF() {
@@ -12,7 +12,7 @@
     })
   }
 
-  const DMF = loadDMF()
+  const DMF = await loadDMF()
 
   // pull data for all of your modifiers and hydrate the linked elements automatically
   DMF.plugins('collector:contentModifiers:myModifierName').forEach(plugin => {
