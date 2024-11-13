@@ -58,7 +58,7 @@ interface DataProcessorRegistryInterface extends PluginRegistryInterface
      */
     public function getCondition(string $keyword, array $configuration, DataProcessorContextInterface $context): ?ConditionInterface;
 
-    public function getConditionSchema(): SchemaInterface;
+    public function getConditionSchema(bool $withContext = false): SchemaInterface;
 
     /**
      * @param array<mixed> $additionalArguments
