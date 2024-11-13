@@ -10,7 +10,8 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
 {
     use FileStorageAwareTrait;
 
-    protected $cache = [];
+    /** @var array<string,string> */
+    protected array $cache = [];
 
     abstract protected function getFileExtension(): string;
 
@@ -19,6 +20,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         if (isset($this->cache[$documentIdentifier])) {
             return $this->cache[$documentIdentifier];
         }
+
         if (!$this->fileStorage->fileExists($documentIdentifier)) {
             throw new ConfigurationDocumentNotFoundException(sprintf('Configuration document file not found: %s', $documentIdentifier));
         }

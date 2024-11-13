@@ -39,12 +39,18 @@ abstract class IntegrationPlugin extends ConfigurablePlugin implements Integrati
         return $this->getConfig($key, $default, $this->integrationConfiguration, $this->defaultIntegrationConfiguration);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function getIntegrationMapConfig(string $key, mixed $default = null): array
     {
         return MapUtility::flatten($this->getIntegrationConfig($key, $default));
     }
 
-    protected function getIntegrationListConfig(string $key, mixed $default = null) : array
+    /**
+     * @return array<mixed>
+     */
+    protected function getIntegrationListConfig(string $key, mixed $default = null): array
     {
         return ListUtility::flatten($this->getIntegrationConfig($key, $default));
     }
