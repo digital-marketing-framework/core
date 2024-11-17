@@ -56,21 +56,37 @@
     return out
   }
 
+  function convertElementToArray(element) {
+    if (element === null) {
+      return []
+    }
+    if (!Array.isArray(element)) {
+      return [element]
+    }
+    return element
+  }
+
   function fetchSettings() {
-    const settingsScript = document.querySelector(
-      '[data-dmf-selector="dmf-settings-json"]'
-    )
+    const instances = []
+    if (window.DMF) {
+      instances.push(window.DMF)
+    }
+
+    const settingsScript = document.querySelector('[data-dmf-selector="dmf-settings-json"]')
     if (settingsScript) {
       try {
-        return JSON.parse(settingsScript.innerHTML.trim())
+        const instance = JSON.parse(settingsScript.innerHTML.trim())
+        instances.push(instance)
       } catch (e) {
         console.error(e.message)
-        return null
       }
-    } else if (window.DMF) {
-      return window.DMF;
     }
-    return null;
+
+    if (instances.length === 0) {
+      return null
+    }
+
+    return deepExtend({}, ...instances)
   }
 
   function getAjaxUrl(pluginId, arguments = {}) {
@@ -254,42 +270,65 @@
     permissionChangeCallbacks.push(callback)
   }
 
-  DMF.markAsLoading = function(elements) {
-    elements.forEach((element) => {
-      element.classList.add(CLASS_LOADING)
+  DMF.addClass = function(elements, className, timeout = 0) {
+    convertElementToArray(elements).forEach((element) => {
+      element.classList.add(className)
     })
+    if (timeout > 0) {
+      setTimeout(() => {
+        DMF.removeClass(elements, className)
+      }, timeout)
+    }
+  }
+
+  DMF.removeClass = function(elements, className) {
+    convertElementToArray(elements).forEach((element) => {
+      element.classList.remove(className)
+    })
+  }
+
+  DMF.markAsLoading = function(elements) {
+    DMF.addClass(elements, CLASS_LOADING)
   }
 
   DMF.markAsLoaded = function(elements) {
-    elements.forEach((element) => {
-      element.classList.remove(CLASS_LOADING)
-    })
+    DMF.removeClass(elements, CLASS_LOADING)
   }
 
   DMF.getCookie = function(name) {
-    return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || null;
+    return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || null
   }
 
-  DMF.setCookie = function(name, value, days) {
-    let expires = "";
-    if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + (days*24*60*60*1000));
-      expires = "; expires=" + date.toUTCString();
-    }
-    d.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  DMF.setCookie = function(name, value, days = 0, path = '/', domain = null) {
+    const date = new Date()
+    date.setTime(date.getTime() + (days*24*60*60*1000))
+    const expires = date.toUTCString()
+    document.cookie = name + '=' + (value || '')
+      + (expires ? '; expires= ' + expires : '')
+      + (path ? '; path=' + path : '')
+      + (domain ? '; domain=' + domain : '')
   }
 
-  DMF.show = function(element) {
-    if (element) {
+  DMF.deleteCookie = function(name, path = '/', domain = null) {
+    DMF.setCookie(name, '', -1, path, domain)
+  }
+
+  DMF.show = function(elements) {
+    convertElementToArray(elements).forEach(element => {
       element.style.display = ''
-    }
+    })
   }
 
-  DMF.hide = function(element) {
-    if (element) {
+  DMF.hide = function(elements) {
+    convertElementToArray(elements).forEach(element => {
       element.style.display = 'none'
-    }
+    })
+  }
+
+  DMF.on = function(elements, eventName, callback) {
+    convertElementToArray(elements).forEach(element => {
+      element.addEventListener(eventName, callback)
+    })
   }
 
   function createPlugin(pluginId, element = null, container = null, contentSettings = {}) {
@@ -308,47 +347,65 @@
         }
         return this.snippets
       },
-      resolveElement: function(element) {
+      resolveElement: function(element, first = false) {
+        let result;
         if (typeof element === 'string') {
-          return this.snippet(element)
+          result = this.snippet(element)
+        } else {
+          result = [element || this.element]
         }
-        return element || this.element
+        if (first) {
+          return result[0] ?? null
+        }
+        return result
       },
       is: function(pluginIdPattern) {
         return this.id.startsWith(pluginIdPattern)
       },
-      snippet: function(name, container = null) {
-        return this.getSnippets(container)[name]
+      snippet: function(name, first = false, container = null) {
+        const result = this.getSnippets(container)[name] || []
+        if (first) {
+          return result[0] ?? null
+        }
+        return result
       },
       snippetSettings: function(element) {
-        element = this.resolveElement(element)
+        element = this.resolveElement(element, true)
         return DMF.getSettingsFromElement(element)
       },
       on: function(eventName, callback, element = null) {
-        element = this.resolveElement(element)
-        if (element) {
-          element.addEventListener(eventName, callback)
-        }
+        const elements = this.resolveElement(element)
+        DMF.on(elements, eventName, callback)
       },
       show: function(element = null) {
-        element = this.resolveElement(element)
-        DMF.show(element)
+        const elements = this.resolveElement(element)
+        DMF.show(elements)
       },
       hide: function(element = null) {
-        element = this.resolveElement(element)
-        DMF.hide(element)
+        const elements = this.resolveElement(element)
+        DMF.hide(elements)
       },
       hydrate: function(variables, element = null) {
-        element = this.resolveElement(element)
-        DMF.hydrate(this, variables, element)
+        const elements = this.resolveElement(element)
+        elements.forEach(e => {
+          DMF.hydrate(this, variables, e)
+        })
+      },
+      addClass: function(className, element = null, timeout = 0) {
+        const elements = this.resolveElement(element)
+        DMF.addClass(elements, className, timeout)
+      },
+      removeClass: function(className, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.removeClass(elements, className)
       },
       markAsLoading: function(element = null) {
-        element = this.resolveElement(element)
-        DMF.markAsLoading([element])
+        const elements = this.resolveElement(element)
+        DMF.markAsLoading(elements)
       },
       markAsLoaded: function(element = null) {
-        element = this.resolveElement(element)
-        DMF.markAsLoaded([element])
+        const elements = this.resolveElement(element)
+        DMF.markAsLoaded(elements)
       },
       flushCache: function() {
         DMF.flushCache(pluginId)
@@ -543,13 +600,27 @@
     }
     container = container || DMF.container
     const snippets = {}
+
+    // snippets that define a plugin target can be outside of a plugin element and still be connected
+    // and they can be inside a plugin element and still not be connected
     container.querySelectorAll('[data-' + DMF.settings.prefix + '-plugin-target][data-' + DMF.settings.prefix + '-plugin-snippet]').forEach(snippet => {
       const pluginElement = container.querySelector(snippet.dataset[DMF.settings.prefix + 'PluginTarget'])
       if (pluginElement === plugin.element) {
         const snippetName = snippet.dataset[DMF.settings.prefix + 'PluginSnippet']
-        snippets[snippetName] = snippet
+        snippets[snippetName] = snippets[snippetName] || []
+        snippets[snippetName].push(snippet)
       }
     })
+
+    // snippets without a plugin target are considered to be part of the plugin as soon as they are inside the plugin element
+    plugin.element.querySelectorAll('[data-' + DMF.settings.prefix + '-plugin-snippet]').forEach(snippet => {
+      if (!snippet.dataset[DMF.settings.prefix + 'PluginTarget']) {
+        const snippetName = snippet.dataset[DMF.settings.prefix + 'PluginSnippet']
+        snippets[snippetName] = snippets[snippetName] || []
+        snippets[snippetName].push(snippet)
+      }
+    })
+
     return snippets
   }
 
@@ -582,6 +653,13 @@
     }
   }
 
+  function processField(element, settings, variables) {
+    const fieldName = settings.field
+    const defaultContent = settings.defaultContent ?? element.innerHTML
+    element.dataset[DMF.settings.prefix + 'DefaultContent'] = defaultContent
+    element.innerHTML = variables[fieldName] ?? defaultContent
+  }
+
   DMF.hydrate = function(plugin, variables, element = null) {
     element ??= plugin.element
 
@@ -600,6 +678,9 @@
     if (settings.attributes) {
       processAttributes(element, settings, variables)
     }
+    if (settings.field) {
+      processField(element, settings, variables)
+    }
 
     element.querySelectorAll('[data-' + DMF.settings.prefix + '-content]').forEach((subElement) => {
       const subSettings = DMF.getSettingsFromElement(subElement)
@@ -608,6 +689,10 @@
     element.querySelectorAll('[data-' + DMF.settings.prefix + '-attribute]').forEach((subElement) => {
       const subSettings = DMF.getSettingsFromElement(subElement)
       processAttributes(subElement, subSettings, variables)
+    })
+    element.querySelectorAll('[data-' + DMF.settings.prefix + '-field]').forEach((subElement) => {
+      const subSettings = DMF.getSettingsFromElement(subElement)
+      processField(subElement, subSettings, variables)
     })
   }
 
