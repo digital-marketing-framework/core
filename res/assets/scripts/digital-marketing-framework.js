@@ -697,11 +697,19 @@
   }
 
   DMF.flushCache = function(pluginId) {
+    function flush(url) {
+      if (fetchCache[url] && typeof fetchCache[url].response !== 'undefined') {
+        // flush only if the request is already finished
+        delete fetchCache[url]
+      }
+    }
     if (typeof pluginId !== 'undefined') {
       const url = getAjaxUrl(pluginId)
-      delete fetchCache[url]
+      flush(url)
     } else {
-      fetchCache = {}
+      Object.keys(fetchCache).forEach(url => {
+        flush(url)
+      })
     }
   }
 
