@@ -24,7 +24,6 @@ const props = defineProps({
 });
 
 const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
-const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
 const label = computed(() => getLabel(props.currentPath));
 const customIcon = computed(() => getIcon(props.currentPath, undefined, schema.value));
 const description = computed(() => schema.value.description || '');
@@ -32,10 +31,7 @@ const description = computed(() => schema.value.description || '');
 
 <template>
     <div class="tw-bg-indigo-100 tw-border tw-rounded tw-border-indigo-500/20">
-        <header class="tw-flex tw-items-center tw-justify-between tw-gap-4 tw-px-3 tw-py-2 tw-text-indigo-800"
-                :class="{
-                    'tw-border-r-red-400 todo-class-overwritten': isOverwritten
-                }">
+        <header class="tw-flex tw-items-center tw-justify-between tw-gap-4 tw-px-3 tw-py-2 tw-text-indigo-800">
             <div class="tw-flex tw-items-center tw-gap-x-2">
                 <slot name="disclosureButton"></slot>
                 <label :for="label"

@@ -27,7 +27,7 @@ const allowedValues = computed(() => getAllowedValues(props.currentPath));
                         @change="store.setValue(currentPath, undefined, $event.target.value, true)"
                         class="tw-form-select tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6 tw-text-ellipsis"
                         :class="{
-                            'todo-class-readonly tw-bg-neutral-100': store.settings.readonly
+                            'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
                         }"
                         :disabled="store.settings.readonly">
                     <option v-for="(label, value) in allowedValues"
