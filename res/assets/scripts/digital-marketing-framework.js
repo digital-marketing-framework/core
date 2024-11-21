@@ -347,16 +347,46 @@
         }
         return this.snippets
       },
+      getAllSnippetElements: function(container = null) {
+        const result = []
+        const snippets = this.getSnippets()
+        Object.keys(snippets).forEach(name => {
+          result.push(...snippets[name])
+        })
+        return result
+      },
       resolveElement: function(element, first = false) {
         let result;
         if (typeof element === 'string') {
-          result = this.snippet(element)
+          if (element === 'all') {
+            // string "all" means the plugin element itself plus all of its snippets
+            result = [this.element, ...this.getAllSnippetElements()]
+          } else {
+            // all other strings are names of snippets
+            result = this.snippet(element)
+          }
+        } else if (Array.isArray(element)) {
+          // an array means that there is a (mixed) list of elements and snippet names
+          result = []
+          element.forEach((e) => {
+            this.resolveElement(e, false).forEach((subElement) => {
+              if (!result.includes(subElement)) {
+                result.push(subElement)
+              }
+            })
+          })
+        } else if (element === null) {
+          // no element means the plugin element
+          result = [this.element]
         } else {
-          result = [element || this.element]
+          // everything else is just any element
+          result = [element]
         }
+
         if (first) {
           return result[0] ?? null
         }
+
         return result
       },
       is: function(pluginIdPattern) {
