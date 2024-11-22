@@ -226,9 +226,10 @@
   }
 
   DMF.rescan = function(container) {
+    container = container || DMF.container
     const newPlugins = DMF.updateAllKnownElements(container)
     rescanCallbacks.forEach((callback) => {
-      callback(newPlugins)
+      callback(newPlugins, container)
     })
   }
 
@@ -253,13 +254,13 @@
   }
 
   DMF.onRescan = function(callback, pluginIdPattern = '') {
-    rescanCallbacks.push((plugins) => {
-      if (pluginIdPattern = '') {
-        callback(plugins)
+    rescanCallbacks.push((plugins, container) => {
+      if (pluginIdPattern === '') {
+        callback(plugins, container)
       } else {
         plugins.forEach((plugin) => {
           if (plugin.id.startsWith(pluginIdPattern)) {
-            callback(plugin)
+            callback(plugin, container)
           }
         })
       }
