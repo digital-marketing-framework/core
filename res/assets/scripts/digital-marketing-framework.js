@@ -270,20 +270,26 @@
     permissionChangeCallbacks.push(callback)
   }
 
-  DMF.addClass = function(elements, className, timeout = 0) {
+  DMF.addClass = function(elements, classNames, timeout = 0) {
+    if (typeof classNames === 'string') {
+      classNames = classNames.split(' ')
+    }
     convertElementToArray(elements).forEach((element) => {
-      element.classList.add(className)
+      element.classList.add(...classNames)
     })
     if (timeout > 0) {
       setTimeout(() => {
-        DMF.removeClass(elements, className)
+        DMF.removeClass(elements, classNames)
       }, timeout)
     }
   }
 
-  DMF.removeClass = function(elements, className) {
+  DMF.removeClass = function(elements, classNames) {
+    if (typeof classNames === 'string') {
+      classNames = classNames.split(' ')
+    }
     convertElementToArray(elements).forEach((element) => {
-      element.classList.remove(className)
+      element.classList.remove(...classNames)
     })
   }
 
@@ -421,13 +427,13 @@
           DMF.hydrate(this, variables, e)
         })
       },
-      addClass: function(className, element = null, timeout = 0) {
+      addClass: function(classNames, element = null, timeout = 0) {
         const elements = this.resolveElement(element)
-        DMF.addClass(elements, className, timeout)
+        DMF.addClass(elements, classNames, timeout)
       },
-      removeClass: function(className, element = null) {
+      removeClass: function(classNames, element = null) {
         const elements = this.resolveElement(element)
-        DMF.removeClass(elements, className)
+        DMF.removeClass(elements, classNames)
       },
       markAsLoading: function(element = null) {
         const elements = this.resolveElement(element)
