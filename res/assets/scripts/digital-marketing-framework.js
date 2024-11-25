@@ -294,6 +294,14 @@
     })
   }
 
+  DMF.updateClass = function(elements, classNames, condition) {
+    if (condition) {
+      DMF.addClass(elements, classNames)
+    } else {
+      DMF.removeClass(elements, classNames)
+    }
+  }
+
   DMF.markAsLoading = function(elements) {
     DMF.addClass(elements, CLASS_LOADING)
   }
@@ -332,9 +340,23 @@
     })
   }
 
+  DMF.updateVisibility = function(elements, condition) {
+    if (condition) {
+      DMF.show(elements)
+    } else {
+      DMF.hide(elements)
+    }
+  }
+
   DMF.on = function(elements, eventName, callback) {
     convertElementToArray(elements).forEach(element => {
       element.addEventListener(eventName, callback)
+    })
+  }
+
+  DMF.off = function(elements, eventName, callback) {
+    convertElementToArray(elements).forEach(element => {
+      element.removeEventListener(eventName, callback)
     })
   }
 
@@ -414,6 +436,10 @@
         const elements = this.resolveElement(element)
         DMF.on(elements, eventName, callback)
       },
+      off: function(eventName, callback, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.off(elements, eventName, callback)
+      },
       show: function(element = null) {
         const elements = this.resolveElement(element)
         DMF.show(elements)
@@ -421,6 +447,10 @@
       hide: function(element = null) {
         const elements = this.resolveElement(element)
         DMF.hide(elements)
+      },
+      updateVisibility: function(condition, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.updateVisibility(elements, condition)
       },
       hydrate: function(variables, element = null) {
         const elements = this.resolveElement(element)
@@ -435,6 +465,10 @@
       removeClass: function(classNames, element = null) {
         const elements = this.resolveElement(element)
         DMF.removeClass(elements, classNames)
+      },
+      updateClass: function(classNames, condition, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.updateClass(elements, classNames, condition)
       },
       markAsLoading: function(element = null) {
         const elements = this.resolveElement(element)
