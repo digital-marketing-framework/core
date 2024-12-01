@@ -1,17 +1,26 @@
 ;(function () {
   // defaults //
 
-  const EVENT_INIT = 'dmf-init'
-  const EVENT_READY = 'dmf-ready'
-  const EVENT_REQUEST_READY = 'dmf-request-ready'
-
-  const CLASS_LOADING = 'loading'
-
-  const SETTINGS_REQUIRED_PERMISSION = 'requiredPermission'
+  const INTERACTIVE_ELEMENTS = ['A', 'BUTTON', 'FORM']
 
   const DEFAULTS = {
     settings: {
       prefix: 'dmf',
+      events: {
+        INIT: 'dmf-init',
+        READY: 'dmf-ready',
+        REQUEST_READY: 'dmf-request-ready'
+      },
+      classes: {
+        LOADING: 'loading',
+        DISABLED: 'disabled'
+      },
+      fields: {
+        REQUIRED_PERMISSION: 'requiredPermission'
+      },
+      html: {
+        INTERACTIVE_ELEMENTS: ['A', 'BUTTON', 'FORM']
+      }
     },
     urls: {},
     pluginSettings: {},
@@ -37,6 +46,14 @@
     return str.charAt(0).toLowerCase() + str.slice(1)
   }
 
+  function camelCaseToDashed(str) {
+    return lcfirst(str).replace(/[A-Z]/g, c => '-' + c.toLowerCase())
+  }
+
+  function dashedToCamelCase(str) {
+    return lcfirst(str.replace(/-./g, c => c.substring(1).toUpperCase()))
+  }
+
   function deepExtend(out) {
     out = out || {}
     for (let i = 1; i < arguments.length; i++) {
@@ -59,6 +76,9 @@
   function convertElementToArray(element) {
     if (element === null) {
       return []
+    }
+    if (typeof element === 'object' && NodeList.prototype.isPrototypeOf(element)) {
+      return [...element]
     }
     if (!Array.isArray(element)) {
       return [element]
@@ -169,6 +189,10 @@
     return deepExtend({}, DMF.settings, pluginSettings, urlSettings, contentSettings)
   }
 
+  function disableHandler(event) {
+    event.preventDefault()
+  }
+
   function initDMF() {
     const base = fetchSettings()
 
@@ -188,12 +212,12 @@
     // event for other scripts to enrich the API
     if (init) {
       document.dispatchEvent(
-        new CustomEvent(EVENT_INIT, { detail: { DMF: DMF } })
+        new CustomEvent(DMF.settings.events.INIT, { detail: { DMF: DMF } })
       )
     }
     // event for other scripts to start using the API
     document.dispatchEvent(
-      new CustomEvent(EVENT_READY, { detail: { DMF: DMF } })
+      new CustomEvent(DMF.settings.events.READY, { detail: { DMF: DMF } })
     )
   }
 
@@ -204,6 +228,43 @@
   if (DMF === null) {
     console.error('No (valid) DMF settings found')
     return
+  }
+
+  DMF.getPluginAttributeDatasetName = function(name) {
+    return DMF.settings.prefix + ucfirst(name)
+  }
+
+  DMF.getPluginAttributeName = function(name) {
+    return 'data-' + DMF.settings.prefix + '-' + camelCaseToDashed(name)
+  }
+
+  DMF.getPluginAttributeSelector = function(name, value = null, prefix = false) {
+    let selector = '[' + DMF.getPluginAttributeName(name)
+    if (value !== null) {
+      if (prefix) {
+        selector += '^'
+      }
+      selector += '="' + value + '"'
+    }
+    return selector + ']'
+  }
+
+  DMF.getPluginAttribute = function(element, name) {
+    return element.dataset[DMF.getPluginAttributeDatasetName(name)] || null
+  }
+
+  DMF.setPluginAttribute = function(element, name, value) {
+    element.dataset[DMF.settings.prefix + ucfirst(name)] = value
+  }
+
+  DMF.getFormData = function(element) {
+    const form = element.closest('form')
+    const formData = new FormData(form)
+    const data = {}
+    for (let [name, value] of formData.entries()) {
+      data[name] = value
+    }
+    return data
   }
 
   DMF.register = function(name, api) {
@@ -271,6 +332,81 @@
     permissionChangeCallbacks.push(callback)
   }
 
+  DMF.getInteractiveElements = function(elements, tags = INTERACTIVE_ELEMENTS) {
+    if (!Array.isArray(tags) || tags.length === 0) {
+      return convertElementToArray(elements)
+    }
+
+    const result = []
+    convertElementToArray(elements).forEach(container => {
+      if (tags.includes(container.tagName.toUpperCase()) && !result.includes(container)) {
+        result.push(container)
+      }
+      container.querySelectorAll(tags.join(',')).forEach(element => {
+        if (!result.includes(element)) {
+          result.push(element)
+        }
+      })
+    })
+    return result
+  }
+
+  DMF.disableInteractivity = function(elements, tags = INTERACTIVE_ELEMENTS) {
+    elements = DMF.getInteractiveElements(elements, tags)
+    DMF.setAttribute(elements, 'data-dmf-disabled', true)
+    DMF.addClass(elements, DMF.settings.classes.DISABLED)
+    DMF.on(elements, 'click submit', disableHandler)
+  }
+
+  DMF.enableInteractivity = function(elements, tags = INTERACTIVE_ELEMENTS) {
+    elements = DMF.getInteractiveElements(elements, tags)
+    DMF.off(elements, 'click submit', disableHandler)
+    DMF.removeClass(elements, DMF.settings.classes.DISABLED)
+    DMF.removeAttribute(elements, 'data-dmf-disabled')
+  }
+
+  DMF.updateInteractivity = function(elements, condition, tags = INTERACTIVE_ELEMENTS) {
+    if (condition) {
+      DMF.enableInteractivity(elements, tags)
+    } else {
+      DMF.disableInteractivity(elements, tags)
+    }
+  }
+
+  DMF.disableLinks = function(elements) {
+    DMF.disableInteractivity(elements, ['A'])
+  }
+
+  DMF.enableLinks = function(elements) {
+    DMF.enableInteractivity(elements, ['A'])
+  }
+
+  DMF.updateLinkAvailability = function(elements, condition) {
+    DMF.updateInteractivity(elements, condition, ['A'])
+  }
+
+  DMF.setAttribute = function(elements, attributeName, attributeValue) {
+    convertElementToArray(elements).forEach(element => {
+      if (attributeValue === null) {
+        element.removeAttribute(attributeName)
+      } else {
+        element.setAttribute(attributeName, attributeValue)
+      }
+    })
+  }
+
+  DMF.removeAttribute = function(elements, attributeName) {
+    DMF.setAttribute(elements, attributeName, null)
+  }
+
+  DMF.updateAttribute = function(elements, attributeName, attributeValue, condition) {
+    if (condition) {
+      DMF.setAttribute(elements, attributeName, attributeValue)
+    } else {
+      DMF.removeAttribute(elements, attributeName)
+    }
+  }
+
   DMF.addClass = function(elements, classNames, timeout = 0) {
     if (typeof classNames === 'string') {
       classNames = classNames.split(' ')
@@ -303,11 +439,11 @@
   }
 
   DMF.markAsLoading = function(elements) {
-    DMF.addClass(elements, CLASS_LOADING)
+    DMF.addClass(elements, DMF.settings.classes.LOADING)
   }
 
   DMF.markAsLoaded = function(elements) {
-    DMF.removeClass(elements, CLASS_LOADING)
+    DMF.removeClass(elements, DMF.settings.classes.LOADING)
   }
 
   DMF.getCookie = function(name) {
@@ -349,14 +485,26 @@
   }
 
   DMF.on = function(elements, eventName, callback) {
+    const names = eventName.split(' ')
     convertElementToArray(elements).forEach(element => {
-      element.addEventListener(eventName, callback)
+      names.forEach(name => {
+        element.addEventListener(name, callback)
+      })
     })
   }
 
   DMF.off = function(elements, eventName, callback) {
+    const names = eventName.split(' ')
     convertElementToArray(elements).forEach(element => {
-      element.removeEventListener(eventName, callback)
+      names.forEach(name => {
+        element.removeEventListener(name, callback)
+      })
+    })
+  }
+
+  DMF.trigger = function(elements, eventName, payload = {}) {
+    convertElementToArray(elements).forEach(element => {
+      element.dispatchEvent(new CustomEvent(eventName, { detail: payload }))
     })
   }
 
@@ -407,6 +555,8 @@
         } else if (element === null) {
           // no element means the plugin element
           result = [this.element]
+        } else if (typeof element === 'object' && NodeList.prototype.isPrototypeOf(element)) {
+          result = [...element]
         } else {
           // everything else is just any element
           result = [element]
@@ -458,6 +608,50 @@
           DMF.hydrate(this, variables, e)
         })
       },
+      getInteractiveElements: function(element = null, tags = INTERACTIVE_ELEMENTS) {
+        const elements = this.resolveElement(element)
+        return DMF.getInteractiveElements(elements, tags)
+      },
+      disableInteractivity: function(element = null, tags = INTERACTIVE_ELEMENTS) {
+        const elements = this.resolveElement(element)
+        DMF.disableElements(elements, tags)
+      },
+      enableInteractivity: function(element = null, tags = INTERACTIVE_ELEMENTS) {
+        const elements = this.resolveElement(element)
+        DMF.enableElements(elements, tags)
+      },
+      updateInteractivity: function(condition, element = null, tags = INTERACTIVE_ELEMENTS) {
+        const elements = this.resolveElement(element)
+        DMF.updateElementAvaiablility(elements, condition, tags)
+      },
+      getLinks: function(element = null) {
+        const elements = this.resolveElement(element)
+        return DMF.getLinks(elements)
+      },
+      disableLinks: function(element = null) {
+        const elements = this.resolveElement(element)
+        DMF.disableLinks(elements)
+      },
+      enableLinks: function(element = null) {
+        const elements = this.resolveElement(element)
+        DMF.enableLinks(elements)
+      },
+      updateLinkAvailability: function(condition, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.updateLinkAvailability(elements, condition)
+      },
+      setAttribute: function(attributeName, attributeValue, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.setAttribute(elements, attributeName, attributeValue)
+      },
+      removeAttribute: function(attributeName, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.removeAttribute(elements, attributeName)
+      },
+      updateAttribute: function(attributeName, attributeValue, element = null) {
+        const elements = this.resolveElement(element)
+        DMF.updateAttribute(elements, attributeName, attributeValue)
+      },
       addClass: function(classNames, element = null, timeout = 0) {
         const elements = this.resolveElement(element)
         DMF.addClass(elements, classNames, timeout)
@@ -487,9 +681,9 @@
       getPermissions: async function() {
         return await DMF.getPermissions()
       },
-      checkPermission: async function(permission) {
-        if (typeof permission === 'undefined') {
-          permission = this.settings[SETTINGS_REQUIRED_PERMISSION]
+      checkPermission: async function(permission = null) {
+        if (permission === null) {
+          permission = this.settings[this.settings.fields.REQUIRED_PERMISSION]
         }
 
         return await DMF.checkPermission(permission)
@@ -502,7 +696,7 @@
 
     plugin.pull = async function(arguments = {}, bypassPermissions = false) {
       let proceed = true
-      if (!bypassPermissions && typeof this.settings[SETTINGS_REQUIRED_PERMISSION] !== 'undefined') {
+      if (!bypassPermissions && typeof this.settings[this.settings.fields.REQUIRED_PERMISSION] !== 'undefined') {
         proceed = await this.checkPermission()
       }
 
@@ -609,13 +803,13 @@
 
   DMF.getSettingsFromElement = function(element) {
     const settings = {}
-    const pluginKey = DMF.settings.prefix + 'Plugin'
-    const attributePrefix = DMF.settings.prefix + 'Attribute'
+    const pluginKey = DMF.getPluginAttributeDatasetName('plugin')
+    const attributePrefix = DMF.getPluginAttributeDatasetName('attribute')
     for (let key in element.dataset) {
       const value = element.dataset[key]
       if (key.startsWith(DMF.settings.prefix) && key !== pluginKey) {
         if (key === attributePrefix) {
-          continue;
+          continue
         }
         if (key.startsWith(attributePrefix)) {
           settings.attributes = settings.attributes || {}
@@ -631,33 +825,30 @@
 
   DMF.updateAllKnownElements = function(container) {
     container = container || DMF.container
-    const pluginElements = container.querySelectorAll('[data-' + DMF.settings.prefix + '-plugin]')
+    const pluginElements = container.querySelectorAll(DMF.getPluginAttributeSelector('plugin'))
     const plugins = []
     for (let i = 0; i < pluginElements.length; i++) {
       const element = pluginElements[i]
-      const pluginId = element.dataset[DMF.settings.prefix + 'Plugin']
+      const pluginId = DMF.getPluginAttribute(element, 'plugin')
 
       if (!element.id) {
         element.id = getUniqueId(container)
       }
 
-      if (element.dataset[DMF.settings.prefix + 'SettingsUpdated']) {
+      if (DMF.getPluginAttribute(element, 'settingsUpdated')) {
         continue
       }
 
-      if (typeof DMF.content[pluginId] === 'undefined') {
-        DMF.content[pluginId] = {}
-      }
-
-      if (typeof DMF.content[pluginId][element.id] === 'undefined') {
-        DMF.content[pluginId][element.id] = []
-      }
+      DMF.content[pluginId] ??= {}
+      DMF.content[pluginId][element.id] ??= []
 
       const settings = DMF.getSettingsFromElement(element)
+      const index = DMF.content[pluginId][element.id].length
+      settings.index = index
 
-      DMF.content[pluginId][element.id].push(settings)
+      DMF.content[pluginId][element.id][index] = settings
       DMF.containers[element.id] = container
-      element.dataset[DMF.settings.prefix + 'SettingsUpdated'] = true
+      DMF.setPluginAttribute(element, 'settingsUpdated', true)
 
       plugins.push(DMF.plugin(pluginId, element, container, settings))
     }
@@ -674,20 +865,23 @@
 
     // snippets that define a plugin target can be outside of a plugin element and still be connected
     // and they can be inside a plugin element and still not be connected
-    container.querySelectorAll('[data-' + DMF.settings.prefix + '-plugin-target][data-' + DMF.settings.prefix + '-plugin-snippet]').forEach(snippet => {
-      const pluginElement = container.querySelector(snippet.dataset[DMF.settings.prefix + 'PluginTarget'])
+    const snippetSelector = DMF.getPluginAttributeSelector('pluginSnippet')
+    const targetedSnippetSelector = snippetSelector + DMF.getPluginAttributeSelector('pluginTarget')
+    container.querySelectorAll(targetedSnippetSelector).forEach(snippet => {
+      const pluginSelector = DMF.getPluginAttribute(snippet, 'pluginTarget')
+      const pluginElement = container.querySelector(pluginSelector)
       if (pluginElement === plugin.element) {
-        const snippetName = snippet.dataset[DMF.settings.prefix + 'PluginSnippet']
+        const snippetName = DMF.getPluginAttribute(snippet, 'pluginSnippet')
         snippets[snippetName] = snippets[snippetName] || []
         snippets[snippetName].push(snippet)
       }
     })
 
     // snippets without a plugin target are considered to be part of the plugin as soon as they are inside the plugin element
-    plugin.element.querySelectorAll('[data-' + DMF.settings.prefix + '-plugin-snippet]').forEach(snippet => {
-      if (!snippet.dataset[DMF.settings.prefix + 'PluginTarget']) {
-        const snippetName = snippet.dataset[DMF.settings.prefix + 'PluginSnippet']
-        snippets[snippetName] = snippets[snippetName] || []
+    plugin.element.querySelectorAll(snippetSelector).forEach(snippet => {
+      if (!DMF.getPluginAttribute(snippet, 'pluginTarget')) {
+        const snippetName = DMF.getPluginAttribute(snippet, 'pluginSnippet')
+        snippets[snippetName] ??= []
         snippets[snippetName].push(snippet)
       }
     })
@@ -710,7 +904,7 @@
   function processTemplate(element, settings, variables) {
     const template = settings.content
     const defaultContent = settings.defaultContent ?? element.innerHTML
-    element.dataset[DMF.settings.prefix + 'DefaultContent'] = defaultContent
+    DMF.setPluginAttribute(element, 'defaultContent', defaultContent)
     element.innerHTML = DMF.render(template, variables, defaultContent)
   }
 
@@ -719,7 +913,7 @@
       template = settings.attributes[name]
       const value = DMF.render(template, variables)
       if (value) {
-        element.setAttribute(name, value) // TODO transform camelCase name to dashed-case
+        element.setAttribute(camelCaseToDashed(name), value)
       }
     }
   }
@@ -727,7 +921,7 @@
   function processField(element, settings, variables) {
     const fieldName = settings.field
     const defaultContent = settings.defaultContent ?? element.innerHTML
-    element.dataset[DMF.settings.prefix + 'DefaultContent'] = defaultContent
+    DMF.setPluginAttribute(element, 'defaultContent', defaultContent)
     element.innerHTML = variables[fieldName] ?? defaultContent
   }
 
@@ -753,15 +947,15 @@
       processField(element, settings, variables)
     }
 
-    element.querySelectorAll('[data-' + DMF.settings.prefix + '-content]').forEach((subElement) => {
+    element.querySelectorAll(DMF.getPluginAttributeSelector('content')).forEach((subElement) => {
       const subSettings = DMF.getSettingsFromElement(subElement)
       processTemplate(subElement, subSettings, variables)
     })
-    element.querySelectorAll('[data-' + DMF.settings.prefix + '-attribute]').forEach((subElement) => {
+    element.querySelectorAll(DMF.getPluginAttributeSelector('attribute')).forEach((subElement) => {
       const subSettings = DMF.getSettingsFromElement(subElement)
       processAttributes(subElement, subSettings, variables)
     })
-    element.querySelectorAll('[data-' + DMF.settings.prefix + '-field]').forEach((subElement) => {
+    element.querySelectorAll(DMF.getPluginAttributeSelector('field')).forEach((subElement) => {
       const subSettings = DMF.getSettingsFromElement(subElement)
       processField(subElement, subSettings, variables)
     })
@@ -790,6 +984,6 @@
 
   window.DMF = DMF
 
-  document.addEventListener(EVENT_REQUEST_READY, callReady)
+  document.addEventListener(DMF.settings.events.REQUEST_READY, callReady)
   callReady(true)
 })()
