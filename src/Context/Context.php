@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Context;
 
 use ArrayObject;
+use BadMethodCallException;
 
 /**
  * @extends ArrayObject<string,mixed>
@@ -65,5 +66,32 @@ abstract class Context extends ArrayObject implements ContextInterface
     public function getRequestArgument(string $name): mixed
     {
         return $this->getRequestArguments()[$name] ?? null;
+    }
+
+    public function isResponsive(): bool
+    {
+        return false;
+    }
+
+    public function setResponseCookie(
+        string $name,
+        string $value,
+        int $expires = 0,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = true,
+        bool $httponly = true,
+    ): void {
+        throw new BadMethodCallException('Generic context cannot set response cookies.');
+    }
+
+    public function getResponseData(): array
+    {
+        return [];
+    }
+
+    public function applyResponseData(): void
+    {
+        throw new BadMethodCallException('Generic context cannot apply response data.');
     }
 }

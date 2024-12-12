@@ -48,4 +48,23 @@ interface ContextInterface extends ArrayAccess
     public function getRequestArguments(): array;
 
     public function getRequestArgument(string $name): mixed;
+
+    public function isResponsive(): bool;
+
+    public function setResponseCookie(
+        string $name,
+        string $value,
+        int $expires = 0,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = true,
+        bool $httponly = true,
+    ): void;
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getResponseData(): array;
+
+    public function applyResponseData(): void;
 }
