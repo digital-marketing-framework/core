@@ -4,6 +4,8 @@ namespace DigitalMarketingFramework\Core\Plugin;
 
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use DigitalMarketingFramework\Core\Utility\ListUtility;
+use DigitalMarketingFramework\Core\Utility\MapUtility;
 
 abstract class IntegrationPlugin extends ConfigurablePlugin implements IntegrationPluginInterface
 {
@@ -35,5 +37,21 @@ abstract class IntegrationPlugin extends ConfigurablePlugin implements Integrati
     protected function getIntegrationConfig(string $key, mixed $default = null): mixed
     {
         return $this->getConfig($key, $default, $this->integrationConfiguration, $this->defaultIntegrationConfiguration);
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    protected function getIntegrationMapConfig(string $key, mixed $default = null): array
+    {
+        return MapUtility::flatten($this->getIntegrationConfig($key, $default));
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    protected function getIntegrationListConfig(string $key, mixed $default = null): array
+    {
+        return ListUtility::flatten($this->getIntegrationConfig($key, $default));
     }
 }

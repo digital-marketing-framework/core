@@ -89,6 +89,33 @@ class ContextStack implements ContextStackInterface
         return $this->getActiveContext()->getRequestArgument($name);
     }
 
+    public function isResponsive(): bool
+    {
+        return $this->getActiveContext()->isResponsive();
+    }
+
+    public function setResponseCookie(
+        string $name,
+        string $value,
+        int $expires = 0,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = true,
+        bool $httponly = true,
+    ): void {
+        $this->getActiveContext()->setResponseCookie($name, $value, $expires, $path, $domain, $secure, $httponly);
+    }
+
+    public function getResponseData(): array
+    {
+        return $this->getActiveContext()->getResponseData();
+    }
+
+    public function applyResponseData(): void
+    {
+        $this->getActiveContext()->applyResponseData();
+    }
+
     public function offsetExists(mixed $offset): bool
     {
         return $this->getActiveContext()->offsetExists($offset);
