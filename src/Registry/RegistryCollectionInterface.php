@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
@@ -54,4 +55,8 @@ interface RegistryCollectionInterface extends ContextRegistryInterface
     public function getFrontendSettings(): array;
 
     public function getApiEntryRouteResolver(): EntryRouteResolverInterface;
+
+    public function getNotificationManager(): NotificationManagerInterface;
+
+    public function setNotificationManager(NotificationManagerInterface $notificationManager): void;
 }

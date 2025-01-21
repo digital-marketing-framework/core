@@ -13,8 +13,10 @@ use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Plugin\NotificationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ApiRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\AssetServiceRegistryTrait;
@@ -46,6 +48,7 @@ class Registry implements RegistryInterface
     use DataPrivacyManagerRegistryTrait;
 
     use LoggerFactoryRegistryTrait;
+    use NotificationRegistryTrait;
     use ContextRegistryTrait;
     use CacheRegistryTrait;
     use ConfigurationSchemaRegistryTrait;
@@ -136,6 +139,10 @@ class Registry implements RegistryInterface
 
         if ($object instanceof DataPrivacyManagerAwareInterface) {
             $object->setDataPrivacyManager($this->getDataPrivacyManager());
+        }
+
+        if ($object instanceof NotificationManagerInterface) {
+            $object->setNotificationManager($this->getNotificationManager());
         }
     }
 
