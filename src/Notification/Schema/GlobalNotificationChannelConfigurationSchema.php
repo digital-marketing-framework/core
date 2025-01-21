@@ -1,6 +1,6 @@
 <?php
 
-namespace DigitalMarketingFramework\Core\Notification;
+namespace DigitalMarketingFramework\Core\Notification\Schema;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
