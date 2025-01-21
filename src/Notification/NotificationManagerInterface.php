@@ -5,7 +5,9 @@ namespace DigitalMarketingFramework\Core\Notification;
 interface NotificationManagerInterface
 {
     public const LEVEL_NOTICE = 0;
+
     public const LEVEL_WARNING = 1;
+
     public const LEVEL_ERROR = 2;
 
     public const DEFAULT_COMPONENT = 'global';
