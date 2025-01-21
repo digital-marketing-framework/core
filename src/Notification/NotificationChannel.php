@@ -4,17 +4,76 @@ namespace DigitalMarketingFramework\Core\Notification;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
+use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
-abstract class NotificationChannel implements NotificationChannelInterface, GlobalConfigurationAwareInterface
+abstract class NotificationChannel implements NotificationChannelInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
 {
     use GlobalConfigurationAwareTrait;
+    use LoggerAwareTrait;
 
     protected array $configuration;
 
-    abstract public function notify(string $message, string $component, int $level): void;
+    public function __construct(
+        protected string $keyword,
+        protected RegistryInterface $registry,
+    ) {
+    }
+
+    abstract public function notify(
+        string $title,
+        string $message,
+        mixed $details,
+        string $component,
+        int $level
+    ): void;
 
     abstract protected function getConfigPackageKey(): string;
+
+    protected function levelToString(int $level): string
+    {
+        return match ($level) {
+            NotificationManagerInterface::LEVEL_NOTICE => 'NOTICE',
+            NotificationManagerInterface::LEVEL_WARNING => 'WARNING',
+            NotificationManagerInterface::LEVEL_ERROR => 'ERROR',
+        };
+    }
+
+    protected function getBody(string $title, string $message, mixed $details, string $component, int $level): string
+    {
+        $body = $title . PHP_EOL;
+
+        $body .= 'component: ' . $component . PHP_EOL;
+
+        $body .= $this->levelToString($level) . PHP_EOL;
+
+        $body .= $message . PHP_EOL;
+
+        if ($details !== null) {
+            $body .= PHP_EOL . '===' . PHP_EOL . print_r($details, true) . PHP_EOL;
+        }
+    }
+
+    protected function getHtmlBody(string $title, string $message, mixed $details, string $component, int $level): string
+    {
+        $body = '<h1>' . $title  . '</h1>' . PHP_EOL;
+
+        $body .= '<p>component: ' . $component . '</p>' . PHP_EOL;
+
+        $body .= '<p>' . match ($level) {
+            NotificationManagerInterface::LEVEL_NOTICE => 'NOTICE',
+            NotificationManagerInterface::LEVEL_WARNING => 'WARNING',
+            NotificationManagerInterface::LEVEL_ERROR => 'ERROR',
+        } . '</p>'. PHP_EOL;
+
+        $body .= $message . PHP_EOL;
+
+        if ($details !== null) {
+            $body .= PHP_EOL . '<pre>' . print_r($details, true) . '</pre>' . PHP_EOL;
+        }
+    }
 
     protected function getConfiguration(): array
     {

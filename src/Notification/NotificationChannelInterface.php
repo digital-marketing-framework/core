@@ -4,7 +4,13 @@ namespace DigitalMarketingFramework\Core\Notification;
 
 interface NotificationChannelInterface
 {
-    public function notify(string $message, string $component, int $level): void;
+    public function notify(
+       string $title,
+       string $message,
+       mixed $details,
+       string $component,
+       int $level
+    ): void;
 
     public function enabled(): bool;
 
