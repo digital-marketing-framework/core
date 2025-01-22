@@ -9,12 +9,16 @@ use DigitalMarketingFramework\Core\Context\ContextStack;
 use DigitalMarketingFramework\Core\Context\ContextStackInterface;
 use DigitalMarketingFramework\Core\Context\RequestContext;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Notification\NotificationManager;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 class RegistryCollection implements RegistryCollectionInterface
 {
     protected ContextStackInterface $context;
+
+    protected NotificationManagerInterface $notificationManager;
 
     /**
      * @param array{core?:RegistryInterface,distributor?:RegistryInterface,collector?:RegistryInterface} $collection
@@ -96,6 +100,20 @@ class RegistryCollection implements RegistryCollectionInterface
     public function popContext(): ?ContextInterface
     {
         return $this->getContext()->popContext();
+    }
+
+    public function getNotificationManager(): NotificationManagerInterface
+    {
+        if (!isset($this->notificationManager)) {
+            $this->notificationManager = $this->getRegistry()->createObject(NotificationManager::class, [$this->getRegistry()]);
+        }
+
+        return $this->notificationManager;
+    }
+
+    public function setNotificationManager(NotificationManagerInterface $notificationManager): void
+    {
+        $this->notificationManager = $notificationManager;
     }
 
     public function getConfigurationSchemaDocument(): SchemaDocument

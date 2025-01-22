@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Registry;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\NotificationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ApiRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\AssetServiceRegistryInterface;
@@ -33,6 +34,7 @@ interface RegistryInterface extends
     DataPrivacyManagerRegistryInterface,
 
     LoggerFactoryRegistryInterface,
+    NotificationRegistryInterface,
     ContextRegistryInterface,
     CacheRegistryInterface,
     ConfigurationSchemaRegistryInterface,
