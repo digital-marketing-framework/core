@@ -8,10 +8,11 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareT
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Notification\Schema\GlobalNotificationChannelConfigurationSchema;
+use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
-abstract class NotificationChannel implements NotificationChannelInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
+abstract class NotificationChannel extends Plugin implements NotificationChannelInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
 {
     use GlobalConfigurationAwareTrait;
     use LoggerAwareTrait;
@@ -50,11 +51,8 @@ abstract class NotificationChannel implements NotificationChannelInterface, Glob
     protected function getBody(string $title, string $message, mixed $details, string $component, int $level): string
     {
         $body = $title . PHP_EOL;
-
         $body .= 'component: ' . $component . PHP_EOL;
-
         $body .= $this->levelToString($level) . PHP_EOL;
-
         $body .= $message . PHP_EOL;
 
         if ($details !== null) {
@@ -67,11 +65,8 @@ abstract class NotificationChannel implements NotificationChannelInterface, Glob
     protected function getHtmlBody(string $title, string $message, mixed $details, string $component, int $level): string
     {
         $body = '<h1>' . $title . '</h1>' . PHP_EOL;
-
         $body .= '<p>component: ' . $component . '</p>' . PHP_EOL;
-
         $body .= '<p>' . $this->levelToString($level) . '</p>' . PHP_EOL;
-
         $body .= $message . PHP_EOL;
 
         if ($details !== null) {
