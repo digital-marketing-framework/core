@@ -3,7 +3,6 @@
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\Notification\NotificationChannelInterface;
-use DigitalMarketingFramework\Core\Notification\NotificationManager;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 
 trait NotificationRegistryTrait
@@ -18,7 +17,7 @@ trait NotificationRegistryTrait
     {
         return $this->getRegistryCollection()->getNotificationManager();
     }
-    
+
     public function setNotificationManager(NotificationManagerInterface $notificationManager): void
     {
         $this->getRegistryCollection()->setNotificationManager($notificationManager);

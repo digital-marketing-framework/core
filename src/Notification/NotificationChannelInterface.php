@@ -2,14 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Notification;
 
-interface NotificationChannelInterface
+use DigitalMarketingFramework\Core\Plugin\PluginInterface;
+
+interface NotificationChannelInterface extends PluginInterface
 {
     public function notify(
-       string $title,
-       string $message,
-       mixed $details,
-       string $component,
-       int $level
+        string $title,
+        string $message,
+        mixed $details,
+        string $component,
+        int $level,
     ): void;
 
     public function enabled(): bool;

@@ -3,7 +3,6 @@
 namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\Notification\NotificationChannelInterface;
-use DigitalMarketingFramework\Core\Notification\NotificationManager;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 
 interface NotificationRegistryInterface

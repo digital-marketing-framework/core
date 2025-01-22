@@ -13,8 +13,14 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
 
     public const COMPONENT_SEPARATOR = ':';
 
+    /**
+     * @var ?array<NotificationChannelInterface>
+     */
     protected ?array $channels = null;
 
+    /**
+     * @var array<string>
+     */
     protected array $componentStack = [];
 
     public function __construct(
@@ -63,7 +69,7 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
 
     public function enabled(): bool
     {
-        $this->globalConfiguration->get('core')[CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS][CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS_ENABLED]
+        return $this->globalConfiguration->get('core')[CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS][CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS_ENABLED]
             ?? CoreGlobalConfigurationSchema::DEFAULT_NOTIFICATIONS_ENABLED;
     }
 
@@ -72,7 +78,7 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
         string $message = '',
         mixed $details = null,
         string $component = '',
-        int $level = NotificationManagerInterface::LEVEL_NOTICE
+        int $level = NotificationManagerInterface::LEVEL_NOTICE,
     ): void {
         if (!$this->enabled()) {
             return;
@@ -81,11 +87,11 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
         $fullComponent = $this->getComponent($component);
 
         foreach ($this->getChannels() as $channel) {
-           if (!$channel->accept($fullComponent, $level)) {
-               continue;
-           }
+            if (!$channel->accept($fullComponent, $level)) {
+                continue;
+            }
 
-           $channel->notify($title, $message, $details, $component, $level);
+            $channel->notify($title, $message, $details, $component, $level);
         }
     }
 }

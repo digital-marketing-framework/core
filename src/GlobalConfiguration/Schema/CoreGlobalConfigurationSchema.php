@@ -39,11 +39,19 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_DATA_PRIVACY_ENABLE_UNREGULATED = false;
 
+    public const KEY_NOTIFICATIONS = 'notifications';
+
+    public const KEY_NOTIFICATIONS_ENABLED = 'enabled';
+
+    public const DEFAULT_NOTIFICATIONS_ENABLED = false;
+
     protected ContainerSchema $configurationStorageSchema;
 
     protected ContainerSchema $apiSchema;
 
     protected ContainerSchema $dataPrivacySchema;
+
+    protected ContainerSchema $notificationsSchema;
 
     public function getWeight(): int
     {
@@ -96,6 +104,18 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         return $dataPrivacySchema;
     }
 
+    protected function getNotificationsSchema(): ContainerSchema
+    {
+        $notificationsSchema = new ContainerSchema();
+
+        $notificationsSchema->getRenderingDefinition()->setLabel('Notifications');
+
+        $enableNotificationsSchema = new BooleanSchema(static::DEFAULT_NOTIFICATIONS_ENABLED);
+        $enableNotificationsSchema->getRenderingDefinition()->setLabel('Enable notifications');
+
+        return $notificationsSchema;
+    }
+
     public function __construct()
     {
         parent::__construct();
@@ -111,5 +131,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
         $this->dataPrivacySchema = $this->getDataPrivacySchema();
         $this->addProperty(static::KEY_DATA_PRIVACY, $this->dataPrivacySchema);
+
+        $this->notificationsSchema = $this->getNotificationsSchema();
+        $this->addProperty(static::KEY_NOTIFICATIONS, $this->notificationsSchema);
     }
 }

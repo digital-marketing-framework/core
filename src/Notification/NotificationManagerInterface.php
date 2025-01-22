@@ -17,7 +17,7 @@ interface NotificationManagerInterface
         string $message = '',
         mixed $details = null,
         string $component = '',
-        int $level = NotificationManagerInterface::LEVEL_NOTICE
+        int $level = NotificationManagerInterface::LEVEL_NOTICE,
     ): void;
 
     public function pushComponent(string $component): void;
