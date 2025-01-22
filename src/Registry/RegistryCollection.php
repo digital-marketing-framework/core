@@ -105,7 +105,7 @@ class RegistryCollection implements RegistryCollectionInterface
     public function getNotificationManager(): NotificationManagerInterface
     {
         if (!isset($this->notificationManager)) {
-            $this->notificationManager = $this->getRegistry()->createObject(NotificationManager::class);
+            $this->notificationManager = $this->getRegistry()->createObject(NotificationManager::class, [$this->getRegistry()]);
         }
 
         return $this->notificationManager;
