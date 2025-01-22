@@ -112,6 +112,7 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
         $enableNotificationsSchema = new BooleanSchema(static::DEFAULT_NOTIFICATIONS_ENABLED);
         $enableNotificationsSchema->getRenderingDefinition()->setLabel('Enable notifications');
+        $notificationsSchema->addProperty(static::KEY_NOTIFICATIONS_ENABLED, $enableNotificationsSchema);
 
         return $notificationsSchema;
     }
