@@ -22,6 +22,8 @@ abstract class GlobalNotificationChannelConfigurationSchema extends GlobalConfig
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->addProperty(static::KEY_ENABLED, new BooleanSchema(static::DEFAULT_ENABLED));
         $this->addProperty(static::KEY_LEVELS, new StringSchema(static::DEFAULT_LEVELS));
         $this->addProperty(static::KEY_COMPONENTS, new StringSchema(static::DEFAULT_COMPONENTS));
