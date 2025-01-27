@@ -93,7 +93,7 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
         $allowList = GeneralUtility::castValueToArray($list);
         foreach ($allowList as $allowed) {
             $regexpAllowed = str_replace('*', '.*', (string)$allowed);
-            if (preg_match('/^' . $allowed . '/', $item)) {
+            if (preg_match('/^' . $regexpAllowed . '/', $item)) {
                 return true;
             }
         }
