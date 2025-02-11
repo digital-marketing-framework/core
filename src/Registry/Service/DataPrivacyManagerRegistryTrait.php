@@ -13,10 +13,11 @@ trait DataPrivacyManagerRegistryTrait
      * @template ClassName of object
      *
      * @param class-string<ClassName> $class
+     * @param array<mixed> $arguments
      *
      * @return ClassName
      */
-    abstract public function createObject(string $class): object;
+    abstract public function createObject(string $class, array $arguments = []): object;
 
     public function setDataPrivacyManager(DataPrivacyManagerInterface $dataPrivacyManager): void
     {
