@@ -4,6 +4,8 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\DefaultGlobalConfiguration;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerProperty;
+use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 trait GlobalConfigurationRegistryTrait
 {
@@ -14,7 +16,7 @@ trait GlobalConfigurationRegistryTrait
     public function getGlobalConfiguration(): GlobalConfigurationInterface
     {
         if (!isset($this->globalConfiguration)) {
-            $this->globalConfiguration = new DefaultGlobalConfiguration();
+            $this->globalConfiguration = new DefaultGlobalConfiguration($this);
             $this->globalConfiguration->setPackageAliases($this->getPackageAliases());
         }
 
