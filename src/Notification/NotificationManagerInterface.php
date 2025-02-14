@@ -20,7 +20,9 @@ interface NotificationManagerInterface
         int $level = NotificationManagerInterface::LEVEL_NOTICE,
     ): void;
 
-    public function pushComponent(string $component): void;
+    public function getComponentDepth(): int;
 
-    public function popComponent(): void;
+    public function pushComponent(string $component): int;
+
+    public function popComponent(int $toLevel = -1): void;
 }

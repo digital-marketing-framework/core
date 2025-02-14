@@ -86,10 +86,10 @@ class NonPersistentQueue implements QueueInterface
     {
         $job->setStatus($status);
         $job->setChanged(new DateTime());
+        $job->setSkipped($skipped);
         if ($message !== null) {
             $job->addStatusMessage($message);
         }
-        $job->setSkipped($skipped);
     }
 
     public function markAsQueued(JobInterface $job): void

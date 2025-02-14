@@ -17,8 +17,9 @@ interface GlobalConfigurationInterface
      * @template GlobalSettingsClass of GlobalSettingsInterface
      *
      * @param class-string<GlobalSettingsClass> $class
+     * @param array<mixed> $arguments
      *
      * @return GlobalSettingsClass
      */
-    public function getGlobalSettings(string $class): GlobalSettingsInterface;
+    public function getGlobalSettings(string $class, ...$arguments): GlobalSettingsInterface;
 }

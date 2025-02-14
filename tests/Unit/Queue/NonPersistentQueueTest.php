@@ -447,7 +447,7 @@ class NonPersistentQueueTest extends TestCase
 
         $this->subject->$method($job, ...$arguments);
         $this->assertEquals($status, $job->getStatus());
-        $this->assertEquals($expectedStatusMessage, $job->getStatusMessage());
+        $this->assertStringEndsWith($expectedStatusMessage, $job->getStatusMessage());
         $this->assertEquals($expectedSkipped, $job->getSkipped());
     }
 

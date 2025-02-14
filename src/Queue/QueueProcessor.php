@@ -99,7 +99,7 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
             foreach ($jobs as $job) {
                 $retryAmount = $job->getRetryAmount();
                 if ($retryAmount > 0 && $job->getChanged()->getTimestamp() < $maxChangedTime) {
-                    $retryAmount--;
+                    --$retryAmount;
                     $job->setRetryAmount($retryAmount);
                     $this->queue->markAsQueued($job);
                 }

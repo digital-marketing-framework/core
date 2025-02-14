@@ -74,6 +74,7 @@ class Job implements JobInterface
         if ($statusMessage !== '') {
             $statusMessage .= PHP_EOL . PHP_EOL;
         }
+
         $now = new DateTime();
         $statusMessage .= $now->format('Y-m-d H:i:s: ') . $message;
 

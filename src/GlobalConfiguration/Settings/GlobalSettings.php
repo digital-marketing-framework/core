@@ -4,6 +4,9 @@ namespace DigitalMarketingFramework\Core\GlobalConfiguration\Settings;
 
 abstract class GlobalSettings implements GlobalSettingsInterface
 {
+    /**
+     * @var array<string,mixed>
+     */
     protected array $settings = [];
 
     public function __construct(

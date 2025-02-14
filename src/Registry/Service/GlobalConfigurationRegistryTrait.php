@@ -4,8 +4,6 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\DefaultGlobalConfiguration;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerProperty;
-use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 trait GlobalConfigurationRegistryTrait
 {

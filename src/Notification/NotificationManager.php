@@ -57,14 +57,27 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
         return $result;
     }
 
-    public function pushComponent(string $component): void
+    public function getComponentDepth(): int
     {
-        $this->componentStack[] = $component;
+        return count($this->componentStack);
     }
 
-    public function popComponent(): void
+    public function pushComponent(string $component): int
     {
-        array_pop($this->componentStack);
+        $this->componentStack[] = $component;
+
+        return $this->getComponentDepth() - 1;
+    }
+
+    public function popComponent(int $toLevel = -1): void
+    {
+        if ($toLevel === -1) {
+            $toLevel = count($this->componentStack) - 1;
+        }
+
+        while (count($this->componentStack) > $toLevel) {
+            array_pop($this->componentStack);
+        }
     }
 
     public function enabled(): bool

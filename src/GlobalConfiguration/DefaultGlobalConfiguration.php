@@ -23,20 +23,13 @@ class DefaultGlobalConfiguration implements GlobalConfigurationInterface
         $this->packageAliases = new PackageAliases();
     }
 
-    /**
-     * @template GlobalSettingsClass of GlobalSettingsInterface
-     *
-     * @param class-string<GlobalSettingsClass> $class
-     *
-     * @return GlobalSettingsClass
-     */
-    public function getGlobalSettings(string $class): GlobalSettingsInterface
+    public function getGlobalSettings(string $class, ...$arguments): GlobalSettingsInterface
     {
         if (!is_a($class, GlobalSettingsInterface::class, true)) {
             throw new DigitalMarketingFrameworkException(sprintf('Unknown global settings class "%s"', $class));
         }
 
-        $settings = $this->registry->createObject($class);
+        $settings = $this->registry->createObject($class, $arguments);
         $packageName = $settings->getPackageName();
         $component = $settings->getComponentName();
 
