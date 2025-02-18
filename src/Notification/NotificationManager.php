@@ -104,7 +104,7 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
                 continue;
             }
 
-            $channel->notify($title, $message, $details, $component, $level);
+            $channel->notify($title, $message, $details, $fullComponent, $level);
         }
     }
 }
