@@ -7,14 +7,14 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterf
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Tests\GlobalConfiguration\Schema\GenericGlobalConfigurationSchema;
+use DigitalMarketingFramework\Core\Tests\GlobalConfiguration\Settings\GenericGlobalSettings;
 use DigitalMarketingFramework\Core\Tests\Integration\CoreRegistryTestTrait;
-use DigitalMarketingFramework\Core\Tests\Service\GloballyConfigurableObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \DigitalMarketingFramework\Core\Registry\Registry
+ * @covers \DigitalMarketingFramework\Core\GlobalConfiguration\DefaultGlobalConfiguration
  */
-class GloballyConfigurableTest extends TestCase
+class GlobalSettingsTest extends TestCase
 {
     use CoreRegistryTestTrait;
 
@@ -24,7 +24,7 @@ class GloballyConfigurableTest extends TestCase
     {
         $this->initRegistry();
 
-        $this->globalConfiguration = new DefaultGlobalConfiguration();
+        $this->globalConfiguration = new DefaultGlobalConfiguration($this->registry);
         $this->registry->setGlobalConfiguration($this->globalConfiguration);
 
         parent::setUp();
@@ -41,8 +41,8 @@ class GloballyConfigurableTest extends TestCase
     /** @test */
     public function unknownPackageResultsInEmptyArray(): void
     {
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->getGloballyConfiguredData();
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
+        $config = $settings->getInjectedSettings();
 
         static::assertEquals([], $config);
     }
@@ -53,8 +53,8 @@ class GloballyConfigurableTest extends TestCase
         $config = ['a' => 'A'];
         $this->globalConfiguration->set('packageKey1', $config);
 
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->getGloballyConfiguredData();
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
+        $config = $settings->getInjectedSettings();
 
         static::assertEquals(['a' => 'A'], $config);
     }
@@ -68,8 +68,8 @@ class GloballyConfigurableTest extends TestCase
         $config = ['a' => 'A2'];
         $this->globalConfiguration->set('packageKey1', $config);
 
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->getGloballyConfiguredData();
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
+        $config = $settings->getInjectedSettings();
 
         static::assertEquals(['a' => 'A2'], $config);
     }
@@ -84,58 +84,61 @@ class GloballyConfigurableTest extends TestCase
         $config = ['a' => 'A2'];
         $this->globalConfiguration->set('packageKey1', $config);
 
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->getGloballyConfiguredData();
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
+        $config = $settings->getInjectedSettings();
 
         static::assertEquals(['a' => 'A2', 'b' => 'B'], $config);
     }
 
     /** @test */
-    public function componentUnknownPackageResultsInDefaultNull(): void
+    public function componentUnknownPackageResultsInEmptyArray(): void
     {
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->testGlobalConfig('key1', 'componentKey1');
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(
+            GenericGlobalSettings::class,
+            'packageKey1',
+            'component1'
+        );
+        $config = $settings->getInjectedSettings();
 
-        static::assertNull($config);
-    }
-
-    /** @test */
-    public function componentUnknownPackageResultsInDefault(): void
-    {
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->testGlobalConfig('key1', 'componentKey1', 'value1');
-
-        static::assertEquals('value1', $config);
+        static::assertEquals([], $config);
     }
 
     /** @test */
     public function componentKnownPackageWithoutSchemaReturnsConfig(): void
     {
-        $config = ['a' => ['b' => 'B']];
+        $config = ['component1' => ['b' => 'B']];
         $this->globalConfiguration->set('packageKey1', $config);
 
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->testGlobalConfig('b', 'a');
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(
+            GenericGlobalSettings::class,
+            'packageKey1',
+            'component1'
+        );
+        $config = $settings->getInjectedSettings();
 
-        static::assertEquals('B', $config);
+        static::assertEquals(['b' => 'B'], $config);
     }
 
     /** @test */
     public function componentKnownPackageWithSchemaReturnsConfig(): void
     {
         $schema = $this->createGlobalConfigurationSchema('packageKey1');
-        $aSchema = new ContainerSchema();
-        $aSchema->addProperty('b', new StringSchema('B'));
+        $component1Schema = new ContainerSchema();
+        $component1Schema->addProperty('b', new StringSchema('B'));
 
-        $schema->addProperty('a', $aSchema);
+        $schema->addProperty('component1', $component1Schema);
 
-        $config = ['a' => ['b' => 'B2']];
+        $config = ['component1' => ['b' => 'B2']];
         $this->globalConfiguration->set('packageKey1', $config);
 
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->testGlobalConfig('b', 'a');
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(
+            GenericGlobalSettings::class,
+            'packageKey1',
+            'component1'
+        );
+        $config = $settings->getInjectedSettings();
 
-        static::assertEquals('B2', $config);
+        static::assertEquals(['b' => 'B2'], $config);
     }
 
     /** @test */
@@ -143,21 +146,22 @@ class GloballyConfigurableTest extends TestCase
     {
         $schema = $this->createGlobalConfigurationSchema('packageKey1');
 
-        $bSchema = new ContainerSchema();
-        $bSchema->addProperty('c', new StringSchema('C'));
-        $bSchema->addProperty('d', new StringSchema('D'));
+        $component1Schema = new ContainerSchema();
+        $component1Schema->addProperty('b', new StringSchema('B'));
+        $component1Schema->addProperty('c', new StringSchema('C'));
 
-        $aSchema = new ContainerSchema();
-        $aSchema->addProperty('b', $bSchema);
+        $schema->addProperty('component1', $component1Schema);
 
-        $schema->addProperty('a', $aSchema);
-
-        $config = ['a' => ['b' => ['c' => 'C2']]];
+        $config = ['component1' => ['b' => 'B2']];
         $this->globalConfiguration->set('packageKey1', $config);
 
-        $service = $this->registry->createObject(GloballyConfigurableObject::class, ['packageKey1']);
-        $config = $service->testGlobalConfig('b', 'a');
+        $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(
+            GenericGlobalSettings::class,
+            'packageKey1',
+            'component1'
+        );
+        $config = $settings->getInjectedSettings();
 
-        static::assertEquals(['c' => 'C2', 'd' => 'D'], $config);
+        static::assertEquals(['b' => 'B2', 'c' => 'C'], $config);
     }
 }

@@ -22,6 +22,8 @@ interface JobInterface
 
     public function setStatusMessage(string $message): void;
 
+    public function addStatusMessage(string $message): void;
+
     public function getChanged(): DateTime;
 
     public function setChanged(DateTime $changed): void;
@@ -47,4 +49,8 @@ interface JobInterface
     public function getType(): string;
 
     public function setType(string $type): void;
+
+    public function getRetryAmount(): int;
+
+    public function setRetryAmount(int $amount): void;
 }

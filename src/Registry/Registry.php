@@ -12,7 +12,6 @@ use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
-use DigitalMarketingFramework\Core\GlobalConfiguration\GloballyConfigurableInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
@@ -36,10 +35,8 @@ use DigitalMarketingFramework\Core\Registry\Service\StaticConfigurationDocumentR
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistryTrait;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerProperty;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
-use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 class Registry implements RegistryInterface
 {
@@ -91,34 +88,6 @@ class Registry implements RegistryInterface
     public function setRegistryCollection(RegistryCollectionInterface $registryCollection): void
     {
         $this->registryCollection = $registryCollection;
-    }
-
-    protected function injectGlobalSettings(GloballyConfigurableInterface $object): void
-    {
-        $packageName = $object->getPackageName();
-        $globalComponentSettings = $this->getGlobalConfiguration()->get($packageName, []);
-
-        $globalConfigurationSchemaDocument = $this->getGlobalConfigurationSchemaDocument();
-        $globalConfigurationSchema = $globalConfigurationSchemaDocument->getMainSchema();
-        $globalComponentConfigurationSchemaProperty = $globalConfigurationSchema->getProperty($packageName);
-        if ($globalComponentConfigurationSchemaProperty instanceof ContainerProperty) {
-            $globalComponentSchema = $globalComponentConfigurationSchemaProperty->getSchema();
-            $globalComponentDefaultSettings = $this->getSchemaProcessor()->getDefaultValue(
-                $this->getGlobalConfigurationSchemaDocument(),
-                $globalComponentSchema
-            );
-        } else {
-            $globalComponentDefaultSettings = [];
-        }
-
-        $globalSettings = ConfigurationUtility::mergeConfigurationStack(
-            [
-                $globalComponentDefaultSettings,
-                $globalComponentSettings,
-            ],
-            excludeKeys: []
-        );
-        $object->injectGlobalSettings($globalSettings);
     }
 
     public function processObjectAwareness(object $object): void
@@ -174,10 +143,6 @@ class Registry implements RegistryInterface
 
         if ($object instanceof NotificationManagerAwareInterface) {
             $object->setNotificationManager($this->getNotificationManager());
-        }
-
-        if ($object instanceof GloballyConfigurableInterface) {
-            $this->injectGlobalSettings($object);
         }
     }
 

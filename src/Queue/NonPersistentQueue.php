@@ -82,12 +82,14 @@ class NonPersistentQueue implements QueueInterface
         return $this->fetchWhere([QueueInterface::STATUS_FAILED], $limit, $offset);
     }
 
-    public function markAs(JobInterface $job, int $status, string $message = '', bool $skipped = false): void
+    public function markAs(JobInterface $job, int $status, ?string $message = null, bool $skipped = false): void
     {
         $job->setStatus($status);
         $job->setChanged(new DateTime());
-        $job->setStatusMessage($message);
         $job->setSkipped($skipped);
+        if ($message !== null) {
+            $job->addStatusMessage($message);
+        }
     }
 
     public function markAsQueued(JobInterface $job): void
