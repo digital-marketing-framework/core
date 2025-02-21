@@ -22,9 +22,9 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
     ) {
     }
 
-    protected function markJobAsFailed(JobInterface $job, string $message): void
+    protected function markJobAsFailed(JobInterface $job, string $message, bool $preserveTimestamp = false): void
     {
-        $this->queue->markAsFailed($job, $message);
+        $this->queue->markAsFailed($job, $message, $preserveTimestamp);
         if (!$this->queueSettings->rerunFailedJobEnabled() || $job->getRetryAmount() === 0) {
             $this->notificationManager->notify(
                 sprintf('Job %s failed', $job->getLabel()),
@@ -78,7 +78,7 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
         if ($runningStuckJobs !== []) {
             $message = sprintf('Assumed to be stuck after %d seconds.', $maxExecutionTime);
             foreach ($runningStuckJobs as $job) {
-                $this->markJobAsFailed($job, $message);
+                $this->markJobAsFailed($job, $message, true);
             }
         }
     }
