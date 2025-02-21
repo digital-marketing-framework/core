@@ -9,8 +9,6 @@ trait NotificationRegistryTrait
 {
     use PluginRegistryTrait;
 
-    protected NotificationManagerInterface $notificationManager;
-
     abstract public function createObject(string $class, array $arguments = []): object;
 
     public function getNotificationManager(): NotificationManagerInterface
