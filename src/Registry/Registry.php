@@ -14,6 +14,7 @@ use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\AlertRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\NotificationRegistryTrait;
@@ -49,6 +50,7 @@ class Registry implements RegistryInterface
 
     use LoggerFactoryRegistryTrait;
     use NotificationRegistryTrait;
+    use AlertRegistryTrait;
     use ContextRegistryTrait;
     use CacheRegistryTrait;
     use ConfigurationSchemaRegistryTrait;
