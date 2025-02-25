@@ -42,6 +42,9 @@ class RequestContext extends Context
         return match ($offset) {
             static::KEY_COOKIES => $this->getCookies(),
             static::KEY_IP_ADDRESS => $this->getIpAddress(),
+            static::KEY_HOST => $this->getHost(),
+            static::KEY_URI => $this->getUri(),
+            static::KEY_REFERER => $this->getReferer(),
             static::KEY_REQUEST_VARIABLES => $this->getRequestVariables(),
             static::KEY_TIMESTAMP => $this->getTimestamp(),
             default => parent::offsetGet($offset),
@@ -66,6 +69,21 @@ class RequestContext extends Context
         }
 
         return $ip;
+    }
+
+    public function getHost(): ?string
+    {
+        return $this->getRequestVariables()['HTTP_HOST'] ?? null;
+    }
+
+    public function getUri(): ?string
+    {
+        return $this->getRequestVariables()['REQUEST_URI'] ?? null;
+    }
+
+    public function getReferer(): ?string
+    {
+        return $this->getRequestVariables()['HTTP_REFERER'] ?? null;
     }
 
     public function getTimestamp(): ?int

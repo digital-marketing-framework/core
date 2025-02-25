@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
+use DigitalMarketingFramework\Core\Alert\AlertManagerInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
@@ -59,4 +60,8 @@ interface RegistryCollectionInterface extends ContextRegistryInterface
     public function getNotificationManager(): NotificationManagerInterface;
 
     public function setNotificationManager(NotificationManagerInterface $notificationManager): void;
+
+    public function getAlertManager(): AlertManagerInterface;
+
+    public function setAlertManager(AlertManagerInterface $alertManager): void;
 }

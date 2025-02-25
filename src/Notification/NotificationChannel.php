@@ -29,6 +29,7 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
     }
 
     abstract public function notify(
+        string $environment,
         string $title,
         string $message,
         mixed $details,
@@ -48,12 +49,13 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
         };
     }
 
-    protected function getBody(string $title, string $message, mixed $details, string $component, int $level): string
+    protected function getBody(string $environment, string $title, string $message, mixed $details, string $component, int $level): string
     {
-        $body = $title . PHP_EOL;
-        $body .= 'component: ' . $component . PHP_EOL;
-        $body .= $this->levelToString($level) . PHP_EOL;
-        $body .= $message . PHP_EOL;
+        $body = 'Title: ' . $title . PHP_EOL;
+        $body .= 'Environment: ' . $environment . PHP_EOL;
+        $body .= 'Component: ' . $component . PHP_EOL;
+        $body .= 'Level: ' . $this->levelToString($level) . PHP_EOL;
+        $body .= 'Message: ' . $message . PHP_EOL;
 
         if ($details !== null) {
             $body .= PHP_EOL . '===' . PHP_EOL . print_r($details, true) . PHP_EOL;
@@ -62,12 +64,13 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
         return $body;
     }
 
-    protected function getHtmlBody(string $title, string $message, mixed $details, string $component, int $level): string
+    protected function getHtmlBody(string $environment, string $title, string $message, mixed $details, string $component, int $level): string
     {
         $body = '<h1>' . $title . '</h1>' . PHP_EOL;
-        $body .= '<p>component: ' . $component . '</p>' . PHP_EOL;
-        $body .= '<p>' . $this->levelToString($level) . '</p>' . PHP_EOL;
-        $body .= $message . PHP_EOL;
+        $body .= '<p>Environment: ' . $environment . '</p>' . PHP_EOL;
+        $body .= '<p>Component: ' . $component . '</p>' . PHP_EOL;
+        $body .= '<p>Level: ' . $this->levelToString($level) . '</p>' . PHP_EOL;
+        $body .= '<p>Message: ' . $message . '</p>' . PHP_EOL;
 
         if ($details !== null) {
             $body .= PHP_EOL . '<pre>' . print_r($details, true) . '</pre>' . PHP_EOL;

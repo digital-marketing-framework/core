@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 interface NotificationChannelInterface extends PluginInterface
 {
     public function notify(
+        string $environment,
         string $title,
         string $message,
         mixed $details,

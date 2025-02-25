@@ -10,13 +10,17 @@ class QueueSchema extends ContainerSchema
 {
     public const KEY_QUEUE = 'queue';
 
+    public const KEY_QUEUE_EXPIRATION_TIME = 'expirationTime';
+
+    public const DEFAULT_QUEUE_EXPIRATION_TIME = 30;
+
     public const KEY_QUEUE_MAXIMUM_EXECUTION_TIME = 'maxExecutionTime';
 
     public const DEFAULT_QUEUE_MAXIMUM_EXECUTION_TIME = 600;
 
-    public const KEY_QUEUE_EXPIRATION_TIME = 'expirationTime';
+    public const KEY_QUEUE_RECOGNISE_STUCK_JOBS = 'recogniseStuckJobs';
 
-    public const DEFAULT_QUEUE_EXPIRATION_TIME = 30;
+    public const DEFAULT_QUEUE_RECOGNISE_STUCK_JOBS = false;
 
     public const KEY_QUEUE_RE_RUN_FAILED_JOBS_ENABLED = 'rerunEnabled';
 
@@ -34,13 +38,17 @@ class QueueSchema extends ContainerSchema
     {
         parent::__construct();
 
+        $expirationTimeSchema = new IntegerSchema(static::DEFAULT_QUEUE_EXPIRATION_TIME);
+        $expirationTimeSchema->getRenderingDefinition()->setLabel('Expiration time (in days)');
+        $this->addProperty(static::KEY_QUEUE_EXPIRATION_TIME, $expirationTimeSchema);
+
         $maximumExecutionTimeSchema = new IntegerSchema(static::DEFAULT_QUEUE_MAXIMUM_EXECUTION_TIME);
         $maximumExecutionTimeSchema->getRenderingDefinition()->setLabel('Maximum execution time (in seconds)');
         $this->addProperty(static::KEY_QUEUE_MAXIMUM_EXECUTION_TIME, $maximumExecutionTimeSchema);
 
-        $expirationTimeSchema = new IntegerSchema(static::DEFAULT_QUEUE_EXPIRATION_TIME);
-        $expirationTimeSchema->getRenderingDefinition()->setLabel('Expiration time (in days)');
-        $this->addProperty(static::KEY_QUEUE_EXPIRATION_TIME, $expirationTimeSchema);
+        $recogniseStuckJobsSchema = new BooleanSchema(static::DEFAULT_QUEUE_RECOGNISE_STUCK_JOBS);
+        $recogniseStuckJobsSchema->getRenderingDefinition()->setLabel('Recognise stuck jobs and mark them as failed');
+        $this->addProperty(static::KEY_QUEUE_RECOGNISE_STUCK_JOBS, $recogniseStuckJobsSchema);
 
         $rerunFailedJobsEnabledSchema = new BooleanSchema(static::DEFAULT_QUEUE_RE_RUN_FAILED_JOBS_ENABLED);
         $rerunFailedJobsEnabledSchema->getRenderingDefinition()->setLabel('Enable re-running failed jobs');

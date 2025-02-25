@@ -11,6 +11,7 @@ class Job implements JobInterface
      * @param array<mixed> $data
      */
     public function __construct(
+        protected string $environment = '',
         protected DateTime $created = new DateTime(),
         protected DateTime $changed = new DateTime(),
         protected int $status = QueueInterface::STATUS_QUEUED,
@@ -22,6 +23,16 @@ class Job implements JobInterface
         protected string $type = '',
         protected int $retryAmount = 0,
     ) {
+    }
+
+    public function getEnvironment(): string
+    {
+        return $this->environment;
+    }
+
+    public function setEnvironment(string $environment): void
+    {
+        $this->environment = $environment;
     }
 
     public function getCreated(): DateTime

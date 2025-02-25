@@ -14,14 +14,19 @@ abstract class QueueSettings extends GlobalSettings
         parent::__construct($packageName, $component);
     }
 
+    public function getExpirationTime(): int
+    {
+        return $this->get(QueueSchema::KEY_QUEUE_EXPIRATION_TIME);
+    }
+
     public function getMaximumExecutionTime(): int
     {
         return $this->get(QueueSchema::KEY_QUEUE_MAXIMUM_EXECUTION_TIME);
     }
 
-    public function getExpirationTime(): int
+    public function recogniseStuckJobs(): bool
     {
-        return $this->get(QueueSchema::KEY_QUEUE_EXPIRATION_TIME);
+        return $this->get(QueueSchema::KEY_QUEUE_RECOGNISE_STUCK_JOBS);
     }
 
     public function rerunFailedJobEnabled(): bool

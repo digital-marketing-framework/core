@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\AlertRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\NotificationRegistryInterface;
@@ -35,6 +36,7 @@ interface RegistryInterface extends
 
     LoggerFactoryRegistryInterface,
     NotificationRegistryInterface,
+    AlertRegistryInterface,
     ContextRegistryInterface,
     CacheRegistryInterface,
     ConfigurationSchemaRegistryInterface,
