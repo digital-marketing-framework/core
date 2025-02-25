@@ -68,6 +68,10 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
 
     public function updateStuckJobsStatus(): void
     {
+        if (!$this->queueSettings->recogniseStuckJobs()) {
+            return;
+        }
+
         $maxExecutionTime = $this->queueSettings->getMaximumExecutionTime();
         $pendingStuckJobs = $this->queue->fetchPending(minTimeSinceChangedInSeconds: $maxExecutionTime);
         if ($pendingStuckJobs !== []) {
