@@ -43,6 +43,21 @@ abstract class Context extends ArrayObject implements ContextInterface
         return $this[static::KEY_IP_ADDRESS] ?? null;
     }
 
+    public function getHost(): ?string
+    {
+        return $this[static::KEY_HOST] ?? null;
+    }
+
+    public function getUri(): ?string
+    {
+        return $this[static::KEY_URI] ?? null;
+    }
+
+    public function getReferer(): ?string
+    {
+        return $this[static::KEY_REFERER] ?? null;
+    }
+
     public function getTimestamp(): ?int
     {
         return $this[static::KEY_TIMESTAMP] ?? null;

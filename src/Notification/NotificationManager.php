@@ -87,6 +87,7 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
     }
 
     public function notify(
+        string $environment,
         string $title,
         string $message = '',
         mixed $details = null,
@@ -104,7 +105,7 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
                 continue;
             }
 
-            $channel->notify($title, $message, $details, $fullComponent, $level);
+            $channel->notify($environment, $title, $message, $details, $fullComponent, $level);
         }
     }
 }

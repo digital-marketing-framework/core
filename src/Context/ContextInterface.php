@@ -11,6 +11,12 @@ interface ContextInterface extends ArrayAccess
 {
     public const KEY_IP_ADDRESS = 'ip_address';
 
+    public const KEY_HOST = 'host';
+
+    public const KEY_URI = 'uri';
+
+    public const KEY_REFERER = 'referer';
+
     public const KEY_TIMESTAMP = 'timestamp';
 
     public const KEY_COOKIES = 'cookies';
@@ -32,6 +38,12 @@ interface ContextInterface extends ArrayAccess
     public function getCookie(string $name): ?string;
 
     public function getIpAddress(): ?string;
+
+    public function getHost(): ?string;
+
+    public function getUri(): ?string;
+
+    public function getReferer(): ?string;
 
     public function getTimestamp(): ?int;
 

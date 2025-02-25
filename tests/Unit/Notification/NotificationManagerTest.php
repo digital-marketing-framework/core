@@ -77,6 +77,7 @@ class NotificationManagerTest extends TestCase
         $channel->expects($this->never())->method('notify');
 
         $this->subject->notify(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -93,6 +94,7 @@ class NotificationManagerTest extends TestCase
         $channel->expects($this->never())->method('notify');
 
         $this->subject->notify(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -107,6 +109,7 @@ class NotificationManagerTest extends TestCase
 
         $channel = $this->addChannel(true);
         $channel->expects($this->once())->method('notify')->with(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -114,6 +117,7 @@ class NotificationManagerTest extends TestCase
         );
 
         $this->subject->notify(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -129,6 +133,7 @@ class NotificationManagerTest extends TestCase
 
         $channel = $this->addChannel(true);
         $channel->expects($this->once())->method('notify')->with(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -136,6 +141,7 @@ class NotificationManagerTest extends TestCase
         );
 
         $this->subject->notify(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details'
@@ -194,6 +200,7 @@ class NotificationManagerTest extends TestCase
 
         $channel = $this->addChannel(true);
         $channel->expects($this->once())->method('notify')->with(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -205,6 +212,7 @@ class NotificationManagerTest extends TestCase
         }
 
         $this->subject->notify(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -223,6 +231,7 @@ class NotificationManagerTest extends TestCase
 
         $channel = $this->addChannel(true);
         $channel->expects($this->once())->method('notify')->with(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',
@@ -244,6 +253,7 @@ class NotificationManagerTest extends TestCase
         $this->subject->pushComponent('c6');
 
         $this->subject->notify(
+            'my-environment',
             'my-title',
             'my-message',
             'my-details',

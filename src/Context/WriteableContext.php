@@ -19,6 +19,21 @@ class WriteableContext extends Context implements WriteableContextInterface
         $this[static::KEY_IP_ADDRESS] = $ipAddress;
     }
 
+    public function setHost(string $host): void
+    {
+        $this[static::KEY_HOST] = $host;
+    }
+
+    public function setUri(string $uri): void
+    {
+        $this[static::KEY_URI] = $uri;
+    }
+
+    public function setReferer(string $referer): void
+    {
+        $this[static::KEY_REFERER] = $referer;
+    }
+
     public function setRequestVariable(string $name, string $value): void
     {
         $this[static::KEY_REQUEST_VARIABLES][$name] = $value;
@@ -63,6 +78,42 @@ class WriteableContext extends Context implements WriteableContextInterface
         $value = $context->getIpAddress();
         if ($value !== null) {
             $this->setIpAddress($value);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function copyHostFromContext(ContextInterface $context): bool
+    {
+        $value = $context->getHost();
+        if ($value !== null) {
+            $this->setHost($value);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function copyUriFromContext(ContextInterface $context): bool
+    {
+        $value = $context->getUri();
+        if ($value !== null) {
+            $this->setUri($value);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function copyRefererFromContext(ContextInterface $context): bool
+    {
+        $value = $context->getReferer();
+        if ($value !== null) {
+            $this->setReferer($value);
 
             return true;
         }

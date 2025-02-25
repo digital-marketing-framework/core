@@ -13,6 +13,7 @@ interface NotificationManagerInterface
     public const DEFAULT_COMPONENT = 'global';
 
     public function notify(
+        string $environment,
         string $title,
         string $message = '',
         mixed $details = null,

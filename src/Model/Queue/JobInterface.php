@@ -6,6 +6,10 @@ use DateTime;
 
 interface JobInterface
 {
+    public function getEnvironment(): string;
+
+    public function setEnvironment(string $environment): void;
+
     public function getCreated(): DateTime;
 
     public function setCreated(DateTime $created): void;
