@@ -13,7 +13,7 @@
     "@headlessui/vue": "^1.7.16",
     "pinia": "^2.0.32",
     "postcss-prefix-selector": "^1.16.0",
-    "prismjs": "1.27.0",
+    "prismjs": "1.30.0",
     "uuid": "^9.0.0",
     "vue": "^3.2.47",
     "vue-code-highlight": "^0.7.8",
