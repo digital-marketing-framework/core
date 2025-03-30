@@ -8,7 +8,7 @@ import {
 import { useTippy } from 'vue-tippy';
 import { computed } from "vue";
 import { useDmfStore } from '@/stores/dmf';
-import { isContainerType, isDynamicContainerType } from '@/helpers/type';
+import { isDynamicContainerType } from '@/helpers/type';
 import { useDynamicProcessor } from '@/composables/dynamicItem';
 import { useRawProcessor } from '@/composables/raw';
 import { useConfirmation } from '@/composables/confirmation';
@@ -19,7 +19,6 @@ import CopyIcon from '../../icons/CopyIcon.vue';
 import DebugInfo from './DebugInfo.vue';
 import HintIcon from '../../icons/HintIcon.vue';
 import PlusIcon from '../../icons/PlusIcon.vue';
-import RotateLeftIcon from '../../icons/RotateLeftIcon.vue';
 import SortDownIcon from '../../icons/SortDownIcon.vue';
 import SortUpIcon from '../../icons/SortUpIcon.vue';
 import TrashIcon from '../../icons/TrashIcon.vue';
@@ -53,13 +52,11 @@ const props = defineProps({
 const schema = computed(() => store.getSchema(props.currentPath, undefined, true));
 const raw = computed(() => isRawView(props.currentPath));
 const isDynamic = computed(() => !store.settings.readonly && props.dynamicItemPath);
-const resetOverwritePath = computed(() => isDynamic.value ? props.dynamicItemPath : props.currentPath);
 const listSchema = computed(() => isDynamic.value ? store.getSchema('..', props.dynamicItemPath, true) : null);
 const canMove = computed(() => isDynamic.value && listSchema.value.dynamicOrder);
 const isDynamicContainer = computed(() => isDynamicContainerType(schema.value.type));
 const canMoveUp = computed(() => canMove.value && !isFirstChild(props.dynamicItemPath));
 const canMoveDown = computed(() => canMove.value && !isLastChild(props.dynamicItemPath));
-const canResetOverwrite = computed(() => !store.settings.readonly && store.canResetOverwrite(isDynamic.value ? props.dynamicItemPath : props.currentPath));
 const references = computed(() => schema.value.references || []);
 
 const hint = computed(() => schema.value.hint || '');
@@ -71,20 +68,6 @@ useTippy(hintToggle, {
     allowHTML: true,
     appendTo: 'parent',
 });
-
-const reset = () => {
-    requestConfirmation(
-        (answer) => {
-            if (answer) {
-                store.resetValue(resetOverwritePath.value);
-            }
-        },
-        'Are you sure you want to reset this part of the configuration?',
-        'The value'
-        + (isContainerType(schema.value.type) ? ' (and all sub values)' : '')
-        + ' will be reset to the inherited value from parent document(s). If there is no inherited value, the default value will be used.'
-    );
-};
 
 const remove = () => {
     requestConfirmation(
@@ -133,11 +116,6 @@ watch(
                 :reference-label="reference.label"
                 :reference-icon="reference.icon"
             />
-        </div>
-        <div v-if="canResetOverwrite"
-             @click="reset()"
-             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
-            <RotateLeftIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="isDynamic"
              @click="copyValue(dynamicItemPath)"
