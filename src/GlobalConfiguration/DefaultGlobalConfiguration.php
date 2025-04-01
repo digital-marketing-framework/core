@@ -33,6 +33,7 @@ class DefaultGlobalConfiguration implements GlobalConfigurationInterface
         $packageName = $settings->getPackageName();
         $component = $settings->getComponentName();
 
+        $packageName = $this->packageAliases->resolveAlias($packageName);
         $globalComponentSettings = $this->get($packageName, []);
 
         $globalConfigurationSchemaDocument = $this->registry->getGlobalConfigurationSchemaDocument();
