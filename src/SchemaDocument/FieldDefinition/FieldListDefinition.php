@@ -28,6 +28,11 @@ class FieldListDefinition
         $this->fields[$fieldDefinition->getName()] = $fieldDefinition;
     }
 
+    public function fieldExists(string $name): bool
+    {
+        return array_key_exists($name, $this->fields);
+    }
+
     public function removeField(string $name): void
     {
         if (array_key_exists($name, $this->fields)) {
@@ -40,11 +45,28 @@ class FieldListDefinition
      */
     public function toArray(): array
     {
-        $result = [];
-        foreach ($this->fields as $name => $field) {
-            $result[$name] = $field->toArray();
-        }
+        return array_map(static function ($field) {
+            return $field->toArray();
+        }, $this->fields);
+    }
 
-        return $result;
+    /**
+     * @return array<FieldDefinition>
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    public function merge(FieldListDefinition $fieldListDefinition): void
+    {
+        foreach ($fieldListDefinition->getFields() as $name => $field) {
+            $myField = $this->fields[$name] ?? null;
+            if ($myField instanceof FieldDefinition) {
+                $myField->merge($field);
+            } else {
+                $this->addField($field);
+            }
+        }
     }
 }
