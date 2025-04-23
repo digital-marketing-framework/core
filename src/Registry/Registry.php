@@ -35,6 +35,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ScriptAssetsRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\StaticConfigurationDocumentRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\TestCaseRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistryTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
@@ -67,6 +68,7 @@ class Registry implements RegistryInterface
     use IdentifierCollectorRegistryTrait;
 
     use ApiRegistryTrait;
+    use TestCaseRegistryTrait;
 
     protected RegistryCollectionInterface $registryCollection;
 
@@ -158,6 +160,10 @@ class Registry implements RegistryInterface
         if (!class_exists($class)) {
             throw new RegistryException('Class "' . $class . '" is unknown!');
         }
+
+        $arguments = array_map(function(mixed $arg) {
+            return $arg instanceof ProxyArgument ? $arg() : $arg;
+        }, $arguments);
 
         $object = new $class(...$arguments);
         $this->processObjectAwareness($object);

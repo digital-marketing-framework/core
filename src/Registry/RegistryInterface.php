@@ -24,6 +24,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ScriptAssetsRegistryInterfac
 use DigitalMarketingFramework\Core\Registry\Service\StaticConfigurationDocumentRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\TestCaseRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistryInterface;
 
 interface RegistryInterface extends
@@ -52,7 +53,8 @@ interface RegistryInterface extends
     DataProcessorRegistryInterface,
     IdentifierCollectorRegistryInterface,
 
-    ApiRegistryInterface
+    ApiRegistryInterface,
+    TestCaseRegistryInterface
 {
     public function init(): void;
 
