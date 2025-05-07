@@ -52,14 +52,14 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                     <div
                          class="tw-sticky tw-top-0 tw-z-10 tw-flex tw-items-baseline tw-gap-3 tw-px-6 tw-py-6 tw-shrink-0 tw-bg-white/50 tw-backdrop-blur-sm">
                         <MediatisLogo class="tw-h-8"></MediatisLogo>
-                        <span class="tw-text-2xl tw-leading-none tw-font-caveat">dmf</span>
+                        <span class="tw-text-2xl tw-leading-none tw-font-anyrel">Anyrel</span>
                     </div>
 
                     <nav class="tw-px-6 tw-space-y-1 tw-grow">
                         <MenuItem currentPath="/" />
                     </nav>
 
-                    <div class="tw-sticky tw-bottom-0 tw-px-6 tw-py-3 tw-text-2xl tw-font-caveat tw-bg-white/50 tw-backdrop-blur-sm">
+                    <div class="tw-sticky tw-bottom-0 tw-px-6 tw-py-3 tw-text-2xl tw-font-anyrel tw-bg-white/50 tw-backdrop-blur-sm">
                         <a href="https://www.mediatis.de"
                            class="tw-flex tw-items-center tw-leading-6 tw-text-gray-900 tw-gap-x-4 hover:tw-bg-gray-50"
                            target="_blank">
@@ -73,7 +73,7 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
             <div class="tw-flex tw-grow tw-overflow-auto">
                 <div class="tw-grow">
                     <div class="tw-sticky tw-top-0 tw-z-10 tw-px-4 tw-py-3 tw-text-right tw-bg-gray-100 tw-border-b tw-border-gray-200 sm:tw-px-6 tw-flex tw-items-center">
-                        <span class="tw-text-2xl tw-leading-none tw-font-caveat">{{ documentName }}</span>
+                        <span class="tw-text-2xl tw-leading-none tw-font-anyel">{{ documentName }}</span>
                         <div class="tw-space-x-4 tw-ml-auto tw-pl-4">
                             <button type="button"
                                     @click="store.close()"
@@ -134,7 +134,7 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                         </li>
                     </ul>
 
-                    <div class="tw-flex tw-justify-center tw-px-4 tw-py-10 sm:tw-px-6 tw-grow">
+                    <div class="tw-flex tw-justify-center tw-p-4 sm:tw-p-6 tw-grow">
                         <div class="tw-grow tw-max-w-7xl">
                             <button type="button"
                                     class="tw-flex tw-items-center tw-mb-4 tw-text-xs tw-text-gray-500 hover:tw-text-gray-600 tw-gap-x-2">
