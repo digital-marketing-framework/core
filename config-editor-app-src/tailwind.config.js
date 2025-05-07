@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        caveat: ['Caveat']
+        anyrel: ['ui-sans-serif, system-ui']
       }
     }
   },
