@@ -1,3 +1,4 @@
+/* TODO choose "anyrel" font and set it in tailwind.config.js for "anyrel" instead of "ui-sans-serif" */
 @layer base {
 
   @font-face {
