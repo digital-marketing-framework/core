@@ -101,14 +101,14 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                         </div>
                     </div>
 
-                    <ul class="tw-p-4 sm:tw-px-6"
+                    <ul class="tw-p-4 tw-pb-0 sm:tw-px-6"
                         v-if="store.messages.length > 0">
                         <TimedMessage v-for="(message, index) in store.messages"
                                       :key="index"
                                       :index="index" />
                     </ul>
 
-                    <ul class="tw-p-4 sm:tw-px-6"
+                    <ul class="tw-p-4 tw-pb-0 sm:tw-px-6"
                         v-if="warnings.length > 0">
                         <li class="tw-border tw-border-red-700 tw-rounded tw-px-4 tw-py-3 tw-w-full tw-max-w-3xl tw-mb-3"
                             v-for="(warning, index) in warnings"
