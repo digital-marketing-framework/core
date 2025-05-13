@@ -6,6 +6,10 @@ use DateTime;
 
 interface JobInterface
 {
+    public function getEnvironment(): string;
+
+    public function setEnvironment(string $environment): void;
+
     public function getCreated(): DateTime;
 
     public function setCreated(DateTime $created): void;
@@ -21,6 +25,8 @@ interface JobInterface
     public function getStatusMessage(): string;
 
     public function setStatusMessage(string $message): void;
+
+    public function addStatusMessage(string $message): void;
 
     public function getChanged(): DateTime;
 
@@ -47,4 +53,8 @@ interface JobInterface
     public function getType(): string;
 
     public function setType(string $type): void;
+
+    public function getRetryAmount(): int;
+
+    public function setRetryAmount(int $amount): void;
 }

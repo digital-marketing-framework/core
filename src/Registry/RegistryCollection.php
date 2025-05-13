@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Registry;
 
+use DigitalMarketingFramework\Core\Alert\AlertManager;
+use DigitalMarketingFramework\Core\Alert\AlertManagerInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
 use DigitalMarketingFramework\Core\Context\ContextInterface;
@@ -9,12 +11,18 @@ use DigitalMarketingFramework\Core\Context\ContextStack;
 use DigitalMarketingFramework\Core\Context\ContextStackInterface;
 use DigitalMarketingFramework\Core\Context\RequestContext;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Notification\NotificationManager;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 class RegistryCollection implements RegistryCollectionInterface
 {
     protected ContextStackInterface $context;
+
+    protected NotificationManagerInterface $notificationManager;
+
+    protected AlertManagerInterface $alertManager;
 
     /**
      * @param array{core?:RegistryInterface,distributor?:RegistryInterface,collector?:RegistryInterface} $collection
@@ -96,6 +104,34 @@ class RegistryCollection implements RegistryCollectionInterface
     public function popContext(): ?ContextInterface
     {
         return $this->getContext()->popContext();
+    }
+
+    public function getNotificationManager(): NotificationManagerInterface
+    {
+        if (!isset($this->notificationManager)) {
+            $this->notificationManager = $this->getRegistry()->createObject(NotificationManager::class, [$this->getRegistry()]);
+        }
+
+        return $this->notificationManager;
+    }
+
+    public function setNotificationManager(NotificationManagerInterface $notificationManager): void
+    {
+        $this->notificationManager = $notificationManager;
+    }
+
+    public function getAlertManager(): AlertManagerInterface
+    {
+        if (!isset($this->alertManager)) {
+            $this->alertManager = $this->getRegistry()->createObject(AlertManager::class, [$this->getRegistry()]);
+        }
+
+        return $this->alertManager;
+    }
+
+    public function setAlertManager(AlertManagerInterface $alertManager): void
+    {
+        $this->alertManager = $alertManager;
     }
 
     public function getConfigurationSchemaDocument(): SchemaDocument

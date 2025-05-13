@@ -14,7 +14,7 @@ trait GlobalConfigurationRegistryTrait
     public function getGlobalConfiguration(): GlobalConfigurationInterface
     {
         if (!isset($this->globalConfiguration)) {
-            $this->globalConfiguration = new DefaultGlobalConfiguration();
+            $this->globalConfiguration = new DefaultGlobalConfiguration($this);
             $this->globalConfiguration->setPackageAliases($this->getPackageAliases());
         }
 

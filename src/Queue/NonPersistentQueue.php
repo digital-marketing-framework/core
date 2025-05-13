@@ -82,12 +82,17 @@ class NonPersistentQueue implements QueueInterface
         return $this->fetchWhere([QueueInterface::STATUS_FAILED], $limit, $offset);
     }
 
-    public function markAs(JobInterface $job, int $status, string $message = '', bool $skipped = false): void
+    public function markAs(JobInterface $job, int $status, ?string $message = null, bool $skipped = false, bool $preserveTimestamp = false): void
     {
         $job->setStatus($status);
-        $job->setChanged(new DateTime());
-        $job->setStatusMessage($message);
         $job->setSkipped($skipped);
+        if (!$preserveTimestamp) {
+            $job->setChanged(new DateTime());
+        }
+
+        if ($message !== null) {
+            $job->addStatusMessage($message);
+        }
     }
 
     public function markAsQueued(JobInterface $job): void
@@ -110,9 +115,9 @@ class NonPersistentQueue implements QueueInterface
         $this->markAs($job, QueueInterface::STATUS_DONE, '', $skipped);
     }
 
-    public function markAsFailed(JobInterface $job, string $message = ''): void
+    public function markAsFailed(JobInterface $job, string $message = '', bool $preserveTimestamp = false): void
     {
-        $this->markAs($job, QueueInterface::STATUS_FAILED, $message);
+        $this->markAs($job, QueueInterface::STATUS_FAILED, $message, preserveTimestamp: $preserveTimestamp);
     }
 
     public function markListAsQueued(array $jobs): void
@@ -143,10 +148,10 @@ class NonPersistentQueue implements QueueInterface
         }
     }
 
-    public function markListAsFailed(array $jobs, string $message = ''): void
+    public function markListAsFailed(array $jobs, string $message = '', bool $preserveTimestamp = false): void
     {
         foreach ($jobs as $job) {
-            $this->markAsFailed($job, $message);
+            $this->markAsFailed($job, $message, $preserveTimestamp);
         }
     }
 

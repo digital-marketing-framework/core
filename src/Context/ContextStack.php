@@ -64,6 +64,21 @@ class ContextStack implements ContextStackInterface
         return $this->getActiveContext()->getIpAddress();
     }
 
+    public function getHost(): ?string
+    {
+        return $this->getActiveContext()->getHost();
+    }
+
+    public function getUri(): ?string
+    {
+        return $this->getActiveContext()->getUri();
+    }
+
+    public function getReferer(): ?string
+    {
+        return $this->getActiveContext()->getReferer();
+    }
+
     public function getTimestamp(): ?int
     {
         return $this->getActiveContext()->getTimestamp();

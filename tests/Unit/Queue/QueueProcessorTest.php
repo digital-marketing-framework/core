@@ -3,6 +3,8 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\Queue;
 
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
+use DigitalMarketingFramework\Core\Queue\GlobalConfiguration\Settings\QueueSettings;
 use DigitalMarketingFramework\Core\Queue\QueueException;
 use DigitalMarketingFramework\Core\Queue\QueueInterface;
 use DigitalMarketingFramework\Core\Queue\QueueProcessor;
@@ -20,6 +22,10 @@ class QueueProcessorTest extends TestCase
 
     protected WorkerInterface&MockObject $worker;
 
+    protected QueueSettings&MockObject $queueSettings;
+
+    protected NotificationManagerInterface&MockObject $notificationManager;
+
     /** @var array<JobInterface&MockObject> */
     protected array $jobs = [];
 
@@ -28,10 +34,13 @@ class QueueProcessorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->notificationManager = $this->createMock(NotificationManagerInterface::class);
         $this->queue = $this->createMock(QueueInterface::class);
         $this->worker = $this->createMock(WorkerInterface::class);
+        $this->queueSettings = $this->createMock(QueueSettings::class);
 
-        $this->subject = new QueueProcessor($this->queue, $this->worker);
+        $this->subject = new QueueProcessor($this->queue, $this->worker, $this->queueSettings);
+        $this->subject->setNotificationManager($this->notificationManager);
     }
 
     /**

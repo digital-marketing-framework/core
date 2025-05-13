@@ -62,7 +62,7 @@ interface QueueInterface
 
     public function markAsDone(JobInterface $job, bool $skipped = false): void;
 
-    public function markAsFailed(JobInterface $job, string $message = ''): void;
+    public function markAsFailed(JobInterface $job, string $message = '', bool $preserveTimestamp = false): void;
 
     /**
      * @param array<JobInterface> $jobs
@@ -87,7 +87,7 @@ interface QueueInterface
     /**
      * @param array<JobInterface> $jobs
      */
-    public function markListAsFailed(array $jobs, string $message = ''): void;
+    public function markListAsFailed(array $jobs, string $message = '', bool $preserveTimestamp = false): void;
 
     public function addJob(JobInterface $job): JobInterface;
 

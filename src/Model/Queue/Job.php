@@ -11,6 +11,7 @@ class Job implements JobInterface
      * @param array<mixed> $data
      */
     public function __construct(
+        protected string $environment = '',
         protected DateTime $created = new DateTime(),
         protected DateTime $changed = new DateTime(),
         protected int $status = QueueInterface::STATUS_QUEUED,
@@ -20,7 +21,18 @@ class Job implements JobInterface
         protected string $hash = '',
         protected string $label = '',
         protected string $type = '',
+        protected int $retryAmount = 0,
     ) {
+    }
+
+    public function getEnvironment(): string
+    {
+        return $this->environment;
+    }
+
+    public function setEnvironment(string $environment): void
+    {
+        $this->environment = $environment;
     }
 
     public function getCreated(): DateTime
@@ -61,6 +73,23 @@ class Job implements JobInterface
     public function setStatusMessage(string $message): void
     {
         $this->statusMessage = $message;
+    }
+
+    public function addStatusMessage(string $message): void
+    {
+        if ($message === '') {
+            return;
+        }
+
+        $statusMessage = $this->getStatusMessage();
+        if ($statusMessage !== '') {
+            $statusMessage .= PHP_EOL . PHP_EOL;
+        }
+
+        $now = new DateTime();
+        $statusMessage .= $now->format('Y-m-d H:i:s: ') . $message;
+
+        $this->setStatusMessage($statusMessage);
     }
 
     public function getChanged(): DateTime
@@ -116,5 +145,15 @@ class Job implements JobInterface
     public function setType(string $type): void
     {
         $this->type = $type;
+    }
+
+    public function getRetryAmount(): int
+    {
+        return $this->retryAmount;
+    }
+
+    public function setRetryAmount(int $amount): void
+    {
+        $this->retryAmount = $amount;
     }
 }

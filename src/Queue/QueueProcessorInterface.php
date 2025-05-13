@@ -16,4 +16,13 @@ interface QueueProcessorInterface
     public function processBatch(int $batchSize = 1): void;
 
     public function processAll(): void;
+
+    public function updateStuckJobsStatus(): void;
+
+    /**
+     * @param array<JobInterface> $jobs
+     */
+    public function updateFailedJobs(array $jobs = []): void;
+
+    public function updateJobsAndProcessBatch(int $batchSize = 1): void;
 }

@@ -99,4 +99,29 @@ class FieldDefinition
 
         return $result;
     }
+
+    public function merge(FieldDefinition $fieldDefinition): void
+    {
+        if ($this->getType() !== $fieldDefinition->getType()) {
+            $this->type = static::TYPE_UNKNOWN;
+        }
+
+        if ($fieldDefinition->dedicatedField() !== $this->dedicatedField()) {
+            $this->dedicated = null;
+        }
+
+        if ($fieldDefinition->isMultiValue() !== $this->isMultiValue()) {
+            $this->multiValue = null;
+        }
+
+        if ($fieldDefinition->isRequired() !== $this->isRequired()) {
+            $this->required = null;
+        }
+
+        foreach ($fieldDefinition->getValues() as $value) {
+            if (!in_array($value, $this->values, true)) {
+                $this->values[] = $value;
+            }
+        }
+    }
 }
