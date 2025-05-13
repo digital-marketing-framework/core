@@ -139,7 +139,7 @@ export const useDynamicProcessor = (store) => {
 
     moveValueUp: (path, currentPath) => moveValueUp(store, path, currentPath),
     moveValueDown: (path, currentPath) => moveValueDown(store, path, currentPath),
-    addValue: (path, currentPath) => addValue(store, path, currentPath),
+    addValue: (path, currentPath, value) => addValue(store, path, currentPath, value),
     removeValue: (path, currentPath) => removeValue(store, path, currentPath),
     copyValue: (path, currentPath) => copyValue(store, path, currentPath)
   };

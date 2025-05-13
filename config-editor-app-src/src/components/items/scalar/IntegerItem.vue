@@ -42,7 +42,7 @@ const parentValue = computed(() => store.getParentValue(props.currentPath));
                        placeholder="Enter value"
                        class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
                        :class="{
-                           'todo-class-readonly tw-bg-neutral-100': store.settings.readonly
+                           'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
                        }"
                        :disabled="store.settings.readonly" />
             </div>

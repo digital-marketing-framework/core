@@ -55,6 +55,10 @@ const getDocumentForm = (textarea) => {
   return textarea.closest('form');
 };
 
+const getStageContainer = () => {
+  return document.getElementById('stage-container');
+};
+
 const save = async (textarea, settings, data) => {
   await setData(textarea, settings, data);
 };
@@ -79,26 +83,37 @@ const updateTextArea = (textarea, stage, settings, start) => {
   textarea.style.display = 'none';
 };
 
-const createStage = () => {
+const createStage = (isFixed) => {
   const stage = document.createElement('DIV');
   stage.classList.add('dmf-configuration-document-editor-stage');
-  stage.style.position = 'fixed';
+  if(isFixed) {
+    stage.style.position = 'fixed';
+    stage.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    stage.style.zIndex = '9990';
+  } else {
+    stage.style.position = 'absolute';
+  }
   stage.style.inset = '0';
-  stage.style.backgroundColor = 'rgba(0,0,0,0.5)';
-  stage.style.zIndex = '9990';
   stage.style.display = 'none';
   return stage;
 };
 
-const setupEmbedded = (textarea) => {
-  const stage = createStage();
-  const form = getDocumentForm(textarea);
-  form.parentNode.insertBefore(stage, form.nextSibling);
+const setupEmbedded = () => {
+  const stage = createStage(false);
+  const stageContainer = getStageContainer();
+  stageContainer.appendChild(stage);
+  return stage;
+};
+
+const setupFullscreen = () => {
+  const stage = createStage(true);
+  const stageContainer = getStageContainer();
+  stageContainer.appendChild(stage);
   return stage;
 };
 
 const setupModal = () => {
-  const stage = createStage();
+  const stage = createStage(true);
   document.body.appendChild(stage);
   return stage;
 };
@@ -171,8 +186,13 @@ const initEnvironment = async (textarea, link) => {
   if (settings.mode === 'modal') {
     stage = setupModal();
     updateTextArea(textarea, stage, settings, start);
+  } else if (settings.mode == 'fullscreen') {
+    stage = setupFullscreen(settings, start);
+    setTimeout(() => {
+      start(textarea, stage, settings);
+    }, 0);
   } else {
-    stage = setupEmbedded(textarea, settings, start);
+    stage = setupEmbedded(settings, start);
     setTimeout(() => {
       start(textarea, stage, settings);
     }, 0);

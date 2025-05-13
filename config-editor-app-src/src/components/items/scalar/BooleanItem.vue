@@ -42,7 +42,7 @@ const label = computed(() => getLabel(props.currentPath));
                            autocomplete="off"
                            class="tw-form-checkbox tw-w-4 tw-h-4 tw-text-blue-600 tw-border-blue-200 tw-rounded focus:tw-ring-blue-600"
                            :class="{
-                               'todo-class-readonly tw-bg-neutral-100': store.settings.readonly
+                               'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
                            }"
                            :disabled="store.settings.readonly">
                 </div>
