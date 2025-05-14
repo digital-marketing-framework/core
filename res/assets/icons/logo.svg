@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 96 96">
+  <!-- Generator: Adobe Illustrator 29.5.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 137)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #0f172a;
+      }
+
+      .st1 {
+        fill: #7165e0;
+      }
+
+      .st2 {
+        fill: #2ab7a8;
+      }
+
+      .st3 {
+        fill: url(#Unbenannter_Verlauf_85);
+      }
+
+      .st4 {
+        fill: url(#Unbenannter_Verlauf_92);
+      }
+
+      .st5 {
+        fill: #f65e2f;
+      }
+
+      .st6 {
+        fill: url(#Gradient_Purple);
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf_85" data-name="Unbenannter Verlauf 85" x1="-9900.4" y1="-6358.8" x2="-9900.4" y2="-6411.5" gradientTransform="translate(-6350.2 9947.5) rotate(90)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2ab7a8"/>
+      <stop offset="1" stop-color="#2ab7a8" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="Unbenannter_Verlauf_92" data-name="Unbenannter Verlauf 92" x1="6356" y1="2653.6" x2="6356" y2="2600.8" gradientTransform="translate(2687.6 -6321.4) rotate(90)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f65e2f"/>
+      <stop offset="1" stop-color="#f65e2f" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="Gradient_Purple" data-name="Gradient Purple" x1="-3463" y1="-5488.8" x2="-3463" y2="-5541.6" gradientTransform="translate(-5454.8 3525) rotate(90)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7165e0"/>
+      <stop offset="1" stop-color="#7165e0" stop-opacity=".2"/>
+    </linearGradient>
+  </defs>
+  <rect class="st0" width="96" height="96"/>
+  <g>
+    <rect class="st3" x="10.3" y="37.7" width="52.7" height="21.1" rx="10.5" ry="10.5"/>
+    <circle class="st2" cx="20.8" cy="48.2" r="10.5"/>
+    <rect class="st4" x="34" y="24" width="52.7" height="21.1" rx="10.5" ry="10.5" transform="translate(120.4 -.5) rotate(120)"/>
+    <circle class="st5" cx="68.3" cy="20.8" r="10.5"/>
+    <rect class="st6" x="34" y="51.4" width="52.7" height="21.1" rx="10.5" ry="10.5" transform="translate(36.9 145.1) rotate(-120)"/>
+    <circle class="st1" cx="68.3" cy="75.6" r="10.5"/>
+  </g>
+</svg>

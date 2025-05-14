@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        {% block title %}
+            <title>{{ section.title }} | Anyrel</title>
+        {% endblock %}
+
+        {% block styles %}
+            {% for style in styles %}
+                <link rel="stylesheet" href="{{ asset(style) }}" media="all">
+            {% endfor %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block content %}
+            <div class="module">
+                {% block header %}
+                    {{ include('section/header.html.twig', {menu}) }}
+                {% endblock %}
+
+                <div class="module-body">
+                    {% block headline %}
+                        <h1>{{ section.title }}</h1>
+                    {% endblock %}
+
+                    {% block section %}{% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block scripts %}
+            {% for script in scripts %}
+                <script src="{{ asset(script) }}" type="module" defer="defer"></script>
+            {% endfor %}
+        {% endblock %}
+    </body>
+</html>

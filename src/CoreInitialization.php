@@ -2,6 +2,14 @@
 
 namespace DigitalMarketingFramework\Core;
 
+use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\AjaxControllerInterface;
+use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\GlobalSettingsConfigurationEditorAjaxController;
+use DigitalMarketingFramework\Core\Backend\Controller\SectionController\ApiSectionController;
+use DigitalMarketingFramework\Core\Backend\Controller\SectionController\ConfigurationDocumentSectionController;
+use DigitalMarketingFramework\Core\Backend\Controller\SectionController\DashboardSectionController;
+use DigitalMarketingFramework\Core\Backend\Controller\SectionController\GlobalSettingsSectionController;
+use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionControllerInterface;
+use DigitalMarketingFramework\Core\Backend\Section\Section;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticCoreSystemConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticResourceConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\DataPrivacy\UnregulatedDataPrivacyPlugin;
@@ -203,6 +211,17 @@ class CoreInitialization extends Initialization
                 'string' => StringConvertValueTypesSchemaProcessor::class,
                 'switch' => SwitchConvertValueTypesSchemaProcessor::class,
             ],
+
+            // backend
+            SectionControllerInterface::class => [
+                DashboardSectionController::class,
+                ConfigurationDocumentSectionController::class,
+                GlobalSettingsSectionController::class,
+                ApiSectionController::class,
+            ],
+            AjaxControllerInterface::class => [
+                GlobalSettingsConfigurationEditorAjaxController::class,
+            ],
         ],
     ];
 
@@ -213,6 +232,57 @@ class CoreInitialization extends Initialization
             'digital-marketing-framework.js',
         ],
     ];
+
+    protected function getBackendSections(): array
+    {
+        return [
+            new Section(
+                'Global Settings',
+                'CORE',
+                'page.global-settings.edit',
+                'Manage Global Settings',
+                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-global-settings.svg',
+                'Show',
+                50
+            ),
+            new Section(
+                'Configuration',
+                'CORE',
+                'page.configuration-document.list',
+                'Manage Configuration Documents',
+                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-configuration.svg',
+                'Show',
+                100
+            ),
+            new Section(
+                'API',
+                'CORE',
+                'page.api.list',
+                'Manage Personalization API',
+                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-api.svg',
+                'Show',
+                100
+            ),
+            new Section( // TODO move to package notification-db
+                'Notifications',
+                'CORE',
+                'page.notification.list',
+                'Read and manage Notifications',
+                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-notifications.svg',
+                'Show',
+                100
+            ),
+            new Section(
+                'Tests',
+                'CORE',
+                'page.tests.list',
+                'Project Setup Test Suite',
+                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-tests.svg',
+                'Show',
+                100
+            ),
+        ];
+    }
 
     public function initPlugins(string $domain, RegistryInterface $registry): void
     {

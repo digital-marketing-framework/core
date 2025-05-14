@@ -4,12 +4,15 @@ namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\AlertRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\BackendControllerRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Plugin\BackendSectionControllerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\NotificationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ApiRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\AssetServiceRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\BackendTemplatingRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryInterface;
@@ -52,7 +55,9 @@ interface RegistryInterface extends
     DataProcessorRegistryInterface,
     IdentifierCollectorRegistryInterface,
 
-    ApiRegistryInterface
+    ApiRegistryInterface,
+    BackendTemplatingRegistryInterface,
+    BackendControllerRegistryInterface
 {
     public function init(): void;
 
