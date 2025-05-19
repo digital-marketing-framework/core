@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core;
 
+use DigitalMarketingFramework\Core\Backend\Section\SectionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchemaInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
@@ -60,6 +61,9 @@ abstract class Initialization implements InitializationInterface
     ) {
     }
 
+    /**
+     * @return array<SectionInterface>
+     */
     protected function getBackendSections(): array
     {
         return [];

@@ -2,8 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\AjaxController;
 
-use DigitalMarketingFramework\Core\Backend\Request;
-use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareTrait;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;

@@ -14,9 +14,10 @@ interface BackendControllerInterface extends PluginInterface
 
     public function getSection(): string;
 
+    /**
+     * @return array<string>
+     */
     public function getSupportedRoutes(): array;
 
     public function matchRequest(Request $request): bool;
-    
-    
 }

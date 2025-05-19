@@ -256,33 +256,33 @@ class CoreInitialization extends Initialization
                 'Show',
                 100
             ),
-//            new Section( // TODO implement API section
-//                'API',
-//                'CORE',
-//                'page.api.list',
-//                'Manage Personalization API',
-//                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-api.svg',
-//                'Show',
-//                100
-//            ),
-//            new Section( // TODO move to package notification-db
-//                'Notifications',
-//                'CORE',
-//                'page.notification.list',
-//                'Read and manage Notifications',
-//                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-notifications.svg',
-//                'Show',
-//                100
-//            ),
-//            new Section( // TODO implement tests section
-//                'Tests',
-//                'CORE',
-//                'page.tests.list',
-//                'Project Setup Test Suite',
-//                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-tests.svg',
-//                'Show',
-//                100
-//            ),
+            new Section( // TODO implement API section
+                'API',
+                'CORE',
+                'page.api.list',
+                'Manage Personalization API',
+                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-api.svg',
+                'Show',
+                100
+            ),
+            // new Section( // TODO move to package notification-db
+            //      'Notifications',
+            //      'CORE',
+            //      'page.notification.list',
+            //      'Read and manage Notifications',
+            //      'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-notifications.svg',
+            //      'Show',
+            //      100
+            // ),
+            // new Section( // TODO move to package test-suite and test-suite-distributor?
+            //      'Tests',
+            //      'CORE',
+            //      'page.tests.list',
+            //      'Project Setup Test Suite',
+            //      'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-tests.svg',
+            //      'Show',
+            //      100
+            // ),
         ];
     }
 

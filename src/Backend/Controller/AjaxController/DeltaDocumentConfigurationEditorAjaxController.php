@@ -2,8 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\AjaxController;
 
-use DigitalMarketingFramework\Core\Backend\Request;
-use DigitalMarketingFramework\Core\Backend\Response\Response;
+use BadMethodCallException;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 /**

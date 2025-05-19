@@ -10,6 +10,10 @@ class Request
 
     protected string $internalRoute;
 
+    /**
+     * @param array<string,mixed> $arguments
+     * @param array<string,mixed> $data
+     */
     public function __construct(
         protected string $route,
         protected array $arguments = [],
@@ -52,11 +56,17 @@ class Request
         return $this->internalRoute;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getArguments(): array
     {
         return $this->arguments;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getData(): array
     {
         return $this->data;

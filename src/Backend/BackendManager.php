@@ -5,15 +5,11 @@ namespace DigitalMarketingFramework\Core\Backend;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\AjaxControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Controller\BackendControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionControllerInterface;
-use DigitalMarketingFramework\Core\Backend\Request;
 use DigitalMarketingFramework\Core\Backend\Response\HtmlResponse;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\Backend\Section\CoreIndexSection;
-use DigitalMarketingFramework\Core\Backend\Section\Section;
 use DigitalMarketingFramework\Core\Backend\Section\SectionInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
-use DigitalMarketingFramework\Core\Model\Alert\Alert;
-use DigitalMarketingFramework\Core\Model\Alert\AlertInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 class BackendManager implements BackendManagerInterface
@@ -54,7 +50,7 @@ class BackendManager implements BackendManagerInterface
             $controller = match ($request->getType()) {
                 'page' => $this->getSectionController($request),
                 'ajax' => $this->getAjaxController($request),
-                default => throw new DigitalMarketingFrameworkException(sprintf('Unknown request type "%s"', $request->getType()))
+                default => throw new DigitalMarketingFrameworkException(sprintf('Unknown request type "%s"', $request->getType())),
             };
 
             if (!$controller instanceof BackendControllerInterface) {
@@ -69,7 +65,7 @@ class BackendManager implements BackendManagerInterface
 
     protected function sortSections(): void
     {
-        uasort($this->sections, function(Section $a, Section $b) {
+        uasort($this->sections, static function (SectionInterface $a, SectionInterface $b) {
             return $a->getWeight() <=> $b->getWeight();
         });
     }

@@ -9,7 +9,6 @@ use DigitalMarketingFramework\Core\Backend\Response\RedirectResponse;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\ConfigurationEditor\MetaData;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
-use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareTrait;
@@ -18,6 +17,7 @@ abstract class SectionController extends BackendController implements SectionCon
 {
     use TemplateEngineAwareTrait;
 
+    /** @var array<string,mixed> */
     protected array $viewData = [
         'scripts' => [
             'menu' => 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/menu.js',
@@ -47,6 +47,9 @@ abstract class SectionController extends BackendController implements SectionCon
         return new HtmlResponse($rendered);
     }
 
+    /**
+     * @param array<string,mixed> $arguments
+     */
     protected function redirect(string $route, array $arguments = []): RedirectResponse
     {
         $uri = $this->uriBuilder->build($route, $arguments);
@@ -74,9 +77,11 @@ abstract class SectionController extends BackendController implements SectionCon
         foreach (MetaData::SCRIPTS as $name => $path) {
             $this->addScript($path, $name);
         }
+
         foreach (MetaData::STYLES as $name => $path) {
             $this->addStyles($path, $name);
         }
+
         foreach (MetaData::ASSETS as $path) {
             $this->copyAsset($path);
         }

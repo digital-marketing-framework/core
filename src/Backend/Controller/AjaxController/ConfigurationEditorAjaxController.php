@@ -50,6 +50,9 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
         return parent::matchRequest($request);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getDefaultConfiguration(): array
     {
         return $this->schemaProcessor->getDefaultValue($this->getSchemaDocument());
@@ -65,11 +68,17 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
         $this->schemaProcessor->convertValueTypes($this->getSchemaDocument(), $data);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function parseDocument(string $document): array
     {
         return $this->configurationDocumentParser->parseDocument($document);
     }
 
+    /**
+     * @param array<string,mixed> $configuration
+     */
     public function produceDocument(array $configuration): string
     {
         return $this->configurationDocumentParser->produceDocument($configuration, $this->getSchemaDocument());
@@ -90,10 +99,26 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
         return new JsonResponse($defaults);
     }
 
+    /**
+     * @param array<string,mixed> $configuration
+     *
+     * @return array<string,mixed>
+     */
     abstract protected function mergeConfiguration(array $configuration, bool $inheritedConfigurationOnly = false): array;
 
+    /**
+     * @param array<string,mixed> $mergedConfiguration
+     *
+     * @return array<string,mixed>
+     */
     abstract protected function splitConfiguration(array $mergedConfiguration): array;
 
+    /**
+     * @param array<string,mixed> $referenceMergedConfiguration
+     * @param array<string,mixed> $mergedConfiguration
+     *
+     * @return array<string,mixed>
+     */
     abstract protected function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array;
 
     protected function mergeAction(): Response

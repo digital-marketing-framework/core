@@ -6,14 +6,23 @@ use JsonException;
 
 class JsonResponse extends Response
 {
+    /**
+     * @param array<string,mixed> $data
+     * @param array<string,string> $headers
+     */
     public function __construct(
         protected array $data,
-        array $headers = ['Content-Type', 'application/json'],
+        array $headers = ['Content-Type' => 'application/json'],
     ) {
         [$content, $statusCode] = $this->convert($data);
         parent::__construct($content, $statusCode, $headers);
     }
 
+    /**
+     * @param array<string,mixed> $data
+     *
+     * @return array{string,int}
+     */
     protected function convert(array $data): array
     {
         try {
@@ -29,11 +38,17 @@ class JsonResponse extends Response
         }
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getData(): array
     {
         return $this->data;
     }
 
+    /**
+     * @param array<string,mixed> $data
+     */
     public function setData(array $data): void
     {
         $this->data = $data;

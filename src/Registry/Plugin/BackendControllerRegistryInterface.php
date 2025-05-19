@@ -7,6 +7,9 @@ use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionC
 
 interface BackendControllerRegistryInterface
 {
+    /**
+     * @param array<mixed> $additionalArguments
+     */
     public function registerBackendSectionController(string $class, array $additionalArguments = [], string $keyword = ''): void;
 
     public function deleteBackendSectionController(string $keyword): void;
@@ -18,6 +21,9 @@ interface BackendControllerRegistryInterface
      */
     public function getAllBackendSectionControllers(): array;
 
+    /**
+     * @param array<mixed> $additionalArguments
+     */
     public function registerBackendAjaxController(string $class, array $additionalArguments = [], string $keyword = ''): void;
 
     public function deleteBackendAjaxController(string $keyword): void;

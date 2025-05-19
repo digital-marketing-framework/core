@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
-use DigitalMarketingFramework\Core\Resource\Template\BackendTemplateService;
 use DigitalMarketingFramework\Core\Resource\Template\TemplateService;
 use DigitalMarketingFramework\Core\Resource\Template\TemplateServiceInterface;
 

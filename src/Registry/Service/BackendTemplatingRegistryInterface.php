@@ -5,7 +5,6 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 use DigitalMarketingFramework\Core\Backend\AssetUriBuilderInterface;
 use DigitalMarketingFramework\Core\Backend\BackendManagerInterface;
 use DigitalMarketingFramework\Core\Backend\UriBuilderInterface;
-use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 
 interface BackendTemplatingRegistryInterface
 {

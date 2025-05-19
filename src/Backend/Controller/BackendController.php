@@ -9,12 +9,15 @@ use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
-abstract class BackendController extends Plugin
+abstract class BackendController extends Plugin implements BackendControllerInterface
 {
     protected UriBuilderInterface $uriBuilder;
 
     protected Request $request;
 
+    /**
+     * @param array<string> $routes
+     */
     public function __construct(
         string $keyword,
         protected RegistryInterface $registry,
@@ -43,6 +46,9 @@ abstract class BackendController extends Plugin
         return $this->routes;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function getParameters(): array
     {
         $params = $this->request->getArguments();
@@ -66,11 +72,7 @@ abstract class BackendController extends Plugin
             return false;
         }
 
-        if (!in_array($request->getInternalRoute(), $this->routes)) {
-            return false;
-        }
-
-        return true;
+        return in_array($request->getInternalRoute(), $this->routes);
     }
 
     protected function getAction(): string
@@ -80,7 +82,7 @@ abstract class BackendController extends Plugin
             $internalRoute = $this->request->getInternalRoute();
         }
 
-        return preg_replace_callback('/[-.](.)/', function(array $matches) {
+        return preg_replace_callback('/[-.](.)/', static function (array $matches): string {
             return strtoupper($matches[1]);
         }, $internalRoute);
     }

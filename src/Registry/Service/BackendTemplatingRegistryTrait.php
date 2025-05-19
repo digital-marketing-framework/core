@@ -46,15 +46,15 @@ trait BackendTemplatingRegistryTrait
 
     public function getBackendManager(): BackendManagerInterface
     {
-        if (!isset($this->backendController)) {
-            $this->backendController = $this->createObject(BackendManager::class, [$this]);
+        if (!isset($this->backendManager)) {
+            $this->backendManager = $this->createObject(BackendManager::class, [$this]);
         }
 
-        return $this->backendController;
+        return $this->backendManager;
     }
 
     public function setBackendManager(BackendManagerInterface $backendManager): void
     {
-        $this->backendController = $backendManager;
+        $this->backendManager = $backendManager;
     }
 }

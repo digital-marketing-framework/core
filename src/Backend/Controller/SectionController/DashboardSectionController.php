@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 
-use DigitalMarketingFramework\Core\Backend\Request;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 

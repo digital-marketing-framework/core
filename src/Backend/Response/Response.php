@@ -4,6 +4,9 @@ namespace DigitalMarketingFramework\Core\Backend\Response;
 
 abstract class Response
 {
+    /**
+     * @param array<string,string> $headers
+     */
     public function __construct(
         protected string $content,
         protected int $statusCode = 200,
@@ -31,6 +34,9 @@ abstract class Response
         $this->statusCode = $statusCode;
     }
 
+    /**
+     * @return array<string,string>
+     */
     public function getHeaders(): array
     {
         return $this->headers;

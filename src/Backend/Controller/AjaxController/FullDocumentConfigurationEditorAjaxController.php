@@ -2,8 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\AjaxController;
 
-use DigitalMarketingFramework\Core\Backend\Request;
-use DigitalMarketingFramework\Core\Backend\Response\Response;
+use BadMethodCallException;
 
 /**
  * Full document - a configuration document that is always saved as a whole.

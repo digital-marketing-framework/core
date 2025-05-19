@@ -82,7 +82,7 @@ class ConfigurationDocumentSectionController extends SectionController implement
         $documentIdentifier = $this->configurationDocumentManager->getDocumentIdentifierFromBaseName($documentName);
         $this->configurationDocumentManager->createDocument($documentIdentifier, '', $documentName, $this->schemaDocument);
 
-        return $this->redirect('page.configuration-document.edit', [ 'documentIdentifier' => $documentIdentifier ]);
+        return $this->redirect('page.configuration-document.edit', ['documentIdentifier' => $documentIdentifier]);
     }
 
     protected function deleteAction(): Response
