@@ -18,12 +18,14 @@
                     {{ include('section/header.html.twig', {menu}) }}
                 {% endblock %}
 
-                <div class="module-body">
-                    {% block headline %}
-                        <h1>{{ section.title }}</h1>
-                    {% endblock %}
+                <div class="module-body" style="position: relative; height: calc(100% - var(--module-docheader-height));">
+                    <div class="container">
+                        {% block headline %}
+                            <h1>{{ section.title }}</h1>
+                        {% endblock %}
 
-                    {% block section %}{% endblock %}
+                        {% block section %}{% endblock %}
+                    </div>
                 </div>
             </div>
         {% endblock %}

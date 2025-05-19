@@ -1,39 +1,13 @@
 {% extends "module.html.twig" %}
 
 {% block section %}
-    <p><em>Loading <strong>Global Settings UI</strong>, this might take a few seconds...</em></p>
-
-    <details>
-        <summary>Click to show raw text configuration below.<br>You can try editing the settings manually, useful when something goes terribly wrong:</summary>
-        <div style="padding-top: 1rem">
-            <form method="post" action="{{ uri('page.global-settings.save') }}">
-                <div>
-                    <p>
-                        <button class="btn btn-default btn-sm" value="save" title="Save" type="submit">
-                            Save
-                        </button>
-                        <a data-role="close" class="btn btn-default btn-sm" title="Close" href="{{ uri('page.core.index') }}">
-                            Close
-                        </a>
-                    </p>
-                </div>
-                <div>
-                    {{ include('configuration-editor/textarea.html.twig', {
-                        config: {
-                            ready: true,
-                            mode: 'embedded',
-                            readonly: false,
-                            globalDocument: false,
-                            debug: debug ?? false
-                        },
-                        documentType: 'global-settings',
-                        document: document
-                    }) }}
-                </div>
-            </form>
-        </div>
-    </details>
-
-    <div id="stage-container"></div>
-
+    {% set config = {
+        ready: true,
+        mode: 'embedded',
+        readonly: false,
+        globalDocument: false,
+        includes: false,
+        debug: debug ?? false
+    } %}
+    {{ include('configuration-editor/editor-setup.html.twig', { documentType: 'global-settings', returnUri: uri('page.core.index'), title: 'Global Settings', config, document }) }}
 {% endblock %}

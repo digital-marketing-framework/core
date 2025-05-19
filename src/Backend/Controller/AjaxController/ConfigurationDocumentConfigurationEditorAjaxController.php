@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\Backend\Controller\AjaxController;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
-class GlobalSettingsConfigurationEditorAjaxController extends FullDocumentConfigurationEditorAjaxController
+class ConfigurationDocumentConfigurationEditorAjaxController extends InheritedDocumentConfigurationEditorAjaxController
 {
     protected SchemaDocument $schemaDocument;
 
@@ -14,10 +14,10 @@ class GlobalSettingsConfigurationEditorAjaxController extends FullDocumentConfig
         parent::__construct(
             $keyword,
             $registry,
-            'global-settings'
+            'configuration-document'
         );
 
-        $this->schemaDocument = $this->registry->getRegistryCollection()->getGlobalConfigurationSchemaDocument();
+        $this->schemaDocument = $this->registry->getRegistryCollection()->getConfigurationSchemaDocument();
     }
 
     protected function getSchemaDocument(): SchemaDocument

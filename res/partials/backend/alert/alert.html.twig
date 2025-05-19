@@ -6,13 +6,7 @@
     <div class="media">
         <div class="media-left">
             <span class="icon-emphasized">
-                <span class="t3js-icon icon icon-size-small icon-state-default icon-actions-{{ icon }}" data-identifier="actions-{{ icon }}" aria-hidden="true">
-                    <span class="icon-markup">
-                        <svg class="icon-color">
-                            <use xlink:href="{{ asset('EXT:core/Resources/Public/Icons/T3Icons/sprites/actions.svg') }}#actions-{{ icon }}"></use>
-                        </svg>
-                    </span>
-                </span>
+                {{ include('t3-icon.html.twig', {name:icon}) }}
             </span>
         </div>
         <div class="media-body">

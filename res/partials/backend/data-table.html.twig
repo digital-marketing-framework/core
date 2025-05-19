@@ -1,0 +1,26 @@
+<table class="table table-striped table-hover">
+    {% if not subTable and (tableKeyHeader or tableValueHeader) %}
+    <thead>
+        <tr>
+            <th>{{ tableKeyHeader }}</th>
+            <th>{{ tableValueHeader }}</th>
+        </tr>
+    </thead>
+    {% endif %}
+    <tbody>
+    {% for key, value in tableData %}
+        <tr>
+            {% if not subTable or not (key matches '/^\\d+$/') %}
+                <td>{{ key }}</td>
+            {% endif %}
+            <td>
+                {% if value is iterable %}
+                    {% include 'data-table.html.twig' with { tableData: value, subTable: true } %}
+                {% else %}
+                    <pre>{{ value }}</pre>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

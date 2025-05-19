@@ -1,5 +1,71 @@
 {% extends "module.html.twig" %}
 
 {% block section %}
+    <form method="post" action="{{ uri('page.configuration-document.create') }}">
+        <label for="create-document-name">New Configuration Document:
+            <input type="text" name="documentName" required="required">
+        </label>
 
+        <button type="submit">
+            {{ include('t3-icon.html.twig', {name:'plus',class:'add'}) }}
+        </button>
+    </form>
+
+<div class="table-fit">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Location</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set documentIcon = asset('PKG:digital-marketing-framework/core/res/assets/icons/record-configuration-document.svg') %}
+        {% set actionIcons = asset('EXT:core/Resources/Public/Icons/T3Icons/sprites/actions.svg') %}
+        {% for id,document in documents %}
+            {% set editKeyword = document.readonly ? 'file-view' : 'open' %}
+            {% set editIcon = actionIcons ~ '#actions-' ~ editKeyword %}
+            {% set editUrl = uri('page.configuration-document.edit', {documentIdentifier:id}) %}
+            {% set editTitle = document.readonly ? 'View this configuration document' : 'Edit this configuration document' %}
+            <tr>
+                <td class="col-icon">
+                    <span data-bs-toggle="tooltip" data-bs-placement="right" aria-label="id={{ document.shortId }}">
+                        <span class="icon icon-size-small icon-state-default icon-content-form" aria-hidden="true">
+                            <span class="icon-markup">
+                                <img class="icon-color" src="{{ documentIcon }}" width="16" height="16" alt="">
+                            </span>
+                        </span>
+                    </span>
+                </td>
+
+                <td class="col-title">
+                    <a href="{{ editUrl }}" title="{{ editTitle }}" data-toggle="tooltip" data-placement="right">
+                        {{ document.name }}
+                    </a>
+                </td>
+
+                <td><code>{{ id }}</code></td>
+
+                <td class="col-control">
+                    <div class="btn-group" role="group">
+                        <a class="btn btn-default form-record-open" href="{{ editUrl }}" title="{{ editTitle }}">
+                            {{ include('t3-icon.html.twig', {name:editKeyword}) }}
+                        </a>
+
+                        {# TODO implement document duplication #}
+
+                        {% if not document.readonly %}
+                            <a class="btn btn-default form-record-open" href="{{ uri('page.configuration-document.delete', {documentIdentifier:id}) }}" title="Delete this configuration document">
+                                {{ include('t3-icon.html.twig', {name:'delete'}) }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

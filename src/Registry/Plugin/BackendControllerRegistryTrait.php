@@ -9,7 +9,7 @@ trait BackendControllerRegistryTrait
 {
     use PluginRegistryTrait;
 
-    public function registerBackendSectionController(string $class, array $additionalArguments, string $keyword = ''): void
+    public function registerBackendSectionController(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
         $this->registerPlugin(SectionControllerInterface::class, $class, $additionalArguments, $keyword);
     }
@@ -29,7 +29,7 @@ trait BackendControllerRegistryTrait
         return $this->getAllPlugins(SectionControllerInterface::class);
     }
 
-    public function registerBackendAjaxController(string $class, array $additionalArguments, string $keyword = ''): void
+    public function registerBackendAjaxController(string $class, array $additionalArguments = [], string $keyword = ''): void
     {
         $this->registerPlugin(AjaxControllerInterface::class, $class, $additionalArguments, $keyword);
     }

@@ -9,6 +9,7 @@ use DigitalMarketingFramework\Core\Backend\Request;
 use DigitalMarketingFramework\Core\Backend\Response\HtmlResponse;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\Backend\Section\CoreIndexSection;
+use DigitalMarketingFramework\Core\Backend\Section\Section;
 use DigitalMarketingFramework\Core\Backend\Section\SectionInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Alert\Alert;
@@ -66,9 +67,17 @@ class BackendManager implements BackendManagerInterface
         }
     }
 
+    protected function sortSections(): void
+    {
+        uasort($this->sections, function(Section $a, Section $b) {
+            return $a->getWeight() <=> $b->getWeight();
+        });
+    }
+
     public function setSection(SectionInterface $section): void
     {
         $this->sections[$section->getName()] = $section;
+        $this->sortSections();
     }
 
     public function getAllSections(): array

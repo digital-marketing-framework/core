@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\Backend\Request;
 use DigitalMarketingFramework\Core\Backend\Response\HtmlResponse;
 use DigitalMarketingFramework\Core\Backend\Response\RedirectResponse;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
+use DigitalMarketingFramework\Core\ConfigurationEditor\MetaData;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
@@ -35,9 +36,9 @@ abstract class SectionController extends BackendController implements SectionCon
         parent::__construct($keyword, $registry, 'page', $section, $routes);
     }
 
-    protected function render(Request $request): HtmlResponse
+    protected function render(): HtmlResponse
     {
-        $templateName = $request->getInternalRoute();
+        $templateName = $this->request->getInternalRoute();
         $templatePath = sprintf('section/%s/%s.html.twig', $this->section, $templateName);
         $config = ['templateName' => $templatePath];
 
@@ -48,7 +49,7 @@ abstract class SectionController extends BackendController implements SectionCon
 
     protected function redirect(string $route, array $arguments = []): RedirectResponse
     {
-        $uri = $this->registry->getBackendUriBuilder()->build($route, $arguments);
+        $uri = $this->uriBuilder->build($route, $arguments);
 
         return new RedirectResponse($uri);
     }
@@ -70,18 +71,26 @@ abstract class SectionController extends BackendController implements SectionCon
 
     protected function addConfigurationEditorAssets(): void
     {
-        $this->addScript('PKG:digital-marketing-framework/core/res/assets/config-editor/scripts/index.js');
-        $this->copyAsset('PKG:digital-marketing-framework/core/res/assets/config-editor/scripts/index.js.map');
-        $this->copyAsset('PKG:digital-marketing-framework/core/res/assets/config-editor/fonts/caveat/Caveat-Bold.ttf');
-        $this->copyAsset('PKG:digital-marketing-framework/core/res/assets/config-editor/fonts/caveat/Caveat-Medium.ttf');
-        $this->copyAsset('PKG:digital-marketing-framework/core/res/assets/config-editor/fonts/caveat/Caveat-Regular.ttf');
-        $this->copyAsset('PKG:digital-marketing-framework/core/res/assets/config-editor/fonts/caveat/Caveat-SemiBold.ttf');
-        $this->addStyles('PKG:digital-marketing-framework/core/res/assets/config-editor/styles/index.css');
-        $this->addStyles('PKG:digital-marketing-framework/core/res/assets/config-editor/styles/type.css');
+        foreach (MetaData::SCRIPTS as $name => $path) {
+            $this->addScript($path, $name);
+        }
+        foreach (MetaData::STYLES as $name => $path) {
+            $this->addStyles($path, $name);
+        }
+        foreach (MetaData::ASSETS as $path) {
+            $this->copyAsset($path);
+        }
+    }
+
+    protected function getReturnUrl(string $default = null): ?string
+    {
+        return $this->getParameters()['returnUrl'] ?? $default;
     }
 
     public function getResponse(Request $request): Response
     {
+        $this->request = $request;
+
         $this->viewData['menu'] = $this->registry->getBackendManager()->getSectionMenu($request);
         $this->viewData['section'] = $this->registry->getBackendManager()->getSection($this->getSection());
 
@@ -89,6 +98,6 @@ abstract class SectionController extends BackendController implements SectionCon
             throw new DigitalMarketingFrameworkException(sprintf('Route "%s" is not supported.', $request->getRoute()));
         }
 
-        return $this->callActionMethod($request);
+        return $this->callActionMethod();
     }
 }

@@ -18,26 +18,24 @@ class ApiSectionController extends SectionController
         );
     }
 
-    protected function listAction(Request $request): Response
+    protected function listAction(): Response
     {
-        // $this->viewData['sections'] = $this->registry->getBackendManager()->getAllSections();
-
-        return $this->render($request);
+        return $this->render();
     }
 
-    protected function editAction(Request $request): Response
+    protected function editAction(): Response
     {
-        return $this->render($request);
+        return $this->render();
     }
 
-    protected function saveAction(Request $request): Response
+    protected function saveAction(): Response
     {
         // TODO save
 
         return $this->redirect('page.api.list');
     }
 
-    protected function createAction(Request $request): Response
+    protected function createAction(): Response
     {
         // TODO create
         $id = 42;
@@ -47,7 +45,7 @@ class ApiSectionController extends SectionController
         ]);
     }
 
-    protected function deleteAction(Request $request): Response
+    protected function deleteAction(): Response
     {
         // TODO delete
 

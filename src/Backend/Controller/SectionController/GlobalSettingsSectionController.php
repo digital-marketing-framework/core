@@ -34,7 +34,7 @@ class GlobalSettingsSectionController extends SectionController implements Globa
         $this->schemaDocument = $registry->getRegistryCollection()->getGlobalConfigurationSchemaDocument();
     }
 
-    protected function editAction(Request $request): Response
+    protected function editAction(): Response
     {
         $this->addConfigurationEditorAssets();
 
@@ -48,12 +48,12 @@ class GlobalSettingsSectionController extends SectionController implements Globa
         $document = $this->configurationDocumentParser->produceDocument($data, $this->schemaDocument);
         $this->viewData['document'] = $document;
 
-        return $this->render($request);
+        return $this->render();
     }
 
-    protected function saveAction(Request $request): Response
+    protected function saveAction(): Response
     {
-        $document = $request->getData()['document'] ?? '';
+        $document = $this->request->getData()['document'] ?? '';
         $configuration = $this->configurationDocumentParser->parseDocument($document);
 
         foreach ($configuration as $key => $value) {

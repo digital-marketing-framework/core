@@ -18,6 +18,13 @@ interface QueueInterface
     public const STATUS_FAILED = 4;
 
     /**
+     * @param array<int> $ids
+     *
+     * @return array<JobInterface>
+     */
+    public function fetchByIdList(array $ids): array;
+
+    /**
      * @param array<int> $status
      *
      * @return array<JobInterface>

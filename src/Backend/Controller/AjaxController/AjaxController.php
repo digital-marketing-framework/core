@@ -21,6 +21,7 @@ abstract class AjaxController extends BackendController implements AjaxControlle
 
     public function getResponse(Request $request): Response
     {
-        return $this->callActionMethod($request);
+        $this->request = $request;
+        return $this->callActionMethod();
     }
 }

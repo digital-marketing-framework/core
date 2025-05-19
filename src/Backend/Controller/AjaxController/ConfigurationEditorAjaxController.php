@@ -20,7 +20,6 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
     public function __construct(
         string $keyword,
         RegistryInterface $registry,
-        protected SchemaDocument $schemaDocument,
         protected string $documentType,
     ) {
         parent::__construct(
@@ -31,8 +30,14 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
         );
     }
 
-    protected function getDocumentType(Request $request): string
+    abstract protected function getSchemaDocument(): SchemaDocument;
+
+    protected function getDocumentType(?Request $request = null): string
     {
+        if (!$request instanceof Request) {
+            $request = $this->request;
+        }
+
         return $request->getArguments()['documentType'] ?? '';
     }
 
@@ -43,11 +48,6 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
         }
 
         return parent::matchRequest($request);
-    }
-
-    public function getSchemaDocument(): SchemaDocument
-    {
-        return $this->schemaDocument;
     }
 
     public function getDefaultConfiguration(): array
@@ -75,14 +75,14 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
         return $this->configurationDocumentParser->produceDocument($configuration, $this->getSchemaDocument());
     }
 
-    protected function schemaAction(Request $request): Response
+    protected function schemaAction(): Response
     {
         $data = $this->getSchemaDocument()->toArray();
 
         return new JsonResponse($data);
     }
 
-    protected function defaultsAction(Request $request): Response
+    protected function defaultsAction(): Response
     {
         $defaults = $this->getDefaultConfiguration();
         $this->preSaveDataTransform($defaults);
@@ -96,9 +96,9 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
 
     abstract protected function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array;
 
-    protected function mergeAction(Request $request): Response
+    protected function mergeAction(): Response
     {
-        $document = $request->getData()['document'] ?? '';
+        $document = $this->request->getData()['document'] ?? '';
         $configuration = $this->parseDocument($document);
 
         $mergedConfiguration = $this->mergeConfiguration($configuration);
@@ -113,18 +113,18 @@ abstract class ConfigurationEditorAjaxController extends AjaxController implemen
         ]);
     }
 
-    protected function splitAction(Request $request): Response
+    protected function splitAction(): Response
     {
-        $mergedConfiguration = $request->getData();
+        $mergedConfiguration = $this->request->getData();
         $splitConfiguration = $this->splitConfiguration($mergedConfiguration);
         $splitDocument = $this->produceDocument($splitConfiguration);
 
         return new JsonResponse(['document' => $splitDocument]);
     }
 
-    protected function updateIncludesAction(Request $request): Response
+    protected function updateIncludesAction(): Response
     {
-        $data = $request->getData();
+        $data = $this->request->getData();
 
         $mergedConfiguration = $this->processIncludesChange(
             $data['referenceData'],

@@ -4,86 +4,28 @@
     {% block alerts %}
         {{ include('alert/alerts.html.twig', {alerts}) }}
     {% endblock %}
-<!--
-<div>
-    <div class="callout callout-warning">
-        <div class="media">
-            <div class="media-left">
-                <span class="icon-emphasized">
-                    <span class="t3js-icon icon icon-size-small icon-state-default icon-actions-exclamation" data-identifier="actions-exclamation" aria-hidden="true">
-                        <span class="icon-markup">
-                            <svg class="icon-color"><use xlink:href="/_assets/1ee1d3e909b58d32e30dcea666dd3224/Icons/T3Icons/sprites/actions.svg#actions-exclamation"></use></svg>
-                        </span>
-                    </span>
-                </span>
-            </div>
-            <div class="media-body"><div class="callout-title">Distributor</div>
-                <div class="callout-body">
-                    Some distributor jobs seem to be stuck.
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="callout callout-danger">
-        <div class="media">
-            <div class="media-left">
-                <span class="icon-emphasized">
-                    <span class="t3js-icon icon icon-size-small icon-state-default icon-actions-close" data-identifier="actions-close" aria-hidden="true">
-                        <span class="icon-markup">
-                            <svg class="icon-color"><use xlink:href="/_assets/1ee1d3e909b58d32e30dcea666dd3224/Icons/T3Icons/sprites/actions.svg#actions-close"></use></svg>
-                        </span>
-                    </span>
-                </span>
-            </div>
-            <div class="media-body">
-                <div class="callout-title">Distributor</div>
-                <div class="callout-body">
-                    Failed distributor jobs detected.
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
--->
 
-<div class="card-container">
-    {% for section in sections %}
-        <div class="card card-size-fixed-small">
-            <div class="card-header">
-                <div class="card-icon">
-                    <img src="{{ asset(section.icon) }}" width="64" height="64" alt="{{ section.title }}" />
+    <div class="card-container">
+        {% for section in sections %}
+            <div class="card card-size-fixed-small">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <img src="{{ asset(section.icon) }}" width="64" height="64" alt="{{ section.title }}" />
+                    </div>
+                    <div class="card-header-body">
+                        <h1 class="card-title">{{ section.title }}</h1>
+                        <span class="card-subtitle">{{ section.subtitle }}</span>
+                    </div>
                 </div>
-                <div class="card-header-body">
-                    <h1 class="card-title">{{ section.title }}</h1>
-                    <span class="card-subtitle">{{ section.subtitle }}</span>
+                <div class="card-body">
+                    <p class="card-text">{{ section.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ uri(section.route) }}" class="btn btn-primary">
+                        {{ section.actionLabel }}
+                    </a>
                 </div>
             </div>
-            <div class="card-body">
-                <p class="card-text">{{ section.description }}</p>
-            </div>
-            <div class="card-footer">
-                <a href="{{ uri(section.route) }}" class="btn btn-primary">
-                    {{ section.actionLabel }}
-                </a>
-            </div>
-        </div>
-    {% endfor %}
-</div>
-<!--<ul>
-    {% for section in sections %}
-        <li>
-            <ul>
-                <li>title: {{ section.title }}</li>
-                <li>subtitle: {{ section.subTitle }}</li>
-                <li>description: {{ section.description }}</li>
-                <li>action label: {{ section.actionLabel }}</li>
-                <li>route: {{ section.route }}</li>
-                <li>url: {{ uri(section.route) }}</li>
-                <li>icon: {{ section.icon }}</li>
-                <li>icon image: <img src="{{ asset(section.icon) }}" alt="{{ section.title }}" width="64" height="64"/></li>
-                <li>weight: {{ section.weight }}</li>
-            </ul>
-        </li>
-    {% endfor %}
-</ul>-->
+        {% endfor %}
+    </div>
 {% endblock %}

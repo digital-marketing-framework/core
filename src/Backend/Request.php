@@ -14,11 +14,17 @@ class Request
         protected string $route,
         protected array $arguments = [],
         protected array $data = [],
+        protected string $method = 'GET',
     ) {
         $routeParts = $route === '' ? [] : explode('.', $route);
         $this->type = array_shift($routeParts) ?? 'page';
         $this->section = array_shift($routeParts) ?? 'core';
         $this->internalRoute = $routeParts !== [] ? implode('.', $routeParts) : 'index';
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
     }
 
     public function getOriginalRoute(): string

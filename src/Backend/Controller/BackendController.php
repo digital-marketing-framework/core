@@ -4,12 +4,17 @@ namespace DigitalMarketingFramework\Core\Backend\Controller;
 
 use DigitalMarketingFramework\Core\Backend\Request;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
+use DigitalMarketingFramework\Core\Backend\UriBuilderInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 abstract class BackendController extends Plugin
 {
+    protected UriBuilderInterface $uriBuilder;
+
+    protected Request $request;
+
     public function __construct(
         string $keyword,
         protected RegistryInterface $registry,
@@ -18,6 +23,7 @@ abstract class BackendController extends Plugin
         protected array $routes,
     ) {
         parent::__construct($keyword);
+        $this->uriBuilder = $registry->getBackendUriBuilder();
     }
 
     abstract public function getResponse(Request $request): Response;
@@ -37,6 +43,19 @@ abstract class BackendController extends Plugin
         return $this->routes;
     }
 
+    protected function getParameters(): array
+    {
+        $params = $this->request->getArguments();
+
+        if ($this->request->getMethod() === 'POST') {
+            foreach ($this->request->getData() as $key => $value) {
+                $params[$key] = $value;
+            }
+        }
+
+        return $params;
+    }
+
     public function matchRequest(Request $request): bool
     {
         if ($this->getType() !== $request->getType()) {
@@ -54,18 +73,28 @@ abstract class BackendController extends Plugin
         return true;
     }
 
-    protected function callActionMethod(Request $request): Response
+    protected function getAction(): string
     {
-        $action = preg_replace_callback('/[-.](.)/', function(array $matches) {
+        $internalRoute = $this->request->getData()['action'] ?? '';
+        if (!in_array($internalRoute, $this->getSupportedRoutes(), true)) {
+            $internalRoute = $this->request->getInternalRoute();
+        }
+
+        return preg_replace_callback('/[-.](.)/', function(array $matches) {
             return strtoupper($matches[1]);
-        }, $request->getInternalRoute());
+        }, $internalRoute);
+    }
+
+    protected function callActionMethod(): Response
+    {
+        $action = $this->getAction();
         $method = $action . 'Action';
 
         if (!method_exists($this, $method)) {
             throw new DigitalMarketingFrameworkException(sprintf('Unknown action "%s".', $action));
         }
 
-        $response = $this->$method($request);
+        $response = $this->$method();
 
         if (!$response instanceof Response) {
             throw new DigitalMarketingFrameworkException('Backend controller did not return a valid response object.');

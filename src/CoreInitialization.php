@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core;
 
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\AjaxControllerInterface;
+use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\ConfigurationDocumentConfigurationEditorAjaxController;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\GlobalSettingsConfigurationEditorAjaxController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\ApiSectionController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\ConfigurationDocumentSectionController;
@@ -220,6 +221,7 @@ class CoreInitialization extends Initialization
                 ApiSectionController::class,
             ],
             AjaxControllerInterface::class => [
+                ConfigurationDocumentConfigurationEditorAjaxController::class,
                 GlobalSettingsConfigurationEditorAjaxController::class,
             ],
         ],
@@ -254,33 +256,33 @@ class CoreInitialization extends Initialization
                 'Show',
                 100
             ),
-            new Section(
-                'API',
-                'CORE',
-                'page.api.list',
-                'Manage Personalization API',
-                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-api.svg',
-                'Show',
-                100
-            ),
-            new Section( // TODO move to package notification-db
-                'Notifications',
-                'CORE',
-                'page.notification.list',
-                'Read and manage Notifications',
-                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-notifications.svg',
-                'Show',
-                100
-            ),
-            new Section(
-                'Tests',
-                'CORE',
-                'page.tests.list',
-                'Project Setup Test Suite',
-                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-tests.svg',
-                'Show',
-                100
-            ),
+//            new Section( // TODO implement API section
+//                'API',
+//                'CORE',
+//                'page.api.list',
+//                'Manage Personalization API',
+//                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-api.svg',
+//                'Show',
+//                100
+//            ),
+//            new Section( // TODO move to package notification-db
+//                'Notifications',
+//                'CORE',
+//                'page.notification.list',
+//                'Read and manage Notifications',
+//                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-notifications.svg',
+//                'Show',
+//                100
+//            ),
+//            new Section( // TODO implement tests section
+//                'Tests',
+//                'CORE',
+//                'page.tests.list',
+//                'Project Setup Test Suite',
+//                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-tests.svg',
+//                'Show',
+//                100
+//            ),
         ];
     }
 

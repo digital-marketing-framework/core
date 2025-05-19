@@ -18,11 +18,11 @@ class DashboardSectionController extends SectionController
         );
     }
 
-    protected function indexAction(Request $request): Response
+    protected function indexAction(): Response
     {
         $this->viewData['sections'] = $this->registry->getBackendManager()->getAllSections();
         $this->viewData['alerts'] = $this->registry->getBackendManager()->getAlerts();
 
-        return $this->render($request);
+        return $this->render();
     }
 }
