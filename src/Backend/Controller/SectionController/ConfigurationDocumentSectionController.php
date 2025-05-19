@@ -55,7 +55,7 @@ class ConfigurationDocumentSectionController extends SectionController implement
         return $this->render();
     }
 
-    protected function editAction(Request $request): Response
+    protected function editAction(): Response
     {
         $this->addConfigurationEditorAssets();
         $documentIdentifier = $this->getDocumentIdentifier();
