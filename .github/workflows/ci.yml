@@ -14,8 +14,8 @@ jobs:
             fail-fast: false
             matrix:
                 php_version:
-                    - '8.1'
-                    - '8.2'
+                    - 8.2
+                    - 8.3
         steps:
             -
                 name: Checkout
@@ -46,3 +46,14 @@ jobs:
             -
                 name: 'Run command'
                 run: "composer ci\n"
+    semgrep:
+        name: semgrep
+        runs-on: ubuntu-latest
+        container:
+            image: semgrep/semgrep
+        if: "(github.actor != 'dependabot[bot]')"
+        steps:
+            -
+                uses: actions/checkout@v4
+            -
+                run: 'semgrep scan --config auto --error'

@@ -131,9 +131,7 @@ abstract class Initialization implements InitializationInterface
     {
         $package = $this->getFullPackageName();
         foreach (static::FRONTEND_SCRIPTS as $type => $paths) {
-            $paths = array_map(static function (string $path) use ($package): string {
-                return sprintf(static::FRONTEND_SCRIPT_PATTERN, $package, $path);
-            }, $paths);
+            $paths = array_map(static fn (string $path): string => sprintf(static::FRONTEND_SCRIPT_PATTERN, $package, $path), $paths);
             $registry->addFrontendScripts($type, $package, $paths);
         }
     }

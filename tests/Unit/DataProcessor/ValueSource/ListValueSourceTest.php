@@ -4,11 +4,13 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ListValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends ValueSourceTest<ListValueSource>
+ * @extends ValueSourceTestBase<ListValueSource>
  */
-class ListValueSourceTest extends ValueSourceTest
+class ListValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'list';
 
@@ -16,7 +18,7 @@ class ListValueSourceTest extends ValueSourceTest
 
     protected const MULTI_VALUE_CLASS_NAME = MultiValue::class;
 
-    /** @test */
+    #[Test]
     public function emptyConfigurationReturnsEmptyMultiValue(): void
     {
         $output = $this->processValueSource([
@@ -29,7 +31,7 @@ class ListValueSourceTest extends ValueSourceTest
     /**
      * @return array<array{0:array<mixed>,1:array<array<string,mixed>>,2:array<mixed>}>
      */
-    public function listDataProvider(): array
+    public static function listDataProvider(): array
     {
         return [
             [
@@ -91,16 +93,12 @@ class ListValueSourceTest extends ValueSourceTest
      * @param array<mixed> $expectedResult
      * @param array<array<string,mixed>> $subConfigurations
      * @param array<mixed> $subResults
-     *
-     * @test
-     *
-     * @dataProvider listDataProvider
      */
+    #[Test]
+    #[DataProvider('listDataProvider')]
     public function list(array $expectedResult, array $subConfigurations, array $subResults): void
     {
-        $with = array_map(static function (array $subConfigItem) {
-            return [$subConfigItem];
-        }, $subConfigurations);
+        $with = array_map(static fn (array $subConfigItem) => [$subConfigItem], $subConfigurations);
         $listConfig = [];
         foreach ($subConfigurations as $index => $subConfig) {
             $listConfig[$index] = $this->createListItem($subConfig, $index, $index * 10);
@@ -109,7 +107,7 @@ class ListValueSourceTest extends ValueSourceTest
         $config = [
             ListValueSource::KEY_VALUES => $listConfig,
         ];
-        $this->dataProcessor->method('processValue')->withConsecutive(...$with)->willReturnOnConsecutiveCalls(...$subResults);
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', $with, $subResults);
         $output = $this->processValueSource($config);
         $this->assertMultiValue($output, static::MULTI_VALUE_CLASS_NAME);
         $this->assertMultiValueEquals($expectedResult, $output);

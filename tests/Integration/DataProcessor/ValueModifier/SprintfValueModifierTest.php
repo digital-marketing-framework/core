@@ -2,16 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\SprintfValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\SprintfValueModifierTest as SprintfValueModifierUnitTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\SprintfValueModifier
- */
-class SprintfValueModifierTest extends ValueModifierTest
+#[CoversClass(SprintfValueModifier::class)]
+class SprintfValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'sprintf';
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return SprintfValueModifierUnitTest::MODIFY_TEST_CASES;
     }

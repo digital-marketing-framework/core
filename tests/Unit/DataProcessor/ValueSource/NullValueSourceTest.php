@@ -3,17 +3,18 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends ValueSourceTest<NullValueSource>
+ * @extends ValueSourceTestBase<NullValueSource>
  */
-class NullValueSourceTest extends ValueSourceTest
+class NullValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'constant';
 
     protected const CLASS_NAME = NullValueSource::class;
 
-    /** @test */
+    #[Test]
     public function returnsNull(): void
     {
         $output = $this->processValueSource([]);

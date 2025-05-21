@@ -196,9 +196,7 @@ class NonPersistentQueue implements QueueInterface
     {
         $this->queue = array_filter(
             $this->queue,
-            static function ($a) use ($job) {
-                return $a !== $job;
-            }
+            static fn ($a) => $a !== $job
         );
     }
 

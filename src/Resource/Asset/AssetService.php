@@ -108,7 +108,7 @@ class AssetService implements AssetServiceInterface
         $source = $resourceService->getResourcePath($identifier);
 
         $relativePath1 = trim($resourceService->getResourceRootPath($identifier), '/');
-        $relativePath2 = trim(substr($source, strlen($relativePath1) + 1), '/');
+        $relativePath2 = trim(substr((string)$source, strlen($relativePath1) + 1), '/');
         $relativeTarget = strrev(md5($relativePath1 . '|' . $this->salt)) . '/' . $relativePath2;
 
         $target = $this->tempBasePath . '/' . static::TEMP_PATH_ASSETS . '/' . $relativeTarget;

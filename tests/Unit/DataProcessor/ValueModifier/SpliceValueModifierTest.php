@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\SpliceValueModifier;
 
-class SpliceValueModifierTest extends ValueModifierTest
+class SpliceValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'splice';
 
@@ -51,7 +51,7 @@ class SpliceValueModifierTest extends ValueModifierTest
         ['first second third', 'first', [SpliceValueModifier::KEY_INDEX => ':-2']],
     ];
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

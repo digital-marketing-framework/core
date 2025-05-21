@@ -44,9 +44,7 @@ class TaggableCacheWrapper implements CacheInterface
      */
     public function fetchMultiple(array $keys): array
     {
-        return array_map(static function ($result) {
-            return $result[static::KEY_DATA];
-        }, $this->cache->fetchMultiple($keys));
+        return array_map(static fn ($result) => $result[static::KEY_DATA], $this->cache->fetchMultiple($keys));
     }
 
     public function purge(string $key): void
@@ -56,9 +54,7 @@ class TaggableCacheWrapper implements CacheInterface
             foreach ($data[static::KEY_TAGS] as $tag) {
                 $tagData = $this->cache->fetch(static::PREFIX_TAG . $tag);
                 if ($tagData !== null) {
-                    $tagData = array_filter($tagData, static function ($tagKey) use ($key) {
-                        return $tagKey !== $key;
-                    });
+                    $tagData = array_filter($tagData, static fn ($tagKey) => $tagKey !== $key);
                     if ($tagData !== []) {
                         $this->cache->store(static::PREFIX_TAG . $tag, $tagData);
                     } else {
@@ -115,9 +111,7 @@ class TaggableCacheWrapper implements CacheInterface
      */
     protected function fetchKeysByTags(array $tags): array
     {
-        $tagDataList = $this->cache->fetchMultiple(array_map(static function ($tag): string {
-            return static::PREFIX_TAG . $tag;
-        }, $tags));
+        $tagDataList = $this->cache->fetchMultiple(array_map(static fn ($tag): string => static::PREFIX_TAG . $tag, $tags));
         $keys = [];
         foreach ($tagDataList as $tagData) {
             array_push($keys, ...$tagData);

@@ -4,8 +4,10 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataMapper;
 
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class PassthroughFieldsDataMapperTest extends DataMapperTest
+class PassthroughFieldsDataMapperTest extends DataMapperTestBase
 {
     protected const CLASS_NAME = PassthroughFieldsDataMapper::class;
 
@@ -26,7 +28,7 @@ class PassthroughFieldsDataMapperTest extends DataMapperTest
      *  4?:array<string,string|ValueInterface|null>
      * }>
      */
-    public function mapDataDataProvider(): array
+    public static function mapDataDataProvider(): array
     {
         return [
             [
@@ -114,11 +116,9 @@ class PassthroughFieldsDataMapperTest extends DataMapperTest
      * @param ?array<string,mixed> $config
      * @param ?array<string> $processedFields
      * @param array<string,string|ValueInterface|null> $target
-     *
-     * @test
-     *
-     * @dataProvider mapDataDataProvider
      */
+    #[Test]
+    #[DataProvider('mapDataDataProvider')]
     public function mapDataTest(array $inputData, array $expectedOutputData, ?array $config = null, ?array $processedFields = null, ?array $target = null): void
     {
         if ($processedFields !== null) {

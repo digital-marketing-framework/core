@@ -9,9 +9,11 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifier;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataProcessorPluginTest;
+use DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataProcessorPluginTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-abstract class ValueModifierTest extends DataProcessorPluginTest
+abstract class ValueModifierTestBase extends DataProcessorPluginTestBase
 {
     /** @var array<string,string|ValueInterface|null> */
     protected array $data = [];
@@ -47,7 +49,7 @@ abstract class ValueModifierTest extends DataProcessorPluginTest
     /**
      * @return array<array{0:mixed,1:mixed,2?:?array<string,mixed>}>
      */
-    abstract public function modifyProvider(): array;
+    abstract public static function modifyProvider(): array;
 
     /**
      * @param ?array<string,mixed> $config
@@ -70,11 +72,9 @@ abstract class ValueModifierTest extends DataProcessorPluginTest
 
     /**
      * @param ?array<string,mixed> $config
-     *
-     * @test
-     *
-     * @dataProvider modifyProvider
      */
+    #[Test]
+    #[DataProvider('modifyProvider')]
     public function modify(mixed $input, mixed $expected, ?array $config = null): void
     {
         $this->runModify($input, $expected, $config, true);

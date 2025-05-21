@@ -5,11 +5,12 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConcatenationValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends ValueSourceTest<ConcatenationValueSource>
+ * @extends ValueSourceTestBase<ConcatenationValueSource>
  */
-class ConcatenationValueSourceTest extends ValueSourceTest
+class ConcatenationValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'concatenation';
 
@@ -20,14 +21,14 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         ConcatenationValueSource::KEY_VALUES => [],
     ];
 
-    /** @test */
+    #[Test]
     public function emptyConfigurationLeadsToNullValue(): void
     {
         $output = $this->processValueSource([]);
         $this->assertNull($output);
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentFieldWillReturnNull(): void
     {
         $subConfig1 = ['configKey1' => 'configValue1'];
@@ -41,7 +42,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertNull($output);
     }
 
-    /** @test */
+    #[Test]
     public function emptyFieldWillReturnEmptyValueAndNotNull(): void
     {
         $subConfig1 = ['configKey1' => 'configValue1'];
@@ -55,7 +56,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertEquals('', $output);
     }
 
-    /** @test */
+    #[Test]
     public function singleComlpexFieldWillBeReturnedAsIs(): void
     {
         $subConfig1 = ['configKey1' => 'configValue1'];
@@ -71,7 +72,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertEquals(['foo', 'bar'], $output->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function concatSimpleValues(): void
     {
         $subConfig1 = ['configKey1' => 'configValue1'];
@@ -82,14 +83,18 @@ class ConcatenationValueSourceTest extends ValueSourceTest
                 $this->createListItem($subConfig2, 'id2', 20),
             ],
         ];
-        $this->dataProcessor->method('processValue')
-            ->withConsecutive([$subConfig1], [$subConfig2])
-            ->willReturnOnConsecutiveCalls('value1', 'value2');
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', [
+            [$subConfig1],
+            [$subConfig2],
+        ], [
+            'value1',
+            'value2',
+        ]);
         $output = $this->processValueSource($config);
         $this->assertEquals('value1 value2', $output);
     }
 
-    /** @test */
+    #[Test]
     public function concatWithComplexValue(): void
     {
         $subConfig1 = ['configKey1' => 'configValue1'];
@@ -100,14 +105,18 @@ class ConcatenationValueSourceTest extends ValueSourceTest
                 $this->createListItem($subConfig2, 'id2', 20),
             ],
         ];
-        $this->dataProcessor->method('processValue')
-            ->withConsecutive([$subConfig1], [$subConfig2])
-            ->willReturnOnConsecutiveCalls(new MultiValue(['value1.1', 'value1.2']), 'value2');
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', [
+            [$subConfig1],
+            [$subConfig2],
+        ], [
+            new MultiValue(['value1.1', 'value1.2']),
+            'value2',
+        ]);
         $output = $this->processValueSource($config);
         $this->assertEquals('value1.1,value1.2 value2', $output);
     }
 
-    /** @test */
+    #[Test]
     public function customGlueIsUsed(): void
     {
         $subConfig1 = ['configKey1' => 'configValue1'];
@@ -119,9 +128,13 @@ class ConcatenationValueSourceTest extends ValueSourceTest
             ],
             ConcatenationValueSource::KEY_GLUE => '-',
         ];
-        $this->dataProcessor->method('processValue')
-            ->withConsecutive([$subConfig1], [$subConfig2])
-            ->willReturnOnConsecutiveCalls('value1', 'value2');
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', [
+            [$subConfig1],
+            [$subConfig2],
+        ], [
+            'value1',
+            'value2',
+        ]);
         $output = $this->processValueSource($config);
         $this->assertEquals('value1-value2', $output);
     }

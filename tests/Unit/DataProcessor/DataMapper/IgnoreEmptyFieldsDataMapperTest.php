@@ -5,8 +5,10 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
+class IgnoreEmptyFieldsDataMapperTest extends DataMapperTestBase
 {
     protected const CLASS_NAME = IgnoreEmptyFieldsDataMapper::class;
 
@@ -24,7 +26,7 @@ class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
      *  3?:array<string,string|ValueInterface|null>
      * }>
      */
-    public function mapDataDataProvider(): array
+    public static function mapDataDataProvider(): array
     {
         return [
             [
@@ -83,11 +85,9 @@ class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
      * @param array<string,string|ValueInterface|null> $expectedOutputData
      * @param ?array<string,mixed> $config
      * @param array<string,string|ValueInterface|null> $target
-     *
-     * @test
-     *
-     * @dataProvider mapDataDataProvider
      */
+    #[Test]
+    #[DataProvider('mapDataDataProvider')]
     public function mapDataTest(array $inputData, array $expectedOutputData, ?array $config = null, ?array $target = null): void
     {
         $this->mapData($inputData, $expectedOutputData, $config, $target);

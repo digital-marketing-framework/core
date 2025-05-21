@@ -2,15 +2,15 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Condition;
 
-use DigitalMarketingFramework\Core\DataProcessor\Condition\ConditionInterface;
+use DigitalMarketingFramework\Core\DataProcessor\Condition\Condition;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
-use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTest;
+use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTestBase;
 
-abstract class ConditionTest extends DataProcessorPluginTest
+abstract class ConditionTestBase extends DataProcessorPluginTestBase
 {
     protected const DEFAULT_CONFIG = [];
 
-    protected ConditionInterface $subject;
+    protected Condition $subject;
 
     /**
      * @param array<string,mixed> $config

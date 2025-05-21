@@ -4,12 +4,12 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTest;
+use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTestBase;
 
 /**
  * @template ValueSourceClass of ValueSource
  */
-abstract class ValueSourceTest extends DataProcessorPluginTest
+abstract class ValueSourceTestBase extends DataProcessorPluginTestBase
 {
     protected const DEFAULT_CONFIG = [];
 

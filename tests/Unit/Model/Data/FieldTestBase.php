@@ -3,12 +3,14 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Data;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @template FieldClass of ValueInterface
  */
-abstract class AbstractFieldTest extends TestCase
+abstract class FieldTestBase extends TestCase
 {
     protected const FIELD_CLASS = ValueInterface::class;
 
@@ -32,21 +34,19 @@ abstract class AbstractFieldTest extends TestCase
         return new $class(...$arguments);
     }
 
-    /** @test */
+    #[Test]
     abstract public function init(): void;
 
     /**
      * @return array<array{0:array<mixed>,1:string}>
      */
-    abstract public function castToStringProvider(): array;
+    abstract public static function castToStringProvider(): array;
 
     /**
      * @param array<mixed> $arguments
-     *
-     * @dataProvider castToStringProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('castToStringProvider')]
     public function castToString(array $arguments, string $stringRepresentation): void
     {
         $this->subject = $this->createField(...$arguments);
@@ -57,16 +57,14 @@ abstract class AbstractFieldTest extends TestCase
     /**
      * @return array<array{0:array<mixed>,1:array<mixed>}>
      */
-    abstract public function packProvider(): array;
+    abstract public static function packProvider(): array;
 
     /**
      * @param array<mixed> $arguments
      * @param array<mixed> $packed
-     *
-     * @dataProvider packProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('packProvider')]
     public function pack(array $arguments, array $packed): void
     {
         $this->subject = $this->createField(...$arguments);
@@ -74,7 +72,7 @@ abstract class AbstractFieldTest extends TestCase
         $this->assertEquals($packed, $result);
     }
 
-    /** @test */
+    #[Test]
     public function packUnpack(): void
     {
         $this->subject = $this->createField();

@@ -11,9 +11,11 @@ use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataProcessorPluginTest;
+use DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataProcessorPluginTestBase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-abstract class DataMapperTest extends DataProcessorPluginTest
+abstract class DataMapperTestBase extends DataProcessorPluginTestBase
 {
     /** @var array<string,string|ValueInterface|null> */
     protected array $data = [];
@@ -55,17 +57,15 @@ abstract class DataMapperTest extends DataProcessorPluginTest
     /**
      * @return array<array{0:array<string,string|ValueInterface|null>,1:array<string,string|ValueInterface|null>,2?:?array<string,mixed>}>
      */
-    abstract public function mapDataProvider(): array;
+    abstract public static function mapDataProvider(): array;
 
     /**
      * @param array<string,string|ValueInterface|null> $input
      * @param array<string,string|ValueInterface|null> $expected
      * @param ?array<string,mixed> $config
-     *
-     * @test
-     *
-     * @dataProvider mapDataProvider
      */
+    #[Test]
+    #[DataProvider('mapDataProvider')]
     public function mapData(array $input, array $expected, ?array $config = null): void
     {
         $this->data = $input;
@@ -73,9 +73,9 @@ abstract class DataMapperTest extends DataProcessorPluginTest
         $config[ValueModifier::KEY_ENABLED] = true;
         $output = $this->processDataMapper($config);
         if ($expected === []) {
-            $this->assertMultiValueEmpty($output);
+            static::assertMultiValueEmpty($output);
         } else {
-            $this->assertMultiValueEquals($expected, $output);
+            static::assertMultiValueEquals($expected, $output);
         }
     }
 }

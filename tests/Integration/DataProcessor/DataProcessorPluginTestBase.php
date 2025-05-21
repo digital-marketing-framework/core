@@ -10,7 +10,7 @@ use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
 use PHPUnit\Framework\TestCase;
 
-abstract class DataProcessorPluginTest extends TestCase
+abstract class DataProcessorPluginTestBase extends TestCase
 {
     use CoreRegistryTestTrait;
     use MultiValueTestTrait;
@@ -28,7 +28,7 @@ abstract class DataProcessorPluginTest extends TestCase
      *
      * @return array{type:string,config:array<string,array<string,mixed>>}
      */
-    protected function getValueSourceConfiguration(array $config, ?string $keyword = null): array
+    protected static function getValueSourceConfiguration(array $config, ?string $keyword = null): array
     {
         $keyword ??= static::KEYWORD;
 
@@ -45,7 +45,7 @@ abstract class DataProcessorPluginTest extends TestCase
      *
      * @return array{type:string,config:array<string,array<string,mixed>>}
      */
-    protected function getValueModifierConfiguration(array $config, ?string $keyword = null): array
+    protected static function getValueModifierConfiguration(array $config, ?string $keyword = null): array
     {
         $keyword ??= static::KEYWORD;
 
@@ -68,11 +68,11 @@ abstract class DataProcessorPluginTest extends TestCase
      *   modifiers:array{type:string,config:array<string,array<string,mixed>>}
      * }
      */
-    protected function getValueConfiguration(array $valueSourceConfig, string $valueSourceKeyword, ?array $modifierConfig = null, ?string $modifierKeyword = null): array
+    protected static function getValueConfiguration(array $valueSourceConfig, string $valueSourceKeyword, ?array $modifierConfig = null, ?string $modifierKeyword = null): array
     {
         return [
-            DataProcessor::KEY_DATA => $this->getValueSourceConfiguration($valueSourceConfig, $valueSourceKeyword),
-            DataProcessor::KEY_MODIFIERS => $modifierConfig !== null ? $this->getValueModifierConfiguration($modifierConfig, $modifierKeyword) : [],
+            DataProcessor::KEY_DATA => static::getValueSourceConfiguration($valueSourceConfig, $valueSourceKeyword),
+            DataProcessor::KEY_MODIFIERS => $modifierConfig !== null ? static::getValueModifierConfiguration($modifierConfig, $modifierKeyword) : [],
         ];
     }
 
@@ -81,7 +81,7 @@ abstract class DataProcessorPluginTest extends TestCase
      *
      * @return array{type:string,config:array<string,array<string,mixed>>}
      */
-    protected function getConditionConfiguration(array $config, ?string $keyword = null): array
+    protected static function getConditionConfiguration(array $config, ?string $keyword = null): array
     {
         $keyword ??= static::KEYWORD;
 

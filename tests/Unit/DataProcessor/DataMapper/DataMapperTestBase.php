@@ -2,17 +2,17 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataMapper;
 
-use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapperInterface;
+use DigitalMarketingFramework\Core\DataProcessor\DataMapper\DataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTest;
+use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTestBase;
 
-abstract class DataMapperTest extends DataProcessorPluginTest
+abstract class DataMapperTestBase extends DataProcessorPluginTestBase
 {
     protected const DEFAULT_CONFIG = [];
 
-    protected DataMapperInterface $subject;
+    protected DataMapper $subject;
 
     /**
      * @param array<string,mixed> $config

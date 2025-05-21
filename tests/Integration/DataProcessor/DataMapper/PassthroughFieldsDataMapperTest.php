@@ -3,11 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataMapper;
 
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\DataMapper\PassthroughFieldsDataMapper
- */
-class PassthroughFieldsDataMapperTest extends DataMapperTest
+#[CoversClass(PassthroughFieldsDataMapper::class)]
+class PassthroughFieldsDataMapperTest extends DataMapperTestBase
 {
     protected const KEYWORD = 'passthroughFields';
 
@@ -17,7 +16,7 @@ class PassthroughFieldsDataMapperTest extends DataMapperTest
         $this->fieldTracker->markAsProcessed('field3');
     }
 
-    public function mapDataProvider(): array
+    public static function mapDataProvider(): array
     {
         return [
             [

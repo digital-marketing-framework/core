@@ -3,6 +3,8 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\Utility;
 
 use DigitalMarketingFramework\Core\Utility\ListUtility;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class ListUtilityTest extends TestCase
@@ -13,9 +15,7 @@ class ListUtilityTest extends TestCase
      */
     protected static function assertValuesEqual(array $expected, array $actualList): void
     {
-        $actualValues = array_values(array_map(static function (array $item) {
-            return $item[ListUtility::KEY_VALUE];
-        }, $actualList));
+        $actualValues = array_values(array_map(static fn (array $item) => $item[ListUtility::KEY_VALUE], $actualList));
         static::assertEquals($expected, $actualValues);
     }
 
@@ -25,16 +25,14 @@ class ListUtilityTest extends TestCase
      */
     protected static function assertWeightsEqual(array $expected, array $actualList): void
     {
-        $actualWeights = array_values(array_map(static function (array $item) {
-            return $item[ListUtility::KEY_WEIGHT];
-        }, $actualList));
+        $actualWeights = array_values(array_map(static fn (array $item) => $item[ListUtility::KEY_WEIGHT], $actualList));
         static::assertEquals($expected, $actualWeights);
     }
 
     /**
      * @return array{uuid:string,weight:int,value:mixed}
      */
-    protected function createItem(mixed $value, string $id, int $weight = 0): array
+    protected static function createItem(mixed $value, string $id, int $weight = 0): array
     {
         return [
             ListUtility::KEY_UID => $id,
@@ -46,7 +44,7 @@ class ListUtilityTest extends TestCase
     /**
      * @return array<array{0:array<string,array{uuid:string,weight:int,value:mixed}>,1:array<mixed>}>
      */
-    public function flattenDataProvider(): array
+    public static function flattenDataProvider(): array
     {
         return [
             [
@@ -70,29 +68,27 @@ class ListUtilityTest extends TestCase
     /**
      * @param array<string,array{uuid:string,weight:int,value:mixed}> $list
      * @param array<mixed> $expected
-     *
-     * @dataProvider flattenDataProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('flattenDataProvider')]
     public function flatten(array $list, array $expected): void
     {
         $result = ListUtility::flatten($list);
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
      * @return array<array{0:array<string,array{uuid:string,weight:int,value:mixed}>,1:string,2:array<mixed>,3:array<mixed>,4:array<int>}>
      */
-    public function insertMultipleBeforeDataProvider(): array
+    public static function insertMultipleBeforeDataProvider(): array
     {
         return [
             'newValueFits' => [
                 [
-                    'A' => $this->createItem('a', 'A', 0),
-                    'B' => $this->createItem('b', 'B', 10),
-                    'C' => $this->createItem('c', 'C', 15),
-                    'D' => $this->createItem('d', 'D', 20),
+                    'A' => static::createItem('a', 'A', 0),
+                    'B' => static::createItem('b', 'B', 10),
+                    'C' => static::createItem('c', 'C', 15),
+                    'D' => static::createItem('d', 'D', 20),
                 ],
                 'C',
                 ['e'],
@@ -101,10 +97,10 @@ class ListUtilityTest extends TestCase
             ],
             'newValueBarelyFits' => [
                 [
-                    'A' => $this->createItem('a', 'A', 0),
-                    'B' => $this->createItem('b', 'B', 10),
-                    'C' => $this->createItem('c', 'C', 12),
-                    'D' => $this->createItem('d', 'D', 20),
+                    'A' => static::createItem('a', 'A', 0),
+                    'B' => static::createItem('b', 'B', 10),
+                    'C' => static::createItem('c', 'C', 12),
+                    'D' => static::createItem('d', 'D', 20),
                 ],
                 'C',
                 ['e'],
@@ -113,10 +109,10 @@ class ListUtilityTest extends TestCase
             ],
             'newValueDoesNotFit' => [
                 [
-                    'A' => $this->createItem('a', 'A', 0),
-                    'B' => $this->createItem('b', 'B', 10),
-                    'C' => $this->createItem('c', 'C', 11),
-                    'D' => $this->createItem('d', 'D', 20),
+                    'A' => static::createItem('a', 'A', 0),
+                    'B' => static::createItem('b', 'B', 10),
+                    'C' => static::createItem('c', 'C', 11),
+                    'D' => static::createItem('d', 'D', 20),
                 ],
                 'C',
                 ['e'],
@@ -125,12 +121,12 @@ class ListUtilityTest extends TestCase
             ],
             'newValueDoesNotEvenFitWithNeighbour' => [
                 [
-                    'A' => $this->createItem('a', 'A', 10),
-                    'B' => $this->createItem('b', 'B', 20),
-                    'C' => $this->createItem('c', 'C', 21),
-                    'D' => $this->createItem('d', 'D', 22),
-                    'E' => $this->createItem('e', 'E', 23),
-                    'F' => $this->createItem('f', 'F', 33),
+                    'A' => static::createItem('a', 'A', 10),
+                    'B' => static::createItem('b', 'B', 20),
+                    'C' => static::createItem('c', 'C', 21),
+                    'D' => static::createItem('d', 'D', 22),
+                    'E' => static::createItem('e', 'E', 23),
+                    'F' => static::createItem('f', 'F', 33),
                 ],
                 'D',
                 ['g'],
@@ -139,10 +135,10 @@ class ListUtilityTest extends TestCase
             ],
             'newValueDoesNotFitAtAll' => [
                 [
-                    'A' => $this->createItem('a', 'A', 10),
-                    'B' => $this->createItem('b', 'B', 11),
-                    'C' => $this->createItem('c', 'C', 12),
-                    'D' => $this->createItem('d', 'D', 13),
+                    'A' => static::createItem('a', 'A', 10),
+                    'B' => static::createItem('b', 'B', 11),
+                    'C' => static::createItem('c', 'C', 12),
+                    'D' => static::createItem('d', 'D', 13),
                 ],
                 'C',
                 ['g'],
@@ -153,26 +149,24 @@ class ListUtilityTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @param array<string,array{uuid:string,weight:int,value:mixed}> $list
      * @param array<mixed> $values
      * @param array<mixed> $expectedValues
      * @param array<int> $expectedWeights
-     *
-     * @dataProvider insertMultipleBeforeDataProvider
      */
+    #[Test]
+    #[DataProvider('insertMultipleBeforeDataProvider')]
     public function insertMultipleBefore(array $list, string $id, array $values, array $expectedValues, array $expectedWeights): void
     {
         $result = ListUtility::sort(ListUtility::insertMultipleBefore($list, $id, $values));
-        $this->assertValuesEqual($expectedValues, $result);
-        $this->assertWeightsEqual($expectedWeights, $result);
+        static::assertValuesEqual($expectedValues, $result);
+        static::assertWeightsEqual($expectedWeights, $result);
     }
 
     /**
      * @return array<array{0:array<string,array{uuid:string,weight:int,value:mixed}>,1:array<mixed>,2:array<mixed>,3:array<int>}>
      */
-    public function appendMultipleDataProvider(): array
+    public static function appendMultipleDataProvider(): array
     {
         return [
             'appendToEmptyList' => [
@@ -183,7 +177,7 @@ class ListUtilityTest extends TestCase
             ],
             'appendToNonEmptyList' => [
                 [
-                    'A' => $this->createItem('a', 'A', 10),
+                    'A' => static::createItem('a', 'A', 10),
                 ],
                 ['b'],
                 ['a', 'b'],
@@ -197,15 +191,13 @@ class ListUtilityTest extends TestCase
      * @param array<mixed> $values
      * @param array<mixed> $expectedValues
      * @param array<int> $expectedWeights
-     *
-     * @test
-     *
-     * @dataProvider appendMultipleDataProvider
      */
+    #[Test]
+    #[DataProvider('appendMultipleDataProvider')]
     public function appendMultiple(array $list, array $values, array $expectedValues, $expectedWeights): void
     {
         $result = ListUtility::appendMultiple($list, $values);
-        $this->assertValuesEqual($expectedValues, $result);
-        $this->assertWeightsEqual($expectedWeights, $result);
+        static::assertValuesEqual($expectedValues, $result);
+        static::assertWeightsEqual($expectedWeights, $result);
     }
 }

@@ -3,8 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Comparison;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsEmptyComparison;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class IsEmptyComparisonTest extends ComparisonTest
+class IsEmptyComparisonTest extends ComparisonTestBase
 {
     protected const CLASS_NAME = IsEmptyComparison::class;
 
@@ -13,7 +15,7 @@ class IsEmptyComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2:mixed}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
@@ -61,11 +63,9 @@ class IsEmptyComparisonTest extends ComparisonTest
 
     /**
      * @param array<string,mixed> $firstOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function isEmptyTest(bool $expectedResult, array $firstOperand, mixed $firstOperandResult): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand, $firstOperandResult);

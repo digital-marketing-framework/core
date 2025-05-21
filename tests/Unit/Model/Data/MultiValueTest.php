@@ -5,11 +5,13 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Data;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends AbstractFieldTest<MultiValue>
+ * @extends FieldTestBase<MultiValue>
  */
-class MultiValueTest extends AbstractFieldTest
+class MultiValueTest extends FieldTestBase
 {
     use MultiValueTestTrait;
 
@@ -24,14 +26,14 @@ class MultiValueTest extends AbstractFieldTest
         return parent::createField(...$arguments);
     }
 
-    /** @test */
+    #[Test]
     public function init(): void
     {
         $this->subject = $this->createField([5, 7, 17]);
         $this->assertMultiValueEquals([5, 7, 17], $this->subject, static::FIELD_CLASS);
     }
 
-    /** @test */
+    #[Test]
     public function initEmpty(): void
     {
         $this->subject = $this->createField([]);
@@ -41,7 +43,7 @@ class MultiValueTest extends AbstractFieldTest
     /**
      * @return array<array{0:array<mixed>,1:string}>
      */
-    public function castToStringProvider(): array
+    public static function castToStringProvider(): array
     {
         return [
             [[[]],         ''],
@@ -53,7 +55,7 @@ class MultiValueTest extends AbstractFieldTest
     /**
      * @return array<array{0:string,1:array<mixed>,2:string}>
      */
-    public function castToStringWithGlueProvider(): array
+    public static function castToStringWithGlueProvider(): array
     {
         return [
             [';', [5, 7, 17], '5;7;17'],
@@ -67,11 +69,9 @@ class MultiValueTest extends AbstractFieldTest
 
     /**
      * @param array<mixed> $values
-     *
-     * @dataProvider castToStringWithGlueProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('castToStringWithGlueProvider')]
     public function castToStringWithGlue(string $glue, array $values, string $stringRepresentation): void
     {
         $this->subject = $this->createField($values);
@@ -81,7 +81,7 @@ class MultiValueTest extends AbstractFieldTest
         $this->assertEquals($stringRepresentation, $result);
     }
 
-    /** @test */
+    #[Test]
     public function castToStringNested(): void
     {
         $this->subject = $this->createField([
@@ -96,7 +96,7 @@ class MultiValueTest extends AbstractFieldTest
     /**
      * @return array<array{0:array<array<mixed>>,1:array<array{type:string,value:mixed}>}>
      */
-    public function packProvider(): array
+    public static function packProvider(): array
     {
         return [
             [[[]], []],

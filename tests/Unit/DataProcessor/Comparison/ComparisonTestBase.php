@@ -4,16 +4,15 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Comparison;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\BinaryComparison;
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\Comparison;
-use DigitalMarketingFramework\Core\DataProcessor\Comparison\ComparisonInterface;
-use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTest;
+use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataProcessorPluginTestBase;
 
-abstract class ComparisonTest extends DataProcessorPluginTest
+abstract class ComparisonTestBase extends DataProcessorPluginTestBase
 {
     protected const DEFAULT_CONFIG = [
         Comparison::KEY_ANY_ALL => Comparison::VALUE_ANY_ALL_ANY,
     ];
 
-    protected ComparisonInterface $subject;
+    protected Comparison $subject;
 
     /**
      * @param array<string,mixed> $config
@@ -58,7 +57,7 @@ abstract class ComparisonTest extends DataProcessorPluginTest
             $results[] = $this->convertMultiValues($secondOperandResult);
         }
 
-        $this->dataProcessor->method('processValue')->withConsecutive(...$with)->willReturnOnConsecutiveCalls(...$results);
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', $with, $results);
         $config = [
             Comparison::KEY_OPERATION => static::KEYWORD,
             BinaryComparison::KEY_FIRST_OPERAND => $firstOperand,

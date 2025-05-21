@@ -59,7 +59,7 @@ abstract class ConfigurablePlugin extends Plugin implements ConfigurablePluginIn
         }
 
         $configuration ??= $this->configuration;
-        if (is_array($configuration) && array_key_exists($key, $configuration)) {
+        if (array_key_exists($key, $configuration)) {
             return $configuration[$key];
         }
 

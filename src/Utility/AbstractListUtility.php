@@ -9,14 +9,19 @@ use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
  */
 abstract class AbstractListUtility
 {
+    /** @var string */
     public const KEY_UID = 'uuid';
 
+    /** @var string */
     public const KEY_WEIGHT = 'weight';
 
+    /** @var string */
     public const KEY_VALUE = 'value';
 
+    /** @var int */
     public const WEIGHT_DELTA = 100;
 
+    /** @var int */
     public const WEIGHT_START = 10000;
 
     /**
@@ -62,9 +67,7 @@ abstract class AbstractListUtility
      */
     public static function sort(array $list): array
     {
-        uasort($list, static function (array $a, array $b) {
-            return $a[static::KEY_WEIGHT] <=> $b[static::KEY_WEIGHT];
-        });
+        uasort($list, static fn (array $a, array $b) => $a[static::KEY_WEIGHT] <=> $b[static::KEY_WEIGHT]);
 
         return $list;
     }
@@ -77,9 +80,7 @@ abstract class AbstractListUtility
      */
     public static function removeMultiple(array $list, array $idsToRemove): array
     {
-        return array_filter($list, static function (array $item) use ($idsToRemove) {
-            return !in_array($item[static::KEY_UID], $idsToRemove);
-        });
+        return array_filter($list, static fn (array $item) => !in_array($item[static::KEY_UID], $idsToRemove));
     }
 
     /**

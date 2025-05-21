@@ -65,9 +65,7 @@ class BackendManager implements BackendManagerInterface
 
     protected function sortSections(): void
     {
-        uasort($this->sections, static function (SectionInterface $a, SectionInterface $b) {
-            return $a->getWeight() <=> $b->getWeight();
-        });
+        uasort($this->sections, static fn (SectionInterface $a, SectionInterface $b) => $a->getWeight() <=> $b->getWeight());
     }
 
     public function setSection(SectionInterface $section): void

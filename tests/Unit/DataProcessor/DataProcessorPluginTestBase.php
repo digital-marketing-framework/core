@@ -13,13 +13,15 @@ use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
+use DigitalMarketingFramework\Core\Tests\TestUtilityTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-abstract class DataProcessorPluginTest extends TestCase
+abstract class DataProcessorPluginTestBase extends TestCase
 {
     use ListMapTestTrait;
     use MultiValueTestTrait;
+    use TestUtilityTrait;
 
     protected const KEYWORD = '';
 
