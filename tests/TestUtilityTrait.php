@@ -25,7 +25,7 @@ trait TestUtilityTrait
 
     /**
      * @param array<mixed> $with
-     * @param ?array<mixed> $return
+     * @param array<mixed>|callable|Exception|null $return
      */
     public function withConsecutiveWillReturn(MockObject $mock, string $method, array $with, array|callable|Exception|null $return = null, bool $checkCount = false): void
     {
