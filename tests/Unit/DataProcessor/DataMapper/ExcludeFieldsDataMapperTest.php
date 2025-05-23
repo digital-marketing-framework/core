@@ -4,8 +4,10 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataMapper;
 
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\ExcludeFieldsDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class ExcludeFieldsDataMapperTest extends DataMapperTest
+class ExcludeFieldsDataMapperTest extends DataMapperTestBase
 {
     protected const CLASS_NAME = ExcludeFieldsDataMapper::class;
 
@@ -19,7 +21,7 @@ class ExcludeFieldsDataMapperTest extends DataMapperTest
      *  3?:array<string,string|ValueInterface|null>
      * }>
      */
-    public function mapDataDataProvider(): array
+    public static function mapDataDataProvider(): array
     {
         return [
             [
@@ -32,7 +34,7 @@ class ExcludeFieldsDataMapperTest extends DataMapperTest
                 [],
                 ['field2' => 'value2'],
                 [ExcludeFieldsDataMapper::KEY_FIELDS => [
-                    $this->createListItem('field1', 'id1', 10),
+                    static::createListItem('field1', 'id1', 10),
                 ]],
                 ['field1' => 'value1', 'field2' => 'value2'],
             ],
@@ -40,8 +42,8 @@ class ExcludeFieldsDataMapperTest extends DataMapperTest
                 [],
                 ['field2' => 'value2'],
                 [ExcludeFieldsDataMapper::KEY_FIELDS => [
-                    'id1' => $this->createListItem('field1', 'id1', 10),
-                    'id2' => $this->createListItem('field3', 'id2', 20),
+                    'id1' => static::createListItem('field1', 'id1', 10),
+                    'id2' => static::createListItem('field3', 'id2', 20),
                 ]],
                 ['field1' => 'value1', 'field2' => 'value2'],
             ],
@@ -49,8 +51,8 @@ class ExcludeFieldsDataMapperTest extends DataMapperTest
                 [],
                 [],
                 [ExcludeFieldsDataMapper::KEY_FIELDS => [
-                    'id1' => $this->createListItem('field1', 'id1', 10),
-                    'id2' => $this->createListItem('field2', 'id2', 20),
+                    'id1' => static::createListItem('field1', 'id1', 10),
+                    'id2' => static::createListItem('field2', 'id2', 20),
                 ]],
                 ['field1' => 'value1', 'field2' => 'value2'],
             ],
@@ -58,7 +60,7 @@ class ExcludeFieldsDataMapperTest extends DataMapperTest
                 [],
                 ['field1' => 'value1', 'field2' => 'value2'],
                 [ExcludeFieldsDataMapper::KEY_FIELDS => [
-                    'id1' => $this->createListItem('field3', 'id1', 10),
+                    'id1' => static::createListItem('field3', 'id1', 10),
                 ]],
                 ['field1' => 'value1', 'field2' => 'value2'],
             ],
@@ -66,8 +68,8 @@ class ExcludeFieldsDataMapperTest extends DataMapperTest
                 [],
                 ['field1' => 'value1', 'field2' => 'value2'],
                 [ExcludeFieldsDataMapper::KEY_FIELDS => [
-                    'id1' => $this->createListItem('field3', 'id1', 10),
-                    'id2' => $this->createListItem('field4', 'id2', 20),
+                    'id1' => static::createListItem('field3', 'id1', 10),
+                    'id2' => static::createListItem('field4', 'id2', 20),
                 ]],
                 ['field1' => 'value1', 'field2' => 'value2'],
             ],
@@ -79,11 +81,9 @@ class ExcludeFieldsDataMapperTest extends DataMapperTest
      * @param array<string,string|ValueInterface|null> $expectedOutputData
      * @param ?array<string,mixed> $config
      * @param array<string,string|ValueInterface|null> $target
-     *
-     * @test
-     *
-     * @dataProvider mapDataDataProvider
      */
+    #[Test]
+    #[DataProvider('mapDataDataProvider')]
     public function mapDataTest(array $inputData, array $expectedOutputData, ?array $config = null, ?array $target = null): void
     {
         $this->mapData($inputData, $expectedOutputData, $config, $target);

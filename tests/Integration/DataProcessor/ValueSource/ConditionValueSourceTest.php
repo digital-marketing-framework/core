@@ -4,52 +4,53 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSo
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSource
- */
-class ConditionValueSourceTest extends ValueSourceTest
+#[CoversClass(ConditionValueSource::class)]
+class ConditionValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'condition';
 
     /**
      * @return array<array{0:array<string,mixed>,1:?array<string,mixed>,2:?array<string,mixed>,3:mixed}>
      */
-    public function conditionValueSourceDataProvider(): array
+    public static function conditionValueSourceDataProvider(): array
     {
         return [
             [
-                $this->getConditionConfiguration([], 'true'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
+                static::getConditionConfiguration([], 'true'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
                 'value1',
             ],
             [
-                $this->getConditionConfiguration([], 'true'),
+                static::getConditionConfiguration([], 'true'),
                 null,
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
-                null,
-            ],
-            [
-                $this->getConditionConfiguration([], 'true'),
-                null,
-                null,
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
                 null,
             ],
             [
-                $this->getConditionConfiguration([], 'false'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
+                static::getConditionConfiguration([], 'true'),
+                null,
+                null,
+                null,
+            ],
+            [
+                static::getConditionConfiguration([], 'false'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
                 'value2',
             ],
             [
-                $this->getConditionConfiguration([], 'false'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
+                static::getConditionConfiguration([], 'false'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
                 null,
                 null,
             ],
             [
-                $this->getConditionConfiguration([], 'false'),
+                static::getConditionConfiguration([], 'false'),
                 null,
                 null,
                 null,
@@ -61,11 +62,9 @@ class ConditionValueSourceTest extends ValueSourceTest
      * @param array<string,mixed> $if
      * @param ?array<string,mixed> $then
      * @param ?array<string,mixed> $else
-     *
-     * @test
-     *
-     * @dataProvider conditionValueSourceDataProvider
      */
+    #[Test]
+    #[DataProvider('conditionValueSourceDataProvider')]
     public function conditionValueSource(array $if, ?array $then, ?array $else, mixed $expectedResult): void
     {
         $this->data['field1'] = 'value1';
@@ -74,7 +73,7 @@ class ConditionValueSourceTest extends ValueSourceTest
             ConditionValueSource::KEY_THEN => $then,
             ConditionValueSource::KEY_ELSE => $else,
         ];
-        $output = $this->processValueSource($this->getValueSourceConfiguration($config));
-        $this->assertEquals($expectedResult, $output);
+        $output = $this->processValueSource(static::getValueSourceConfiguration($config));
+        static::assertEquals($expectedResult, $output);
     }
 }

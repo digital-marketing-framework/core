@@ -2,16 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\TrimValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\TrimValueModifierTest as TrimValueModifierUnitTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\TrimValueModifier
- */
-class TrimValueModifierTest extends ValueModifierTest
+#[CoversClass(TrimValueModifier::class)]
+class TrimValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'trim';
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return TrimValueModifierUnitTest::MODIFY_TEST_CASES;
     }

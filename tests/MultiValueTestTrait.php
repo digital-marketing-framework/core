@@ -56,9 +56,7 @@ trait MultiValueTestTrait // extends \PHPUnit\Framework\TestCase
     public static function convertMultiValues(mixed $value): mixed
     {
         if (is_array($value)) {
-            $value = array_map(static function (mixed $subValue) {
-                return static::convertMultiValues($subValue);
-            }, $value);
+            $value = array_map(static fn (mixed $subValue) => static::convertMultiValues($subValue), $value);
             $value = new MultiValue($value);
         }
 

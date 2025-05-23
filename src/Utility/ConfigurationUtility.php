@@ -27,7 +27,7 @@ final class ConfigurationUtility
                     $target[$key] = $value;
                 }
             } elseif (is_array($value) && is_array($target[$key])) {
-                $target[$key] = static::mergeConfiguration($target[$key], $value, $resolveNull, $excludeKeys);
+                $target[$key] = self::mergeConfiguration($target[$key], $value, $resolveNull, $excludeKeys);
             } elseif ($resolveNull && $value === null) {
                 unset($target[$key]);
             } else {
@@ -46,7 +46,7 @@ final class ConfigurationUtility
      */
     public static function resolveNullInMergedConfiguration(array $configuration, array $excludeKeys = self::MERGE_EXCLUDE_FIELDS): array
     {
-        return static::mergeConfiguration($configuration, $configuration, true, $excludeKeys);
+        return self::mergeConfiguration($configuration, $configuration, true, $excludeKeys);
     }
 
     /**
@@ -59,11 +59,11 @@ final class ConfigurationUtility
     {
         $result = [];
         foreach ($configurationStack as $configuration) {
-            $result = static::mergeConfiguration($result, $configuration, resolveNull: false, excludeKeys: $excludeKeys);
+            $result = self::mergeConfiguration($result, $configuration, resolveNull: false, excludeKeys: $excludeKeys);
         }
 
         if ($resolveNull) {
-            $result = static::resolveNullInMergedConfiguration($result, $excludeKeys);
+            $result = self::resolveNullInMergedConfiguration($result, $excludeKeys);
         }
 
         $lastConfiguration = $configurationStack[count($configurationStack) - 1];
@@ -95,7 +95,7 @@ final class ConfigurationUtility
             if (!array_key_exists($key, $parentConfiguration)) {
                 $splitConfiguration[$key] = $value;
             } elseif (is_array($value) && is_array($parentConfiguration[$key])) {
-                $splitSubConfiguration = static::splitConfiguration($parentConfiguration[$key], $value, $excludeKeys);
+                $splitSubConfiguration = self::splitConfiguration($parentConfiguration[$key], $value, $excludeKeys);
                 if ($splitSubConfiguration !== []) {
                     $splitConfiguration[$key] = $splitSubConfiguration;
                 }

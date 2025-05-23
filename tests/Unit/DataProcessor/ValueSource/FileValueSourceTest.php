@@ -5,12 +5,13 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * @extends ValueSourceTest<FileValueSource>
+ * @extends ValueSourceTestBase<FileValueSource>
  */
-class FileValueSourceTest extends ValueSourceTest
+class FileValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'file';
 
@@ -30,7 +31,7 @@ class FileValueSourceTest extends ValueSourceTest
         $this->subject->setFileStorage($this->fileStorage);
     }
 
-    /** @test */
+    #[Test]
     public function fileValueSource(): void
     {
         $config = [
@@ -40,15 +41,14 @@ class FileValueSourceTest extends ValueSourceTest
             FileValueSource::KEY_MIMETYPE => ['mimetypeKey' => 'mimetypeValue'],
         ];
 
-        $this->dataProcessor
-            ->method('processValue')
-            ->withConsecutive(
-                [$config[FileValueSource::KEY_NAME]],
-                [$config[FileValueSource::KEY_PATH]],
-                [$config[FileValueSource::KEY_URL]],
-                [$config[FileValueSource::KEY_MIMETYPE]]
-            )
-            ->willReturnOnConsecutiveCalls('a', 'b', 'c', 'd');
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', [
+            [$config[FileValueSource::KEY_NAME]],
+            [$config[FileValueSource::KEY_PATH]],
+            [$config[FileValueSource::KEY_URL]],
+            [$config[FileValueSource::KEY_MIMETYPE]],
+        ], [
+            'a', 'b', 'c', 'd',
+        ]);
 
         $this->fileStorage->method('fileExists')->with('b')->willReturn(false);
 

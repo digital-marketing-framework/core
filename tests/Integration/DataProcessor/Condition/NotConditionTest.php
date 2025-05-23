@@ -2,14 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Condition;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\Condition\NotCondition
- */
-class NotConditionTest extends ConditionTest
+use DigitalMarketingFramework\Core\DataProcessor\Condition\NotCondition;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+
+#[CoversClass(NotCondition::class)]
+class NotConditionTest extends ConditionTestBase
 {
     protected const KEYWORD = 'not';
 
-    /** @test */
+    #[Test]
     public function notTrue(): void
     {
         $config = $this->getConditionConfiguration([], 'true');
@@ -17,7 +19,7 @@ class NotConditionTest extends ConditionTest
         $this->assertFalse($result);
     }
 
-    /** @test */
+    #[Test]
     public function notFalse(): void
     {
         $config = $this->getConditionConfiguration([], 'false');

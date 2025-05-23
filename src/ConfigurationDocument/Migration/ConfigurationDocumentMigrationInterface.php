@@ -11,9 +11,9 @@ interface ConfigurationDocumentMigrationInterface
     public function getTargetVersion(): string;
 
     /**
-     * @param array<mixed> $configuration
+     * @param array<string,mixed> $configuration
      *
-     * @return array<mixed>
+     * @return array<string,mixed>
      */
     public function migrate(array $configuration): array;
 

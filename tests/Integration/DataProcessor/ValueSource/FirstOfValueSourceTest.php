@@ -4,26 +4,27 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSo
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FirstOfValueSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\FirstOfValueSource
- */
-class FirstOfValueSourceTest extends ValueSourceTest
+#[CoversClass(FirstOfValueSource::class)]
+class FirstOfValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'firstOf';
 
     /**
      * @return array<array{0:mixed,1:array<string,mixed>}>
      */
-    public function firstOfDataProvider(): array
+    public static function firstOfDataProvider(): array
     {
         return [
             [
                 null,
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id2', 20),
+                        'id1' => static::createListitem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListitem(static::getValueConfiguration([], 'null'), 'id2', 20),
                     ],
                 ],
             ],
@@ -31,9 +32,9 @@ class FirstOfValueSourceTest extends ValueSourceTest
                 'foo',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
-                        'id3' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id3', 30),
+                        'id1' => static::createListitem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
+                        'id3' => static::createListitem(static::getValueConfiguration([], 'null'), 'id3', 30),
                     ],
                 ],
             ],
@@ -41,9 +42,9 @@ class FirstOfValueSourceTest extends ValueSourceTest
                 '',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => $this->createListitem($this->getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
-                        'id3' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
+                        'id1' => static::createListitem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
+                        'id3' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],
@@ -51,9 +52,9 @@ class FirstOfValueSourceTest extends ValueSourceTest
                 'a',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
-                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
-                        'id3' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                        'id1' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
+                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
+                        'id3' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],
@@ -61,9 +62,9 @@ class FirstOfValueSourceTest extends ValueSourceTest
                 'b',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 20),
-                        'id2' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 10),
-                        'id3' => $this->createListitem($this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                        'id1' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 20),
+                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 10),
+                        'id3' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],
@@ -73,14 +74,12 @@ class FirstOfValueSourceTest extends ValueSourceTest
     /**
      * @param array<string,mixed> $expectedResult
      * @param array<string,mixed> $config
-     *
-     * @test
-     *
-     * @dataProvider firstOfDataProvider
      */
+    #[Test]
+    #[DataProvider('firstOfDataProvider')]
     public function firstOf(mixed $expectedResult, array $config): void
     {
-        $output = $this->processValueSource($this->getValueSourceConfiguration($config));
-        $this->assertEquals($expectedResult, $output);
+        $output = $this->processValueSource(static::getValueSourceConfiguration($config));
+        static::assertEquals($expectedResult, $output);
     }
 }

@@ -1,0 +1,14 @@
+{% set noteClass = '' %}
+{% if type == 'warning' or type == 'error' %}
+    {% set noteClass = 'note-category-2' %}
+{% elseif type == 'success' %}
+    {% set noteClass = 'note-category-4' %}
+{% elseif type == 'info' %}
+    {% set noteClass = 'note-category-1' %}
+{% endif %}
+{% set tagName = preformatted ? 'pre' : 'div' %}
+<div class="note {{ noteClass }}">
+    {% if preformatted %}<pre class="note-body">{% else %}<div class="note-body">{% endif -%}
+        {%- block body %}{{ body }}{% endblock -%}
+    {%- if preformatted %}</pre>{% else %}</div>{% endif %}
+</div>

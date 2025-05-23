@@ -2,12 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\DataMapper;
 
+use DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\DataMapper\IgnoreEmptyFieldsDataMapper
- */
-class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
+#[CoversClass(IgnoreEmptyFieldsDataMapper::class)]
+class IgnoreEmptyFieldsDataMapperTest extends DataMapperTestBase
 {
     protected const KEYWORD = 'ignoreEmptyFields';
 
@@ -16,7 +16,7 @@ class IgnoreEmptyFieldsDataMapperTest extends DataMapperTest
         return true;
     }
 
-    public function mapDataProvider(): array
+    public static function mapDataProvider(): array
     {
         return [
             [

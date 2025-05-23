@@ -15,6 +15,8 @@ use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -35,7 +37,7 @@ class DataProcessorTest extends TestCase
     protected array $valueModifiers = [];
 
     /**
-     * @var array<ComparisonInterface&MockObject>
+     * @var array<array{object:ComparisonInterface&MockObject,config?:array<string,mixed>}>
      */
     protected array $comparisons = [];
 
@@ -59,65 +61,65 @@ class DataProcessorTest extends TestCase
 
         $this->registry = $this->createMock(RegistryInterface::class);
 
-        $this->registry->method('getValueSource')->will($this->returnCallback(function (string $keyword, array $config) {
+        $this->registry->method('getValueSource')->willReturnCallback(function (string $keyword, array $config) {
             if (!isset($this->valueSources[$keyword])) {
                 return null;
             }
 
             if (isset($this->valueSources[$keyword]['config'])) {
-                $this->assertEquals($this->valueSources[$keyword]['config'], $config);
+                static::assertEquals($this->valueSources[$keyword]['config'], $config);
             }
 
             return $this->valueSources[$keyword]['object'];
-        }));
+        });
 
-        $this->registry->method('getComparison')->will($this->returnCallback(function (string $keyword, array $config) {
+        $this->registry->method('getComparison')->willReturnCallback(function (string $keyword, array $config) {
             if (!isset($this->comparisons[$keyword])) {
                 return null;
             }
 
             if (isset($this->comparisons[$keyword]['config'])) {
-                $this->assertEquals($this->comparisons[$keyword]['config'], $config);
+                static::assertEquals($this->comparisons[$keyword]['config'], $config);
             }
 
             return $this->comparisons[$keyword]['object'];
-        }));
+        });
 
-        $this->registry->method('getCondition')->will($this->returnCallback(function (string $keyword, array $config) {
+        $this->registry->method('getCondition')->willReturnCallback(function (string $keyword, array $config) {
             if (!isset($this->conditions[$keyword])) {
                 return null;
             }
 
             if (isset($this->conditions[$keyword]['config'])) {
-                $this->assertEquals($this->conditions[$keyword]['confgig'], $config);
+                static::assertEquals($this->conditions[$keyword]['config'], $config);
             }
 
             return $this->conditions[$keyword]['object'];
-        }));
+        });
 
-        $this->registry->method('getDataMapper')->will($this->returnCallback(function (string $keyword, array $config) {
+        $this->registry->method('getDataMapper')->willReturnCallback(function (string $keyword, array $config) {
             if (!isset($this->dataMappers[$keyword])) {
                 return null;
             }
 
             if (isset($this->dataMappers[$keyword]['config'])) {
-                $this->assertEquals($this->dataMappers[$keyword]['config'], $config);
+                static::assertEquals($this->dataMappers[$keyword]['config'], $config);
             }
 
             return $this->dataMappers[$keyword]['object'];
-        }));
+        });
 
-        $this->registry->method('getValueModifier')->will($this->returnCallback(function (string $keyword, array $config) {
+        $this->registry->method('getValueModifier')->willReturnCallback(function (string $keyword, array $config) {
             if (!isset($this->valueModifiers[$keyword])) {
                 return null;
             }
 
             if (isset($this->valueModifiers[$keyword]['config'])) {
-                $this->assertEquals($this->valueModifiers[$keyword]['config'], $config);
+                static::assertEquals($this->valueModifiers[$keyword]['config'], $config);
             }
 
             return $this->valueModifiers[$keyword]['object'];
-        }));
+        });
 
         $this->context = $this->createMock(DataProcessorContextInterface::class);
 
@@ -198,7 +200,7 @@ class DataProcessorTest extends TestCase
 
         $this->comparisons[$keyword]['object'] = $comparison;
         if ($config !== null) {
-            $this->comparisons['config'] = $config;
+            $this->comparisons[$keyword]['config'] = $config;
         }
 
         return $comparison;
@@ -218,7 +220,7 @@ class DataProcessorTest extends TestCase
 
         $this->conditions[$keyword]['object'] = $condition;
         if ($config !== null) {
-            $this->conditions['config'] = $config;
+            $this->conditions[$keyword]['config'] = $config;
         }
 
         return $condition;
@@ -227,7 +229,7 @@ class DataProcessorTest extends TestCase
     /**
      * @return array<array<bool>>
      */
-    public function trueFalseDataProvider(): array
+    public static function trueFalseDataProvider(): array
     {
         return [
             [true],
@@ -235,18 +237,17 @@ class DataProcessorTest extends TestCase
         ];
     }
 
-    /** @test */
+    #[Test]
     public function dataMapperEmptyConfigurationProducesEmptyData(): void
     {
         $this->addDataMapper('testMapper', new Data(['foo' => 'bar']));
         $config = [];
         $context = $this->subject->createContext(new Data(), new Configuration([[]]));
         $output = $this->subject->processDataMapper($config, $context);
-        $this->assertTrue($output instanceof DataInterface);
-        $this->assertEmpty($output->toArray());
+        static::assertEmpty($output->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentDataMapperWillThrowException(): void
     {
         $this->addDataMapper('testMapper', new Data(['foo' => 'bar']));
@@ -258,7 +259,7 @@ class DataProcessorTest extends TestCase
         $this->subject->processDataMapper($config, $context);
     }
 
-    /** @test */
+    #[Test]
     public function existentDataMapperWillBeUsed(): void
     {
         $this->addDataMapper('testMapper', new Data(['foo' => 'bar']));
@@ -270,7 +271,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $output->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function multipleDataMappersWillBeUsedConsequtively(): void
     {
         $data0 = new Data(['field_x' => 'value_x']);
@@ -292,7 +293,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals(['abc' => 'xyz'], $output->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function valueSourceEmptyConfigurationWillThrowException(): void
     {
         $this->addValueSource('testSource', 'foo');
@@ -301,7 +302,7 @@ class DataProcessorTest extends TestCase
         $this->subject->processValueSource($config, $this->context);
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentValueSourceWillThrowException(): void
     {
         $this->addValueSource('testSource', 'foo');
@@ -315,7 +316,7 @@ class DataProcessorTest extends TestCase
         $this->subject->processValueSource($config, $this->context);
     }
 
-    /** @test */
+    #[Test]
     public function existentValueSourceWillBeUsed(): void
     {
         $this->addValueSource('testSource', 'foo');
@@ -329,7 +330,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals('foo', $output);
     }
 
-    /** @test */
+    #[Test]
     public function valueModifierEmptyConfigurationWillReturnOriginalValue(): void
     {
         $this->addValueModifier('testModifier', 'testModifiedValue');
@@ -338,7 +339,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals('foo', $output);
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentValueModifierWillThrowException(): void
     {
         $this->addValueModifier('testModifier', 'testModifierValue');
@@ -358,7 +359,7 @@ class DataProcessorTest extends TestCase
         $this->subject->processValueModifiers($config, 'foo', $this->context);
     }
 
-    /** @test */
+    #[Test]
     public function existentValueModifierWillBeUsed(): void
     {
         $this->addValueModifier('testModifier', 'testModifierValue');
@@ -378,7 +379,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals('testModifierValue', $output);
     }
 
-    /** @test */
+    #[Test]
     public function multipleValueModifiersWillBeUsedConsequtively(): void
     {
         $value0 = 'foo';
@@ -417,7 +418,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals('baz', $output);
     }
 
-    /** @test */
+    #[Test]
     public function valueWithEmptyConfigurationWillThrowException(): void
     {
         $this->addValueSource('testSource', 'foo');
@@ -427,7 +428,7 @@ class DataProcessorTest extends TestCase
         $this->subject->processValue($config, $this->context);
     }
 
-    /** @test */
+    #[Test]
     public function valueWithValueSourceWithoutModifiersWillReturnOriginalValue(): void
     {
         $this->addValueSource('testSource', 'foo', ['testSourceConfigKey' => 'testSourceConfigValue']);
@@ -447,7 +448,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals('foo', $output);
     }
 
-    /** @test */
+    #[Test]
     public function valueWithValueSourceAndValueModifiersWillReturnModifiedValue(): void
     {
         $this->addValueSource('testSource', 'foo', ['testSourceConfigKey' => 'testSourceConfigValue']);
@@ -481,7 +482,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals('baz', $output);
     }
 
-    /** @test */
+    #[Test]
     public function conditionEmptyConfigurationWillThrowException(): void
     {
         $config = [];
@@ -489,7 +490,7 @@ class DataProcessorTest extends TestCase
         $this->subject->processCondition($config, $this->context);
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentConditionWillThrowException(): void
     {
         $this->addCondition('testCondition', true);
@@ -503,11 +504,8 @@ class DataProcessorTest extends TestCase
         $this->subject->processCondition($config, $this->context);
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider trueFalseDataProvider
-     */
+    #[Test]
+    #[DataProvider('trueFalseDataProvider')]
     public function existentConditionWillBeUsed(bool $expectedResult): void
     {
         $this->addCondition('testCondition', $expectedResult, ['conditionConfigKey' => 'conditionConfigValue']);
@@ -521,7 +519,7 @@ class DataProcessorTest extends TestCase
         $this->assertEquals($expectedResult, $output);
     }
 
-    /** @test */
+    #[Test]
     public function comparisonWithEmptyConfigurationWillThrowException(): void
     {
         $this->addComparison('testComparison', true);
@@ -530,7 +528,7 @@ class DataProcessorTest extends TestCase
         $this->subject->processComparison($config, $this->context);
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentComparisonWillThrowException(): void
     {
         $this->addComparison('testComparison', true);
@@ -541,18 +539,15 @@ class DataProcessorTest extends TestCase
         $this->subject->processComparison($config, $this->context);
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider trueFalseDataProvider
-     */
+    #[Test]
+    #[DataProvider('trueFalseDataProvider')]
     public function existingComparisonWillBeUsed(bool $expectedResult): void
     {
-        $this->addComparison('testComparison', $expectedResult, ['comparisonConfigKey' => 'comparisonConfigValue']);
         $config = [
             'type' => 'testComparison',
             'comparisonConfigKey' => 'comparisonConfigValue',
         ];
+        $this->addComparison('testComparison', $expectedResult, $config);
         $output = $this->subject->processComparison($config, $this->context);
         $this->assertEquals($expectedResult, $output);
     }

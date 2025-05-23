@@ -5,17 +5,19 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\IntegerValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends ValueSourceTest<IntegerValueSource>
+ * @extends ValueSourceTestBase<IntegerValueSource>
  */
-class IntegerValueSourceTest extends ValueSourceTest
+class IntegerValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'integer';
 
     protected const CLASS_NAME = IntegerValueSource::class;
 
-    /** @test */
+    #[Test]
     public function emptyConfigurationReturnsNull(): void
     {
         $output = $this->processValueSource([]);
@@ -25,7 +27,7 @@ class IntegerValueSourceTest extends ValueSourceTest
     /**
      * @return array<array<mixed>>
      */
-    public function valuesDataProvider(): array
+    public static function valuesDataProvider(): array
     {
         return [
             [null, null],
@@ -41,11 +43,8 @@ class IntegerValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider valuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('valuesDataProvider')]
     public function integerValue(mixed $value, ?int $expectedResult): void
     {
         $subConfig = ['subConfigKey' => 'subConfigValue'];

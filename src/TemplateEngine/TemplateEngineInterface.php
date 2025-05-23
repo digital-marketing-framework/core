@@ -18,7 +18,7 @@ interface TemplateEngineInterface
      * @param array<string,mixed> $config
      * @param array<string,mixed> $data
      */
-    public function render(array $config, array $data): string;
+    public function render(array $config, array $data, bool $frontend = true): string;
 
     public function getSchema(string $format): SchemaInterface;
 }

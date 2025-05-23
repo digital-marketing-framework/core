@@ -3,8 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Comparison;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsFalseComparison;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class IsFalseComparisonTest extends ComparisonTest
+class IsFalseComparisonTest extends ComparisonTestBase
 {
     protected const CLASS_NAME = IsFalseComparison::class;
 
@@ -13,7 +15,7 @@ class IsFalseComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2:mixed,3?:?string}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
@@ -95,11 +97,9 @@ class IsFalseComparisonTest extends ComparisonTest
 
     /**
      * @param array<string,mixed> $firstOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function isFalseTest(bool $expectedResult, array $firstOperand, mixed $firstOperandResult, ?string $anyAll = null): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand, $firstOperandResult, null, null, $anyAll);

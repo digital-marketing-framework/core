@@ -49,7 +49,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     {
         $baseFileName = $this->fileStorage->getFileBaseName($fileIdentifier);
 
-        return (bool)preg_match('/.config$/', strtolower($baseFileName));
+        return (bool)preg_match('/.config$/', strtolower((string)$baseFileName));
     }
 
     public function getDocumentIdentifiers(): array
@@ -73,13 +73,11 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     protected function buildFileBaseName(string $documentBaseName): string
     {
         $baseName = $documentBaseName;
-        $baseName = preg_replace_callback('/[A-Z]+/', static function (array $matches): string {
-            return '-' . strtolower($matches[0]);
-        }, $baseName);
-        $baseName = preg_replace('/[^a-zA-Z0-9]+/', '-', $baseName);
-        $baseName = preg_replace('/^[^a-zA-Z0-9]+/', '', $baseName);
+        $baseName = preg_replace_callback('/[A-Z]+/', static fn (array $matches): string => '-' . strtolower($matches[0]), $baseName);
+        $baseName = preg_replace('/[^a-zA-Z0-9]+/', '-', (string)$baseName);
+        $baseName = preg_replace('/^[^a-zA-Z0-9]+/', '', (string)$baseName);
 
-        return preg_replace('/[^a-zA-Z0-9]+$/', '', $baseName);
+        return preg_replace('/[^a-zA-Z0-9]+$/', '', (string)$baseName);
     }
 
     public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string
@@ -99,7 +97,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     public function getShortIdentifier(string $documentIdentifier): string
     {
         $baseName = $this->fileStorage->getFileBaseName($documentIdentifier);
-        $baseNameParts = explode('.', $baseName);
+        $baseNameParts = explode('.', (string)$baseName);
         array_pop($baseNameParts);
 
         return implode('.', $baseNameParts);

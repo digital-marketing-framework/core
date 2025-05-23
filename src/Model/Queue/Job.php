@@ -7,6 +7,8 @@ use DigitalMarketingFramework\Core\Queue\QueueInterface;
 
 class Job implements JobInterface
 {
+    protected ?int $id = null;
+
     /**
      * @param array<mixed> $data
      */
@@ -23,6 +25,16 @@ class Job implements JobInterface
         protected string $type = '',
         protected int $retryAmount = 0,
     ) {
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getEnvironment(): string

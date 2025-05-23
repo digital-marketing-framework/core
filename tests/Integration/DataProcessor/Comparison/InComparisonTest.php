@@ -2,14 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\InComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\InComparison
- */
-class InComparisonTest extends ComparisonTest
+#[CoversClass(InComparison::class)]
+class InComparisonTest extends ComparisonTestBase
 {
     protected const KEYWORD = 'in';
 
@@ -25,49 +27,49 @@ class InComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2?:?array<string,mixed>,3?:?string}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                self::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                self::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1,value2'], 'constant'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                self::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1,value2'], 'constant'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
                 'any',
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
+                self::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
                 'all',
             ],
         ];
@@ -76,11 +78,9 @@ class InComparisonTest extends ComparisonTest
     /**
      * @param array<string,mixed> $firstOperand
      * @param ?array<string,mixed> $secondOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function in(bool $expectedResult, array $firstOperand, ?array $secondOperand = null, ?string $anyAll = null): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand, $secondOperand, $anyAll);

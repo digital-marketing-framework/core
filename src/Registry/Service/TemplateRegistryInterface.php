@@ -10,5 +10,9 @@ interface TemplateRegistryInterface
 
     public function setTemplateService(TemplateServiceInterface $templateService): void;
 
+    public function getBackendTemplateService(): TemplateServiceInterface;
+
+    public function setBackendTemplateService(TemplateServiceInterface $backendTemplateService): void;
+
     public function renderErrorMessage(string $error): string;
 }

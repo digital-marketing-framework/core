@@ -45,9 +45,7 @@ class FieldListDefinition
      */
     public function toArray(): array
     {
-        return array_map(static function ($field) {
-            return $field->toArray();
-        }, $this->fields);
+        return array_map(static fn ($field) => $field->toArray(), $this->fields);
     }
 
     /**

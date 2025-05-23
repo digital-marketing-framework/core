@@ -20,7 +20,7 @@ class ListUtility extends AbstractListUtility
 
         $result = [];
         foreach ($list as $item) {
-            $result[] = $item[static::KEY_VALUE];
+            $result[] = $item[self::KEY_VALUE];
         }
 
         return $result;
@@ -33,9 +33,9 @@ class ListUtility extends AbstractListUtility
     {
         /** @var array{uuid:string,weight:int,value:mixed} */
         return [
-            static::KEY_UID => $id !== '' ? $id : ConfigurationUtility::generateUuid(),
-            static::KEY_WEIGHT => $weight,
-            static::KEY_VALUE => $value,
+            self::KEY_UID => $id !== '' ? $id : ConfigurationUtility::generateUuid(),
+            self::KEY_WEIGHT => $weight,
+            self::KEY_VALUE => $value,
         ];
     }
 
@@ -50,8 +50,8 @@ class ListUtility extends AbstractListUtility
         $ids = [];
         foreach ($values as $value) {
             $item = static::createItem($value);
-            $list[$item[static::KEY_UID]] = $item;
-            $ids[] = $item[static::KEY_UID];
+            $list[$item[self::KEY_UID]] = $item;
+            $ids[] = $item[self::KEY_UID];
         }
 
         return $ids;

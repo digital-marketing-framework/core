@@ -9,11 +9,11 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 use DigitalMarketingFramework\Core\Tests\GlobalConfiguration\Schema\GenericGlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\Tests\GlobalConfiguration\Settings\GenericGlobalSettings;
 use DigitalMarketingFramework\Core\Tests\Integration\CoreRegistryTestTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \DigitalMarketingFramework\Core\GlobalConfiguration\DefaultGlobalConfiguration
- */
+#[CoversClass(DefaultGlobalConfiguration::class)]
 class GlobalSettingsTest extends TestCase
 {
     use CoreRegistryTestTrait;
@@ -38,7 +38,7 @@ class GlobalSettingsTest extends TestCase
         return $schema;
     }
 
-    /** @test */
+    #[Test]
     public function unknownPackageResultsInEmptyArray(): void
     {
         $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
@@ -47,7 +47,7 @@ class GlobalSettingsTest extends TestCase
         static::assertEquals([], $config);
     }
 
-    /** @test */
+    #[Test]
     public function knownPackageWithoutSchemaReturnsConfig(): void
     {
         $config = ['a' => 'A'];
@@ -59,7 +59,7 @@ class GlobalSettingsTest extends TestCase
         static::assertEquals(['a' => 'A'], $config);
     }
 
-    /** @test */
+    #[Test]
     public function knownPackageWithSchemaReturnsConfig(): void
     {
         $schema = $this->createGlobalConfigurationSchema('packageKey1');
@@ -74,7 +74,7 @@ class GlobalSettingsTest extends TestCase
         static::assertEquals(['a' => 'A2'], $config);
     }
 
-    /** @test */
+    #[Test]
     public function knownPackageWithSchemaReturnsMixedConfig(): void
     {
         $schema = $this->createGlobalConfigurationSchema('packageKey1');
@@ -90,7 +90,7 @@ class GlobalSettingsTest extends TestCase
         static::assertEquals(['a' => 'A2', 'b' => 'B'], $config);
     }
 
-    /** @test */
+    #[Test]
     public function componentUnknownPackageResultsInEmptyArray(): void
     {
         $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(
@@ -103,7 +103,7 @@ class GlobalSettingsTest extends TestCase
         static::assertEquals([], $config);
     }
 
-    /** @test */
+    #[Test]
     public function componentKnownPackageWithoutSchemaReturnsConfig(): void
     {
         $config = ['component1' => ['b' => 'B']];
@@ -119,7 +119,7 @@ class GlobalSettingsTest extends TestCase
         static::assertEquals(['b' => 'B'], $config);
     }
 
-    /** @test */
+    #[Test]
     public function componentKnownPackageWithSchemaReturnsConfig(): void
     {
         $schema = $this->createGlobalConfigurationSchema('packageKey1');
@@ -141,7 +141,7 @@ class GlobalSettingsTest extends TestCase
         static::assertEquals(['b' => 'B2'], $config);
     }
 
-    /** @test */
+    #[Test]
     public function componentKnownPackageWithSchemaReturnsMixedConfig(): void
     {
         $schema = $this->createGlobalConfigurationSchema('packageKey1');

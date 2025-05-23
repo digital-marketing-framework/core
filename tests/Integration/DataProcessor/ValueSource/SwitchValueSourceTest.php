@@ -4,18 +4,19 @@ namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSo
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource
- */
-class SwitchValueSourceTest extends ValueSourceTest
+#[CoversClass(SwitchValueSource::class)]
+class SwitchValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'switch';
 
     /**
      * @return array<string,array{?string,?string,array<string,array{uuid:string,key:string,value:string,weight:int}>,bool,string}>
      */
-    public function switchDataProvider(): array
+    public static function switchDataProvider(): array
     {
         return [
             'originalValueIsNull' => [
@@ -63,11 +64,9 @@ class SwitchValueSourceTest extends ValueSourceTest
 
     /**
      * @param array<string,array{uuid:string,key:string,value:string,weight:int}> $cases
-     *
-     * @test
-     *
-     * @dataProvider switchDataProvider
      */
+    #[Test]
+    #[DataProvider('switchDataProvider')]
     public function switchValue(mixed $value, ?string $expectedResult, array $cases, bool $useDefault = false, string $default = ''): void
     {
         $this->data['field1'] = $value;

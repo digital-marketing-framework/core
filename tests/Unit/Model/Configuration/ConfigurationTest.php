@@ -5,6 +5,8 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Configuration;
 use BadMethodCallException;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class ConfigurationTest extends TestCase
@@ -14,7 +16,7 @@ class ConfigurationTest extends TestCase
     /**
      * @return array<array{0:array<string,mixed>}>
      */
-    public function toArrayProvider(): array
+    public static function toArrayProvider(): array
     {
         return [
             [[]],
@@ -24,11 +26,9 @@ class ConfigurationTest extends TestCase
 
     /**
      * @param array<string,mixed> $values
-     *
-     * @dataProvider toArrayProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('toArrayProvider')]
     public function toArray(array $values): void
     {
         $this->subject = new Configuration($values);
@@ -36,7 +36,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($values, $result);
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentBasicKey(): void
     {
         $this->subject = new Configuration([]);
@@ -44,7 +44,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('default1', $this->subject->get('key', 'default1'));
     }
 
-    /** @test */
+    #[Test]
     public function basicKeys(): void
     {
         $configList = [
@@ -58,7 +58,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('value2', $this->subject->get('key2'));
     }
 
-    /** @test */
+    #[Test]
     public function basicKeysOverride(): void
     {
         $configList = [
@@ -91,7 +91,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('value7c', $this->subject->get('key7'));
     }
 
-    /** @test */
+    #[Test]
     public function basicKeyDelete(): void
     {
         $configList = [
@@ -103,7 +103,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('default1', $this->subject->get('key1', 'default1'));
     }
 
-    /** @test */
+    #[Test]
     public function basicKeyDeletesArray(): void
     {
         $configList = [
@@ -115,7 +115,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('default1', $this->subject->get('key1', 'default1'));
     }
 
-    /** @test */
+    #[Test]
     public function dynamicallyAddedConfiguration(): void
     {
         $configList = [
@@ -138,7 +138,7 @@ class ConfigurationTest extends TestCase
         $this->assertNull($this->subject->get('key5'));
     }
 
-    /** @test */
+    #[Test]
     public function manualOverride(): void
     {
         $configList = [
@@ -159,7 +159,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('value4b', $this->subject->get('key4'));
     }
 
-    /** @test */
+    #[Test]
     public function asArrayGet(): void
     {
         $configList = [
@@ -170,7 +170,7 @@ class ConfigurationTest extends TestCase
         $this->assertNull($this->subject['key2']);
     }
 
-    /** @test */
+    #[Test]
     public function asArraySet(): void
     {
         $configList = [
@@ -191,7 +191,7 @@ class ConfigurationTest extends TestCase
         $this->assertEquals('value4b', $this->subject['key4']);
     }
 
-    /** @test */
+    #[Test]
     public function overrideWithAdditionalConfiguration(): void
     {
         $configList = [
@@ -244,7 +244,7 @@ class ConfigurationTest extends TestCase
     /**
      * @return array{0:array{0:true},1:array{0:false}}
      */
-    public function readonlyStateProvider(): array
+    public static function readonlyStateProvider(): array
     {
         return [
             [true],
@@ -252,11 +252,8 @@ class ConfigurationTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider readonlyStateProvider
-     */
+    #[Test]
+    #[DataProvider('readonlyStateProvider')]
     public function readonlyConfigAddConfigurationIsBadMethodCall(bool $readonly): void
     {
         $configList = [[]];
@@ -275,11 +272,8 @@ class ConfigurationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider readonlyStateProvider
-     */
+    #[Test]
+    #[DataProvider('readonlyStateProvider')]
     public function readonlyConfigSetIsBadMethodCall(bool $readonly): void
     {
         $configList = [[]];
@@ -296,11 +290,8 @@ class ConfigurationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider readonlyStateProvider
-     */
+    #[Test]
+    #[DataProvider('readonlyStateProvider')]
     public function readonlyConfigOffsetSetIsBadMethodCall(bool $readonly): void
     {
         $configList = [[]];
@@ -317,11 +308,8 @@ class ConfigurationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider readonlyStateProvider
-     */
+    #[Test]
+    #[DataProvider('readonlyStateProvider')]
     public function readonlyConfigUnsetIsBadMethodCall(bool $readonly): void
     {
         $configList = [['key1' => 'value1']];
@@ -338,11 +326,8 @@ class ConfigurationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider readonlyStateProvider
-     */
+    #[Test]
+    #[DataProvider('readonlyStateProvider')]
     public function readonlyConfigOffsetUnsetIsBadMethodCall(bool $readonly): void
     {
         $configList = [['key1' => 'value1']];
@@ -359,11 +344,8 @@ class ConfigurationTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider readonlyStateProvider
-     */
+    #[Test]
+    #[DataProvider('readonlyStateProvider')]
     public function readonlyConfigReportsAccurately(bool $readonly): void
     {
         $configList = [[]];

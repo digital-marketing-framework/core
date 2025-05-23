@@ -4,14 +4,18 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\DataMapper;
 
 use DigitalMarketingFramework\Core\DataProcessor\DataMapper\FieldMapDataMapper;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use DigitalMarketingFramework\Core\Tests\TestUtilityTrait;
+use PHPUnit\Framework\Attributes\Test;
 
-class FieldMapDataMapperTest extends DataMapperTest
+class FieldMapDataMapperTest extends DataMapperTestBase
 {
+    use TestUtilityTrait;
+
     protected const CLASS_NAME = FieldMapDataMapper::class;
 
     protected const KEYWORD = 'fields';
 
-    /** @test */
+    #[Test]
     public function noFields(): void
     {
         $config = [
@@ -21,20 +25,20 @@ class FieldMapDataMapperTest extends DataMapperTest
         $this->assertMultiValueEmpty($output);
     }
 
-    /** @test */
+    #[Test]
     public function fields(): void
     {
-        $this->dataProcessor->method('processValue')->withConsecutive(
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', [
             [['k1' => 'v1']],
             [['k2' => 'v2']],
             [['k3' => 'v3']],
             [['k4' => 'v4']],
-        )->willReturnOnConsecutiveCalls(
+        ], [
             'foo',
             '',
             null,
             new MultiValue(['bar']),
-        );
+        ]);
         $config = [
             FieldMapDataMapper::KEY_FIELDS => [
                 'id1' => $this->createMapItem('ext_field1', ['k1' => 'v1'], 'id1', 10),

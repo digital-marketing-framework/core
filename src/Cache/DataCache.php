@@ -134,9 +134,7 @@ class DataCache implements DataCacheInterface
     {
         $results = $this->cache->fetchMultiple(
             array_map(
-                function (IdentifierInterface $identifier) {
-                    return $this->addKeyPrefix($identifier->getCacheKey());
-                },
+                fn (IdentifierInterface $identifier) => $this->addKeyPrefix($identifier->getCacheKey()),
                 $identifiers
             )
         );

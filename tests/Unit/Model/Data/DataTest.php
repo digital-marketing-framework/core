@@ -4,6 +4,8 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Data;
 
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class DataTest extends TestCase
@@ -13,7 +15,7 @@ class DataTest extends TestCase
     /**
      * @return array<array{0:array<string,mixed>}>
      */
-    public function toArrayProvider(): array
+    public static function toArrayProvider(): array
     {
         return [
             [[]],
@@ -32,11 +34,9 @@ class DataTest extends TestCase
 
     /**
      * @param array<string,mixed> $values
-     *
-     * @dataProvider toArrayProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('toArrayProvider')]
     public function toArray(array $values): void
     {
         $this->subject = new Data($values);
@@ -44,7 +44,7 @@ class DataTest extends TestCase
         $this->assertEquals($values, $result);
     }
 
-    /** @test */
+    #[Test]
     public function setGetOffset(): void
     {
         $this->subject = new Data();
@@ -57,7 +57,7 @@ class DataTest extends TestCase
     /**
      * @return array<array{0:string|ValueInterface|null}>
      */
-    public function fieldExistsProvider(): array
+    public static function fieldExistsProvider(): array
     {
         return [
             [null],
@@ -68,18 +68,15 @@ class DataTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider fieldExistsProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('fieldExistsProvider')]
     public function fieldExists(string|ValueInterface|null $value): void
     {
         $this->subject = new Data(['field1' => $value]);
         $this->assertTrue($this->subject->fieldExists('field1'));
     }
 
-    /** @test */
+    #[Test]
     public function fieldDoesNotExist(): void
     {
         $this->subject = new Data(['field1' => 'value1']);
@@ -87,7 +84,7 @@ class DataTest extends TestCase
         $this->assertFalse($this->subject->fieldExists('field2'));
     }
 
-    /** @test */
+    #[Test]
     public function fieldDoesNotExistIsEmpty(): void
     {
         $this->subject = new Data();
@@ -97,7 +94,7 @@ class DataTest extends TestCase
     /**
      * @return array<array{0:string|ValueInterface|null,1:bool}>
      */
-    public function fieldEmptyProvider(): array
+    public static function fieldEmptyProvider(): array
     {
         return [
             [null, true],
@@ -107,11 +104,8 @@ class DataTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider fieldEmptyProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('fieldEmptyProvider')]
     public function fieldEmpty(string|ValueInterface|null $value, bool $empty): void
     {
         $this->subject = new Data(['field1' => $value]);

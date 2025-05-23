@@ -6,6 +6,10 @@ use DateTime;
 
 interface JobInterface
 {
+    public function getId(): ?int;
+
+    public function setId(int $id): void;
+
     public function getEnvironment(): string;
 
     public function setEnvironment(string $environment): void;

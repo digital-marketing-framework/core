@@ -6,6 +6,8 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -72,7 +74,7 @@ class ConfigurationDocumentManagerTest extends TestCase
      *
      * @return array<string,array{uuid:string,weight:int,value:string}>
      */
-    protected function createIncludeList(array $ids): array
+    protected static function createIncludeList(array $ids): array
     {
         $weight = 10;
         $list = [];
@@ -91,7 +93,7 @@ class ConfigurationDocumentManagerTest extends TestCase
     /**
      * @return array<array{array<array{identifier:string,document:string,configuration:array<mixed>}>,string,array<array<mixed>>}>
      */
-    public function getConfigurationStackFromIdentifierProvider(): array
+    public static function getConfigurationStackFromIdentifierProvider(): array
     {
         return [
             'noIncludes' => [
@@ -111,7 +113,7 @@ class ConfigurationDocumentManagerTest extends TestCase
                         'configuration' => [
                             'key1' => 'value1',
                             'metaData' => [
-                                'includes' => $this->createIncludeList(['id2']),
+                                'includes' => self::createIncludeList(['id2']),
                             ],
                         ],
                     ],
@@ -137,7 +139,7 @@ class ConfigurationDocumentManagerTest extends TestCase
                         'configuration' => [
                             'key1' => 'value1',
                             'metaData' => [
-                                'includes' => $this->createIncludeList(['id2']),
+                                'includes' => self::createIncludeList(['id2']),
                             ],
                         ],
                     ],
@@ -147,7 +149,7 @@ class ConfigurationDocumentManagerTest extends TestCase
                         'configuration' => [
                             'key2' => 'value2',
                             'metaData' => [
-                                'includes' => $this->createIncludeList(['id3', 'id4']),
+                                'includes' => self::createIncludeList(['id3', 'id4']),
                             ],
                         ],
                     ],
@@ -182,7 +184,7 @@ class ConfigurationDocumentManagerTest extends TestCase
                         'configuration' => [
                             'key1' => 'value1',
                             'metaData' => [
-                                'includes' => $this->createIncludeList(['id2', 'id3']),
+                                'includes' => self::createIncludeList(['id2', 'id3']),
                             ],
                         ],
                     ],
@@ -192,7 +194,7 @@ class ConfigurationDocumentManagerTest extends TestCase
                         'configuration' => [
                             'key2' => 'value2',
                             'metaData' => [
-                                'includes' => $this->createIncludeList(['id4']),
+                                'includes' => self::createIncludeList(['id4']),
                             ],
                         ],
                     ],
@@ -202,7 +204,7 @@ class ConfigurationDocumentManagerTest extends TestCase
                         'configuration' => [
                             'key3' => 'value3',
                             'metaData' => [
-                                'includes' => $this->createIncludeList(['id4']),
+                                'includes' => self::createIncludeList(['id4']),
                             ],
                         ],
                     ],
@@ -228,11 +230,9 @@ class ConfigurationDocumentManagerTest extends TestCase
     /**
      * @param array<array{identifier:string,document:string,configuration:array<mixed>}> $docs
      * @param array<array<mixed>> $expectedResult
-     *
-     * @dataProvider getConfigurationStackFromIdentifierProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('getConfigurationStackFromIdentifierProvider')]
     public function getConfigurationStackFromIdentifier(array $docs, string $id, array $expectedResult): void
     {
         foreach ($docs as $doc) {
@@ -253,7 +253,7 @@ class ConfigurationDocumentManagerTest extends TestCase
         $this->assertEquals($expectedResult, $stack);
     }
 
-    /** @test */
+    #[Test]
     public function getConfigurationStackFromIdentifierLoop(): void
     {
         $this->registerDocument('id1', 'documentContent1', [
@@ -274,7 +274,7 @@ class ConfigurationDocumentManagerTest extends TestCase
         $this->subject->getConfigurationStackFromIdentifier('id1');
     }
 
-    /** @test */
+    #[Test]
     public function getConfigurationStackFromIdentifierNestedLoop(): void
     {
         $this->registerDocument('id1', 'documentContent1', [

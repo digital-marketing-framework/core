@@ -1,0 +1,16 @@
+<textarea
+    data-app="{{ (config.ready ?? true) ? 'true' : 'false' }}"
+    data-mode="{{ config.mode ?? 'embedded' }}"
+    data-readonly="{{ (config.readonly ?? false) ? 'true' : 'false' }}"
+    data-global-document="{{ (config.globalDocument ?? false) ? 'true' : 'false' }}"
+    data-debug="{{ (config.debug ?? false) ? 'true' : 'false' }}"
+    data-url-schema="{{ uri('ajax.configuration-editor.schema', {documentType}) }}"
+    data-url-defaults="{{ uri('ajax.configuration-editor.defaults', {documentType}) }}"
+    data-url-merge="{{ uri('ajax.configuration-editor.merge', {documentType}) }}"
+    data-url-split="{{ uri('ajax.configuration-editor.split', {documentType}) }}"
+    {% if config.includes ?? true %}data-url-update-includes="{{ uri('ajax.configuration-editor.update-includes', {documentType}) }}" {% endif %}
+    class="dmf-configuration-document"
+    {% if config.readonly %}disabled="disabled"{% endif %}
+    style="width:60%;min-height:400px;"
+    name="{{ config.name ?? 'document' }}"
+>{{ document }}</textarea>

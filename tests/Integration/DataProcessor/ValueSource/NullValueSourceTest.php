@@ -2,14 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSource;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource
- */
-class NullValueSourceTest extends ValueSourceTest
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+
+#[CoversClass(NullValueSource::class)]
+class NullValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'null';
 
-    /** @test */
+    #[Test]
     public function returnsNull(): void
     {
         $config = $this->getValueSourceConfiguration([]);

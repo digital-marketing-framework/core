@@ -8,12 +8,13 @@ use DigitalMarketingFramework\Core\Notification\NotificationChannelInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManager;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \DigitalMarketingFramework\Core\Notification\NotificationManager
- */
+#[CoversClass(NotificationManager::class)]
 class NotificationManagerTest extends TestCase
 {
     protected RegistryInterface&MockObject $registry;
@@ -34,18 +35,14 @@ class NotificationManagerTest extends TestCase
         parent::setUp();
 
         $this->registry = $this->createMock(RegistryInterface::class);
-        $this->registry->method('getAllNotificationChannels')->willReturnCallback(function () {
-            return $this->notificationChannels;
-        });
+        $this->registry->method('getAllNotificationChannels')->willReturnCallback(fn () => $this->notificationChannels);
 
         $this->globalConfiguration = $this->createMock(GlobalConfigurationInterface::class);
-        $this->globalConfiguration->method('get')->with('core')->willReturnCallback(function () {
-            return [
-                CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS => [
-                    CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS_ENABLED => $this->notificationSystemEnabled,
-                ],
-            ];
-        });
+        $this->globalConfiguration->method('get')->with('core')->willReturnCallback(fn () => [
+            CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS => [
+                CoreGlobalConfigurationSchema::KEY_NOTIFICATIONS_ENABLED => $this->notificationSystemEnabled,
+            ],
+        ]);
 
         $this->subject = new NotificationManager($this->registry);
         $this->subject->setGlobalConfiguration($this->globalConfiguration);
@@ -55,9 +52,7 @@ class NotificationManagerTest extends TestCase
     {
         if (is_bool($acceptCallback)) {
             $acceptCallbackReturnValue = $acceptCallback;
-            $acceptCallback = static function () use ($acceptCallbackReturnValue) {
-                return $acceptCallbackReturnValue;
-            };
+            $acceptCallback = (static fn () => $acceptCallbackReturnValue);
         }
 
         $channel = $this->createMock(NotificationChannelInterface::class);
@@ -68,7 +63,7 @@ class NotificationManagerTest extends TestCase
         return $channel;
     }
 
-    /** @test */
+    #[Test]
     public function notificationsDisabled(): void
     {
         $this->notificationSystemEnabled = false;
@@ -85,7 +80,7 @@ class NotificationManagerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function notificationChannelDisabled(): void
     {
         $this->notificationSystemEnabled = true;
@@ -102,7 +97,7 @@ class NotificationManagerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function notificationChannelEnabled(): void
     {
         $this->notificationSystemEnabled = true;
@@ -126,7 +121,7 @@ class NotificationManagerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function notificationChannelEnabledWithDefaultComponent(): void
     {
         $this->notificationSystemEnabled = true;
@@ -189,11 +184,9 @@ class NotificationManagerTest extends TestCase
 
     /**
      * @param array<string> $pushedComponents
-     *
-     * @dataProvider componentDataProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('componentDataProvider')]
     public function componentsStack(string $component, array $pushedComponents, string $expectedFullComponent): void
     {
         $this->notificationSystemEnabled = true;
@@ -224,7 +217,7 @@ class NotificationManagerTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function componentStackSavedDepth(): void
     {
         $this->notificationSystemEnabled = true;

@@ -6,18 +6,19 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\IntegerValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\IntegerValueSource
- */
-class IntegerValueSourceTest extends ValueSourceTest
+#[CoversClass(IntegerValueSource::class)]
+class IntegerValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'integer';
 
     /**
      * @return array<array<mixed>>
      */
-    public function valuesDataProvider(): array
+    public static function valuesDataProvider(): array
     {
         return [
             [null, null],
@@ -33,11 +34,8 @@ class IntegerValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider valuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('valuesDataProvider')]
     public function integerValue(mixed $value, ?int $expectedResult): void
     {
         $this->data['field1'] = $value;

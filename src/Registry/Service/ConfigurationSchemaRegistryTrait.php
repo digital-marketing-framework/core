@@ -182,7 +182,7 @@ trait ConfigurationSchemaRegistryTrait
 
         // main schema
         $mainSchema = $schemaDocument->getMainSchema();
-        $mainSchema->getRenderingDefinition()->setLabel('Digital Marketing');
+        $mainSchema->getRenderingDefinition()->setLabel('Anyrel');
 
         // meta data
         $metaDataSchema = new ContainerSchema();

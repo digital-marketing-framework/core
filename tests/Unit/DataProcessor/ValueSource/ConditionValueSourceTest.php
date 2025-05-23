@@ -3,17 +3,19 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSource;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends ValueSourceTest<ConditionValueSource>
+ * @extends ValueSourceTestBase<ConditionValueSource>
  */
-class ConditionValueSourceTest extends ValueSourceTest
+class ConditionValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'condition';
 
     protected const CLASS_NAME = ConditionValueSource::class;
 
-    /** @test */
+    #[Test]
     public function emptyConfigurationThrowsException(): void
     {
         $this->expectExceptionMessage('Condition value source - no condition given.');
@@ -23,7 +25,7 @@ class ConditionValueSourceTest extends ValueSourceTest
     /**
      * @return array<array{0:mixed,1:bool,2:mixed,3:mixed,4:array<string,mixed>,5:?array<string,mixed>,6:?array<string,mixed>}>
      */
-    public function conditionValueSourceDataProvider(): array
+    public static function conditionValueSourceDataProvider(): array
     {
         return [
             [
@@ -87,11 +89,9 @@ class ConditionValueSourceTest extends ValueSourceTest
      * @param array<string,mixed> $ifConfig
      * @param ?array<string,mixed> $thenConfig
      * @param ?array<string,mixed> $elseConfig
-     *
-     * @test
-     *
-     * @dataProvider conditionValueSourceDataProvider
      */
+    #[Test]
+    #[DataProvider('conditionValueSourceDataProvider')]
     public function conditionValueSource(
         mixed $expectedResult,
         bool $evalResult,
@@ -113,7 +113,7 @@ class ConditionValueSourceTest extends ValueSourceTest
             $valueResults[] = $elseResult;
         }
 
-        $this->dataProcessor->method('processValue')->withConsecutive(...$valueWith)->willReturnOnConsecutiveCalls(...$valueResults);
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', $valueWith, $valueResults);
         $this->dataProcessor->method('processCondition')->with($ifConfig)->willReturn($evalResult);
 
         $config = [

@@ -54,7 +54,7 @@ final class GeneralUtility
     public static function parseSeparatorString(string $str): string
     {
         $str = trim($str);
-        foreach (static::CHARACTER_MAP as $key => $value) {
+        foreach (self::CHARACTER_MAP as $key => $value) {
             $str = str_replace($key, $value, $str);
         }
 
@@ -79,7 +79,7 @@ final class GeneralUtility
             $array = $value->toArray();
         } else {
             $value = (string)$value;
-            $array = static::isEmpty($value) ? [] : explode($token, $value);
+            $array = self::isEmpty($value) ? [] : explode($token, $value);
         }
 
         if ($trim) {
@@ -96,7 +96,7 @@ final class GeneralUtility
     {
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $multiValue[$key] = static::castArrayToMultiValue($value);
+                $multiValue[$key] = self::castArrayToMultiValue($value);
             } elseif (is_int($value)) {
                 $multiValue[$key] = new IntegerValue($value);
             } elseif (is_bool($value)) {
@@ -113,7 +113,7 @@ final class GeneralUtility
     public static function castArrayToMultiValue(array $array): MultiValueInterface
     {
         $multiValue = new MultiValue();
-        static::castArrayToMultiValueStructure($array, $multiValue);
+        self::castArrayToMultiValueStructure($array, $multiValue);
 
         return $multiValue;
     }
@@ -124,7 +124,7 @@ final class GeneralUtility
     public static function castArrayToData(array $array): DataInterface
     {
         $data = new Data();
-        static::castArrayToMultiValueStructure($array, $data);
+        self::castArrayToMultiValueStructure($array, $data);
 
         return $data;
     }
@@ -137,7 +137,7 @@ final class GeneralUtility
         $array = [];
         foreach ($multiValue as $key => $value) {
             if ($value instanceof MultiValueInterface) {
-                $array[$key] = static::castMultiValueStructureToArray($value);
+                $array[$key] = self::castMultiValueStructureToArray($value);
             } elseif ($value instanceof ValueInterface) {
                 $array[$key] = $value->getValue();
             } else {
@@ -153,7 +153,7 @@ final class GeneralUtility
      */
     public static function castDataToArray(DataInterface $data): array
     {
-        return static::castMultiValueStructureToArray($data);
+        return self::castMultiValueStructureToArray($data);
     }
 
     /**
@@ -161,7 +161,7 @@ final class GeneralUtility
      */
     public static function castMultiValueToArray(MultiValueInterface $multiValue): array
     {
-        return static::castMultiValueStructureToArray($multiValue);
+        return self::castMultiValueStructureToArray($multiValue);
     }
 
     public static function shortenHash(string $hash): string
@@ -189,7 +189,7 @@ final class GeneralUtility
 
         $hash = strtoupper(md5($serialized));
 
-        return $short ? static::shortenHash($hash) : $hash;
+        return $short ? self::shortenHash($hash) : $hash;
     }
 
     public static function compareValue(mixed $fieldValue, mixed $compareValue): bool
@@ -199,8 +199,8 @@ final class GeneralUtility
 
     public static function compareLists(mixed $fieldValue, mixed $compareList, bool $strict = false): bool
     {
-        $fieldValue = static::castValueToArray($fieldValue);
-        $compareList = static::castValueToArray($compareList);
+        $fieldValue = self::castValueToArray($fieldValue);
+        $compareList = self::castValueToArray($compareList);
 
         if (!$strict) {
             sort($fieldValue);
@@ -212,11 +212,11 @@ final class GeneralUtility
 
     public static function compare(mixed $fieldValue, mixed $compareValue): bool
     {
-        if (static::isList($fieldValue) || static::isList($compareValue)) {
-            return static::compareLists($fieldValue, $compareValue);
+        if (self::isList($fieldValue) || self::isList($compareValue)) {
+            return self::compareLists($fieldValue, $compareValue);
         }
 
-        return static::compareValue($fieldValue, $compareValue);
+        return self::compareValue($fieldValue, $compareValue);
     }
 
     /**
@@ -253,24 +253,20 @@ final class GeneralUtility
 
     public static function slugify(string $string): string
     {
-        $string = preg_replace_callback('/([A-Z]+)/', static function ($matches): string {
-            return '-' . strtolower($matches[0]);
-        }, $string);
-        $string = preg_replace('/[^a-z0-9]+/', '-', $string);
+        $string = preg_replace_callback('/([A-Z]+)/', static fn ($matches): string => '-' . strtolower($matches[0]), $string);
+        $string = preg_replace('/[^a-z0-9]+/', '-', (string)$string);
 
-        return trim($string, '-');
+        return trim((string)$string, '-');
     }
 
     public static function camelCaseToDashed(string $string): string
     {
-        return static::slugify($string);
+        return self::slugify($string);
     }
 
     public static function dashedToCamelCase(string $string): string
     {
-        return preg_replace_callback('/(-[a-z0-9])/', static function ($matches): string {
-            return strtoupper(substr($matches[0], 1));
-        }, $string);
+        return preg_replace_callback('/(-[a-z0-9])/', static fn ($matches): string => strtoupper(substr($matches[0], 1)), $string);
     }
 
     public static function maskValue(string $value): string
@@ -308,7 +304,7 @@ final class GeneralUtility
         if ($copyValues) {
             foreach ($multiValue as $key => $value) {
                 if ($recursive && $value instanceof MultiValueInterface) {
-                    $value = static::copyMultiValue($value, $copyValues, $recursive);
+                    $value = self::copyMultiValue($value, $copyValues, $recursive);
                 }
 
                 $copy[$key] = $value;
@@ -374,14 +370,10 @@ final class GeneralUtility
     public static function getLabelFromValue(string $value): string
     {
         $label = $value;
-        $label = preg_replace_callback('/[A-Z]+/', static function (array $matches): string {
-            return ' ' . $matches[0];
-        }, $label);
-        $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', static function (array $matches): string {
-            return ' ' . ucfirst($matches[1]);
-        }, $label);
-        $label = preg_replace('/[^a-zA-Z0-9]$/', '', $label);
+        $label = preg_replace_callback('/[A-Z]+/', static fn (array $matches): string => ' ' . $matches[0], $label);
+        $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', static fn (array $matches): string => ' ' . ucfirst($matches[1]), (string)$label);
+        $label = preg_replace('/[^a-zA-Z0-9]$/', '', (string)$label);
 
-        return ucfirst($label);
+        return ucfirst((string)$label);
     }
 }

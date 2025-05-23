@@ -6,12 +6,12 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource
- */
-class FileValueSourceTest extends ValueSourceTest
+#[CoversClass(FileValueSource::class)]
+class FileValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'file';
 
@@ -25,7 +25,7 @@ class FileValueSourceTest extends ValueSourceTest
         $this->registry->setFileStorage($this->fileStorage);
     }
 
-    /** @test */
+    #[Test]
     public function fileValueSource(): void
     {
         $config = [

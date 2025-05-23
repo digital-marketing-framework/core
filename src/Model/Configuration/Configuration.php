@@ -183,9 +183,7 @@ class Configuration implements ConfigurationInterface
     {
         $names = array_keys($this->getAllIntegrationConfigurations());
 
-        return array_filter($names, static function (string $name) {
-            return $name !== self::KEY_GENERAL_INTEGRATION;
-        });
+        return array_filter($names, static fn (string $name) => $name !== self::KEY_GENERAL_INTEGRATION);
     }
 
     public function getIdentifierCollectorConfiguration(string $integrationName, string $identifierCollectorName): array

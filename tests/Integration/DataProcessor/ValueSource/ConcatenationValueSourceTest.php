@@ -6,15 +6,15 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConcatenationValueS
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConcatenationValueSource
- */
-class ConcatenationValueSourceTest extends ValueSourceTest
+#[CoversClass(ConcatenationValueSource::class)]
+class ConcatenationValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'concatenation';
 
-    /** @test */
+    #[Test]
     public function nonExistentFieldWillReturnNull(): void
     {
         $this->data['field1'] = 'value1';
@@ -34,7 +34,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertNull($output);
     }
 
-    /** @test */
+    #[Test]
     public function emptyFieldWillReturnEmptyValueAndNotNull(): void
     {
         $this->data['field1'] = '';
@@ -53,7 +53,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertEquals('', $output);
     }
 
-    /** @test */
+    #[Test]
     public function singleComlpexFieldWillBeReturnedAsIs(): void
     {
         $this->data['field1'] = new MultiValue(['foo', 'bar']);
@@ -74,7 +74,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertEquals(['foo', 'bar'], $output->toArray());
     }
 
-    /** @test */
+    #[Test]
     public function concatSimpleValues(): void
     {
         $this->data['field1'] = 'value1';
@@ -101,7 +101,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertEquals('value1 value2', $output);
     }
 
-    /** @test */
+    #[Test]
     public function concatWithComplexValue(): void
     {
         $this->data['field1'] = new MultiValue(['value1.1', 'value1.2']);
@@ -128,7 +128,7 @@ class ConcatenationValueSourceTest extends ValueSourceTest
         $this->assertEquals('value1.1,value1.2 value2', $output);
     }
 
-    /** @test */
+    #[Test]
     public function customGlueIsUsed(): void
     {
         $this->data['field1'] = 'value1';

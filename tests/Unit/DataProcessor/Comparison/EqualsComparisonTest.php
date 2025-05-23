@@ -3,8 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Comparison;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\EqualsComparison;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class EqualsComparisonTest extends ComparisonTest
+class EqualsComparisonTest extends ComparisonTestBase
 {
     protected const CLASS_NAME = EqualsComparison::class;
 
@@ -13,7 +15,7 @@ class EqualsComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2:mixed,3?:?array<string,mixed>,4?:mixed,5?:?string}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
@@ -81,11 +83,9 @@ class EqualsComparisonTest extends ComparisonTest
     /**
      * @param array<string,mixed> $firstOperand
      * @param ?array<string,mixed> $secondOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function equals(
         bool $expectedResult,
         array $firstOperand,

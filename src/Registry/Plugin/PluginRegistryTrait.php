@@ -116,18 +116,14 @@ trait PluginRegistryTrait
     public function getAllPluginClasses(string $interface): array
     {
         $classes = $this->pluginClasses[$interface] ?? [];
-        uasort($classes, static function (string $a, string $b) {
-            return $a::getWeight() <=> $b::getWeight();
-        });
+        uasort($classes, static fn (string $a, string $b) => $a::getWeight() <=> $b::getWeight());
 
         return $classes;
     }
 
     public function sortPlugins(array &$plugins): void
     {
-        uasort($plugins, static function (PluginInterface $a, PluginInterface $b) {
-            return $a->getConfiguredWeight() <=> $b->getConfiguredWeight();
-        });
+        uasort($plugins, static fn (PluginInterface $a, PluginInterface $b) => $a->getConfiguredWeight() <=> $b->getConfiguredWeight());
     }
 
     public function getPluginClass(string $interface, string $keyword): ?string

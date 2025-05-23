@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\LowerCaseValueModifier;
 
-class LowerCaseValueModifierTest extends ValueModifierTest
+class LowerCaseValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'lowerCase';
 
@@ -20,7 +20,7 @@ class LowerCaseValueModifierTest extends ValueModifierTest
         [['Value1', 'VALUE2', 'value3'], ['value1', 'value2', 'value3']],
     ];
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

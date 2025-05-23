@@ -25,6 +25,7 @@ class DefaultGlobalConfiguration implements GlobalConfigurationInterface
 
     public function getGlobalSettings(string $class, ...$arguments): GlobalSettingsInterface
     {
+        // @phpstan-ignore-next-line We test the class for good measure as it can come from a third-party package
         if (!is_a($class, GlobalSettingsInterface::class, true)) {
             throw new DigitalMarketingFrameworkException(sprintf('Unknown global settings class "%s"', $class));
         }

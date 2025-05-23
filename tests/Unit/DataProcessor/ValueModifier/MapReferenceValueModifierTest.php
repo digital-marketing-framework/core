@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapReferenceValueModifier;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 
-class MapReferenceValueModifierTest extends ValueModifierTest
+class MapReferenceValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'mapReference';
 
@@ -55,7 +55,7 @@ class MapReferenceValueModifierTest extends ValueModifierTest
         ];
     }
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\UpperCaseValueModifier;
 
-class UpperCaseValueModifierTest extends ValueModifierTest
+class UpperCaseValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'upperCase';
 
@@ -20,7 +20,7 @@ class UpperCaseValueModifierTest extends ValueModifierTest
         [['Value1', 'VALUE2', 'value3'], ['VALUE1', 'VALUE2', 'VALUE3']],
     ];
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

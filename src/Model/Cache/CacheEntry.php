@@ -79,8 +79,6 @@ class CacheEntry implements CacheEntryInterface
 
     public function removeTag(string $tag): void
     {
-        $this->tags = array_filter($this->tags, static function (string $entryTag) use ($tag) {
-            return $entryTag !== $tag;
-        });
+        $this->tags = array_filter($this->tags, static fn (string $entryTag) => $entryTag !== $tag);
     }
 }

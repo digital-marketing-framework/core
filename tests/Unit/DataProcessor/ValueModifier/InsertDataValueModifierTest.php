@@ -5,7 +5,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\InsertDataValueModifier;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 
-class InsertDataValueModifierTest extends ValueModifierTest
+class InsertDataValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'insertData';
 
@@ -32,7 +32,7 @@ class InsertDataValueModifierTest extends ValueModifierTest
         $this->data['multiValue'] = new MultiValue(['a', 'b', 'c']);
     }
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

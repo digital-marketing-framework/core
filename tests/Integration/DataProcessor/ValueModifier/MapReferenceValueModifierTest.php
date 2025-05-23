@@ -2,13 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapReferenceValueModifier;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\MapReferenceValueModifierTest as MapReferenceValueModifierUnitTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapReferenceValueModifier
- */
-class MapReferenceValueModifierTest extends ValueModifierTest
+#[CoversClass(MapReferenceValueModifier::class)]
+class MapReferenceValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'mapReference';
 
@@ -29,7 +29,7 @@ class MapReferenceValueModifierTest extends ValueModifierTest
         ];
     }
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return MapReferenceValueModifierUnitTest::MODIFY_TEST_CASES;
     }

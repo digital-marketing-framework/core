@@ -2,16 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueModifier;
 
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\JoinValueModifier;
 use DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier\JoinValueModifierTest as JoinValueModifierUnitTest;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueModifier\JoinValueModifier
- */
-class JoinValueModifierTest extends ValueModifierTest
+#[CoversClass(JoinValueModifier::class)]
+class JoinValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'join';
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return JoinValueModifierUnitTest::MODIFY_TEST_CASES;
     }

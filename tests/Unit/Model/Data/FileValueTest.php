@@ -3,11 +3,12 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\Model\Data;
 
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends AbstractFieldTest<FileValue>
+ * @extends FieldTestBase<FileValue>
  */
-class FileValueTest extends AbstractFieldTest
+class FileValueTest extends FieldTestBase
 {
     protected const FIELD_CLASS = FileValue::class;
 
@@ -21,7 +22,7 @@ class FileValueTest extends AbstractFieldTest
         );
     }
 
-    /** @test */
+    #[Test]
     public function init(): void
     {
         $this->subject = $this->createField();
@@ -34,7 +35,7 @@ class FileValueTest extends AbstractFieldTest
     /**
      * @return array<array{0:array{0:string,1:string,2:string,3:string},1:string}>
      */
-    public function castToStringProvider(): array
+    public static function castToStringProvider(): array
     {
         return [
             [['name1', 'url1', 'path1', 'type1'], 'url1'],
@@ -45,7 +46,7 @@ class FileValueTest extends AbstractFieldTest
     /**
      * @return array<array{0:array{0:string,1:string,2:string,3:string},1:array{fileName:string,publicUrl:string,relativePath:string,mimeType:string}}>
      */
-    public function packProvider(): array
+    public static function packProvider(): array
     {
         return [
             [

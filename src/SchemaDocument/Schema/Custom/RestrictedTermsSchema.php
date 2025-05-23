@@ -63,9 +63,7 @@ class RestrictedTermsSchema extends SwitchSchema
             case static::KEY_NONE:
                 return [];
             case static::KEY_BLACKLIST:
-                $list = array_map(static function ($term): string {
-                    return '!' . $term;
-                }, $list);
+                $list = array_map(static fn ($term): string => '!' . $term, $list);
                 array_unshift($list, '*');
 
                 return $list;

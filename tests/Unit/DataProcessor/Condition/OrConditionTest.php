@@ -3,8 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Condition;
 
 use DigitalMarketingFramework\Core\DataProcessor\Condition\OrCondition;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class OrConditionTest extends ConditionTest
+class OrConditionTest extends ConditionTestBase
 {
     protected const CLASS_NAME = OrCondition::class;
 
@@ -13,7 +15,7 @@ class OrConditionTest extends ConditionTest
     /**
      * @return array<array{0:bool,1:array<array<string,mixed>>,2:array<mixed>}>
      */
-    public function orDataProvider(): array
+    public static function orDataProvider(): array
     {
         return [
             [true, [], []],
@@ -40,18 +42,14 @@ class OrConditionTest extends ConditionTest
     /**
      * @param array<array<string,mixed>> $subConfigList
      * @param array<mixed> $subResults
-     *
-     * @test
-     *
-     * @dataProvider orDataProvider
      */
+    #[Test]
+    #[DataProvider('orDataProvider')]
     public function or(bool $expectedResult, array $subConfigList, array $subResults): void
     {
-        $with = array_map(static function (array $subConfigItem) {
-            return [$subConfigItem];
-        }, $subConfigList);
+        $with = array_map(static fn (array $subConfigItem) => [$subConfigItem], $subConfigList);
         if ($subConfigList !== []) {
-            $this->dataProcessor->expects($this->exactly(count($subConfigList)))->method('processCondition')->withConsecutive(...$with)->willReturn(...$subResults);
+            $this->withConsecutiveWillReturn($this->dataProcessor, 'processCondition', $with, $subResults, true);
         }
 
         $config = [

@@ -3,14 +3,15 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Condition;
 
 use DigitalMarketingFramework\Core\DataProcessor\Condition\NotCondition;
+use PHPUnit\Framework\Attributes\Test;
 
-class NotConditionTest extends ConditionTest
+class NotConditionTest extends ConditionTestBase
 {
     protected const CLASS_NAME = NotCondition::class;
 
     protected const KEYWORD = 'not';
 
-    /** @test */
+    #[Test]
     public function notTrue(): void
     {
         $config = [
@@ -21,7 +22,7 @@ class NotConditionTest extends ConditionTest
         $this->assertFalse($result);
     }
 
-    /** @test */
+    #[Test]
     public function notFalse(): void
     {
         $config = [

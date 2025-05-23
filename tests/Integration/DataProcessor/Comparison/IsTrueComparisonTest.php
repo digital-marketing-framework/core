@@ -2,13 +2,15 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\IsTrueComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\IsTrueComparison
- */
-class IsTrueComparisonTest extends ComparisonTest
+#[CoversClass(IsTrueComparison::class)]
+class IsTrueComparisonTest extends ComparisonTestBase
 {
     protected const KEYWORD = 'isTrue';
 
@@ -30,67 +32,67 @@ class IsTrueComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2?:?string}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field5'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field5'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field6'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field6'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field7'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field7'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field8'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field8'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field8'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field8'], 'field'),
                 'any',
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field8'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field8'], 'field'),
                 'all',
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field9'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field9'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field10'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field10'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field10'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field10'], 'field'),
                 'any',
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field10'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field10'], 'field'),
                 'all',
             ],
         ];
@@ -98,11 +100,9 @@ class IsTrueComparisonTest extends ComparisonTest
 
     /**
      * @param array<string,mixed> $firstOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function isTrueTest(bool $expectedResult, array $firstOperand, ?string $anyAll = null): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand, null, $anyAll);

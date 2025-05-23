@@ -25,7 +25,7 @@ class DefaultTemplateEngine implements TemplateEngineInterface
         TemplateEngineInterface::FORMAT_HTML => 'Template (HTML)',
     ];
 
-    public function render(array $config, array $data): string
+    public function render(array $config, array $data, bool $frontend = true): string
     {
         $template = $config[static::KEY_TEMPLATE];
         $result = GeneralUtility::parseSeparatorString($template);

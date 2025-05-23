@@ -4,8 +4,10 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\IndexValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\ValueModifier;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class IndexValueModifierTest extends ValueModifierTest
+class IndexValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'index';
 
@@ -26,16 +28,13 @@ class IndexValueModifierTest extends ValueModifierTest
     /**
      * @return array<array{0:mixed,1:string,2:string}>
      */
-    public function errorValuesDataProvider(): array
+    public static function errorValuesDataProvider(): array
     {
         return static::MODIFY_ERROR_TEST_CASES;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider errorValuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('errorValuesDataProvider')]
     public function errorValues(mixed $value, string $index, string $message): void
     {
         $this->expectExceptionMessage($message);
@@ -45,7 +44,7 @@ class IndexValueModifierTest extends ValueModifierTest
         ], $this->convertMultiValues($value));
     }
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }
