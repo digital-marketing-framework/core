@@ -130,6 +130,7 @@ abstract class ListSectionController extends SectionController
     /**
      * @param array<string,mixed> $filters
      * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     *
      * @return array<ItemInterface>
      */
     abstract protected function fetchFiltered(array $filters, array $navigation): array;
