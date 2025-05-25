@@ -16,7 +16,7 @@ class MapUtility extends AbstractListUtility
      */
     public static function getItemKey(array $item): string
     {
-        return $item[static::KEY_KEY];
+        return $item[self::KEY_KEY];
     }
 
     /**
@@ -33,8 +33,8 @@ class MapUtility extends AbstractListUtility
         $result = [];
         foreach ($list as $item) {
             /** @var string */
-            $key = $item[static::KEY_KEY];
-            $result[$key] = $item[static::KEY_VALUE];
+            $key = $item[self::KEY_KEY];
+            $result[$key] = $item[self::KEY_VALUE];
         }
 
         return $result;
@@ -47,10 +47,10 @@ class MapUtility extends AbstractListUtility
     {
         /** @var array{uuid:string,weight:int,key:string,value:mixed} */
         return [
-            static::KEY_UID => $id !== '' ? $id : ConfigurationUtility::generateUuid(),
-            static::KEY_WEIGHT => $weight,
-            static::KEY_KEY => $key,
-            static::KEY_VALUE => $value,
+            self::KEY_UID => $id !== '' ? $id : ConfigurationUtility::generateUuid(),
+            self::KEY_WEIGHT => $weight,
+            self::KEY_KEY => $key,
+            self::KEY_VALUE => $value,
         ];
     }
 
@@ -65,8 +65,8 @@ class MapUtility extends AbstractListUtility
         $ids = [];
         foreach ($values as $key => $value) {
             $item = static::createItem($value, $key);
-            $list[$item[static::KEY_UID]] = $item;
-            $ids[] = $item[static::KEY_UID];
+            $list[$item[self::KEY_UID]] = $item;
+            $ids[] = $item[self::KEY_UID];
         }
 
         return $ids;
@@ -178,7 +178,7 @@ class MapUtility extends AbstractListUtility
     {
         parent::validate($list, $attributeCount);
         foreach ($list as $id => $item) {
-            if (!isset($item[static::KEY_KEY])) {
+            if (!isset($item[self::KEY_KEY])) {
                 throw new DigitalMarketingFrameworkException(sprintf('%s item "%s" does not have a key attribute', static::containerName(), $id));
             }
         }

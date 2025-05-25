@@ -2,16 +2,17 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Condition;
 
+use DigitalMarketingFramework\Core\DataProcessor\Condition\ComparisonCondition;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\Condition\ComparisonCondition
- */
-class ComparisonConditionTest extends ConditionTest
+#[CoversClass(ComparisonCondition::class)]
+class ComparisonConditionTest extends ConditionTestBase
 {
     protected const KEYWORD = 'comparison';
 
-    /** @test */
+    #[Test]
     public function comparisonTrue(): void
     {
         $config = $this->getComparisonConfiguration(
@@ -24,7 +25,7 @@ class ComparisonConditionTest extends ConditionTest
         $this->assertTrue($result);
     }
 
-    /** @test */
+    #[Test]
     public function comparisonFalse(): void
     {
         $config = $this->getComparisonConfiguration(

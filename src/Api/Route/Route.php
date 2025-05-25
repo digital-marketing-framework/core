@@ -46,9 +46,7 @@ abstract class Route implements RouteInterface
         }
 
         if ($this->formats !== []) {
-            $result['hints']['formats'] = array_map(static function ($formatConfig) {
-                return $formatConfig === [] ? (object)[] : $formatConfig;
-            }, $this->formats);
+            $result['hints']['formats'] = array_map(static fn ($formatConfig) => $formatConfig === [] ? (object)[] : $formatConfig, $this->formats);
         }
 
         return $result;

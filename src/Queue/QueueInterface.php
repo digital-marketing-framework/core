@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Queue;
 
 use DateTime;
+use DigitalMarketingFramework\Core\Model\Queue\Error;
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
 
 interface QueueInterface
@@ -16,6 +17,13 @@ interface QueueInterface
     public const STATUS_DONE = 3;
 
     public const STATUS_FAILED = 4;
+
+    /**
+     * @param array<int> $ids
+     *
+     * @return array<JobInterface>
+     */
+    public function fetchByIdList(array $ids): array;
 
     /**
      * @param array<int> $status
@@ -109,7 +117,7 @@ interface QueueInterface
      * @param array{minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime} $filters
      * @param array{sorting:array<string,string>} $navigation
      *
-     * @return array<array{message:string,count:int,lastSeen:JobInterface,firstSeen:JobInterface,types:array<string,int>}>
+     * @return array<Error>
      */
     public function getErrorMessages(array $filters, array $navigation): array;
 

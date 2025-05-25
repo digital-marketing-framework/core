@@ -30,9 +30,7 @@ class OrCondition extends Condition
      */
     protected function getConfig(): array
     {
-        return array_map(static function (Condition $condition) {
-            return $condition->toArray();
-        }, $this->subConditions);
+        return array_map(static fn (Condition $condition) => $condition->toArray(), $this->subConditions);
     }
 
     // public function evaluate(SchemaDocument $schemaDocument): bool

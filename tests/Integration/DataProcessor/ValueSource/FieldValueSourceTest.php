@@ -3,15 +3,15 @@
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource
- */
-class FieldValueSourceTest extends ValueSourceTest
+#[CoversClass(FieldValueSource::class)]
+class FieldValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'field';
 
-    /** @test */
+    #[Test]
     public function emptyConfigurationThrowsException(): void
     {
         $this->data['field1'] = 'value1';
@@ -20,7 +20,7 @@ class FieldValueSourceTest extends ValueSourceTest
         $this->processValueSource($config);
     }
 
-    /** @test */
+    #[Test]
     public function nonExistentFieldWillReturnNull(): void
     {
         $this->data['field1'] = 'value1';
@@ -31,7 +31,7 @@ class FieldValueSourceTest extends ValueSourceTest
         $this->assertNull($output);
     }
 
-    /** @test */
+    #[Test]
     public function existentFieldWillReturnItsValue(): void
     {
         $this->data['field1'] = 'value1';

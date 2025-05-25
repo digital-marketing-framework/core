@@ -2,13 +2,15 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\ExistsComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\ExistsComparison
- */
-class ExistsComparisonTest extends ComparisonTest
+#[CoversClass(ExistsComparison::class)]
+class ExistsComparisonTest extends ComparisonTestBase
 {
     protected const KEYWORD = 'exists';
 
@@ -24,39 +26,37 @@ class ExistsComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field2'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field5'], 'field'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field5'], 'field'),
             ],
         ];
     }
 
     /**
      * @param array<string,mixed> $firstOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function exists(bool $expectedResult, array $firstOperand): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand);

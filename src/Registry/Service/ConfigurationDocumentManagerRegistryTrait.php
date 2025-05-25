@@ -48,10 +48,10 @@ trait ConfigurationDocumentManagerRegistryTrait
         return $this->staticConfigurationDocumentStorage;
     }
 
-    public function setStaticConfigurationDocumentStorage(?ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void
+    public function setStaticConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void
     {
         $this->staticConfigurationDocumentStorage = $staticConfigurationDocumentStorage;
-        $this->staticConfigurationDocumentStorage?->initializeConfigurationDocumentStorage();
+        $this->staticConfigurationDocumentStorage->initializeConfigurationDocumentStorage();
     }
 
     public function getConfigurationDocumentParser(): ConfigurationDocumentParserInterface
@@ -111,8 +111,8 @@ trait ConfigurationDocumentManagerRegistryTrait
         foreach ($documentIdentifiers as $documentIdentifier) {
             $metaData = $configurationDocumentManager->getDocumentInformation($documentIdentifier);
             $label = '[' . $documentIdentifier . ']';
-            if ($metaData['name'] !== $documentIdentifier) {
-                $label = $metaData['name'] . ' ' . $label;
+            if ($metaData->getName() !== $documentIdentifier) {
+                $label = $metaData->getName() . ' ' . $label;
             }
 
             $includes[$documentIdentifier] = $label;

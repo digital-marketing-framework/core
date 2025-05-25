@@ -91,21 +91,17 @@ abstract class Schema implements SchemaInterface
         }
 
         if ($this->strictValidations !== []) {
-            $config['strictValidations'] = array_map(static function (array $validation) {
-                return [
-                    'condition' => $validation['condition']->toArray(),
-                    'message' => $validation['message'],
-                ];
-            }, $this->strictValidations);
+            $config['strictValidations'] = array_map(static fn (array $validation) => [
+                'condition' => $validation['condition']->toArray(),
+                'message' => $validation['message'],
+            ], $this->strictValidations);
         }
 
         if ($this->validations !== []) {
-            $config['validations'] = array_map(static function (array $validation) {
-                return [
-                    'condition' => $validation['condition']->toArray(),
-                    'message' => $validation['message'],
-                ];
-            }, $this->validations);
+            $config['validations'] = array_map(static fn (array $validation) => [
+                'condition' => $validation['condition']->toArray(),
+                'message' => $validation['message'],
+            ], $this->validations);
         }
 
         return $config;

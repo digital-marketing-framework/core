@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\TrimValueModifier;
 
-class TrimValueModifierTest extends ValueModifierTest
+class TrimValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'trim';
 
@@ -27,7 +27,7 @@ class TrimValueModifierTest extends ValueModifierTest
         [[['', ' ', ' value3 ', 'value4']], [['', '', 'value3', 'value4']]],
     ];
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

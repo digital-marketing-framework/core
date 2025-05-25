@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\Context;
 
 use BadMethodCallException;
 use DigitalMarketingFramework\Core\Context\RequestContext;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +14,7 @@ class RequestContextTest extends TestCase
 {
     protected RequestContext $subject;
 
-    /** @test */
+    #[Test]
     public function toArray(): never
     {
         $this->subject = new RequestContext();
@@ -21,7 +22,7 @@ class RequestContextTest extends TestCase
         $this->subject->toArray();
     }
 
-    /** @test */
+    #[Test]
     public function setOffset(): void
     {
         $this->subject = new RequestContext();

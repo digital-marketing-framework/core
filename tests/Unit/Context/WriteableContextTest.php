@@ -4,6 +4,8 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\Context;
 
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContext;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -37,11 +39,9 @@ class WriteableContextTest extends TestCase
 
     /**
      * @param array<string,mixed> $values
-     *
-     * @dataProvider toArrayProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('toArrayProvider')]
     public function toArray(array $values): void
     {
         $this->subject = new WriteableContext($values);
@@ -49,7 +49,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals($values, $result);
     }
 
-    /** @test */
+    #[Test]
     public function automaticTimestamp(): void
     {
         $this->subject = new WriteableContext();
@@ -57,7 +57,7 @@ class WriteableContextTest extends TestCase
         $this->assertNotNull($timestamp);
     }
 
-    /** @test */
+    #[Test]
     public function setGetOffset(): void
     {
         $this->subject = new WriteableContext();
@@ -67,7 +67,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals('value2.1', $this->subject['key2']['key2.1']);
     }
 
-    /** @test */
+    #[Test]
     public function setCookie(): void
     {
         $this->subject = new WriteableContext();
@@ -78,7 +78,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals([ContextInterface::KEY_COOKIES => ['key1' => 'value1'], 'timestamp' => 1716453484], $result);
     }
 
-    /** @test */
+    #[Test]
     public function getCookie(): void
     {
         $this->subject = new WriteableContext();
@@ -87,7 +87,7 @@ class WriteableContextTest extends TestCase
         $this->assertNull($this->subject->getCookie('key2'));
     }
 
-    /** @test */
+    #[Test]
     public function getCookies(): void
     {
         $this->subject = new WriteableContext();
@@ -95,7 +95,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals(['key1' => 'value1'], $this->subject->getCookies());
     }
 
-    /** @test */
+    #[Test]
     public function setRequestVariable(): void
     {
         $this->subject = new WriteableContext();
@@ -106,7 +106,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals([ContextInterface::KEY_REQUEST_VARIABLES => ['key1' => 'value1'], 'timestamp' => 1716453485], $result);
     }
 
-    /** @test */
+    #[Test]
     public function getRequestVariable(): void
     {
         $this->subject = new WriteableContext();
@@ -115,7 +115,7 @@ class WriteableContextTest extends TestCase
         $this->assertNull($this->subject->getRequestVariable('key2'));
     }
 
-    /** @test */
+    #[Test]
     public function getRequestVariables(): void
     {
         $this->subject = new WriteableContext();
@@ -123,7 +123,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals(['key1' => 'value1'], $this->subject->getRequestVariables());
     }
 
-    /** @test */
+    #[Test]
     public function copyCookieFromContext(): void
     {
         $this->subject = new WriteableContext();
@@ -137,7 +137,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals('value1', $this->subject[ContextInterface::KEY_COOKIES]['name1']);
     }
 
-    /** @test */
+    #[Test]
     public function copyNonExistentCookieFromContext(): void
     {
         $this->subject = new WriteableContext();
@@ -151,7 +151,7 @@ class WriteableContextTest extends TestCase
         $this->assertFalse(isset($this->subject[ContextInterface::KEY_COOKIES]));
     }
 
-    /** @test */
+    #[Test]
     public function copyRequestVariableFromContext(): void
     {
         $this->subject = new WriteableContext();
@@ -165,7 +165,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals('value1', $this->subject[ContextInterface::KEY_REQUEST_VARIABLES]['name1']);
     }
 
-    /** @test */
+    #[Test]
     public function copyNonExistentRequestVariableFromContext(): void
     {
         $this->subject = new WriteableContext();
@@ -179,7 +179,7 @@ class WriteableContextTest extends TestCase
         $this->assertFalse(isset($this->subject[ContextInterface::KEY_REQUEST_VARIABLES]));
     }
 
-    /** @test */
+    #[Test]
     public function copyIpAddressFromContext(): void
     {
         $this->subject = new WriteableContext();
@@ -193,7 +193,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals('value1', $this->subject[ContextInterface::KEY_IP_ADDRESS]);
     }
 
-    /** @test */
+    #[Test]
     public function copyInvalidIpAddressFromContext(): void
     {
         $this->subject = new WriteableContext();
@@ -207,7 +207,7 @@ class WriteableContextTest extends TestCase
         $this->assertFalse(isset($this->subject[ContextInterface::KEY_IP_ADDRESS]));
     }
 
-    /** @test */
+    #[Test]
     public function copyTimestampFromContext(): void
     {
         $this->subject = new WriteableContext();
@@ -221,7 +221,7 @@ class WriteableContextTest extends TestCase
         $this->assertEquals(41, $this->subject[ContextInterface::KEY_TIMESTAMP]);
     }
 
-    /** @test */
+    #[Test]
     public function copyInvalidTimestampFromContextWillNotOverrideOwnTimestamp(): void
     {
         $this->subject = new WriteableContext();

@@ -1,0 +1,9 @@
+<span class="btn btn-default" data-collapse-trigger="{{ name }}">
+    <span data-collapse-icon="closed" {% if initiallyOpen %}style="display:none;"{% endif %}>
+        {{ include('t3-icon.html.twig', {name:'chevron-down'}) }}
+    </span>
+    <span data-collapse-icon="open" {% if not initiallyOpen %}style="display:none;"{% endif %}>
+        {{ include('t3-icon.html.twig', {name:'chevron-up'}) }}
+    </span>
+    {% block label %}{{ label }}{% endblock %}
+</span>

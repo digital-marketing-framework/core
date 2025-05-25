@@ -15,12 +15,14 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareI
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\AlertRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Plugin\BackendControllerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\NotificationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\SchemaProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ApiRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\AssetServiceRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\BackendTemplatingRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryTrait;
@@ -67,6 +69,8 @@ class Registry implements RegistryInterface
     use IdentifierCollectorRegistryTrait;
 
     use ApiRegistryTrait;
+    use BackendTemplatingRegistryTrait;
+    use BackendControllerRegistryTrait;
 
     protected RegistryCollectionInterface $registryCollection;
 

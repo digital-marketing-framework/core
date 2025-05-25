@@ -3,8 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Comparison;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\ExistsComparison;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class ExistsComparisonTest extends ComparisonTest
+class ExistsComparisonTest extends ComparisonTestBase
 {
     protected const CLASS_NAME = ExistsComparison::class;
 
@@ -13,7 +15,7 @@ class ExistsComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2:mixed}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
@@ -41,11 +43,9 @@ class ExistsComparisonTest extends ComparisonTest
 
     /**
      * @param array<string,mixed> $firstOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function exists(bool $expectedResult, array $firstOperand, mixed $firstOperandResult): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand, $firstOperandResult);

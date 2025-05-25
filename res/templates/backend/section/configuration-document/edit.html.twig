@@ -1,0 +1,20 @@
+{% extends "module.html.twig" %}
+
+{% block section %}
+    {% set config = {
+        ready: true,
+        mode: 'embedded',
+        readonly: document.readonly,
+        globalDocument: true,
+        includes: true,
+        debug: debug ?? false
+    } %}
+    {{ include('configuration-editor/editor-setup.html.twig', {
+        documentType: 'configuration-document',
+        returnUri: uri('page.configuration-document.list'),
+        title: document.name,
+        document: document.content,
+        documentIdentifier: document.id,
+        config
+    }) }}
+{% endblock %}

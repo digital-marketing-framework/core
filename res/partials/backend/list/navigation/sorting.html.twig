@@ -1,0 +1,36 @@
+{% set sortDirectionLabelMap = {
+    '': 'None',
+    'ASC': 'Ascending',
+    'DESC': 'Descending'
+} %}
+<div class="form-row justify-content-between">
+    <div class="form-group">
+        <div class="input-group" data-movable-list="true">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="btn btn-default disabled" style="min-width:8rem">sorting</span>
+                </div>
+            </div>
+            {% for attribute,sortingValue in navigation.sorting %}
+                <div class="form-group mx-2" data-movable-item="{{ loop.index0 }}">
+                    <div class="input-group">
+                        <button type="button" class="btn btn-default" data-move="up">
+                            {{ include('t3-icon.html.twig', {name:'caret-left',class:'move-left'}) }}
+                        </button>
+                        <span class="btn btn-default disabled">{{ attribute }}</span>
+                        <select class="form-select" name="navigation[sorting][{{ attribute }}]">
+                            {% for sortDirection in navigationBounds.sortDirection %}
+                                <option value="{{ sortDirection }}" {% if sortingValue == sortDirection %}selected="selected"{% endif %}>
+                                    {{ sortDirectionLabelMap[sortDirection] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" class="btn btn-default" data-move="down">
+                            {{ include('t3-icon.html.twig', {name:'caret-right',class:'move-right'}) }}
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

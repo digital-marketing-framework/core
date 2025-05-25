@@ -6,18 +6,19 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\BooleanValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\BooleanValueSource
- */
-class BooleanValueSourceTest extends ValueSourceTest
+#[CoversClass(BooleanValueSource::class)]
+class BooleanValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'boolean';
 
     /**
      * @return array<array<mixed>>
      */
-    public function valuesDataProvider(): array
+    public static function valuesDataProvider(): array
     {
         return [
             [null, null],
@@ -33,11 +34,8 @@ class BooleanValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider valuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('valuesDataProvider')]
     public function booleanValue(mixed $value, ?bool $expectedResult, mixed $true = null, mixed $false = null): void
     {
         $this->data['field1'] = $value;

@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\JoinValueModifier;
 
-class JoinValueModifierTest extends ValueModifierTest
+class JoinValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'join';
 
@@ -26,7 +26,7 @@ class JoinValueModifierTest extends ValueModifierTest
         [['a', ['ba', 'bb'], 'c'], 'a;ba,bb;c', [JoinValueModifier::KEY_GLUE => ';']],
     ];
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

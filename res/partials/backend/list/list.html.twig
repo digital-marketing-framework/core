@@ -1,0 +1,224 @@
+{% if create %}
+    {% block createItem %}
+        {% embed 'list/create.html.twig' %}{% endembed %}
+    {% endblock %}
+{% endif %}
+
+<form method="post" action="{{ uri(route ~ '.' ~ (listAction ?? 'list')) }}" data-form-type="list">
+
+    {% set useFilters = useFilters and filterNames|length > 0 %}
+    {% set showPagination = usePagination and navigationBounds.numberOfPages > 1 %}
+    {% set useSorting = useSorting and navigation.sorting|length > 0 %}
+    {% set useBulkActions = useBulkActions and list|length > 0 %}
+    {% set returnUrl = returnUrl ?? permanentUri %}
+
+    {% if useFilters or usePagination or useSorting %}
+        {% if useFilters %}
+            {% block filters %}
+                <h3>{{ include('collapse/trigger.html.twig', { name:'filters', label:'Filters' }) }}</h3>
+                {% embed 'collapse/target.html.twig' with { name: 'filters' } %}
+                    {% block content %}
+                        <input type="hidden" name="returnUrl" value="{{ returnUrl }}" />
+                        {% for filter in filterNames %}
+                            {{ include('list/filters/' ~ filter ~ '.html.twig', {filters,filterBounds}) }}
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% endblock %}
+        {% endif %}
+
+        {% if usePagination or useSorting %}
+            {% block navigation %}
+                <h3>{{ include('collapse/trigger.html.twig', { name: 'navigation', label: 'Navigation' }) }}</h3>
+                {% embed 'collapse/target.html.twig' with { name: 'navigation' } %}
+                    {% block content %}
+                        {% if usePagination %}
+                            {{ include('list/navigation/pagination-filter.html.twig', {navigation,navigationBounds}) }}
+                        {% endif %}
+
+                        {% if useSorting %}
+                            {{ include('list/navigation/sorting.html.twig', {navigation,navigationBounds}) }}
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+            {% endblock %}
+        {% endif %}
+
+        {% block updateActions %}
+            {% set additionalActions = useFilters ? true : false %}
+            {{ include('list/update-view.html.twig', {listAction,additionalActions,resetUri,permanentUri}) }}
+        {% endblock %}
+    {% endif %}
+
+    {% block listStatistics %}
+        <h3>
+            {{ listLabel ?? 'Results' }}
+            {% if navigationBounds.numberOfPages > 1 %}
+                {% set minItems = navigation.page * navigation.itemsPerPage + 1 %}
+                {% set maxItems = navigation.page * navigation.itemsPerPage + navigation.itemsPerPage %}
+                {# [page: {{ navigation.page + 1 }} / {{ navigationBounds.numberOfPages }}] #}
+                [{{ minItems }} - {% if maxItems > navigationBounds.numberOfItems %}{{ navigationBounds.numberOfItems }}{% else %}{{ maxItems }}{% endif %}]
+            {% endif %}
+            [total: {{ navigationBounds.numberOfItems }}]
+        </h3>
+    {% endblock %}
+
+    {% block listActions %}
+        <div class="form-row justify-content-between my-3">
+            <div class="form-group">
+                <div class="input-group">
+
+                    {% if useBulkActions %}
+                        {% block listBulkActions %}
+                            <div class="form-row justify-content-between">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="btn btn-default disabled" style="min-width:8rem">bulk actions</span>
+
+                                        {% block listBulkActionsCustom %}{% endblock %}
+
+                                        {% block listBulkActionsDelete %}
+                                            <button type="submit" title="delete" name="action" value="delete" class="btn btn-default" disabled="disabled" data-action-type="bulk" data-confirm="Do you want to delete the selected records?">
+                                                {{ include('t3-icon.html.twig', {name:'delete', class:'edit-delete'}) }}
+                                            </button>
+                                        {% endblock %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endblock %}
+
+                        <span class="mx-2"></span>
+                    {% endif %}
+
+                    {% block listPaginationActions %}
+                        {% if showPagination %}
+                            <div class="form-row justify-content-between">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="btn btn-default disabled" style="min-width: 8rem">page</span>
+                                        {% for index in navigationBounds.pages %}
+                                            {% if index == '...' %}
+                                                <span class="btn btn-default disabled">...</span>
+                                            {% else %}
+                                                <a href="{{ uri(route ~ '.' ~ current, {filters,navigation,page:index}) }}" class="btn btn-default{% if navigation.page == index %} active{% endif %}">
+                                                    {{ index + 1 }}
+                                                </a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% if list|length == 0 %}
+        {% block noResults %}
+            <p>{{ noResultsText ?? 'No records found.' }}</p>
+        {% endblock %}
+    {% else %}
+        {% block table %}
+            <div class="table-fit">
+                <table class="table table-striped table-hover">
+                    <tr>
+                        {% block tableHead %}
+                            {% if useBulkActions %}
+                                {% block tableHeadSelect %}
+                                    <th class="col-checkbox nowrap">
+                                        <span class="form-check form-check-type-toggle">
+                                            <input type="checkbox" class="form-check-input" data-input-type="select" />
+                                        </span>
+                                    </th>
+                                {% endblock %}
+                            {% endif %}
+
+                            {% if icon %}
+                                {% block tableHeadIcon %}
+                                    <th></th>
+                                {% endblock %}
+                            {% endif %}
+
+                            {% if showLabel %}
+                                {% block tableHeadLabel %}
+                                    <th>Label</th>
+                                {% endblock %}
+                            {% endif %}
+
+                            {% block tableHeadCustom %}{% endblock %}
+
+                            {% if useActions %}
+                                {% block tableHeadActions %}
+                                    <th>Actions</th>
+                                {% endblock %}
+                            {% endif %}
+                        {% endblock %}
+                    </tr>
+                    {% for item in list %}
+                        <tr>
+                            {% block tableRow %}
+                                {% if useBulkActions %}
+                                    {% block tableRowSelect %}
+                                        <td class="col-checkbox nowrap">
+                                            <span class="form-check form-check-type-toggle">
+                                                <input type="checkbox" name="list[{{ item.id }}]" value="{{ item.id }}" class="form-check-input" data-input-type="select" />
+                                            </span>
+                                        </td>
+                                    {% endblock %}
+                                {% endif %}
+
+                                {% if icon %}
+                                    {% block tableRowIcon %}
+                                        <td class="col-icon">{{ include('t3-icon.html.twig', icon) }}</td>
+                                    {% endblock %}
+                                {% endif %}
+
+                                {% if showLabel %}
+                                    {% block tableRowLabel %}
+                                        <td class="{{ labelClass ?? 'col-title' }}">
+                                            {% if linkLabelAction %}
+                                                <a href="{{ uri(route ~ '.' ~ linkLabelAction, {id:item.id, returnUrl}) }}">
+                                                    {{ item.label }}
+                                                </a>
+                                            {% else %}
+                                                {{ item.label }}
+                                            {% endif %}
+                                        </td>
+                                    {% endblock %}
+                                {% endif %}
+
+                                {% block tableRowCustom %}{% endblock %}
+
+                                {% if useActions %}
+                                    {% block tableRowActions %}
+                                        <td class="{{ actionsClass ?? 'col-control' }}">
+                                            {% set args = {list:{(item.id):item.id}, returnUrl} %}
+
+                                            {% block tableRowActionsEdit %}
+                                                <a href="{{ uri(route ~ '.edit', {id:item.id, returnUrl}) }}" class="btn btn-default" title="edit">
+                                                    {{ include('t3-icon.html.twig', {name:'open'}) }}
+                                                </a>
+                                            {% endblock %}
+
+                                            {% block tableRowActionsCustom %}{% endblock %}
+
+                                            {% block tableRowActionsDelete %}
+                                                <a href="{{ uri(route ~'.delete', args) }}" class="btn btn-default" title="delete" data-confirm="Do you want to delete this record?">
+                                                    {{ include('t3-icon.html.twig', {name:'delete', class:'edit-delete'}) }}
+                                                </a>
+                                            {% endblock %}
+                                        </td>
+                                    {% endblock %}
+                                {% endif %}
+                            {% endblock %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {{ block('listActions') }}
+</form>

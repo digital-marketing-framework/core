@@ -1,0 +1,19 @@
+{% set classMap = {0:'success', 1:'warning', 2:'danger'} %}
+{% set iconMap = {0:'check', 1:'exclamation', 2:'close'} %}
+{% set class = classMap[alert.type] %}
+{% set icon = iconMap[alert.type] %}
+<div class="callout callout-{{ class }}">
+    <div class="media">
+        <div class="media-left">
+            <span class="icon-emphasized">
+                {{ include('t3-icon.html.twig', {name:icon}) }}
+            </span>
+        </div>
+        <div class="media-body">
+            <div class="callout-title">{{ alert.title }}</div>
+            <div class="callout-body">
+                {{ alert.content }}
+            </div>
+        </div>
+    </div>
+</div>
