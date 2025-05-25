@@ -1,7 +1,11 @@
-<span class="icon icon-size-{{ size ?? 'small' }} icon-state-default icon-actions-{{ class ?? name }}">
+<span class="icon icon-size-{{ size ?? 'small' }} {% if name %}icon-state-default icon-actions-{{ class ?? name }}{% endif %}">
     <span class="icon-markup">
-        <svg class="icon-color">
-            <use xlink:href="{{ asset('EXT:core/Resources/Public/Icons/T3Icons/sprites/actions.svg') }}#actions-{{ name }}"></use>
-        </svg>
+        {% if path %}
+            <img src="{{ asset(path) }}" class="icon-color" alt="{{ name }}"/>
+        {% else %}
+            <svg class="icon-color">
+                <use xlink:href="{{ asset('EXT:core/Resources/Public/Icons/T3Icons/sprites/actions.svg') }}#actions-{{ name }}"></use>
+            </svg>
+        {% endif %}
     </span>
 </span>

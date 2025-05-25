@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
+use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 interface ConfigurationDocumentManagerInterface
@@ -40,10 +41,7 @@ interface ConfigurationDocumentManagerInterface
 
     public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string;
 
-    /**
-     * @return array{id:string,shortId:string,name:string,readonly:bool,includes:array<string>}
-     */
-    public function getDocumentInformation(string $documentIdentifier): array;
+    public function getDocumentInformation(string $documentIdentifier): ConfigurationDocumentInformation;
 
     /**
      * @param array<string,mixed> $configuration

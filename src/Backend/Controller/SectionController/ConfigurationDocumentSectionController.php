@@ -8,7 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
-class ConfigurationDocumentSectionController extends SectionController implements ConfigurationDocumentManagerAwareInterface
+class ConfigurationDocumentSectionController extends ListSectionController implements ConfigurationDocumentManagerAwareInterface
 {
     use ConfigurationDocumentManagerAwareTrait;
 
@@ -26,14 +26,9 @@ class ConfigurationDocumentSectionController extends SectionController implement
         $this->schemaDocument = $registry->getRegistryCollection()->getConfigurationSchemaDocument();
     }
 
-    protected function getDocumentIdentifier(): string
-    {
-        return $this->getParameters()['documentIdentifier'] ?? '';
-    }
-
     protected function getDocumentName(): string
     {
-        return $this->getParameters()['documentName'] ?? '';
+        return $this->getParameters()['name'] ?? '';
     }
 
     protected function getDocument(): string
@@ -41,15 +36,32 @@ class ConfigurationDocumentSectionController extends SectionController implement
         return $this->getParameters()['document'] ?? '';
     }
 
-    protected function listAction(): Response
+    protected function getDocumentIdentifier(): string
     {
+        return $this->getParameters()['documentIdentifier'] ?? '';
+    }
+
+    protected function fetchFilteredCount(array $filters): int
+    {
+        // TODO no filtering yet
+        return count($this->configurationDocumentManager->getDocumentIdentifiers());
+    }
+
+    protected function fetchFiltered(array $filters, array $navigation): array
+    {
+        // TODO no pagination or filtering yet
         $list = [];
         $documentIdentifiers = $this->configurationDocumentManager->getDocumentIdentifiers();
         foreach ($documentIdentifiers as $documentIdentifier) {
-            $list[$documentIdentifier] = $this->configurationDocumentManager->getDocumentInformation($documentIdentifier);
+            $list[] = $this->configurationDocumentManager->getDocumentInformation($documentIdentifier);
         }
 
-        $this->viewData['documents'] = $list;
+        return $list;
+    }
+
+    protected function listAction(): Response
+    {
+        $this->setUpListView();
 
         return $this->render();
     }
@@ -57,10 +69,10 @@ class ConfigurationDocumentSectionController extends SectionController implement
     protected function editAction(): Response
     {
         $this->addConfigurationEditorAssets();
-        $documentIdentifier = $this->getDocumentIdentifier();
+        $documentIdentifier = $this->getIdentifier();
 
         $document = $this->configurationDocumentManager->getDocumentInformation($documentIdentifier);
-        $document['content'] = $this->configurationDocumentManager->getDocumentFromIdentifier($documentIdentifier);
+        $document->setContent($this->configurationDocumentManager->getDocumentFromIdentifier($documentIdentifier));
         $this->viewData['document'] = $document;
 
         return $this->render();
@@ -72,7 +84,7 @@ class ConfigurationDocumentSectionController extends SectionController implement
         $document = $this->getDocument();
         $this->configurationDocumentManager->saveDocument($documentIdentifier, $document, $this->schemaDocument);
 
-        return $this->redirect('page.configuration-document.edit', ['documentIdentifier' => $documentIdentifier]);
+        return $this->redirect('page.configuration-document.edit', ['id' => $documentIdentifier]);
     }
 
     protected function createAction(): Response
@@ -81,13 +93,15 @@ class ConfigurationDocumentSectionController extends SectionController implement
         $documentIdentifier = $this->configurationDocumentManager->getDocumentIdentifierFromBaseName($documentName);
         $this->configurationDocumentManager->createDocument($documentIdentifier, '', $documentName, $this->schemaDocument);
 
-        return $this->redirect('page.configuration-document.edit', ['documentIdentifier' => $documentIdentifier]);
+        return $this->redirect('page.configuration-document.edit', ['id' => $documentIdentifier]);
     }
 
     protected function deleteAction(): Response
     {
-        $documentIdentifier = $this->getDocumentIdentifier();
-        $this->configurationDocumentManager->deleteDocument($documentIdentifier);
+        $ids = $this->getSelectedItems();
+        foreach ($ids as $id) {
+            $this->configurationDocumentManager->deleteDocument($id);
+        }
 
         return $this->redirect('page.configuration-document.list');
     }

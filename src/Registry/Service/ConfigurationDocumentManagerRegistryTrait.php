@@ -111,8 +111,8 @@ trait ConfigurationDocumentManagerRegistryTrait
         foreach ($documentIdentifiers as $documentIdentifier) {
             $metaData = $configurationDocumentManager->getDocumentInformation($documentIdentifier);
             $label = '[' . $documentIdentifier . ']';
-            if ($metaData['name'] !== $documentIdentifier) {
-                $label = $metaData['name'] . ' ' . $label;
+            if ($metaData->getName() !== $documentIdentifier) {
+                $label = $metaData->getName() . ' ' . $label;
             }
 
             $includes[$documentIdentifier] = $label;

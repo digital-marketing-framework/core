@@ -13,6 +13,7 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareI
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
+use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\ListUtility;
 
@@ -96,18 +97,18 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         return $this->storage->getDocumentIdentifierFromBaseName($baseName, $newFile);
     }
 
-    public function getDocumentInformation(string $documentIdentifier): array
+    public function getDocumentInformation(string $documentIdentifier): ConfigurationDocumentInformation
     {
         $storage = $this->getStorageForDocumentIdentifier($documentIdentifier);
         $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier, true);
 
-        return [
-            'id' => $documentIdentifier,
-            'shortId' => $storage->getShortIdentifier($documentIdentifier),
-            'name' => $this->getName($documentConfiguration) ?: $documentIdentifier,
-            'readonly' => $storage->isReadOnly($documentIdentifier),
-            'includes' => $this->getIncludes($documentConfiguration),
-        ];
+        return new ConfigurationDocumentInformation(
+            $documentIdentifier,
+            $storage->getShortIdentifier($documentIdentifier),
+            $this->getName($documentConfiguration) ?: $documentIdentifier,
+            $storage->isReadOnly($documentIdentifier),
+            $this->getIncludes($documentConfiguration)
+        );
     }
 
     /**

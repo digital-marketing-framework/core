@@ -2,8 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\Model\Api;
 
-interface EndPointInterface
+use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+
+interface EndPointInterface extends ItemInterface
 {
+    public function getId(): ?int;
+
+    public function setId(int $id): void;
+
     public function getName(): string;
 
     public function setName(string $name): void;

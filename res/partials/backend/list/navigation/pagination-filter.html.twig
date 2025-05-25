@@ -1,0 +1,21 @@
+{% set options = {
+    0: 'all',
+    2: 2,
+    5: 5,
+    10: 10,
+    20: 20,
+    50: 50,
+    100: 100
+} %}
+<div class="form-row justify-content-between">
+    <div class="form-group">
+        <div class="input-group">
+            <label for="itemsPerPage" class="btn btn-default disabled" style="min-width: 8rem">items per page</label>
+            <select id="itemsPerPage" name="navigation[itemsPerPage]" class="form-select">
+                {% for value,label in options %}
+                    <option value="{{ value }}"{% if navigation.itemsPerPage == value %}selected="selected"{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
