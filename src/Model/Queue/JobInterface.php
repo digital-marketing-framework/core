@@ -3,8 +3,9 @@
 namespace DigitalMarketingFramework\Core\Model\Queue;
 
 use DateTime;
+use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
 
-interface JobInterface
+interface JobInterface extends ItemInterface
 {
     public function getId(): ?int;
 
