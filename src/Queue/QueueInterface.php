@@ -115,7 +115,7 @@ interface QueueInterface
 
     /**
      * @param array{minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime} $filters
-     * @param array{sorting:array<string,string>} $navigation
+     * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
      *
      * @return array<Error>
      */
