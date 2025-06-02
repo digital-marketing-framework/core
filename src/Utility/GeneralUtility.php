@@ -269,6 +269,11 @@ final class GeneralUtility
         return preg_replace_callback('/(-[a-z0-9])/', static fn ($matches): string => strtoupper(substr($matches[0], 1)), $string);
     }
 
+    public static function underscoredToCamelCase(string $string): string
+    {
+        return preg_replace_callback('/(_[a-z0-9])/', static fn ($matches): string => strtoupper(substr($matches[0], 1)), $string);
+    }
+
     public static function maskValue(string $value): string
     {
         if (preg_match('/@/', $value)) {
