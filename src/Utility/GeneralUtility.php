@@ -83,7 +83,9 @@ final class GeneralUtility
         }
 
         if ($trim) {
-            $array = array_map('trim', $array);
+            $array = array_map(function($v) {
+                return is_string($v) ? trim($v) : $v;
+            }, $array);
         }
 
         return $array;
