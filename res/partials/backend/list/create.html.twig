@@ -1,0 +1,18 @@
+<form method="post" action="{{ uri(route ~ '.create') }}">
+    <div class="form-row justify-content-between">
+        <div class="form-group">
+            <input type="hidden" name="returnUrl" value="{{ returnUrl ?? permanentUri }}" />
+            <div class="input-group">
+                <span class="btn btn-default disabled" style="min-width:8rem">create</span>
+
+                {% block createItemInput %}
+                    <input type="text" name="name" required="required" placeholder="name" class="btn btn-default" autocomplete="off" data-1p-ignore/>
+                {% endblock %}
+
+                <button type="submit" class="btn btn-default">
+                    {{ include('t3-icon.html.twig', {name:'plus',class:'add'}) }}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

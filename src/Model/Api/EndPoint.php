@@ -4,16 +4,33 @@ namespace DigitalMarketingFramework\Core\Model\Api;
 
 class EndPoint implements EndPointInterface
 {
+    protected ?int $id = null;
+
     public function __construct(
         protected string $name,
-        protected bool $enabled,
-        protected bool $pushEnabled,
-        protected bool $pullEnabled,
-        protected bool $disableContext,
-        protected bool $allowContextOverride,
-        protected bool $exposeToFrontend,
-        protected string $configurationDocument,
+        protected bool $enabled = false,
+        protected bool $pushEnabled = false,
+        protected bool $pullEnabled = false,
+        protected bool $disableContext = false,
+        protected bool $allowContextOverride = false,
+        protected bool $exposeToFrontend = false,
+        protected string $configurationDocument = '',
     ) {
+    }
+
+    public function getLabel(): string
+    {
+        return $this->getName();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     public function getName(): string

@@ -6,6 +6,8 @@ use DateTime;
 use DigitalMarketingFramework\Core\Model\Queue\Job;
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
 use DigitalMarketingFramework\Core\Queue\QueueInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class JobTest extends TestCase
@@ -18,7 +20,7 @@ class JobTest extends TestCase
         $this->subject = new Job();
     }
 
-    /** @test */
+    #[Test]
     public function defaultValues(): void
     {
         // NOTE we can't really test the default values of the fields "created" and "changed"
@@ -28,7 +30,7 @@ class JobTest extends TestCase
         $this->assertEmpty($this->subject->getData());
     }
 
-    /** @test */
+    #[Test]
     public function setGetCreated(): void
     {
         $value = DateTime::createFromFormat('Y-m-d', '2013-05-23');
@@ -36,7 +38,7 @@ class JobTest extends TestCase
         $this->assertEquals($value, $this->subject->getCreated());
     }
 
-    /** @test */
+    #[Test]
     public function setGetChanged(): void
     {
         $value = DateTime::createFromFormat('Y-m-d', '2014-06-24');
@@ -47,7 +49,7 @@ class JobTest extends TestCase
     /**
      * @return array<array{0:int}>
      */
-    public function statusProvider(): array
+    public static function statusProvider(): array
     {
         return [
             [QueueInterface::STATUS_QUEUED],
@@ -58,32 +60,29 @@ class JobTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider statusProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('statusProvider')]
     public function setGetStatus(int $value): void
     {
         $this->subject->setStatus($value);
         $this->assertEquals($value, $this->subject->getStatus());
     }
 
-    /** @test */
+    #[Test]
     public function setGetSkippedTrue(): void
     {
         $this->subject->setSkipped(true);
         $this->assertTrue($this->subject->getSkipped());
     }
 
-    /** @test */
+    #[Test]
     public function setGetSkippedFalse(): void
     {
         $this->subject->setSkipped(false);
         $this->assertFalse($this->subject->getSkipped());
     }
 
-    /** @test */
+    #[Test]
     public function setGetStatusMessage(): void
     {
         $value = 'my status message';
@@ -91,14 +90,14 @@ class JobTest extends TestCase
         $this->assertEquals($value, $this->subject->getStatusMessage());
     }
 
-    /** @test */
+    #[Test]
     public function setGetEmptyStatusMessage(): void
     {
         $this->subject->setStatusMessage('');
         $this->assertEquals('', $this->subject->getStatusMessage());
     }
 
-    /** @test */
+    #[Test]
     public function setGetData(): void
     {
         $value = ['key1' => 'value1'];
@@ -106,7 +105,7 @@ class JobTest extends TestCase
         $this->assertEquals($value, $this->subject->getData());
     }
 
-    /** @test */
+    #[Test]
     public function setGetEmptyData(): void
     {
         $this->subject->setData([]);

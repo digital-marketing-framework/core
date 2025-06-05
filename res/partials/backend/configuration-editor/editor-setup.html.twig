@@ -1,0 +1,25 @@
+<p><em>Loading <strong>{{ title }} UI</strong>, this might take a few seconds...</em></p>
+
+<details>
+    <summary>Click to show raw text configuration below.<br>You can try editing the settings manually, useful when something goes terribly wrong:</summary>
+    <div style="padding-top: 1rem">
+        <form method="post" action="{{ uri('page.' ~ documentType ~ '.save') }}">
+            <div>
+                <p>
+                    <button class="btn btn-default btn-sm" value="save" title="Save" type="submit">
+                        Save
+                    </button>
+                    <a data-role="close" class="btn btn-default btn-sm" title="Close" href="{{ returnUri }}">
+                        Close
+                    </a>
+                </p>
+            </div>
+            <div>
+                {% if documentIdentifier %}<input type="hidden" name="documentIdentifier" value="{{ documentIdentifier }}" />{% endif %}
+                {{ include('configuration-editor/textarea.html.twig', { config, documentType, document }) }}
+            </div>
+        </form>
+    </div>
+</details>
+
+<div id="stage-container"></div>

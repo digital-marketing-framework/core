@@ -13,7 +13,7 @@ class YamlFileConfigurationDocumentStorage extends FileConfigurationDocumentStor
     {
         return parent::checkFileValidity($fileIdentifier)
             && in_array(
-                strtolower($this->fileStorage->getFileExtension($fileIdentifier)),
+                strtolower((string)$this->fileStorage->getFileExtension($fileIdentifier)),
                 ['yml', 'yaml'],
                 true
             );

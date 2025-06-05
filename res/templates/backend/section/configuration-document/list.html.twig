@@ -1,0 +1,40 @@
+{% extends "module.html.twig" %}
+
+{% block section %}
+    {% embed 'list/list.html.twig' with {
+        route: 'page.configuration-document',
+        icon: { path: 'PKG:digital-marketing-framework/core/res/assets/icons/record-configuration-document.svg' },
+        create: true,
+        useActions: true,
+        listLabel: 'Condiguration documents',
+        noResultsText: 'No configuration documents created yet.',
+        showLabel: true,
+        linkLabelAction: 'edit',
+        list
+    } %}
+
+        {% block tableHeadCustom %}
+            <th>Location</th>
+        {% endblock %}
+
+        {% block tableRowCustom %}
+            <td><code>{{ item.id }}</code></td>
+        {% endblock %}
+
+        {% block tableRowActionsEdit %}
+            {% set editKeyword = item.readonly ? 'file-view' : 'open' %}
+            {% set editIcon = actionIcons ~ '#actions-' ~ editKeyword %}
+            {% set editUrl = uri('page.configuration-document.edit', {id:item.id}) %}
+            {% set editTitle = item.readonly ? 'View this configuration document' : 'Edit this configuration document' %}
+            <a class="btn btn-default form-record-open" href="{{ editUrl }}" title="{{ editTitle }}">
+                {{ include('t3-icon.html.twig', { name: editKeyword }) }}
+            </a>
+        {% endblock %}
+
+        {% block tableRowActionsDelete %}
+            {% if not item.readonly %}
+                {{ parent() }}
+            {% endif %}
+        {% endblock  %}
+    {% endembed %}
+{% endblock %}

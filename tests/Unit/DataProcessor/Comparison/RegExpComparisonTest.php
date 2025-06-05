@@ -3,8 +3,10 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Comparison;
 
 use DigitalMarketingFramework\Core\DataProcessor\Comparison\RegExpComparison;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-class RegExpComparisonTest extends ComparisonTest
+class RegExpComparisonTest extends ComparisonTestBase
 {
     protected const CLASS_NAME = RegExpComparison::class;
 
@@ -13,7 +15,7 @@ class RegExpComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2:mixed,3?:?array<string,mixed>,4?:mixed,5?:?string}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
@@ -110,11 +112,9 @@ class RegExpComparisonTest extends ComparisonTest
     /**
      * @param array<string,mixed> $firstOperand
      * @param ?array<string,mixed> $secondOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function regExp(bool $expectedResult, array $firstOperand, mixed $firstOperandResult, ?array $secondOperand = null, mixed $secondOperandResult = null, ?string $anyAll = null): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand, $firstOperandResult, $secondOperand, $secondOperandResult, $anyAll);

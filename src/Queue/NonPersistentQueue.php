@@ -155,22 +155,48 @@ class NonPersistentQueue implements QueueInterface
         }
     }
 
+    protected function getNewId(): int
+    {
+        $highestId = null;
+        foreach (array_keys($this->queue) as $jobId) {
+            if ($highestId === null || $highestId < $jobId) {
+                $highestId = $jobId;
+            }
+        }
+
+        return $highestId + 1;
+    }
+
     public function addJob(JobInterface $job): JobInterface
     {
+        if ($job->getId() === null) {
+            $job->setId($this->getNewId());
+        }
+
         if (!in_array($job, $this->queue)) {
-            $this->queue[] = $job;
+            $this->queue[$job->getId()] = $job;
         }
 
         return $job;
+    }
+
+    public function fetchByIdList(array $ids): array
+    {
+        $result = [];
+        foreach ($ids as $id) {
+            if (isset($this->queue[$id])) {
+                $result[] = $this->queue[$id];
+            }
+        }
+
+        return $result;
     }
 
     public function removeJob(JobInterface $job): void
     {
         $this->queue = array_filter(
             $this->queue,
-            static function ($a) use ($job) {
-                return $a !== $job;
-            }
+            static fn ($a) => $a !== $job
         );
     }
 

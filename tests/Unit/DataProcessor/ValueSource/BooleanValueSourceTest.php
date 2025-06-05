@@ -5,11 +5,13 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\BooleanValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends ValueSourceTest<BooleanValueSource>
+ * @extends ValueSourceTestBase<BooleanValueSource>
  */
-class BooleanValueSourceTest extends ValueSourceTest
+class BooleanValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'boolean';
 
@@ -21,7 +23,7 @@ class BooleanValueSourceTest extends ValueSourceTest
         BooleanValueSource::KEY_FALSE => BooleanValueSource::DEFAULT_FALSE,
     ];
 
-    /** @test */
+    #[Test]
     public function emptyConfigurationReturnsNull(): void
     {
         $output = $this->processValueSource([]);
@@ -31,7 +33,7 @@ class BooleanValueSourceTest extends ValueSourceTest
     /**
      * @return array<array<mixed>>
      */
-    public function valuesDataProvider(): array
+    public static function valuesDataProvider(): array
     {
         return [
             [null, null],
@@ -47,11 +49,8 @@ class BooleanValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider valuesDataProvider
-     */
+    #[Test]
+    #[DataProvider('valuesDataProvider')]
     public function booleanValue(mixed $value, ?bool $expectedResult, mixed $true = null, mixed $false = null): void
     {
         $subConfig = ['subConfigKey' => 'subConfigValue'];

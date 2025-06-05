@@ -18,6 +18,7 @@ export const useDmfStore = defineStore('dmf', {
     // app state
     loaded: false,
     isOpen: false,
+    isSaving: false,
 
     // settings
     settings: {},
@@ -131,9 +132,10 @@ export const useDmfStore = defineStore('dmf', {
     async save() {
       // TODO purge switch elements > do not delete, but reset the config items that are not selected
       // TODO check if includes have changed, updateIncludes() if they have
+      this.isSaving = true;
       this.finish('/');
       await this.onSave(this.data);
-      // this.writeMessage('Document saved!');
+      this.isSaving = false;
     },
 
     // value

@@ -2,14 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\Comparison;
 
+use DigitalMarketingFramework\Core\DataProcessor\Comparison\EqualsComparison;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\Comparison\EqualsComparison
- */
-class EqualsComparisonTest extends ComparisonTest
+#[CoversClass(EqualsComparison::class)]
+class EqualsComparisonTest extends ComparisonTestBase
 {
     protected const KEYWORD = 'equals';
 
@@ -25,50 +27,50 @@ class EqualsComparisonTest extends ComparisonTest
     /**
      * @return array<array{0:bool,1:array<string,mixed>,2?:?array<string,mixed>,3?:?string}>
      */
-    public function comparisonDataProvider(): array
+    public static function comparisonDataProvider(): array
     {
         return [
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value1'], 'constant'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field1'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value2'], 'constant'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value3'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value3'], 'constant'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value7'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value7'], 'constant'),
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value4b'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value4b'], 'constant'),
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value4b'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value4b'], 'constant'),
                 'any',
             ],
             [
                 false,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value4b'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field4'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value4b'], 'constant'),
                 'all',
             ],
             [
                 true,
-                $this->getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
-                $this->getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value3'], 'constant'),
+                static::getValueConfiguration([FieldValueSource::KEY_FIELD_NAME => 'field3'], 'field'),
+                static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'value3'], 'constant'),
                 'all',
             ],
         ];
@@ -77,11 +79,9 @@ class EqualsComparisonTest extends ComparisonTest
     /**
      * @param array<string,mixed> $firstOperand
      * @param ?array<string,mixed> $secondOperand
-     *
-     * @test
-     *
-     * @dataProvider comparisonDataProvider
      */
+    #[Test]
+    #[DataProvider('comparisonDataProvider')]
     public function equals(bool $expectedResult, array $firstOperand, ?array $secondOperand = null, ?string $anyAll = null): void
     {
         $this->runComparisonTest($expectedResult, $firstOperand, $secondOperand, $anyAll);

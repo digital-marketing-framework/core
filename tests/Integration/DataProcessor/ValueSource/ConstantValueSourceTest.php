@@ -3,15 +3,15 @@
 namespace DigitalMarketingFramework\Core\Tests\Integration\DataProcessor\ValueSource;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource
- */
-class ConstantValueSourceTest extends ValueSourceTest
+#[CoversClass(ConstantValueSource::class)]
+class ConstantValueSourceTest extends ValueSourceTestBase
 {
     protected const KEYWORD = 'constant';
 
-    /** @test */
+    #[Test]
     public function emptyConfigurationReturnsEmptyString(): void
     {
         $config = $this->getValueSourceConfiguration([]);
@@ -19,7 +19,7 @@ class ConstantValueSourceTest extends ValueSourceTest
         $this->assertEquals('', $output);
     }
 
-    /** @test */
+    #[Test]
     public function configuredConstantValueWillBeUsed(): void
     {
         $config = $this->getValueSourceConfiguration([

@@ -10,12 +10,17 @@ use DigitalMarketingFramework\Core\Queue\QueueInterface;
 use DigitalMarketingFramework\Core\Queue\QueueProcessor;
 use DigitalMarketingFramework\Core\Queue\QueueProcessorInterface;
 use DigitalMarketingFramework\Core\Queue\WorkerInterface;
+use DigitalMarketingFramework\Core\Tests\TestUtilityTrait;
 use Exception;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class QueueProcessorTest extends TestCase
 {
+    use TestUtilityTrait;
+
     protected QueueProcessorInterface $subject;
 
     protected QueueInterface&MockObject $queue;
@@ -44,9 +49,9 @@ class QueueProcessorTest extends TestCase
     }
 
     /**
-     * @return array<array{0:string}>
+     * @return array<array{string}>
      */
-    public function processorMethodProvider(): array
+    public static function processorMethodProvider(): array
     {
         return [
             'processBatch' => ['processBatch'],
@@ -85,11 +90,8 @@ class QueueProcessorTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processEmpty(string $method): void
     {
         $this->jobs = [];
@@ -103,11 +105,8 @@ class QueueProcessorTest extends TestCase
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processJobThatSucceeds(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
@@ -125,11 +124,8 @@ class QueueProcessorTest extends TestCase
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processLessJobsThanRequested(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
@@ -147,11 +143,8 @@ class QueueProcessorTest extends TestCase
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processTwoJobsThatSucceed(string $method): void
     {
         $job1 = $this->createMock(JobInterface::class);
@@ -162,21 +155,21 @@ class QueueProcessorTest extends TestCase
         $this->prepareQueue($method);
 
         $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
-        $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
-        $this->worker->expects($this->exactly(2))->method('processJob')
-            ->withConsecutive([$job1], [$job2])
-            ->willReturn(true);
-        $this->queue->expects($this->exactly(2))->method('markAsDone')->withConsecutive([$job1, false], [$job2, false]);
+
+        $this->withConsecutiveWillReturn($this->queue, 'markAsRunning', [
+            [$job1],
+            [$job2],
+        ], checkCount: true);
+
+        $this->withConsecutiveWillReturn($this->worker, 'processJob', [[$job1], [$job2]], [true, true], true);
+        $this->withConsecutiveWillReturn($this->queue, 'markAsDone', [[$job1, false], [$job2, false]], checkCount: true);
         $this->queue->expects($this->never())->method('markAsFailed');
 
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processJobThatFails(string $method): void
     {
         $errorMessage = 'my error message';
@@ -195,11 +188,8 @@ class QueueProcessorTest extends TestCase
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processTwoJobsThatBothFail(string $method): void
     {
         $errorMessage = 'my error message';
@@ -211,24 +201,19 @@ class QueueProcessorTest extends TestCase
         $this->prepareQueue($method);
 
         $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
-        $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
-        $this->worker->expects($this->exactly(2))
-            ->method('processJob')
-            ->withConsecutive([$job1], [$job2])
-            ->willThrowException(new QueueException($errorMessage));
-        $this->queue->expects($this->exactly(2))
-            ->method('markAsFailed')
-            ->withConsecutive([$job1, $errorMessage], [$job2, $errorMessage]);
+        $this->withConsecutiveWillReturn($this->queue, 'markAsRunning', [[$job1], [$job2]], checkCount: true);
+
+        $exception = new QueueException($errorMessage);
+        $this->withConsecutiveWillReturn($this->worker, 'processJob', [[$job1], [$job2]], [$exception, $exception], true);
+
+        $this->withConsecutiveWillReturn($this->queue, 'markAsFailed', [[$job1, $errorMessage], [$job2, $errorMessage]], checkCount: true);
         $this->queue->expects($this->never())->method('markAsDone');
 
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processJobThrowsArbitraryException(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
@@ -248,11 +233,8 @@ class QueueProcessorTest extends TestCase
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processJobThatSucceedsButWasSkipped(string $method): void
     {
         $job = $this->createMock(JobInterface::class);
@@ -270,11 +252,8 @@ class QueueProcessorTest extends TestCase
         $this->executeProcessor($method);
     }
 
-    /**
-     * @dataProvider processorMethodProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('processorMethodProvider')]
     public function processTwoJobsOfWhichTheFirstFails(string $method): void
     {
         $errorMessage = 'my error message';
@@ -286,16 +265,9 @@ class QueueProcessorTest extends TestCase
         $this->prepareQueue($method);
 
         $this->queue->expects($this->once())->method('markListAsPending')->with($this->jobs);
-        $this->queue->expects($this->exactly(2))->method('markAsRunning')->withConsecutive([$job1], [$job2]);
-        $this->worker->expects($this->exactly(2))->method('processJob')
-            ->withConsecutive([$job1], [$job2])
-            ->willReturnCallback(static function ($job) use ($job1, $errorMessage): bool {
-                if ($job === $job1) {
-                    throw new QueueException($errorMessage);
-                }
 
-                return true;
-            });
+        $this->withConsecutiveWillReturn($this->queue, 'markAsRunning', [[$job1], [$job2]], checkCount: true);
+        $this->withConsecutiveWillReturn($this->worker, 'processJob', [[$job1], [$job2]], [new QueueException($errorMessage), true], true);
         $this->queue->expects($this->once())->method('markAsFailed')->with($job1, $errorMessage);
         $this->queue->expects($this->once())->method('markAsDone')->with($job2, false);
 

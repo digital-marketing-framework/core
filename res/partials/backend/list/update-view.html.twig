@@ -1,0 +1,22 @@
+<div class="my-4">
+    <button type="submit" name="action" value="{{ listAction }}" class="btn btn-primary">
+        {{ include('t3-icon.html.twig', {name:'refresh'}) }}
+        update view
+    </button>
+
+    {% if additionalActions %}
+        {% if resetUri %}
+            <a href="{{ resetUri }}" class="btn btn-default">
+                {{ include('t3-icon.html.twig', {name:'undo',class:'edit-undo'}) }}
+                reset view
+            </a>
+        {% endif %}
+
+        {% if permanentUri %}
+            <a href="{{ permanentUri }}" class="btn btn-default">
+                {{ include('t3-icon.html.twig', {name:'link'}) }}
+                perma-link to this view
+            </a>
+        {% endif %}
+    {% endif %}
+</div>

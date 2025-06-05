@@ -5,18 +5,24 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
+use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 interface ConfigurationDocumentManagerInterface
 {
+    /** @var string */
     public const KEY_META_DATA = 'metaData';
 
+    /** @var string */
     public const KEY_INCLUDES = 'includes';
 
+    /** @var string */
     public const KEY_DOCUMENT_NAME = 'name';
 
+    /** @var string */
     public const KEY_DOCUMENT_STRICT_VALIDATION = 'strictValidation';
 
+    /** @var string */
     public const KEY_DOCUMENT_VERSION = 'version';
 
     public function getStorage(): ConfigurationDocumentStorageInterface;
@@ -35,10 +41,7 @@ interface ConfigurationDocumentManagerInterface
 
     public function getDocumentIdentifierFromBaseName(string $baseName, bool $newFile = true): string;
 
-    /**
-     * @return array{id:string,shortId:string,name:string,readonly:bool,includes:array<string>}
-     */
-    public function getDocumentInformation(string $documentIdentifier): array;
+    public function getDocumentInformation(string $documentIdentifier): ConfigurationDocumentInformation;
 
     /**
      * @param array<string,mixed> $configuration

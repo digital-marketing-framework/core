@@ -1,0 +1,5 @@
+<div data-collapse="{{ name }}" {% if not initiallyOpen %}style="display:none;"{% endif %}>
+    {% block content %}
+        {{ content }}
+    {% endblock %}
+</div>

@@ -1,0 +1,5 @@
+<div>
+    {% for alert in alerts %}
+        {{ include('alert/alert.html.twig', {alert}) }}
+    {% endfor %}
+</div>

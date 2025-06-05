@@ -186,9 +186,7 @@ class RegistryCollection implements RegistryCollectionInterface
 
     public function getFrontendSettings(): array
     {
-        $frontendSettingsList = array_map(static function (RegistryInterface $registry) {
-            return $registry->getFrontendSettings();
-        }, $this->collection);
+        $frontendSettingsList = array_map(static fn (RegistryInterface $registry) => $registry->getFrontendSettings(), $this->collection);
 
         return ConfigurationUtility::mergeConfigurationStack($frontendSettingsList, excludeKeys: []);
     }

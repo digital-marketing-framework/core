@@ -3,9 +3,14 @@
 namespace DigitalMarketingFramework\Core\Model\Queue;
 
 use DateTime;
+use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
 
-interface JobInterface
+interface JobInterface extends ItemInterface
 {
+    public function getId(): ?int;
+
+    public function setId(int $id): void;
+
     public function getEnvironment(): string;
 
     public function setEnvironment(string $environment): void;

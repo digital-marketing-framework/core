@@ -1,0 +1,23 @@
+{% if navigationBounds.numberOfPages > 1 %}
+    {#<!--
+        this hidden field will make the filters remember the currently selected page
+        but we probably want to reset the page when the filters change
+        <input type="hidden" name="navigation[page]" value="{{ navigation.page }}" />
+    -->#}
+    <div class="form-row justify-content-between">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="btn btn-default disabled" style="min-width: 8rem">page</span>
+                {% for index in navigationBounds.pages %}
+                    {% if index == '...' %}
+                        <span class="btn btn-default disabled">...</span>
+                    {% else %}
+                        <a href="{{ uri(route ~ '.' ~ current, {filters,navigation,page:index}) }}" class="btn btn-default{% if navigation.page == index %} active{% endif %}">
+                            {{ index + 1 }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}

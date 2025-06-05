@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier;
 
-class DefaultValueModifierTest extends ValueModifierTest
+class DefaultValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'default';
 
@@ -19,7 +19,7 @@ class DefaultValueModifierTest extends ValueModifierTest
         [['value_y'], ['value_y'],       [DefaultValueModifier::KEY_VALUE => 'default_value_x']],
     ];
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::MODIFY_TEST_CASES;
     }

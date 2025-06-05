@@ -8,6 +8,7 @@ import StringSwitchTypeItem from './container/switch/StringSwitchTypeItem.vue';
 import StringItem from './scalar/StringItem.vue';
 import IntegerItem from './scalar/IntegerItem.vue';
 import BooleanItem from './scalar/BooleanItem.vue';
+import ResetOverwriteAction from './meta/ResetOverwriteAction.vue';
 
 // current custom types:
 // VALUE
@@ -40,9 +41,11 @@ import { computed } from "vue";
 import { useDmfStore } from '@/stores/dmf';
 import { useValidation } from '@/composables/validation';
 import { isContainerType } from '@/helpers/type';
+import { usePathProcessor } from '@/composables/path';
 
 const store = useDmfStore();
 const { hasIssues, getIssue } = useValidation(store);
+const { isSelected } = usePathProcessor(store);
 
 const props = defineProps({
     currentPath: {
@@ -61,17 +64,22 @@ const schema = computed(() => store.resolveSchema(immediateSchema.value));
 const isContainer = computed(() => isContainerType(schema.value.type));
 const triggers = computed(() => store.getTriggers(props.currentPath));
 const isVisible = computed(() => store.isVisible(props.currentPath));
+const selected = computed(() => isSelected(props.currentPath));
+const skipHeader = computed(() => schema.value.skipHeader && !selected.value);
 const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
+const showOverwritten = computed(() => isOverwritten.value && isVisible.value && !skipHeader.value);
 const issueFound = computed(() => hasIssues(props.currentPath));
 const issue = computed(() => getIssue(props.currentPath));
 </script>
 <template>
-    <div class="tw-w-full tw-max-w-3xl"
+    <div class="tw-w-full tw-max-w-3xl tw-relative"
          :class="{
-             'tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded': !isContainer,
-             'tw-border-r-red-400 todo-class-overwritten': !isContainer && isOverwritten
+             'tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded': !isContainer
          }"
          v-if="isVisible">
+        <ResetOverwriteAction :currentPath="currentPath"
+                        :dynamicItemPath="dynamicItemPath"
+                        v-if="showOverwritten" />
 
         <!-- use if needed: -->
         <!--

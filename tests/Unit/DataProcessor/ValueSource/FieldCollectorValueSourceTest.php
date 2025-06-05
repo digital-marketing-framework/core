@@ -6,11 +6,13 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValue
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Tests\MultiValueTestTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
- * @extends ValueSourceTest<FieldCollectorValueSource>
+ * @extends ValueSourceTestBase<FieldCollectorValueSource>
  */
-class FieldCollectorValueSourceTest extends ValueSourceTest
+class FieldCollectorValueSourceTest extends ValueSourceTestBase
 {
     use MultiValueTestTrait;
 
@@ -45,7 +47,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /** @test */
+    #[Test]
     public function noData(): void
     {
         $this->data = [];
@@ -54,7 +56,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         $this->assertEquals('', (string)$output);
     }
 
-    /** @test */
+    #[Test]
     public function collectWithDefaultConfig(): void
     {
         $output = $this->processValueSource($this->getNeutralConfig());
@@ -64,7 +66,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     /**
      * @return array<array{0:array<string>,1:bool,2:?bool,3:string}>
      */
-    public function skipProcessedProvider(): array
+    public static function skipProcessedProvider(): array
     {
         return [
             // processed, useDefaultConfig, unprocessedOnly, expected
@@ -77,11 +79,9 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
 
     /**
      * @param array<string> $processed
-     *
-     * @dataProvider skipProcessedProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('skipProcessedProvider')]
     public function skipProcessed(array $processed, bool $useDefaultConfig, ?bool $unprocessedOnly, string $expected): void
     {
         foreach ($processed as $field) {
@@ -100,7 +100,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     /**
      * @return array<array{0:mixed,1:bool,2:?bool,3:string}>
      */
-    public function ignoreIfEmptyProvider(): array
+    public static function ignoreIfEmptyProvider(): array
     {
         return [
             // value2, useDefaultConfig, ignoreIfEmpty, expected
@@ -111,11 +111,8 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /**
-     * @dataProvider ignoreIfEmptyProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('ignoreIfEmptyProvider')]
     public function ignoreIfEmpty(mixed $value2, bool $useDefaultConfig, ?bool $ignoreIfEmpty, string $expected): void
     {
         $this->data['field2'] = $value2;
@@ -135,7 +132,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     /**
      * @return array<array{0:?string,1:string}>
      */
-    public function templateProvider(): array
+    public static function templateProvider(): array
     {
         return [
             [null,                     "field1 = value1\nfield2 = value2\nfield3 = value3\n"],
@@ -146,11 +143,8 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /**
-     * @dataProvider templateProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('templateProvider')]
     public function template(?string $template, string $expected): void
     {
         $config = $this->getNeutralConfig();
@@ -165,7 +159,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     /**
      * @return array<array{0:?string,1:string}>
      */
-    public function excludeProvider(): array
+    public static function excludeProvider(): array
     {
         return [
             [null,            "field1 = value1\nfield2 = value2\nfield3 = value3\n"],
@@ -174,11 +168,8 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         ];
     }
 
-    /**
-     * @dataProvider excludeProvider
-     *
-     * @test
-     */
+    #[Test]
+    #[DataProvider('excludeProvider')]
     public function exclude(?string $exclude, string $expected): void
     {
         $config = $this->getNeutralConfig();
@@ -193,7 +184,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
     /**
      * @return array<array{0:array<string>,1:bool,2:?string,3:string}>
      */
-    public function includeProvider(): array
+    public static function includeProvider(): array
     {
         return [
             'alreadyProcessedFieldsDoNotGetIncluddeWhenIncludeIsNotDefined' => [
@@ -219,11 +210,9 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
 
     /**
      * @param array<string> $processed
-     *
-     * @dataProvider includeProvider
-     *
-     * @test
      */
+    #[Test]
+    #[DataProvider('includeProvider')]
     public function include(array $processed, bool $processedOnly, ?string $include, string $expected): void
     {
         foreach ($processed as $field) {
@@ -240,7 +229,7 @@ class FieldCollectorValueSourceTest extends ValueSourceTest
         $this->assertEquals($expected, (string)$output);
     }
 
-    /** @test */
+    #[Test]
     public function complexDataStructureKeptWhenTheTemplateIsTheValueItself(): void
     {
         $this->data = [

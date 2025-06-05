@@ -1,0 +1,62 @@
+<div class="form-row justify-content-between">
+    <div class="form-group">
+        <div class="input-group">
+            <span class="btn btn-default disabled" style="min-width: 8rem">changed after</span>
+            <input
+                id="minChanged"
+                name="filters[minChanged]"
+                value="{{ filters.minChanged }}"
+                type="datetime-local"
+                class="form-control"
+            />
+            <button type="button" class="btn btn-default" onclick="document.getElementById('minChanged').value=''">
+                {{ include('t3-icon.html.twig', {name:'close'}) }}
+            </button>
+
+            <span class="mx-2"></span>
+
+            <span class="btn btn-default disabled" style="min-width: 8rem">changed before</span>
+            <input
+                id="maxChanged"
+                name="filters[maxChanged]"
+                value="{{ filters.maxChanged }}"
+                type="datetime-local"
+                class="form-control"
+            />
+            <button type="button" class="btn btn-default" onclick="document.getElementById('maxChanged').value=''">
+                {{ include('t3-icon.html.twig', {name:'close'}) }}
+            </button>
+        </div>
+    </div>
+</div>
+<div class="form-row justify-content-between">
+    <div class="form-group">
+        <div class="input-group">
+            <span class="btn btn-default disabled" style="min-width: 8rem">created after</span>
+            <input
+                id="minCreated"
+                name="filters[minCreated]"
+                value="{{ filters.minCreated }}"
+                type="datetime-local"
+                class="form-control"
+            />
+            <button type="button" class="btn btn-default" onclick="document.getElementById('minCreated').value=''">
+                {{ include('t3-icon.html.twig', {name:'close'}) }}
+            </button>
+
+            <span class="mx-2"></span>
+
+            <span class="btn btn-default disabled" style="min-width: 8rem">created before</span>
+            <input
+                id="maxCreated"
+                name="filters[maxCreated]"
+                value="{{ filters.maxCreated }}"
+                type="datetime-local"
+                class="form-control"
+            />
+            <button type="button" class="btn btn-default" onclick="document.getElementById('maxCreated').value=''">
+                {{ include('t3-icon.html.twig', {name:'close'}) }}
+            </button>
+        </div>
+    </div>
+</div>

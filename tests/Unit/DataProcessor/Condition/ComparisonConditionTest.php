@@ -3,14 +3,15 @@
 namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\Condition;
 
 use DigitalMarketingFramework\Core\DataProcessor\Condition\ComparisonCondition;
+use PHPUnit\Framework\Attributes\Test;
 
-class ComparisonConditionTest extends ConditionTest
+class ComparisonConditionTest extends ConditionTestBase
 {
     protected const CLASS_NAME = ComparisonCondition::class;
 
     protected const KEYWORD = 'comparison';
 
-    /** @test */
+    #[Test]
     public function comparisonTrue(): void
     {
         $config = [
@@ -21,7 +22,7 @@ class ComparisonConditionTest extends ConditionTest
         $this->assertTrue($result);
     }
 
-    /** @test */
+    #[Test]
     public function comparisonFalse(): void
     {
         $config = [

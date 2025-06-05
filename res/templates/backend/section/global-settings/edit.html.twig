@@ -1,0 +1,13 @@
+{% extends "module.html.twig" %}
+
+{% block section %}
+    {% set config = {
+        ready: true,
+        mode: 'embedded',
+        readonly: false,
+        globalDocument: false,
+        includes: false,
+        debug: debug ?? false
+    } %}
+    {{ include('configuration-editor/editor-setup.html.twig', { documentType: 'global-settings', returnUri: uri('page.core.index'), title: 'Global Settings', config, document }) }}
+{% endblock %}

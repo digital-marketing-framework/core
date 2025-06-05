@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\DataProcessor\ValueModifier;
 
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\MapValueModifier;
 
-class MapValueModifierTest extends ValueModifierTest
+class MapValueModifierTest extends ValueModifierTestBase
 {
     protected const KEYWORD = 'map';
 
@@ -15,7 +15,7 @@ class MapValueModifierTest extends ValueModifierTest
     ];
 
     /**
-     * @return array<array{0:mixed,1:mixed,2:?array<string,mixed>}>
+     * @return array<array{0:mixed,1:mixed,2?:array<string,mixed>}>
      */
     public static function modifyTestCases(): array
     {
@@ -55,7 +55,7 @@ class MapValueModifierTest extends ValueModifierTest
         ];
     }
 
-    public function modifyProvider(): array
+    public static function modifyProvider(): array
     {
         return static::modifyTestCases();
     }
