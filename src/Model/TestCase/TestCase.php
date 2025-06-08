@@ -9,8 +9,8 @@ class TestCase implements TestCaseInterface
         protected string $name,
         protected string $type,
         protected string $hash,
-        protected array $input,
-        protected array $expectedOutput,
+        protected array $input = [],
+        protected array $expectedOutput = [],
     ) {
     }
 

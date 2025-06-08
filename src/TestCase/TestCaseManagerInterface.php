@@ -18,4 +18,6 @@ interface TestCaseManagerInterface
      * @return array<TestResult>
      */
     public function runAllTests(): array;
+
+    public function getTestCaseStorage(): TestCaseStorageInterface;
 }

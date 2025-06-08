@@ -41,6 +41,7 @@ use DigitalMarketingFramework\Core\Registry\Service\TestCaseRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistryTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
+use DigitalMarketingFramework\Core\TestCase\TestCaseManagerAwareInterface;
 
 class Registry implements RegistryInterface
 {
@@ -151,6 +152,10 @@ class Registry implements RegistryInterface
 
         if ($object instanceof NotificationManagerAwareInterface) {
             $object->setNotificationManager($this->getNotificationManager());
+        }
+
+        if ($object instanceof TestCaseManagerAwareInterface) {
+            $object->setTestCaseManager($this->getTestCaseManager());
         }
     }
 

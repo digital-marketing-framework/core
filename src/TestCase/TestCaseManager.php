@@ -13,6 +13,11 @@ class TestCaseManager implements TestCaseManagerInterface
     ) {
     }
 
+    public function getTestCaseStorage(): TestCaseStorageInterface
+    {
+        return $this->registry->getTestCaseStorage();
+    }
+
     public function runTest(TestCaseInterface $test): TestResult
     {
         try {
@@ -43,7 +48,7 @@ class TestCaseManager implements TestCaseManagerInterface
 
     public function runAllTests(): array
     {
-        $tests = $this->registry->getTestCaseStorage()->getAllTestCases();
+        $tests = $this->getTestCaseStorage()->getAllTestCases();
 
         return $this->runTests($tests);
     }
