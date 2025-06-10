@@ -6,6 +6,7 @@ use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorage;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolverInterface;
+use DigitalMarketingFramework\Core\Registry\RegistryException;
 
 trait ApiRegistryTrait
 {
@@ -25,7 +26,7 @@ trait ApiRegistryTrait
     public function getEndPointStorage(): EndPointStorageInterface
     {
         if (!isset($this->endPointStorage)) {
-            $this->endPointStorage = $this->createObject(EndPointStorage::class);
+            throw new RegistryException('No API end point storage defined.');
         }
 
         return $this->endPointStorage;

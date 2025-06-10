@@ -2,8 +2,11 @@
 
 namespace DigitalMarketingFramework\Core\Model\ConfigurationDocument;
 
-use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+use DigitalMarketingFramework\Core\Model\ItemInterface;
 
+/**
+ * @implements ItemInterface<string>
+ */
 class ConfigurationDocumentInformation implements ItemInterface
 {
     /**
@@ -24,9 +27,14 @@ class ConfigurationDocumentInformation implements ItemInterface
         return $this->getName();
     }
 
-    public function getId(): string
+    public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 
     public function getShortId(): string
