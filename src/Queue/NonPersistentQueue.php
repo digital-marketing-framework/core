@@ -180,6 +180,11 @@ class NonPersistentQueue implements QueueInterface
         return $job;
     }
 
+    public function fetchById(int $id): ?JobInterface
+    {
+        return $this->queue[$id] ?? null;
+    }
+
     public function fetchByIdList(array $ids): array
     {
         $result = [];

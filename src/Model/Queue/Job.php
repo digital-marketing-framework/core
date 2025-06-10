@@ -5,6 +5,9 @@ namespace DigitalMarketingFramework\Core\Model\Queue;
 use DateTime;
 use DigitalMarketingFramework\Core\Queue\QueueInterface;
 
+/**
+ * @implements JobInterface<int>
+ */
 class Job implements JobInterface
 {
     protected ?int $id = null;
@@ -27,12 +30,12 @@ class Job implements JobInterface
     ) {
     }
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId($id): void
     {
         $this->id = $id;
     }

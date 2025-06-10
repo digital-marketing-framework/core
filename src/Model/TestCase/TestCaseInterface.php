@@ -2,13 +2,23 @@
 
 namespace DigitalMarketingFramework\Core\Model\TestCase;
 
-interface TestCaseInterface
+use DigitalMarketingFramework\Core\Model\ItemInterface;
+
+/**
+ * @template IdType of int|string
+ *
+ * @extends ItemInterface<IdType>
+ */
+interface TestCaseInterface extends ItemInterface
 {
     public function getLabel(): string;
     public function setLabel(string $label): void;
 
     public function getName(): string;
     public function setName(string $name): void;
+
+    public function getDescription(): string;
+    public function setDescription(string $description): void;
 
     public function getType(): string;
     public function setType(string $type): void;

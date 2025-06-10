@@ -38,7 +38,7 @@ abstract class SectionController extends BackendController implements SectionCon
 
     protected function render(): HtmlResponse
     {
-        $templateName = $this->request->getInternalRoute();
+        $templateName = $this->getInternalRoute();
         $templatePath = sprintf('section/%s/%s.html.twig', $this->section, $templateName);
         $config = ['templateName' => $templatePath];
 

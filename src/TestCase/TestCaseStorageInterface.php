@@ -3,16 +3,28 @@
 namespace DigitalMarketingFramework\Core\TestCase;
 
 use DigitalMarketingFramework\Core\Model\TestCase\TestCaseInterface;
+use DigitalMarketingFramework\Core\Storage\ItemStorageInterface;
 
-interface TestCaseStorageInterface
+/**
+ * @template TestCaseClass of TestCaseInterface
+ * @template IdType of int|string
+ *
+ * @extends ItemStorageInterface<TestCaseClass,IdType>
+ */
+interface TestCaseStorageInterface extends ItemStorageInterface
 {
     /**
-     * @return array<TestCaseInterface>
+     * @return array<TestCaseClass>
      */
-    public function getAllTestCases(): array;
+    public function fetchByType(string $type): array;
 
     /**
-     * @return array<TestCaseInterface>
+     * @return array<TestCaseClass>
      */
-    public function getTypeSpecificTestCases(string $type): array;
+    public function fetchByName(string $name): array;
+
+    /**
+     * @return array<string>
+     */
+    public function fetchAllTypes(): array;
 }

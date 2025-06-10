@@ -9,6 +9,6 @@
 {% set tagName = preformatted ? 'pre' : 'div' %}
 <div class="note {{ noteClass }}">
     {% if preformatted %}<pre class="note-body">{% else %}<div class="note-body">{% endif -%}
-        {%- block body %}{{ body }}{% endblock -%}
+        {%- block body %}{{ body|raw }}{% endblock -%}
     {%- if preformatted %}</pre>{% else %}</div>{% endif %}
 </div>

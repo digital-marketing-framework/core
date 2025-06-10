@@ -179,7 +179,7 @@
                                     {% block tableRowLabel %}
                                         <td class="{{ labelClass ?? 'col-title' }}">
                                             {% if linkLabelAction %}
-                                                <a href="{{ uri(route ~ '.' ~ linkLabelAction, {id:item.id, returnUrl}) }}">
+                                                <a href="{{ uri(route ~ '.' ~ linkLabelAction, {id:item.id, returnUrl}) }}" title="{{ item.description ?? '' }}">
                                                     {{ item.label }}
                                                 </a>
                                             {% else %}

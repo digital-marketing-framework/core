@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 
-use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+use DigitalMarketingFramework\Core\Model\ItemInterface;
 
 abstract class ListSectionController extends SectionController
 {
@@ -100,6 +100,11 @@ abstract class ListSectionController extends SectionController
 
         $resetUri = $this->getPermanentUri($defaultAction);
         $this->viewData['resetUri'] = $resetUri;
+
+        $returnUrl = $this->getReturnUrl();
+        if ($returnUrl !== null) {
+            $this->viewData['returnUrl'] = $returnUrl;
+        }
     }
 
     /**

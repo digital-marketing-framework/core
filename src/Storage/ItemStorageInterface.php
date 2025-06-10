@@ -8,13 +8,11 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 /**
  * @template ItemClass of ItemInterface
  * @template IdType of int|string
- * @template ItemData of array<string,mixed>
- * @template Filters of array<string,mixed>
  */
 interface ItemStorageInterface
 {
     /**
-     * @param ?ItemData $data
+     * @param ?array<string,mixed> $data
      *
      * @return ItemClass
      */
@@ -52,17 +50,29 @@ interface ItemStorageInterface
     public function fetchAll(?array $navigation = null): array;
 
     /**
-     * @param Filters $filters
+     * @param array<string,mixed> $filters
      */
     public function countFiltered(array $filters): int;
 
     /**
-     * @param Filters $filters
+     * @param array<string,mixed> $filters
      * @param ?array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
      *
      * @return array<ItemClass>
      */
     public function fetchFiltered(array $filters, ?array $navigation = null): array;
+
+    /**
+     * @param array<string,mixed> $filters
+     *
+     * @return ?ItemClass
+     */
+    public function fetchOneFiltered(array $filters);
+
+    /**
+     * @param array<IdType> $ids
+     */
+    public function fetchByIdList(array $ids): array;
 
     public static function getSchema(): ContainerSchema;
 }

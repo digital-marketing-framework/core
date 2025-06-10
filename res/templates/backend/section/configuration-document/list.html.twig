@@ -23,7 +23,6 @@
 
         {% block tableRowActionsEdit %}
             {% set editKeyword = item.readonly ? 'file-view' : 'open' %}
-            {% set editIcon = actionIcons ~ '#actions-' ~ editKeyword %}
             {% set editUrl = uri('page.configuration-document.edit', {id:item.id}) %}
             {% set editTitle = item.readonly ? 'View this configuration document' : 'Edit this configuration document' %}
             <a class="btn btn-default form-record-open" href="{{ editUrl }}" title="{{ editTitle }}">

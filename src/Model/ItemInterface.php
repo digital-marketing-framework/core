@@ -10,7 +10,7 @@ interface ItemInterface
     /**
      * @return ?IdType
      */
-    public function getId(): int|string|null;
+    public function getId();
 
     /**
      * @param IdType $id
