@@ -35,7 +35,7 @@ interface ItemStorageInterface
     /**
      * @return ?ItemClass
      */
-    public function fetchById(int|string|null $id);
+    public function fetchById(int|string $id);
 
     public function countAll(): int;
 
