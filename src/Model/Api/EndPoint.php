@@ -2,10 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Model\Api;
 
-class EndPoint implements EndPointInterface
-{
-    protected string|int|null $id = null;
+use DigitalMarketingFramework\Core\Model\Item;
 
+class EndPoint extends Item implements EndPointInterface
+{
     public function __construct(
         protected string $name = '',
         protected bool $enabled = false,
@@ -21,16 +21,6 @@ class EndPoint implements EndPointInterface
     public function getLabel(): string
     {
         return $this->getName();
-    }
-
-    public function getId(): int|string|null
-    {
-        return $this->id;
-    }
-
-    public function setId(int|string|null $id): void
-    {
-        $this->id = $id;
     }
 
     public function getName(): string

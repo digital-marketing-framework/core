@@ -148,7 +148,7 @@ class EntryRouteResolver implements EntryRouteResolverInterface, GlobalConfigura
                 $endPointSegment = $request->getVariable(static::VARIABLE_END_POINT);
                 if ($endPointSegment !== null) {
                     $endPointName = GeneralUtility::dashedToCamelCase($endPointSegment);
-                    $endPoint = $this->endPointStorage->getEndPointByName($endPointName);
+                    $endPoint = $this->endPointStorage->fetchByName($endPointName);
 
                     if (!$endPoint instanceof EndPointInterface || !$endPoint->getEnabled()) {
                         throw new ApiException('End point not found or disabled', 404);

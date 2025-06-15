@@ -5,12 +5,10 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolverInterface;
-use DigitalMarketingFramework\Core\Model\Api\EndPointInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
 
 trait ApiRegistryTrait
 {
-    /** @var EndPointStorageInterface<EndPointInterface> */
     protected EndPointStorageInterface $endPointStorage;
 
     protected CoreRouteResolverInterface $coreRouteResolver;
