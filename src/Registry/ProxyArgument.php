@@ -4,12 +4,11 @@ namespace DigitalMarketingFramework\Core\Registry;
 
 class ProxyArgument
 {
-    /** @var callable $fnc */
+    /** @var callable */
     protected $fnc;
 
-    public function __construct(
-        callable $fnc
-    ) {
+    public function __construct(callable $fnc)
+    {
         $this->fnc = $fnc;
     }
 

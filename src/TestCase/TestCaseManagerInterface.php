@@ -10,6 +10,7 @@ interface TestCaseManagerInterface
 
     /**
      * @param array<TestCaseInterface> $tests
+     *
      * @return array<TestResult>
      */
     public function runTests(array $tests): array;

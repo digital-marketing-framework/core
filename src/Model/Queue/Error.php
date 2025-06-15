@@ -4,9 +4,6 @@ namespace DigitalMarketingFramework\Core\Model\Queue;
 
 use DigitalMarketingFramework\Core\Model\ItemInterface;
 
-/**
- * @implements ItemInterface<int>
- */
 class Error implements ItemInterface
 {
     /**
@@ -40,7 +37,7 @@ class Error implements ItemInterface
         return null;
     }
 
-    public function setId($id): void
+    public function setId(int|string|null $id): void
     {
     }
 

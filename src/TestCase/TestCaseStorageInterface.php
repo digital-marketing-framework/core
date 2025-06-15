@@ -6,20 +6,17 @@ use DigitalMarketingFramework\Core\Model\TestCase\TestCaseInterface;
 use DigitalMarketingFramework\Core\Storage\ItemStorageInterface;
 
 /**
- * @template TestCaseClass of TestCaseInterface
- * @template IdType of int|string
- *
- * @extends ItemStorageInterface<TestCaseClass,IdType>
+ * @extends ItemStorageInterface<TestCaseInterface>
  */
 interface TestCaseStorageInterface extends ItemStorageInterface
 {
     /**
-     * @return array<TestCaseClass>
+     * @return array<TestCaseInterface>
      */
     public function fetchByType(string $type): array;
 
     /**
-     * @return array<TestCaseClass>
+     * @return array<TestCaseInterface>
      */
     public function fetchByName(string $name): array;
 

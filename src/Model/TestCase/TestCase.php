@@ -2,9 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Model\TestCase;
 
-use DateTime;
 use DigitalMarketingFramework\Core\Model\Item;
-use DigitalMarketingFramework\Core\Model\TestCase\TestCaseInterface;
 use JsonException;
 
 class TestCase extends Item implements TestCaseInterface
@@ -103,7 +101,8 @@ class TestCase extends Item implements TestCaseInterface
             try {
                 $serializedData = json_encode($input, flags: JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
                 $this->setSerializedInput($serializedData);
-            } catch (JsonException) {}
+            } catch (JsonException) {
+            }
         }
     }
 
@@ -140,7 +139,8 @@ class TestCase extends Item implements TestCaseInterface
             try {
                 $serializedData = json_encode($expectedOutput, flags: JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
                 $this->setSerializedExpectedOutput($serializedData);
-            } catch (JsonException) {}
+            } catch (JsonException) {
+            }
         }
     }
 }

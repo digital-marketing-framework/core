@@ -6,6 +6,7 @@ use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 
 /**
  * @template DataSourceClass of DataSourceInterface
+ *
  * @implements DataSourceManagerInterface<DataSourceClass>
  */
 abstract class DataSourceManager implements DataSourceManagerInterface

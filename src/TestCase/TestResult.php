@@ -7,18 +7,16 @@ use DigitalMarketingFramework\Core\Model\ItemInterface;
 use DigitalMarketingFramework\Core\Model\TestCase\TestCaseInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
-/**
- * @implements ItemInterface<int|string>
- */
 class TestResult implements ItemInterface
 {
     public const STATUS_SUCCESS = 1;
+
     public const STATUS_FAIL = 2;
+
     public const STATUS_ERROR = 3;
 
     /**
-     * @param TestCaseInterface<int|string> $test
-     * @param ?array<mixed> $output
+     * @param ?array<string,mixed> $output
      */
     public function __construct(
         protected TestCaseInterface $test,
@@ -33,12 +31,12 @@ class TestResult implements ItemInterface
         return $this->test->getLabel();
     }
 
-    public function getId()
+    public function getId(): int|string|null
     {
         return $this->test->getId();
     }
 
-    public function setId($id): void
+    public function setId(int|string $id): void
     {
         throw new BadMethodCallException('Method "setId" on TestResult not supported');
     }
@@ -71,6 +69,9 @@ class TestResult implements ItemInterface
         return $this->test;
     }
 
+    /**
+     * @return ?array<string,mixed>
+     */
     public function getOutput(): ?array
     {
         return $this->output;

@@ -2,12 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\Model\Api;
 
-/**
- * @implements EndPointInterface<int>
- */
 class EndPoint implements EndPointInterface
 {
-    protected ?int $id = null;
+    protected string|int|null $id = null;
 
     public function __construct(
         protected string $name = '',
@@ -26,12 +23,12 @@ class EndPoint implements EndPointInterface
         return $this->getName();
     }
 
-    public function getId()
+    public function getId(): int|string|null
     {
         return $this->id;
     }
 
-    public function setId($id): void
+    public function setId(int|string|null $id): void
     {
         $this->id = $id;
     }

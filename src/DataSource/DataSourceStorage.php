@@ -7,12 +7,15 @@ use DigitalMarketingFramework\Core\Plugin\Plugin;
 
 /**
  * @template DataSourceClass of DataSourceInterface
+ *
  * @implements DataSourceStorageInterface<DataSourceClass>
  */
 abstract class DataSourceStorage extends Plugin implements DataSourceStorageInterface
 {
     abstract public function getType(): string;
+
     abstract public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface;
+
     abstract public function getAllDataSources(): array;
 
     protected function getInnerIdentifier(string $id): string

@@ -2,22 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Model;
 
-/**
- * @template IdType of sting|int
- *
- * @implements ItemInterface<IdType>
- */
 abstract class Item implements ItemInterface
 {
-    /** @var ?IdType */
-    protected $id = null;
+    protected int|string|null $id;
 
-    public function getId()
+    public function getId(): int|string|null
     {
         return $this->id;
     }
 
-    public function setId($id): void
+    public function setId(int|string|null $id): void
     {
         $this->id = $id;
     }

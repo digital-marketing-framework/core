@@ -7,7 +7,6 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
 
 /**
  * @template ItemClass of ItemInterface
- * @template IdType of int|string
  */
 interface ItemStorageInterface
 {
@@ -34,11 +33,9 @@ interface ItemStorageInterface
     public function update($item): void;
 
     /**
-     * @param IdType $id
-     *
      * @return ?ItemClass
      */
-    public function fetchById($id);
+    public function fetchById(int|string|null $id);
 
     public function countAll(): int;
 
@@ -70,7 +67,9 @@ interface ItemStorageInterface
     public function fetchOneFiltered(array $filters);
 
     /**
-     * @param array<IdType> $ids
+     * @param array<int|string> $ids
+     *
+     * @return array<ItemClass>
      */
     public function fetchByIdList(array $ids): array;
 

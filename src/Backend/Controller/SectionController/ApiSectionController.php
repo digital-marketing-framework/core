@@ -6,8 +6,12 @@ use BadMethodCallException;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageAwareInterface;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageAwareTrait;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
+use DigitalMarketingFramework\Core\Model\Api\EndPointInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
+/**
+ * @extends ListSectionController<EndPointInterface>
+ */
 class ApiSectionController extends ListSectionController implements EndPointStorageAwareInterface
 {
     use EndPointStorageAwareTrait;

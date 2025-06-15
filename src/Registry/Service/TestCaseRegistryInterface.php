@@ -8,6 +8,9 @@ use DigitalMarketingFramework\Core\TestCase\TestCaseStorageInterface;
 
 interface TestCaseRegistryInterface
 {
+    /**
+     * @param array<mixed> $additionalArguments
+     */
     public function registerTestCaseProcessor(string $class, array $additionalArguments = [], string $keyword = ''): void;
 
     public function deleteTestCaseProcessor(string $keyword): void;

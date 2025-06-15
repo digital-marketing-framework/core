@@ -10,8 +10,14 @@ interface ApiRequestInterface
 
     public function setApiVersion(string $apiVersion): void;
 
+    /**
+     * @return EndPointInterface
+     */
     public function getEndPoint(): EndPointInterface;
 
+    /**
+     * @param EndPointInterface $endPoint
+     */
     public function setEndPoint(EndPointInterface $endPoint): void;
 
     public function getPath(): string;

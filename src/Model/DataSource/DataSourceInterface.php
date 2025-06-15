@@ -7,9 +7,14 @@ use DigitalMarketingFramework\Core\SchemaDocument\FieldDefinition\FieldListDefin
 interface DataSourceInterface
 {
     public function getType(): string;
+
     public function getIdentifier(): string;
+
     public function getName(): string;
+
     public function getConfigurationDocument(): string;
+
     public function getFieldListDefinition(): FieldListDefinition;
+
     public function getHash(): string;
 }

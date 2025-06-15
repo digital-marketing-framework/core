@@ -2,12 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 
+use BadMethodCallException;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\Model\ItemInterface;
 use DigitalMarketingFramework\Core\Storage\ItemStorageInterface;
 
 /**
- * @template ItemClass of ItemInterface<string|int>
+ * @template ItemClass of ItemInterface
  */
 abstract class ListSectionController extends SectionController
 {
@@ -132,7 +133,10 @@ abstract class ListSectionController extends SectionController
         return $filters;
     }
 
-    protected function getItemStorage(): ?ItemStorageInterface
+    /**
+     * @return ?ItemStorageInterface<ItemClass>
+     */
+    protected function getItemStorage()
     {
         return null;
     }
@@ -307,6 +311,7 @@ abstract class ListSectionController extends SectionController
         if (!$this->getItemStorage() instanceof ItemStorageInterface) {
             throw new BadMethodCallException('List action not implemented in this controller');
         }
+
         $this->setUpListView('list');
 
         return $this->render();
@@ -326,7 +331,7 @@ abstract class ListSectionController extends SectionController
     {
         $storage = $this->getItemStorage();
         if (!$storage instanceof ItemStorageInterface) {
-            throw new BadMethodCallExceptoin('Delete action not implemented in this controller');
+            throw new BadMethodCallException('Delete action not implemented in this controller');
         }
 
         $ids = $this->getSelectedItems();

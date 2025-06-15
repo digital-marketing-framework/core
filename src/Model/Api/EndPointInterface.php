@@ -4,11 +4,6 @@ namespace DigitalMarketingFramework\Core\Model\Api;
 
 use DigitalMarketingFramework\Core\Model\ItemInterface;
 
-/**
- * @template IdType of int|string
- *
- * @extends ItemInterface<IdType>
- */
 interface EndPointInterface extends ItemInterface
 {
     public function getName(): string;

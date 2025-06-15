@@ -170,9 +170,7 @@ class Registry implements RegistryInterface
             throw new RegistryException('Class "' . $class . '" is unknown!');
         }
 
-        $arguments = array_map(function(mixed $arg) {
-            return $arg instanceof ProxyArgument ? $arg() : $arg;
-        }, $arguments);
+        $arguments = array_map(fn (mixed $arg) => $arg instanceof ProxyArgument ? $arg() : $arg, $arguments);
 
         $object = new $class(...$arguments);
         $this->processObjectAwareness($object);

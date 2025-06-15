@@ -5,11 +5,6 @@ namespace DigitalMarketingFramework\Core\Model\Queue;
 use DateTime;
 use DigitalMarketingFramework\Core\Model\ItemInterface;
 
-/**
- * @template IdType of int|string
- *
- * @extends ItemInterface<IdType>
- */
 interface JobInterface extends ItemInterface
 {
     public function getEnvironment(): string;
