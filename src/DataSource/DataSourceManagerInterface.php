@@ -10,9 +10,11 @@ use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 interface DataSourceManagerInterface
 {
     /**
+     * @param array<string,mixed> $dataSourceContext
+     *
      * @return ?DataSourceClass
      */
-    public function getDataSourceById(string $id): ?DataSourceInterface;
+    public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface;
 
     /**
      * @return array<DataSourceClass>

@@ -15,7 +15,6 @@ class TestResult implements ItemInterface
     public const STATUS_SUCCESS = 1;
     public const STATUS_FAIL = 2;
     public const STATUS_ERROR = 3;
-    public const STATUS_OUTDATED = 4;
 
     /**
      * @param TestCaseInterface<int|string> $test
@@ -44,6 +43,16 @@ class TestResult implements ItemInterface
         throw new BadMethodCallException('Method "setId" on TestResult not supported');
     }
 
+    public function getHash(): string
+    {
+        return $this->hash;
+    }
+
+    public function isOutdated(): bool
+    {
+        return $this->hash !== $this->test->getHash();
+    }
+
     public function getStatus(): int
     {
         if ($this->error !== null) {
@@ -52,10 +61,6 @@ class TestResult implements ItemInterface
 
         if (!GeneralUtility::compare($this->getOutput(), $this->test->getExpectedOutput())) {
             return static::STATUS_FAIL;
-        }
-
-        if ($this->hash !== $this->test->getHash()) {
-            return static::STATUS_OUTDATED;
         }
 
         return static::STATUS_SUCCESS;

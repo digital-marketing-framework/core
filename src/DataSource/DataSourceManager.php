@@ -29,14 +29,14 @@ abstract class DataSourceManager implements DataSourceManagerInterface
         return null;
     }
 
-    public function getDataSourceById(string $id): ?DataSourceInterface
+    public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface
     {
         $storage = $this->getMatchingDataSourceStorage($id);
         if (!$storage instanceof DataSourceStorageInterface) {
             return null;
         }
 
-        return $storage->getDataSourceById($id);
+        return $storage->getDataSourceById($id, $dataSourceContext);
     }
 
     public function getAllDataSources(): array

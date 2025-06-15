@@ -18,15 +18,36 @@ class TestCaseManager implements TestCaseManagerInterface
         return $this->registry->getTestCaseStorage();
     }
 
+    protected function getTestCaseProcessor(TestCaseInterface $test): TestCaseProcessorInterface
+    {
+        $type = $test->getType();
+        $processor = $this->registry->getTestCaseProcessor($type);
+        if (!$processor instanceof TestCaseProcessorInterface) {
+            throw new DigitalMarketingFrameworkException(sprintf('No test processor for type "%s" found.', $type));
+        }
+
+        return $processor;
+    }
+
+    public function updateHash(TestCaseInterface $test): void
+    {
+        $processor = $this->getTestCaseProcessor($test);
+        $hash = $processor->calculateHash($test->getInput());
+        $test->setHash($hash);
+        $this->getTestCaseStorage()->update($test);
+    }
+
+    public function updateHashes(array $tests): void
+    {
+        foreach ($tests as $test) {
+            $this->updateHash($test);
+        }
+    }
+
     public function runTest(TestCaseInterface $test): TestResult
     {
         try {
-            $type = $test->getType();
-            $processor = $this->registry->getTestCaseProcessor($type);
-            if (!$processor instanceof TestCaseProcessorInterface) {
-                throw new DigitalMarketingFrameworkException(sprintf('No test processor for type "%s" found.', $type));
-            }
-
+            $processor = $this->getTestCaseProcessor($test);
             $output = $processor->processInput($test->getInput());
             $hash = $processor->calculateHash($test->getInput());
 
@@ -48,7 +69,7 @@ class TestCaseManager implements TestCaseManagerInterface
 
     public function runAllTests(): array
     {
-        $tests = $this->getTestCaseStorage()->getAllTestCases();
+        $tests = $this->getTestCaseStorage()->fetchAll();
 
         return $this->runTests($tests);
     }

@@ -2,8 +2,13 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 
+use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\Model\ItemInterface;
+use DigitalMarketingFramework\Core\Storage\ItemStorageInterface;
 
+/**
+ * @template ItemClass of ItemInterface<string|int>
+ */
 abstract class ListSectionController extends SectionController
 {
     protected const LIST_SCRIPT = 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/list.js';
@@ -127,18 +132,39 @@ abstract class ListSectionController extends SectionController
         return $filters;
     }
 
+    protected function getItemStorage(): ?ItemStorageInterface
+    {
+        return null;
+    }
+
     /**
      * @param array<string,mixed> $filters
      */
-    abstract protected function fetchFilteredCount(array $filters): int;
+    protected function fetchFilteredCount(array $filters): int
+    {
+        $storage = $this->getItemStorage();
+        if ($storage instanceof ItemStorageInterface) {
+            return $storage->countFiltered($filters);
+        }
+
+        return 0;
+    }
 
     /**
      * @param array<string,mixed> $filters
      * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
      *
-     * @return array<ItemInterface>
+     * @return array<ItemClass>
      */
-    abstract protected function fetchFiltered(array $filters, array $navigation): array;
+    protected function fetchFiltered(array $filters, array $navigation): array
+    {
+        $storage = $this->getItemStorage();
+        if ($storage instanceof ItemStorageInterface) {
+            return $storage->fetchFiltered($filters, $navigation);
+        }
+
+        return [];
+    }
 
     /**
      * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
@@ -274,5 +300,41 @@ abstract class ListSectionController extends SectionController
         $this->viewData['navigationBounds'] = $navigationBounds;
 
         $this->viewData['list'] = $this->fetchFiltered($transformedFilters, $transformedNavigation);
+    }
+
+    protected function listAction(): Response
+    {
+        if (!$this->getItemStorage() instanceof ItemStorageInterface) {
+            throw new BadMethodCallException('List action not implemented in this controller');
+        }
+        $this->setUpListView('list');
+
+        return $this->render();
+    }
+
+    protected function editAction(): Response
+    {
+        throw new BadMethodCallException('Edit action not implemented in this controller');
+    }
+
+    protected function saveAction(): Response
+    {
+        throw new BadMethodCallException('Save action not implemented in this controller');
+    }
+
+    protected function deleteAction(): Response
+    {
+        $storage = $this->getItemStorage();
+        if (!$storage instanceof ItemStorageInterface) {
+            throw new BadMethodCallExceptoin('Delete action not implemented in this controller');
+        }
+
+        $ids = $this->getSelectedItems();
+        $items = $storage->fetchByIdList($ids);
+        foreach ($items as $item) {
+            $storage->remove($item);
+        }
+
+        return $this->redirect('page.' . $this->section . '.list');
     }
 }

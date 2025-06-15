@@ -15,9 +15,11 @@ interface DataSourceStorageInterface extends PluginInterface
     public function getType(): string;
 
     /**
+     * @param array<string,mixed> $dataSourceContext
+     *
      * @return ?DataSourceClass
      */
-    public function getDataSourceById(string $id): ?DataSourceInterface;
+    public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface;
 
     /**
      * @return array<DataSourceClass>

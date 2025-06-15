@@ -19,5 +19,12 @@ interface TestCaseManagerInterface
      */
     public function runAllTests(): array;
 
+    public function updateHash(TestCaseInterface $test): void;
+
+    /**
+     * @param array<TestCaseInterface> $tests
+     */
+    public function updateHashes(array $tests): void;
+
     public function getTestCaseStorage(): TestCaseStorageInterface;
 }
