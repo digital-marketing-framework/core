@@ -53,6 +53,22 @@ abstract class ItemStorage implements ItemStorageInterface
     }
 
     /**
+     * Map a data (array) field value to an item (object) field value.
+     */
+    protected function mapDataField(string $name, mixed $value): mixed
+    {
+        return $value;
+    }
+
+    /**
+     * Map an item (object) field value to a data (array) field value.
+     */
+    protected function mapItemField(string $name, mixed $value): mixed
+    {
+        return $value;
+    }
+
+    /**
      * @param ItemClass $item
      * @param array<sting,mixed> $data
      */
@@ -65,8 +81,9 @@ abstract class ItemStorage implements ItemStorageInterface
                 continue;
             }
 
+            $value = $this->mapDataField($field, $data[$field]);
             $method = $this->getItemMethod($item, $field, 'set');
-            $item->$method($data[$field]); // @phpstan-ignore-line dynamic method call based on item schema
+            $item->$method($value); // @phpstan-ignore-line dynamic method call based on item schema
         }
 
         if (isset($data['uid'])) {
@@ -85,7 +102,9 @@ abstract class ItemStorage implements ItemStorageInterface
 
         foreach ($this->fields as $field) {
             $method = $this->getItemMethod($item, $field, 'get');
-            $data[$field] = $item->$method(); // @phpstan-ignore-line dynamic method call based on item schema
+            $value = $item->$method(); // @phpstan-ignore-line dynamic method call based on item schema
+
+            $data[$field] = $this->mapItemField($field, $value);
         }
 
         return $data;

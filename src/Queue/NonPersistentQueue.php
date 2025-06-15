@@ -4,12 +4,53 @@ namespace DigitalMarketingFramework\Core\Queue;
 
 use BadMethodCallException;
 use DateTime;
+use DigitalMarketingFramework\Core\Model\Queue\Job;
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\Storage\ItemStorage;
 
-class NonPersistentQueue implements QueueInterface
+/**
+ * @extends ItemStorage<JobInterface>
+ */
+class NonPersistentQueue extends ItemStorage implements QueueInterface
 {
-    /** @var array<JobInterface> */
+    /** @var array<int,JobInterface> */
     protected array $queue = [];
+
+    public function __construct()
+    {
+        parent::__construct(Job::class);
+    }
+
+    protected function mapDataField(string $name, mixed $value): mixed
+    {
+        switch ($name) {
+            case 'created':
+            case 'changed':
+                if (!$value instanceof DateTime) {
+                    $value = new DateTime('@' . $value);
+                }
+
+                return $value;
+        }
+
+        return parent::mapDataField($name, $value);
+    }
+
+    protected function mapItemField(string $name, mixed $value): mixed
+    {
+        switch ($name) {
+            case 'created':
+            case 'changed':
+                if ($value instanceof DateTime) {
+                    $value = $value->getTimestamp();
+                }
+
+                return $value;
+        }
+
+        return parent::mapItemField($name, $value);
+    }
 
     /**
      * @param array<int> $status
@@ -47,7 +88,7 @@ class NonPersistentQueue implements QueueInterface
         return $result;
     }
 
-    public function fetch(array $status = [], int $limit = 0, int $offset = 0): array
+    public function fetchByStatus(array $status = [], int $limit = 0, int $offset = 0): array
     {
         return $this->fetchWhere($status, $limit, $offset);
     }
@@ -167,7 +208,7 @@ class NonPersistentQueue implements QueueInterface
         return $highestId + 1;
     }
 
-    public function addJob(JobInterface $job): JobInterface
+    public function add($job): void
     {
         if ($job->getId() === null) {
             $job->setId($this->getNewId());
@@ -176,11 +217,13 @@ class NonPersistentQueue implements QueueInterface
         if (!in_array($job, $this->queue)) {
             $this->queue[$job->getId()] = $job;
         }
-
-        return $job;
     }
 
-    public function fetchById(int $id): ?JobInterface
+    public function update($job): void
+    {
+    }
+
+    public function fetchById(int|string $id): ?JobInterface
     {
         return $this->queue[$id] ?? null;
     }
@@ -197,7 +240,7 @@ class NonPersistentQueue implements QueueInterface
         return $result;
     }
 
-    public function removeJob(JobInterface $job): void
+    public function remove($job): void
     {
         $this->queue = array_filter(
             $this->queue,
@@ -209,7 +252,7 @@ class NonPersistentQueue implements QueueInterface
     {
         $jobs = $this->fetchWhere($status, 0, 0, 0, $minAgeInSeconds);
         foreach ($jobs as $job) {
-            $this->removeJob($job);
+            $this->remove($job);
         }
     }
 
@@ -223,7 +266,17 @@ class NonPersistentQueue implements QueueInterface
         throw new BadMethodCallException('Non persistent queue does not have any statistics to produce.');
     }
 
-    public function fetchFiltered(array $filters, array $navigation): array
+    public function fetchFiltered(array $filters, ?array $navigation = null): array
+    {
+        throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
+    }
+
+    public function fetchOneFiltered(array $filters): never
+    {
+        throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
+    }
+
+    public function fetchAll(?array $navigation = null): array
     {
         throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
     }
@@ -233,8 +286,18 @@ class NonPersistentQueue implements QueueInterface
         throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
     }
 
-    public function getJobTypes(): array
+    public function countAll(): int
     {
         throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
+    }
+
+    public function fetchJobTypes(): array
+    {
+        throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
+    }
+
+    public static function getSchema(): ContainerSchema
+    {
+        return new JobSchema();
     }
 }

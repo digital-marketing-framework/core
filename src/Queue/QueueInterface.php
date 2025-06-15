@@ -5,8 +5,12 @@ namespace DigitalMarketingFramework\Core\Queue;
 use DateTime;
 use DigitalMarketingFramework\Core\Model\Queue\Error;
 use DigitalMarketingFramework\Core\Model\Queue\JobInterface;
+use DigitalMarketingFramework\Core\Storage\ItemStorageInterface;
 
-interface QueueInterface
+/**
+ * @extends ItemStorageInterface<JobInterface>
+ */
+interface QueueInterface extends ItemStorageInterface
 {
     public const STATUS_QUEUED = 0;
 
@@ -18,21 +22,12 @@ interface QueueInterface
 
     public const STATUS_FAILED = 4;
 
-    public function fetchById(int $id): ?JobInterface;
-
-    /**
-     * @param array<int> $ids
-     *
-     * @return array<JobInterface>
-     */
-    public function fetchByIdList(array $ids): array;
-
     /**
      * @param array<int> $status
      *
      * @return array<JobInterface>
      */
-    public function fetch(array $status = [], int $limit = 0, int $offset = 0): array;
+    public function fetchByStatus(array $status = [], int $limit = 0, int $offset = 0): array;
 
     /**
      * @return array<JobInterface>
@@ -99,10 +94,6 @@ interface QueueInterface
      */
     public function markListAsFailed(array $jobs, string $message = '', bool $preserveTimestamp = false): void;
 
-    public function addJob(JobInterface $job): JobInterface;
-
-    public function removeJob(JobInterface $job): void;
-
     /**
      * @param array<int> $status
      */
@@ -126,18 +117,5 @@ interface QueueInterface
     /**
      * @return array<string>
      */
-    public function getJobTypes(): array;
-
-    /**
-     * @param array{search:string,advancedSearch:bool,searchExactMatch:bool,minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime,type:array<string>,status:array<int>,skipped:?bool} $filters
-     * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
-     *
-     * @return array<JobInterface>
-     */
-    public function fetchFiltered(array $filters, array $navigation): array;
-
-    /**
-     * @param array{search:string,advancedSearch:bool,searchExactMatch:bool,minCreated:?DateTime,maxCreated:?DateTime,minChanged:?DateTime,maxChanged:?DateTime,type:array<string>,status:array<int>,skipped:?bool} $filters
-     */
-    public function countFiltered(array $filters): int;
+    public function fetchJobTypes(): array;
 }

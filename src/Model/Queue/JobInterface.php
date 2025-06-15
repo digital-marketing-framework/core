@@ -43,6 +43,10 @@ interface JobInterface extends ItemInterface
      */
     public function setData(array $data): void;
 
+    public function getSerializedData(): string;
+
+    public function setSerializedData(string $serializedData): void;
+
     public function getHash(): string;
 
     public function setHash(string $hash): void;
