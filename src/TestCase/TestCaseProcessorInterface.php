@@ -8,6 +8,7 @@ interface TestCaseProcessorInterface extends PluginInterface
 {
     /**
      * @param array<string,mixed> $input
+     *
      * @return array<string,mixed>
      */
     public function processInput(array $input): array;

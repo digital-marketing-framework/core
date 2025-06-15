@@ -4,7 +4,7 @@ namespace DigitalMarketingFramework\Core\Model;
 
 abstract class Item implements ItemInterface
 {
-    protected int|string|null $id;
+    protected int|string|null $id = null;
 
     public function getId(): int|string|null
     {
