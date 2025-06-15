@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Model\Queue;
 
-use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+use DigitalMarketingFramework\Core\Model\ItemInterface;
 
 class Error implements ItemInterface
 {
@@ -35,6 +35,10 @@ class Error implements ItemInterface
     public function getId(): null
     {
         return null;
+    }
+
+    public function setId(int|string|null $id): void
+    {
     }
 
     public function getLabel(): string

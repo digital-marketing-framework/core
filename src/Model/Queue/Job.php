@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\Queue\QueueInterface;
 
 class Job implements JobInterface
 {
-    protected ?int $id = null;
+    protected int|string|null $id = null;
 
     /**
      * @param array<mixed> $data
@@ -27,12 +27,12 @@ class Job implements JobInterface
     ) {
     }
 
-    public function getId(): ?int
+    public function getId(): int|string|null
     {
         return $this->id;
     }
 
-    public function setId(int $id): void
+    public function setId(int|string $id): void
     {
         $this->id = $id;
     }

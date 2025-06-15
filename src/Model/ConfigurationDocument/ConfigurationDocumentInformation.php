@@ -2,7 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Model\ConfigurationDocument;
 
-use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+use DigitalMarketingFramework\Core\Model\ItemInterface;
 
 class ConfigurationDocumentInformation implements ItemInterface
 {
@@ -10,7 +10,7 @@ class ConfigurationDocumentInformation implements ItemInterface
      * @param array<string> $includes
      */
     public function __construct(
-        protected string $id,
+        protected int|string|null $id,
         protected string $shortId,
         protected string $name,
         protected bool $readonly,
@@ -24,9 +24,14 @@ class ConfigurationDocumentInformation implements ItemInterface
         return $this->getName();
     }
 
-    public function getId(): string
+    public function getId(): int|string|null
     {
         return $this->id;
+    }
+
+    public function setId(int|string $id): void
+    {
+        $this->id = $id;
     }
 
     public function getShortId(): string
