@@ -271,7 +271,7 @@ class NonPersistentQueue extends ItemStorage implements QueueInterface
         throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
     }
 
-    public function fetchOneFiltered(array $filters): never
+    public function fetchOneFiltered(array $filters, ?array $navigation = null): never
     {
         throw new BadMethodCallException('Non persistent queue does not support filtered custom requests.');
     }

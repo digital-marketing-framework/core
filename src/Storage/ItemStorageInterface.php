@@ -40,7 +40,7 @@ interface ItemStorageInterface
     public function countAll(): int;
 
     /**
-     * @param ?array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     * @param array{page?:int,itemsPerPage?:int,sorting?:array<string,"ASC"|"DESC">}|array{limit?:int,offset?:int,sorting?:array<string,"ASC"|"DESC">}|null $navigation
      *
      * @return array<ItemClass>
      */
@@ -53,7 +53,7 @@ interface ItemStorageInterface
 
     /**
      * @param array<string,mixed> $filters
-     * @param ?array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     * @param array{page?:int,itemsPerPage?:int,sorting?:array<string,"ASC"|"DESC">}|array{limit?:int,offset?:int,sorting?:array<string,"ASC"|"DESC">}|null $navigation
      *
      * @return array<ItemClass>
      */
@@ -61,10 +61,11 @@ interface ItemStorageInterface
 
     /**
      * @param array<string,mixed> $filters
+     * @param array{page?:int,itemsPerPage?:int,sorting?:array<string,"ASC"|"DESC">}|array{limit?:int,offset?:int,sorting?:array<string,"ASC"|"DESC">}|null $navigation
      *
      * @return ?ItemClass
      */
-    public function fetchOneFiltered(array $filters);
+    public function fetchOneFiltered(array $filters, ?array $navigation = null);
 
     /**
      * @param array<int|string> $ids
