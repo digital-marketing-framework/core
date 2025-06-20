@@ -75,12 +75,19 @@ abstract class BackendController extends Plugin implements BackendControllerInte
         return in_array($request->getInternalRoute(), $this->routes);
     }
 
-    protected function getAction(): string
+    protected function getInternalRoute(): string
     {
         $internalRoute = $this->request->getData()['action'] ?? '';
         if (!in_array($internalRoute, $this->getSupportedRoutes(), true)) {
             $internalRoute = $this->request->getInternalRoute();
         }
+
+        return $internalRoute;
+    }
+
+    protected function getAction(): string
+    {
+        $internalRoute = $this->getInternalRoute();
 
         return preg_replace_callback('/[-.](.)/', static fn (array $matches): string => strtoupper($matches[1]), $internalRoute);
     }

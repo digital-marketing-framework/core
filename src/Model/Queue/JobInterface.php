@@ -3,14 +3,10 @@
 namespace DigitalMarketingFramework\Core\Model\Queue;
 
 use DateTime;
-use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+use DigitalMarketingFramework\Core\Model\ItemInterface;
 
 interface JobInterface extends ItemInterface
 {
-    public function getId(): ?int;
-
-    public function setId(int $id): void;
-
     public function getEnvironment(): string;
 
     public function setEnvironment(string $environment): void;
@@ -46,6 +42,10 @@ interface JobInterface extends ItemInterface
      * @param array<mixed> $data
      */
     public function setData(array $data): void;
+
+    public function getSerializedData(): string;
+
+    public function setSerializedData(string $serializedData): void;
 
     public function getHash(): string;
 

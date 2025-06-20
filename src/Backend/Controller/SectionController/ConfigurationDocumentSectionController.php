@@ -5,9 +5,13 @@ namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareTrait;
+use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
+/**
+ * @extends ListSectionController<ConfigurationDocumentInformation>
+ */
 class ConfigurationDocumentSectionController extends ListSectionController implements ConfigurationDocumentManagerAwareInterface
 {
     use ConfigurationDocumentManagerAwareTrait;

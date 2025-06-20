@@ -2,8 +2,14 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 
-use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+use BadMethodCallException;
+use DigitalMarketingFramework\Core\Backend\Response\Response;
+use DigitalMarketingFramework\Core\Model\ItemInterface;
+use DigitalMarketingFramework\Core\Storage\ItemStorageInterface;
 
+/**
+ * @template ItemClass of ItemInterface
+ */
 abstract class ListSectionController extends SectionController
 {
     protected const LIST_SCRIPT = 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/list.js';
@@ -100,6 +106,11 @@ abstract class ListSectionController extends SectionController
 
         $resetUri = $this->getPermanentUri($defaultAction);
         $this->viewData['resetUri'] = $resetUri;
+
+        $returnUrl = $this->getReturnUrl();
+        if ($returnUrl !== null) {
+            $this->viewData['returnUrl'] = $returnUrl;
+        }
     }
 
     /**
@@ -123,17 +134,51 @@ abstract class ListSectionController extends SectionController
     }
 
     /**
+     * @return ?ItemStorageInterface<ItemClass>
+     */
+    protected function getItemStorage()
+    {
+        return null;
+    }
+
+    /**
      * @param array<string,mixed> $filters
      */
-    abstract protected function fetchFilteredCount(array $filters): int;
+    protected function fetchFilteredCount(array $filters): int
+    {
+        $storage = $this->getItemStorage();
+        if (!$storage instanceof ItemStorageInterface) {
+            throw new BadMethodCallException('Not default item storage given to perform filtered count.');
+        }
+
+        return $storage->countFiltered($filters);
+    }
+
+    /**
+     * @param array<ItemClass> $list
+     *
+     * @return array<ItemInterface>
+     */
+    protected function postProcessFetched(array $list): array
+    {
+        return $list;
+    }
 
     /**
      * @param array<string,mixed> $filters
      * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
      *
-     * @return array<ItemInterface>
+     * @return array<ItemClass>
      */
-    abstract protected function fetchFiltered(array $filters, array $navigation): array;
+    protected function fetchFiltered(array $filters, array $navigation): array
+    {
+        $storage = $this->getItemStorage();
+        if (!$storage instanceof ItemStorageInterface) {
+            throw new BadMethodCallException('Not default item storage given to perform filtered search.');
+        }
+
+        return $storage->fetchFiltered($filters, $navigation);
+    }
 
     /**
      * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
@@ -268,6 +313,40 @@ abstract class ListSectionController extends SectionController
         $this->viewData['filterBounds'] = $filterBounds;
         $this->viewData['navigationBounds'] = $navigationBounds;
 
-        $this->viewData['list'] = $this->fetchFiltered($transformedFilters, $transformedNavigation);
+        $list = $this->fetchFiltered($transformedFilters, $transformedNavigation);
+        $this->viewData['list'] = $this->postProcessFetched($list);
+    }
+
+    protected function listAction(): Response
+    {
+        $this->setUpListView('list');
+
+        return $this->render();
+    }
+
+    protected function editAction(): Response
+    {
+        throw new BadMethodCallException('Edit action not implemented in this controller');
+    }
+
+    protected function saveAction(): Response
+    {
+        throw new BadMethodCallException('Save action not implemented in this controller');
+    }
+
+    protected function deleteAction(): Response
+    {
+        $storage = $this->getItemStorage();
+        if (!$storage instanceof ItemStorageInterface) {
+            throw new BadMethodCallException('Delete action not implemented in this controller');
+        }
+
+        $ids = $this->getSelectedItems();
+        $items = $storage->fetchByIdList($ids);
+        foreach ($items as $item) {
+            $storage->remove($item);
+        }
+
+        return $this->redirect('page.' . $this->section . '.list');
     }
 }
