@@ -147,11 +147,21 @@ abstract class ListSectionController extends SectionController
     protected function fetchFilteredCount(array $filters): int
     {
         $storage = $this->getItemStorage();
-        if ($storage instanceof ItemStorageInterface) {
-            return $storage->countFiltered($filters);
+        if (!$storage instanceof ItemStorageInterface) {
+            throw new BadMethodCallException('Not default item storage given to perform filtered count.');
         }
 
-        return 0;
+        return $storage->countFiltered($filters);
+    }
+
+    /**
+     * @param array<ItemClass> $list
+     *
+     * @return array<ItemInterface>
+     */
+    protected function postProcessFetched(array $list): array
+    {
+        return $list;
     }
 
     /**
@@ -163,11 +173,11 @@ abstract class ListSectionController extends SectionController
     protected function fetchFiltered(array $filters, array $navigation): array
     {
         $storage = $this->getItemStorage();
-        if ($storage instanceof ItemStorageInterface) {
-            return $storage->fetchFiltered($filters, $navigation);
+        if (!$storage instanceof ItemStorageInterface) {
+            throw new BadMethodCallException('Not default item storage given to perform filtered search.');
         }
 
-        return [];
+        return $storage->fetchFiltered($filters, $navigation);
     }
 
     /**
@@ -303,15 +313,12 @@ abstract class ListSectionController extends SectionController
         $this->viewData['filterBounds'] = $filterBounds;
         $this->viewData['navigationBounds'] = $navigationBounds;
 
-        $this->viewData['list'] = $this->fetchFiltered($transformedFilters, $transformedNavigation);
+        $list = $this->fetchFiltered($transformedFilters, $transformedNavigation);
+        $this->viewData['list'] = $this->postProcessFetched($list);
     }
 
     protected function listAction(): Response
     {
-        if (!$this->getItemStorage() instanceof ItemStorageInterface) {
-            throw new BadMethodCallException('List action not implemented in this controller');
-        }
-
         $this->setUpListView('list');
 
         return $this->render();
