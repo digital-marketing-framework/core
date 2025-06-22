@@ -22,7 +22,7 @@ abstract class ListSectionController extends SectionController
     }
 
     /**
-     * @return array{search?:string,advancedSearch?:bool,searchExactMatch?:bool,minCreated?:string,maxCreated?:string,minChanged?:string,maxChanged?:string,type?:array<string,string>,status?:array<string>} $filters
+     * @return array{search?:string,advancedSearch?:bool,minCreated?:string,maxCreated?:string,minChanged?:string,maxChanged?:string,type?:array<string,string>,status?:array<string>} $filters
      */
     protected function getFilters(): array
     {
@@ -30,7 +30,7 @@ abstract class ListSectionController extends SectionController
     }
 
     /**
-     * @return array{page?:int|string,itemsPerPage?:int|string,sorting?:array<string,string>} $navigation
+     * @return array{page?:int|string,itemsPerPage?:int|string,sorting?:array<string,"ASC"|"DESC">} $navigation
      */
     protected function getNavigation(): array
     {
@@ -55,62 +55,6 @@ abstract class ListSectionController extends SectionController
     protected function getPage(): ?int
     {
         return $this->getParameters()['page'] ?? null;
-    }
-
-    protected function getCurrentAction(string $default): string
-    {
-        return $this->getParameters()['currentAction'] ?? $default;
-    }
-
-    /**
-     * @param array<string,mixed> $arguments
-     */
-    protected function cleanupArguments(array &$arguments): void
-    {
-        // TODO can we filter out default values in addition to empty values?
-        foreach (array_keys($arguments) as $key) {
-            if (is_array($arguments[$key])) {
-                $this->cleanupArguments($arguments[$key]);
-                if ($arguments[$key] === []) {
-                    unset($arguments[$key]);
-                }
-            } elseif ($arguments[$key] === '') {
-                unset($arguments[$key]);
-            }
-        }
-    }
-
-    /**
-     * @param array{search?:string,advancedSearch?:bool,searchExactMatch?:bool,minCreated?:string,maxCreated?:string,minChanged?:string,maxChanged?:string,type?:array<string,string>,status?:array<string>} $filters
-     * @param array{page?:int|string,itemsPerPage?:int|string,sorting?:array<string,string>} $navigation
-     */
-    protected function getPermanentUri(string $action, array $filters = [], array $navigation = []): string
-    {
-        $arguments = ['filters' => $filters, 'navigation' => $navigation];
-        $this->cleanupArguments($arguments['filters']);
-
-        return $this->uriBuilder->build('page.' . $this->getSection() . '.' . $action, $arguments);
-    }
-
-    /**
-     * @param array{search?:string,advancedSearch?:bool,searchExactMatch?:bool,minCreated?:string,maxCreated?:string,minChanged?:string,maxChanged?:string,type?:array<string,string>,status?:array<string>} $filters
-     * @param array{page?:int|string,itemsPerPage?:int|string,sorting?:array<string,string>} $navigation
-     */
-    protected function assignCurrentRouteData(string $defaultAction, array $filters = [], array $navigation = []): void
-    {
-        $currentAction = $this->getCurrentAction($defaultAction);
-        $this->viewData['current'] = $currentAction;
-
-        $permanentUri = $this->getPermanentUri($defaultAction, $filters, $navigation);
-        $this->viewData['permanentUri'] = $permanentUri;
-
-        $resetUri = $this->getPermanentUri($defaultAction);
-        $this->viewData['resetUri'] = $resetUri;
-
-        $returnUrl = $this->getReturnUrl();
-        if ($returnUrl !== null) {
-            $this->viewData['returnUrl'] = $returnUrl;
-        }
     }
 
     /**
@@ -166,7 +110,7 @@ abstract class ListSectionController extends SectionController
 
     /**
      * @param array<string,mixed> $filters
-     * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     * @param array{page:int,itemsPerPage:int,sorting:array<string,"ASC"|"DESC">} $navigation
      *
      * @return array<ItemClass>
      */
@@ -181,7 +125,7 @@ abstract class ListSectionController extends SectionController
     }
 
     /**
-     * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     * @param array{page:int,itemsPerPage:int,sorting:array<string,"ASC"|"DESC">} $navigation
      */
     protected function getLimitFromNavigation(array $navigation): int
     {
@@ -189,7 +133,7 @@ abstract class ListSectionController extends SectionController
     }
 
     /**
-     * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     * @param array{page:int,itemsPerPage:int,sorting:array<string,"ASC"|"DESC">} $navigation
      */
     protected function getOffsetFromNavigation(array $navigation): int
     {
@@ -198,7 +142,7 @@ abstract class ListSectionController extends SectionController
 
     /**
      * @param array<string,mixed> $filters
-     * @param array{page:int,itemsPerPage:int,sorting:array<string,string>} $navigation
+     * @param array{page:int,itemsPerPage:int,sorting:array<string,"ASC"|"DESC">} $navigation
      * @param array<string> $sortFields
      *
      * @return array{numberOfPages:int,pages:array<int>,sort:array<string>,sortDirection:array<string>}
@@ -221,7 +165,7 @@ abstract class ListSectionController extends SectionController
     }
 
     /**
-     * @param array{page?:int|string,itemsPerPage?:int|string,sorting?:array<string,string>} $navigation
+     * @param array{page?:int|string,itemsPerPage?:int|string,sorting?:array<string,"ASC"|"DESC">} $navigation
      * @param array<string,string> $defaultSorting
      *
      * @return array{page:int,itemsPerPage:int,sorting:array<string,string>}
@@ -280,9 +224,30 @@ abstract class ListSectionController extends SectionController
     }
 
     /**
+     * @param array<string,mixed> $filters
+     * @param array{page:int,itemsPerPage:int,sorting:array<string,"ASC"|"DESC">}|array{} $navigation
+     *
+     * @return array<string,mixed>
+     */
+    protected function getListArguments(array $filters, array $navigation = []): array
+    {
+        $arguments = [
+            'filters' => $filters,
+        ];
+
+        if ($navigation !== []) {
+            $arguments['navigation'] = $navigation;
+        }
+
+        $this->cleanupArguments($arguments['filters']);
+
+        return $arguments;
+    }
+
+    /**
      * @param array<string,string> $defaultSorting
      */
-    protected function setUpListView(string $defaultAction = 'list', array $defaultSorting = []): void
+    protected function setUpListView(array $defaultSorting = []): void
     {
         $this->addListScript();
 
@@ -305,7 +270,8 @@ abstract class ListSectionController extends SectionController
 
         $navigationBounds['pages'] = $this->getPagesForPagination($navigationBounds['pages'], $transformedNavigation['page'], $navigationBounds['numberOfPages']);
 
-        $this->assignCurrentRouteData($defaultAction, $filters, $transformedNavigation);
+        $arguments = $this->getListArguments($filters, $transformedNavigation);
+        $this->assignCurrentRouteData($arguments);
 
         $this->viewData['filters'] = $filters;
         $this->viewData['navigation'] = $transformedNavigation;
@@ -319,7 +285,7 @@ abstract class ListSectionController extends SectionController
 
     protected function listAction(): Response
     {
-        $this->setUpListView('list');
+        $this->setUpListView();
 
         return $this->render();
     }

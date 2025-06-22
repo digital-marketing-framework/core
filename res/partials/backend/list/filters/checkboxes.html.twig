@@ -1,0 +1,21 @@
+{% if filterBounds.countNotEmpty[name] > 1 or filterBounds.selected[name] %}
+    <div class="form-row justify-content-between">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="btn btn-default disabled" style="min-width: 8rem">{{ labelMap[name] ?? name }}</span>
+
+                {% for option,count in filterBounds[name] %}
+                    {% if count > 0 or filters[name][option] %}
+                        <label class="form-control btn btn-default" style="width:auto">
+                            <span class="form-check form-check-type-toggle">
+                                <input type="checkbox" name="filters[{{ name }}][{{ option }}]" value="1" {% if filters[name][option] %}checked="checked"{% endif %} class="form-check-input" />
+                            </span>
+                            {{ labelMap[option] ?? option }}
+                            ({{ count }})
+                        </label>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}

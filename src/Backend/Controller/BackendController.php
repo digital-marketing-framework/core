@@ -85,9 +85,13 @@ abstract class BackendController extends Plugin implements BackendControllerInte
         return $internalRoute;
     }
 
-    protected function getAction(): string
+    protected function getAction(bool $dashed = false): string
     {
         $internalRoute = $this->getInternalRoute();
+
+        if ($dashed) {
+            return $internalRoute;
+        }
 
         return preg_replace_callback('/[-.](.)/', static fn (array $matches): string => strtoupper($matches[1]), $internalRoute);
     }
