@@ -13,6 +13,10 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_DEBUG = false;
 
+    public const KEY_ENVIRONMENT = 'environment';
+
+    public const DEFAULT_ENVIRONMENT = '';
+
     public const KEY_CONFIGURATION_STORAGE = 'configurationStorage';
 
     public const KEY_CONFIGURATION_STORAGE_FOLDER = 'folder';
@@ -123,6 +127,11 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $this->getRenderingDefinition()->setLabel('General');
 
         $this->addProperty(static::KEY_DEBUG, new BooleanSchema(static::DEFAULT_DEBUG));
+
+        $environmentSchema = new StringSchema(static::DEFAULT_ENVIRONMENT);
+        $environmentSchema->getRenderingDefinition()->setLabel('Default Host');
+        $environmentSchema->getRenderingDefinition()->setGeneralDescription('Host address to use for logging when running CLI commands.');
+        $this->addProperty(static::KEY_ENVIRONMENT, $environmentSchema);
 
         $this->configurationStorageSchema = $this->getConfigurationStorageSchema();
         $this->addProperty(static::KEY_CONFIGURATION_STORAGE, $this->configurationStorageSchema);

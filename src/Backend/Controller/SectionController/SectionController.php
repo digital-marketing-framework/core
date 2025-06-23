@@ -38,7 +38,7 @@ abstract class SectionController extends BackendController implements SectionCon
 
     protected function render(): HtmlResponse
     {
-        $templateName = $this->request->getInternalRoute();
+        $templateName = $this->getInternalRoute();
         $templatePath = sprintf('section/%s/%s.html.twig', $this->section, $templateName);
         $config = ['templateName' => $templatePath];
 
@@ -87,9 +87,73 @@ abstract class SectionController extends BackendController implements SectionCon
         }
     }
 
+    /**
+     * @param array<string,mixed> $arguments
+     */
+    protected function cleanupArguments(array &$arguments): void
+    {
+        // TODO can we filter out default values in addition to empty values?
+        foreach (array_keys($arguments) as $key) {
+            if (is_array($arguments[$key])) {
+                $this->cleanupArguments($arguments[$key]);
+                if ($arguments[$key] === []) {
+                    unset($arguments[$key]);
+                }
+            } elseif ($arguments[$key] === '') {
+                unset($arguments[$key]);
+            }
+        }
+    }
+
+    protected function getCurrentAction(?string $default = null): string
+    {
+        $default ??= $this->getAction();
+
+        return $this->getParameters()['currentAction'] ?? $default;
+    }
+
     protected function getReturnUrl(string $default = null): ?string
     {
         return $this->getParameters()['returnUrl'] ?? $default;
+    }
+
+    /**
+     * @param ?array<string,mixed> $arguments
+     * @param array<string,mixed> $additionalArguments
+     */
+    protected function getPermanentUri(?string $action = null, ?array $arguments = null, array $additionalArguments = []): string
+    {
+        $action ??= $this->getAction(true);
+        $arguments = [
+            ...($arguments ?? $this->getParameters()),
+            ...$additionalArguments,
+        ];
+
+        return $this->uriBuilder->build(
+            'page.' . $this->getSection() . '.' . $action,
+            $arguments
+        );
+    }
+
+    /**
+     * @param array<string,mixed> $arguments
+     */
+    protected function assignCurrentRouteData(?array $arguments = null, ?string $defaultReturnRoute = null): void
+    {
+        $action = $this->getAction(true);
+        $this->viewData['current'] = $this->getCurrentAction($action);
+
+        $permanentUri = $this->getPermanentUri($action, $arguments);
+        $this->viewData['permanentUri'] = $permanentUri;
+
+        $resetUri = $this->getPermanentUri($action, []);
+        $this->viewData['resetUri'] = $resetUri;
+
+        $defaultReturnUri = $defaultReturnRoute === null ? null : $this->uriBuilder->build($defaultReturnRoute);
+        $returnUrl = $this->getReturnUrl($defaultReturnUri);
+        if ($returnUrl !== null) {
+            $this->viewData['returnUrl'] = $returnUrl;
+        }
     }
 
     public function getResponse(Request $request): Response

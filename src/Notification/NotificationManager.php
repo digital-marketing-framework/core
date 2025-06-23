@@ -87,15 +87,19 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
     }
 
     public function notify(
-        string $environment,
         string $title,
         string $message = '',
+        string $environment = '',
         mixed $details = null,
         string $component = '',
         int $level = NotificationManagerInterface::LEVEL_NOTICE,
     ): void {
         if (!$this->enabled()) {
             return;
+        }
+
+        if ($environment === '') {
+            $environment = $this->registry->getHost();
         }
 
         $fullComponent = $this->getComponent($component);

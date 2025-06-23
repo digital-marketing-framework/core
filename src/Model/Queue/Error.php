@@ -2,7 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Model\Queue;
 
-use DigitalMarketingFramework\Core\Model\Backend\ItemInterface;
+use DateTime;
+use DigitalMarketingFramework\Core\Model\ItemInterface;
 
 class Error implements ItemInterface
 {
@@ -13,13 +14,15 @@ class Error implements ItemInterface
         protected string $message,
         protected int $count,
         protected JobInterface $lastSeen,
+        protected DateTime $lastSeenTime,
         protected JobInterface $firstSeen,
+        protected DateTime $firstSeenTime,
         protected array $types,
     ) {
     }
 
     /**
-     * @param array{message:string,count:int,lastSeen:JobInterface,firstSeen:JobInterface,types:array<string,int>} $record
+     * @param array{message:string,count:int,lastSeen:JobInterface,lastSeenTime:DateTime,firstSeen:JobInterface,firstSeenTime:DateTime,types:array<string,int>} $record
      */
     public static function fromDataRecord(array $record): Error
     {
@@ -27,7 +30,9 @@ class Error implements ItemInterface
             $record['message'],
             $record['count'],
             $record['lastSeen'],
+            $record['lastSeenTime'],
             $record['firstSeen'],
+            $record['firstSeenTime'],
             $record['types'],
         );
     }
@@ -35,6 +40,10 @@ class Error implements ItemInterface
     public function getId(): null
     {
         return null;
+    }
+
+    public function setId(int|string|null $id): void
+    {
     }
 
     public function getLabel(): string
@@ -57,9 +66,19 @@ class Error implements ItemInterface
         return $this->lastSeen;
     }
 
+    public function getLastSeenTime(): DateTime
+    {
+        return $this->lastSeenTime;
+    }
+
     public function getFirstSeen(): JobInterface
     {
         return $this->firstSeen;
+    }
+
+    public function getFirstSeenTime(): DateTime
+    {
+        return $this->firstSeenTime;
     }
 
     /**

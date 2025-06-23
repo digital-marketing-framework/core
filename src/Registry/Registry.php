@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\AlertRegistryTrait;
@@ -37,9 +38,11 @@ use DigitalMarketingFramework\Core\Registry\Service\ScriptAssetsRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\StaticConfigurationDocumentRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\TestCaseRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistryTrait;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
+use DigitalMarketingFramework\Core\TestCase\TestCaseManagerAwareInterface;
 
 class Registry implements RegistryInterface
 {
@@ -69,6 +72,7 @@ class Registry implements RegistryInterface
     use IdentifierCollectorRegistryTrait;
 
     use ApiRegistryTrait;
+    use TestCaseRegistryTrait;
     use BackendTemplatingRegistryTrait;
     use BackendControllerRegistryTrait;
 
@@ -150,6 +154,10 @@ class Registry implements RegistryInterface
         if ($object instanceof NotificationManagerAwareInterface) {
             $object->setNotificationManager($this->getNotificationManager());
         }
+
+        if ($object instanceof TestCaseManagerAwareInterface) {
+            $object->setTestCaseManager($this->getTestCaseManager());
+        }
     }
 
     public function addServiceContext(WriteableContextInterface $context): void
@@ -162,6 +170,8 @@ class Registry implements RegistryInterface
         if (!class_exists($class)) {
             throw new RegistryException('Class "' . $class . '" is unknown!');
         }
+
+        $arguments = array_map(fn (mixed $arg) => $arg instanceof ProxyArgument ? $arg() : $arg, $arguments);
 
         $object = new $class(...$arguments);
         $this->processObjectAwareness($object);
@@ -189,5 +199,17 @@ class Registry implements RegistryInterface
         if (!is_subclass_of($interface, $parentInterface, true)) {
             throw new RegistryException('interface "' . $interface . '" has to extend "' . $parentInterface . '".');
         }
+    }
+
+    public function getHost(): string
+    {
+        $host = $this->getContext()->getHost();
+
+        if ($host === null || $host === '') {
+            $host = $this->getGlobalConfiguration()->get('core')[CoreGlobalConfigurationSchema::KEY_ENVIRONMENT]
+                ?? CoreGlobalConfigurationSchema::DEFAULT_ENVIRONMENT;
+        }
+
+        return $host;
     }
 }

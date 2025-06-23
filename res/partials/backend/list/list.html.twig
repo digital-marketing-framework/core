@@ -10,7 +10,8 @@
     {% set showPagination = usePagination and navigationBounds.numberOfPages > 1 %}
     {% set useSorting = useSorting and navigation.sorting|length > 0 %}
     {% set useBulkActions = useBulkActions and list|length > 0 %}
-    {% set returnUrl = returnUrl ?? permanentUri %}
+
+    <input type="hidden" name="returnUrl" value="{{ permanentUri }}" />
 
     {% if useFilters or usePagination or useSorting %}
         {% if useFilters %}
@@ -18,7 +19,6 @@
                 <h3>{{ include('collapse/trigger.html.twig', { name:'filters', label:'Filters' }) }}</h3>
                 {% embed 'collapse/target.html.twig' with { name: 'filters' } %}
                     {% block content %}
-                        <input type="hidden" name="returnUrl" value="{{ returnUrl }}" />
                         {% for filter in filterNames %}
                             {{ include('list/filters/' ~ filter ~ '.html.twig', {filters,filterBounds}) }}
                         {% endfor %}
@@ -179,7 +179,7 @@
                                     {% block tableRowLabel %}
                                         <td class="{{ labelClass ?? 'col-title' }}">
                                             {% if linkLabelAction %}
-                                                <a href="{{ uri(route ~ '.' ~ linkLabelAction, {id:item.id, returnUrl}) }}">
+                                                <a href="{{ uri(route ~ '.' ~ linkLabelAction, {id:item.id, returnUrl:permanentUri}) }}" title="{{ item.description ?? '' }}">
                                                     {{ item.label }}
                                                 </a>
                                             {% else %}
@@ -194,10 +194,10 @@
                                 {% if useActions %}
                                     {% block tableRowActions %}
                                         <td class="{{ actionsClass ?? 'col-control' }}">
-                                            {% set args = {list:{(item.id):item.id}, returnUrl} %}
+                                            {% set args = {list:{(item.id):item.id}, returnUrl:permanentUri} %}
 
                                             {% block tableRowActionsEdit %}
-                                                <a href="{{ uri(route ~ '.edit', {id:item.id, returnUrl}) }}" class="btn btn-default" title="edit">
+                                                <a href="{{ uri(route ~ '.edit', {id:item.id, returnUrl:permanentUri}) }}" class="btn btn-default" title="edit">
                                                     {{ include('t3-icon.html.twig', {name:'open'}) }}
                                                 </a>
                                             {% endblock %}

@@ -3,15 +3,13 @@
 namespace DigitalMarketingFramework\Core\Model\Queue;
 
 use DateTime;
+use DigitalMarketingFramework\Core\Model\Item;
 use DigitalMarketingFramework\Core\Queue\QueueInterface;
+use DigitalMarketingFramework\Core\Utility\QueueUtility;
+use JsonException;
 
-class Job implements JobInterface
+class Job extends Item implements JobInterface
 {
-    protected ?int $id = null;
-
-    /**
-     * @param array<mixed> $data
-     */
     public function __construct(
         protected string $environment = '',
         protected DateTime $created = new DateTime(),
@@ -19,22 +17,12 @@ class Job implements JobInterface
         protected int $status = QueueInterface::STATUS_QUEUED,
         protected bool $skipped = false,
         protected string $statusMessage = '',
-        protected array $data = [],
+        protected string $serializedData = '',
         protected string $hash = '',
         protected string $label = '',
         protected string $type = '',
         protected int $retryAmount = 0,
     ) {
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
     public function getEnvironment(): string
@@ -104,6 +92,25 @@ class Job implements JobInterface
         $this->setStatusMessage($statusMessage);
     }
 
+    /**
+     * @return array<string>
+     */
+    public function getErrorMessages(): array
+    {
+        if ($this->getStatus() !== QueueInterface::STATUS_FAILED) {
+            return [];
+        }
+
+        return array_map(fn (array $error) => $error['message'], QueueUtility::getErrors($this));
+    }
+
+    public function getLatestErrorMessage(): ?string
+    {
+        $errors = $this->getErrorMessages();
+
+        return array_pop($errors);
+    }
+
     public function getChanged(): DateTime
     {
         return $this->changed;
@@ -112,16 +119,6 @@ class Job implements JobInterface
     public function setChanged(DateTime $changed): void
     {
         $this->changed = $changed;
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    public function setData(array $data): void
-    {
-        $this->data = $data;
     }
 
     public function getHash(): string
@@ -167,5 +164,46 @@ class Job implements JobInterface
     public function setRetryAmount(int $amount): void
     {
         $this->retryAmount = $amount;
+    }
+
+    public function getSerializedData(): string
+    {
+        return $this->serializedData;
+    }
+
+    public function setSerializedData(string $serializedData): void
+    {
+        $this->serializedData = $serializedData;
+    }
+
+    public function getData(): array
+    {
+        $data = $this->getSerializedData();
+        if ($data === '') {
+            return [];
+        }
+
+        try {
+            return json_decode($data, associative: true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            return [];
+        }
+    }
+
+    public function setData(array $data): void
+    {
+        try {
+            $serializedData = json_encode($data, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            $this->setStatus(QueueInterface::STATUS_FAILED);
+            $this->setStatusMessage(sprintf('data encoding failed [%d]: "%s"', $e->getCode(), $e->getMessage()));
+            try {
+                $serializedData = json_encode($data, flags: JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR);
+            } catch (JsonException) {
+                $serializedData = print_r($data, true);
+            }
+        }
+
+        $this->setSerializedData($serializedData);
     }
 }
