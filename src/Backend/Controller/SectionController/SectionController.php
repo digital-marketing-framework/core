@@ -123,13 +123,14 @@ abstract class SectionController extends BackendController implements SectionCon
      */
     protected function getPermanentUri(?string $action = null, ?array $arguments = null, array $additionalArguments = []): string
     {
+        $action ??= $this->getAction(true);
         $arguments = [
             ...($arguments ?? $this->getParameters()),
             ...$additionalArguments,
         ];
 
         return $this->uriBuilder->build(
-            'page.' . $this->getSection() . '.' . ($action ?? $this->getAction(true)),
+            'page.' . $this->getSection() . '.' . $action,
             $arguments
         );
     }
@@ -139,7 +140,7 @@ abstract class SectionController extends BackendController implements SectionCon
      */
     protected function assignCurrentRouteData(?array $arguments = null, ?string $defaultReturnRoute = null): void
     {
-        $action = $this->getAction();
+        $action = $this->getAction(true);
         $this->viewData['current'] = $this->getCurrentAction($action);
 
         $permanentUri = $this->getPermanentUri($action, $arguments);

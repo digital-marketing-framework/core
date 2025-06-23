@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Model\Queue;
 use DateTime;
 use DigitalMarketingFramework\Core\Model\Item;
 use DigitalMarketingFramework\Core\Queue\QueueInterface;
+use DigitalMarketingFramework\Core\Utility\QueueUtility;
 use JsonException;
 
 class Job extends Item implements JobInterface
@@ -89,6 +90,25 @@ class Job extends Item implements JobInterface
         $statusMessage .= $now->format('Y-m-d H:i:s: ') . $message;
 
         $this->setStatusMessage($statusMessage);
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getErrorMessages(): array
+    {
+        if ($this->getStatus() !== QueueInterface::STATUS_FAILED) {
+            return [];
+        }
+
+        return array_map(fn (array $error) => $error['message'], QueueUtility::getErrors($this));
+    }
+
+    public function getLatestErrorMessage(): ?string
+    {
+        $errors = $this->getErrorMessages();
+
+        return array_pop($errors);
     }
 
     public function getChanged(): DateTime
