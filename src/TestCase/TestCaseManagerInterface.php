@@ -13,12 +13,12 @@ interface TestCaseManagerInterface
      *
      * @return array<TestResult>
      */
-    public function runTests(array $tests): array;
+    public function runTests(array $tests, bool $triggerNotification = false, bool $ignoreOutdated = false): array;
 
     /**
      * @return array<TestResult>
      */
-    public function runAllTests(): array;
+    public function runAllTests(bool $triggerNotification = false, bool $ignoreOutdated = false): array;
 
     public function updateHash(TestCaseInterface $test): void;
 

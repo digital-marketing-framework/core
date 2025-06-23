@@ -79,4 +79,6 @@ interface RegistryInterface extends
     public function processObjectAwareness(object $object): void;
 
     public function addServiceContext(WriteableContextInterface $context): void;
+
+    public function getHost(): string;
 }

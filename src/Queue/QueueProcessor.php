@@ -27,9 +27,9 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
         $this->queue->markAsFailed($job, $message, $preserveTimestamp);
         if (!$this->queueSettings->rerunFailedJobEnabled() || $job->getRetryAmount() === 0) {
             $this->notificationManager->notify(
-                $job->getEnvironment(),
-                sprintf('Job %s failed', $job->getLabel()),
+                sprintf('Anyrel distribution job %s failed', $job->getLabel()),
                 $message,
+                $job->getEnvironment(),
                 component: 'queue-processor',
                 level: NotificationManagerInterface::LEVEL_ERROR
             );

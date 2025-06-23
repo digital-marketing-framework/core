@@ -28,7 +28,11 @@ class TestResult implements ItemInterface
 
     public function getLabel(): string
     {
-        return $this->test->getLabel();
+        if ($this->test->getLabel() !== '' && $this->test->getLabel() !== $this->test->getName()) {
+            return sprintf('%s (%s)', $this->test->getLabel(), $this->test->getName());
+        }
+
+        return $this->test->getName();
     }
 
     public function getId(): int|string|null
@@ -80,5 +84,26 @@ class TestResult implements ItemInterface
     public function getError(): ?string
     {
         return $this->error;
+    }
+
+    public function getIssue(bool $ignoreOutdated = false): ?string
+    {
+        $label = $this->getLabel();
+        $status = $this->getStatus();
+        $outdated = $this->isOutdated();
+
+        if ($status === TestResult::STATUS_ERROR) {
+            return sprintf('Test case "%s" errored: "%s"', $label, $this->getError());
+        }
+
+        if ($status === TestResult::STATUS_FAIL) {
+            return sprintf('Test case "%s" failed%s.', $label, $outdated ? ', and is outdated' : '');
+        }
+
+        if (!$ignoreOutdated && $outdated) {
+            return sprintf('Test case "%s" succeeded but is outdated.', $label);
+        }
+
+        return null;
     }
 }

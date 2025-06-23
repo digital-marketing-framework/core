@@ -66,17 +66,18 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
 
     protected function getHtmlBody(string $environment, string $title, string $message, mixed $details, string $component, int $level): string
     {
-        $body = '<h1>' . $title . '</h1>' . PHP_EOL;
+        $body = '<div style="font-family: monospace">';
+        $body .= '<h1>' . $title . '</h1>' . PHP_EOL;
         $body .= '<p>Environment: ' . $environment . '</p>' . PHP_EOL;
         $body .= '<p>Component: ' . $component . '</p>' . PHP_EOL;
         $body .= '<p>Level: ' . $this->levelToString($level) . '</p>' . PHP_EOL;
-        $body .= '<p>Message: ' . $message . '</p>' . PHP_EOL;
+        $body .= '<p>Message: ' . nl2br($message) . '</p>' . PHP_EOL;
 
         if ($details !== null) {
             $body .= PHP_EOL . '<pre>' . print_r($details, true) . '</pre>' . PHP_EOL;
         }
 
-        return $body;
+        return $body . '</div>';
     }
 
     /**

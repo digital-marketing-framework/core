@@ -4,10 +4,15 @@ namespace DigitalMarketingFramework\Core\TestCase;
 
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\TestCase\TestCaseInterface;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterface;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareTrait;
+use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
-class TestCaseManager implements TestCaseManagerInterface
+class TestCaseManager implements TestCaseManagerInterface, NotificationManagerAwareInterface
 {
+    use NotificationManagerAwareTrait;
+
     public function __construct(
         protected RegistryInterface $registry,
     ) {
@@ -44,6 +49,24 @@ class TestCaseManager implements TestCaseManagerInterface
         }
     }
 
+    /**
+     * @param array<TestResult> $results
+     *
+     * @return array<string>
+     */
+    protected function findIssues(array $results, bool $ignoreOutdated = false): array
+    {
+        $issues = [];
+        foreach ($results as $result) {
+            $report = $result->getIssue($ignoreOutdated);
+            if ($report !== null) {
+                $issues[] = $report;
+            }
+        }
+
+        return $issues;
+    }
+
     public function runTest(TestCaseInterface $test): TestResult
     {
         try {
@@ -57,20 +80,36 @@ class TestCaseManager implements TestCaseManagerInterface
         }
     }
 
-    public function runTests(array $tests): array
+    public function runTests(array $tests, bool $triggerNotification = false, bool $ignoreOutdated = false): array
     {
         $results = [];
         foreach ($tests as $test) {
             $results[] = $this->runTest($test);
         }
 
+        if ($triggerNotification) {
+            $issues = $this->findIssues($results, $ignoreOutdated);
+            $issueCount = count($issues);
+            if ($issueCount > 0) {
+                $message = sprintf('Issues found in %d test cases.%s', $issueCount, PHP_EOL)
+                    . implode(PHP_EOL, $issues);
+
+                $this->notificationManager->notify(
+                    'Anyrel tests failed',
+                    $message,
+                    component: 'test-suite',
+                    level: NotificationManagerInterface::LEVEL_ERROR
+                );
+            }
+        }
+
         return $results;
     }
 
-    public function runAllTests(): array
+    public function runAllTests(bool $triggerNotification = false, bool $ignoreOutdated = false): array
     {
         $tests = $this->getTestCaseStorage()->fetchAll();
 
-        return $this->runTests($tests);
+        return $this->runTests($tests, $triggerNotification, $ignoreOutdated);
     }
 }

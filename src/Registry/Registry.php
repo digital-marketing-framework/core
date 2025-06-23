@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\AlertRegistryTrait;
@@ -198,5 +199,17 @@ class Registry implements RegistryInterface
         if (!is_subclass_of($interface, $parentInterface, true)) {
             throw new RegistryException('interface "' . $interface . '" has to extend "' . $parentInterface . '".');
         }
+    }
+
+    public function getHost(): string
+    {
+        $host = $this->getContext()->getHost();
+
+        if ($host === null || $host === '') {
+            $host = $this->getGlobalConfiguration()->get('core')[CoreGlobalConfigurationSchema::KEY_ENVIRONMENT]
+                ?? CoreGlobalConfigurationSchema::DEFAULT_ENVIRONMENT;
+        }
+
+        return $host;
     }
 }
