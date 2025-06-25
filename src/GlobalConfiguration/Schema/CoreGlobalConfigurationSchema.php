@@ -23,6 +23,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const KEY_CONFIGURATION_STORAGE_DEFAULT_DOCUMENT = 'defaultConfigurationDocument';
 
+    public const KEY_CONFIGURATION_STORAGE_DOCUMENT_ALIASES = 'documentAliases';
+
     public const KEY_CONFIGURATION_STORAGE_ALLOW_SAVE_TO_EXTENSION_PATHS = 'allowSaveToExtensionPaths';
 
     public const DEFAULT_CONFIGURATION_STORAGE_ALLOW_SAVE_TO_EXTENSION_PATHS = false;
@@ -74,6 +76,10 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $defaultConfigurationDocumentSchema->getAllowedValues()->addValueSet('document/all');
         $defaultConfigurationDocumentSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_DEFAULT_DOCUMENT, $defaultConfigurationDocumentSchema);
+
+        $documentAliasesSchema = new StringSchema();
+        $documentAliasesSchema->getRenderingDefinition()->setGeneralDescription('Configuration document aliases to override documents per environment. Use environment variables to inject different document paths for different systems. Example: main=%env(ANYREL_MAIN_DOCUMENT_PATH)%,shop=%env(ANYREL_SHOP_DOCUMENT_PATH)%');
+        $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_DOCUMENT_ALIASES, $documentAliasesSchema);
 
         $configurationStorageSchema->addProperty(
             static::KEY_CONFIGURATION_STORAGE_ALLOW_SAVE_TO_EXTENSION_PATHS,
