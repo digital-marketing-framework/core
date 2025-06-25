@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\Backend\Controller\SectionController\Dashboar
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\GlobalSettingsSectionController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Section\Section;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticAliasConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticCoreSystemConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticResourceConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\DataPrivacy\UnregulatedDataPrivacyPlugin;
@@ -256,7 +257,7 @@ class CoreInitialization extends Initialization
                 'Show',
                 100
             ),
-            new Section( // TODO implement API section
+            new Section(
                 'API',
                 'CORE',
                 'page.api.list',
@@ -265,24 +266,6 @@ class CoreInitialization extends Initialization
                 'Show',
                 100
             ),
-            // new Section( // TODO move to package notification-db
-            //      'Notifications',
-            //      'CORE',
-            //      'page.notification.list',
-            //      'Read and manage Notifications',
-            //      'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-notifications.svg',
-            //      'Show',
-            //      100
-            // ),
-            // new Section( // TODO move to package test-suite and test-suite-distributor?
-            //      'Tests',
-            //      'CORE',
-            //      'page.tests.list',
-            //      'Project Setup Test Suite',
-            //      'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-tests.svg',
-            //      'Show',
-            //      100
-            // ),
         ];
     }
 
@@ -298,6 +281,10 @@ class CoreInitialization extends Initialization
 
         $registry->registerStaticConfigurationDocumentDiscovery(
             $registry->createObject(StaticCoreSystemConfigurationDocumentDiscovery::class, [$registry])
+        );
+
+        $registry->registerStaticConfigurationDocumentDiscovery(
+            $registry->createObject(StaticAliasConfigurationDocumentDiscovery::class, [$registry])
         );
 
         $enableUnregulatedDataPrivacyPlugin = $registry->getGlobalConfiguration()->get('core', [])[CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY][CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY_ENABLE_UNREGULATED] ?? false;

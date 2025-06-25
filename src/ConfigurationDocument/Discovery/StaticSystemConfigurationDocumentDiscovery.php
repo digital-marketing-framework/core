@@ -65,7 +65,7 @@ abstract class StaticSystemConfigurationDocumentDiscovery implements StaticConfi
 
     public function setContent(string $identifier, string $content): void
     {
-        throw new BadMethodCallException('');
+        throw new BadMethodCallException('System configuration cannot be saved or overwritten.');
     }
 
     /**
