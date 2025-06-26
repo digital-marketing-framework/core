@@ -17,6 +17,7 @@ use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\AlertRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\BackendControllerRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Plugin\CleanupRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\IdentifierCollectorRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Plugin\NotificationRegistryTrait;
@@ -75,6 +76,7 @@ class Registry implements RegistryInterface
     use TestCaseRegistryTrait;
     use BackendTemplatingRegistryTrait;
     use BackendControllerRegistryTrait;
+    use CleanupRegistryTrait;
 
     protected RegistryCollectionInterface $registryCollection;
 

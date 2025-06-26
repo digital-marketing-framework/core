@@ -43,4 +43,14 @@ abstract class QueueSettings extends GlobalSettings
     {
         return $this->get(QueueSchema::KEY_QUEUE_RE_RUN_DELAY);
     }
+
+    public function cleanupDoneJobsOnly(): bool
+    {
+        return $this->get(QueueSchema::KEY_QUEUE_CLEANUP_DONE_JOBS_ONLY);
+    }
+
+    public function getBatchSize(): int
+    {
+        return $this->get(QueueSchema::KEY_QUEUE_PROCESSOR_BATCH_SIZE);
+    }
 }

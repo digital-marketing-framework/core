@@ -34,13 +34,29 @@ class QueueSchema extends ContainerSchema
 
     public const DEFAULT_QUEUE_RE_RUN_DELAY = 300;
 
+    public const KEY_QUEUE_CLEANUP_DONE_JOBS_ONLY = 'cleanupDoneOnly';
+
+    public const DEFAULT_QUEUE_CLEANUP_DONE_JOBS_ONLY = true;
+
+    public const KEY_QUEUE_PROCESSOR_BATCH_SIZE = 'processorBatchSize';
+
+    public const DEFAULT_QUEUE_PROCESSOR_BATCH_SIZE = 10;
+
     public function __construct()
     {
         parent::__construct();
 
+        $batchSizeSchema = new IntegerSchema(static::DEFAULT_QUEUE_PROCESSOR_BATCH_SIZE);
+        $batchSizeSchema->getRenderingDefinition()->setLabel('Async processing batch size');
+        $this->addProperty(static::KEY_QUEUE_PROCESSOR_BATCH_SIZE, $batchSizeSchema);
+
         $expirationTimeSchema = new IntegerSchema(static::DEFAULT_QUEUE_EXPIRATION_TIME);
         $expirationTimeSchema->getRenderingDefinition()->setLabel('Expiration time (in days)');
         $this->addProperty(static::KEY_QUEUE_EXPIRATION_TIME, $expirationTimeSchema);
+
+        $doneOnlySchema = new BooleanSchema(static::DEFAULT_QUEUE_CLEANUP_DONE_JOBS_ONLY);
+        $doneOnlySchema->getRenderingDefinition()->setLabel('Cleanup only jobs with status "done"');
+        $this->addProperty(static::KEY_QUEUE_CLEANUP_DONE_JOBS_ONLY, $doneOnlySchema);
 
         $maximumExecutionTimeSchema = new IntegerSchema(static::DEFAULT_QUEUE_MAXIMUM_EXECUTION_TIME);
         $maximumExecutionTimeSchema->getRenderingDefinition()->setLabel('Maximum execution time (in seconds)');
