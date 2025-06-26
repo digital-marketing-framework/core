@@ -25,4 +25,6 @@ interface QueueProcessorInterface
     public function updateFailedJobs(array $jobs = []): void;
 
     public function updateJobsAndProcessBatch(): void;
+
+    public function cleanupJobs(): void;
 }

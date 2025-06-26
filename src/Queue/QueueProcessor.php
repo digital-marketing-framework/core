@@ -119,4 +119,11 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
         $this->updateFailedJobs();
         $this->processBatch();
     }
+
+    public function cleanupJobs(): void
+    {
+        $expirationTime = $this->queueSettings->getExpirationTime() * 24 * 3600;
+        $status = $this->queueSettings->cleanupDoneJobsOnly() ? [QueueInterface::STATUS_DONE] : [];
+        $this->queue->removeOldJobs($expirationTime, $status);
+    }
 }
