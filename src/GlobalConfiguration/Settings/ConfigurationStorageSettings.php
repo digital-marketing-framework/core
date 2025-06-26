@@ -3,9 +3,15 @@
 namespace DigitalMarketingFramework\Core\GlobalConfiguration\Settings;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
+use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
+use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 
-class ConfigurationStorageSettings extends GlobalSettings
+class ConfigurationStorageSettings extends GlobalSettings implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
+    public const BLOCKED_ALIASES = ['defaults', 'reset'];
+
     public function __construct()
     {
         parent::__construct('core', CoreGlobalConfigurationSchema::KEY_CONFIGURATION_STORAGE);
@@ -41,7 +47,25 @@ class ConfigurationStorageSettings extends GlobalSettings
         $aliasPairStrings = explode(',', $aliasesString);
         foreach ($aliasPairStrings as $aliasPairString) {
             [$name, $path] = explode('=', $aliasPairString, 2);
-            $aliases[trim($name)] = trim($path);
+            $name = trim($name);
+            $path = trim($path);
+
+            if ($path === '') {
+                $this->logger->error('Empty configuration document alias path is not valid.');
+                continue;
+            }
+
+            if ($name === '') {
+                $this->logger->error('Empty configuration document alias is not valid.');
+                continue;
+            }
+
+            if (in_array($name, static::BLOCKED_ALIASES)) {
+                $this->logger->error(sprintf('Configuration document alias "%s" is not allowed.', $name));
+                continue;
+            }
+
+            $aliases[$name] = $path;
         }
 
         return $aliases;
