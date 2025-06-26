@@ -57,8 +57,9 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
         }
     }
 
-    public function processBatch(int $batchSize = 1): void
+    public function processBatch(): void
     {
+        $batchSize = $this->queueSettings->getBatchSize();
         $this->processJobs($this->queue->fetchQueued($batchSize));
     }
 
@@ -112,10 +113,10 @@ class QueueProcessor implements QueueProcessorInterface, GlobalConfigurationAwar
         }
     }
 
-    public function updateJobsAndProcessBatch(int $batchSize = 1): void
+    public function updateJobsAndProcessBatch(): void
     {
         $this->updateStuckJobsStatus();
         $this->updateFailedJobs();
-        $this->processBatch($batchSize);
+        $this->processBatch();
     }
 }

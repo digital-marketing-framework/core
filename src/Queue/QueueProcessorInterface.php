@@ -13,7 +13,7 @@ interface QueueProcessorInterface
      */
     public function processJobs(array $jobs): void;
 
-    public function processBatch(int $batchSize = 1): void;
+    public function processBatch(): void;
 
     public function processAll(): void;
 
@@ -24,5 +24,5 @@ interface QueueProcessorInterface
      */
     public function updateFailedJobs(array $jobs = []): void;
 
-    public function updateJobsAndProcessBatch(int $batchSize = 1): void;
+    public function updateJobsAndProcessBatch(): void;
 }

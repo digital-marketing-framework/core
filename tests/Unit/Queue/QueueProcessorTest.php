@@ -62,6 +62,8 @@ class QueueProcessorTest extends TestCase
 
     protected function prepareQueue(string $method): void
     {
+        $this->queueSettings->method('getBatchSize')->willReturn($this->batchSize);
+
         switch ($method) {
             case 'processBatch':
                 $this->queue->expects($this->once())->method('fetchQueued')->with($this->batchSize)->willReturn($this->jobs);
@@ -79,7 +81,7 @@ class QueueProcessorTest extends TestCase
     {
         switch ($method) {
             case 'processBatch':
-                $this->subject->processBatch($this->batchSize);
+                $this->subject->processBatch();
                 break;
             case 'processAll':
                 $this->subject->processAll();
