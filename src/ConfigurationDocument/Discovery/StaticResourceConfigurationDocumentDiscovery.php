@@ -4,16 +4,31 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\Discovery;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\ConfigurationStorageSettings;
+use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
+use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Resource\ResourceServiceInterface;
 
-class StaticResourceConfigurationDocumentDiscovery implements StaticConfigurationDocumentDiscoveryInterface, GlobalConfigurationAwareInterface
+class StaticResourceConfigurationDocumentDiscovery implements StaticConfigurationDocumentDiscoveryInterface, GlobalConfigurationAwareInterface, LoggerAwareInterface
 {
     use GlobalConfigurationAwareTrait;
+    use LoggerAwareTrait;
+
+    protected ConfigurationStorageSettings $configurationStorageSettings;
 
     public function __construct(
         protected RegistryInterface $registry,
     ) {
+    }
+
+    protected function getConfigurationStorageSettings(): ConfigurationStorageSettings
+    {
+        if (!isset($this->configurationStorageSettings)) {
+            $this->configurationStorageSettings = $this->globalConfiguration->getGlobalSettings(ConfigurationStorageSettings::class);
+        }
+
+        return $this->configurationStorageSettings;
     }
 
     public function getIdentifiers(): array
@@ -61,7 +76,7 @@ class StaticResourceConfigurationDocumentDiscovery implements StaticConfiguratio
 
     public function isReadonly(string $identifier): bool
     {
-        return !($this->globalConfiguration->get('core', [])['configurationStorage']['allowSaveToExtensionPaths'] ?? false);
+        return !$this->getConfigurationStorageSettings()->allowSaveToExtensionPaths();
     }
 
     public function getContent(string $identifier, bool $metaDataOnly = false): ?string

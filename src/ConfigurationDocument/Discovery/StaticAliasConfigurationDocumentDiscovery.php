@@ -4,25 +4,13 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\Discovery;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
-use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\ConfigurationStorageSettings;
 
 class StaticAliasConfigurationDocumentDiscovery extends StaticResourceConfigurationDocumentDiscovery implements GlobalConfigurationAwareInterface
 {
     use GlobalConfigurationAwareTrait;
 
-    protected ConfigurationStorageSettings $configurationStorageSettings;
-
     /** @var ?array<string,string> */
     protected ?array $aliases = null;
-
-    protected function getConfigurationStorageSettings(): ConfigurationStorageSettings
-    {
-        if (!isset($this->configurationStorageSettings)) {
-            $this->configurationStorageSettings = $this->globalConfiguration->getGlobalSettings(ConfigurationStorageSettings::class);
-        }
-
-        return $this->configurationStorageSettings;
-    }
 
     /**
      * @return array<string,string>
@@ -33,7 +21,7 @@ class StaticAliasConfigurationDocumentDiscovery extends StaticResourceConfigurat
             $aliases = $this->getConfigurationStorageSettings()->getDocumentAliases();
             $this->aliases = [];
             foreach ($aliases as $name => $path) {
-                $this->aliases['SYS:' . $name] = $path;
+                $this->aliases['ALS:' . $name] = $path;
             }
         }
 
@@ -47,12 +35,21 @@ class StaticAliasConfigurationDocumentDiscovery extends StaticResourceConfigurat
 
     public function getIdentifiers(): array
     {
-        return array_keys($this->getAliases());
+        $identifiers = array_keys($this->getAliases());
+
+        return array_filter($identifiers, function (string $identifier) {
+            $exists = $this->exists($identifier);
+            if (!$exists) {
+                $this->logger->error(sprintf('Aliased configuration document path "%s" not found.', $identifier));
+            }
+
+            return $exists;
+        });
     }
 
     public function match(string $identifier): bool
     {
-        return $this->resolveAlias($identifier) !== null;
+        return $this->exists($identifier);
     }
 
     public function exists(string $identifier): bool
