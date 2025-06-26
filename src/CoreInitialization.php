@@ -105,6 +105,7 @@ use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTra
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\NoOpPreSaveDataTransformSchemaProcessor;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\PreSaveDataTransformSchemaProcessorInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\PreSaveDataTransformSchemaProcessor\SwitchPreSaveDataTransformSchemaProcessor;
+use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
 class CoreInitialization extends Initialization
 {
@@ -267,6 +268,19 @@ class CoreInitialization extends Initialization
                 100
             ),
         ];
+    }
+
+    public function initServices(string $domain, RegistryInterface $registry): void
+    {
+        parent::initServices($domain, $registry);
+
+        $additionalStorageFoldersString = trim(
+            $registry->getGlobalConfiguration()->get('core')[CoreGlobalConfigurationSchema::KEY_CONFIGURATION_STORAGE][CoreGlobalConfigurationSchema::KEY_CONFIGURATION_STORAGE_ADDITIONAL_DOCUMENT_FOLDERS] ?? ''
+        );
+        $additionalStorageFolders = GeneralUtility::castValueToArray($additionalStorageFoldersString);
+        foreach ($additionalStorageFolders as $folder) {
+            $registry->addStaticConfigurationDocumentFolderIdentifier($folder);
+        }
     }
 
     public function initPlugins(string $domain, RegistryInterface $registry): void

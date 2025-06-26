@@ -25,6 +25,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const KEY_CONFIGURATION_STORAGE_DOCUMENT_ALIASES = 'documentAliases';
 
+    public const KEY_CONFIGURATION_STORAGE_ADDITIONAL_DOCUMENT_FOLDERS = 'additionalDocumentFolders';
+
     public const KEY_CONFIGURATION_STORAGE_ALLOW_SAVE_TO_EXTENSION_PATHS = 'allowSaveToExtensionPaths';
 
     public const DEFAULT_CONFIGURATION_STORAGE_ALLOW_SAVE_TO_EXTENSION_PATHS = false;
@@ -80,6 +82,10 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $documentAliasesSchema = new StringSchema();
         $documentAliasesSchema->getRenderingDefinition()->setGeneralDescription('Configuration document aliases to override documents per environment. Use environment variables to inject different document paths for different systems. Example: main=%env(ANYREL_MAIN_DOCUMENT_PATH)%,shop=%env(ANYREL_SHOP_DOCUMENT_PATH)%');
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_DOCUMENT_ALIASES, $documentAliasesSchema);
+
+        $additionalDocumentFoldersSchema = new StringSchema();
+        $additionalDocumentFoldersSchema->getRenderingDefinition()->setLabel('Additional document folders (comma-separated)');
+        $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_ADDITIONAL_DOCUMENT_FOLDERS, $additionalDocumentFoldersSchema);
 
         $configurationStorageSchema->addProperty(
             static::KEY_CONFIGURATION_STORAGE_ALLOW_SAVE_TO_EXTENSION_PATHS,
