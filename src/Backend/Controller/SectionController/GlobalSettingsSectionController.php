@@ -41,7 +41,7 @@ class GlobalSettingsSectionController extends SectionController implements Globa
         $data = [];
         $properties = $this->schemaDocument->getMainSchema()->getProperties();
         foreach (array_keys($properties) as $key) {
-            $data[$key] = $this->globalConfiguration->get($key) ?? [];
+            $data[$key] = $this->globalConfiguration->get($key, resolvePlaceholders: false) ?? [];
         }
 
         $this->schemaProcessor->convertValueTypes($this->schemaDocument, $data);

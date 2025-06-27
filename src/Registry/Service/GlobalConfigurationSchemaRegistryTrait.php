@@ -30,6 +30,7 @@ trait GlobalConfigurationSchemaRegistryTrait
 
         $mainSchema = $globalConfigurationSchemaDocument->getMainSchema();
         $mainSchema->getRenderingDefinition()->setLabel('Global Settings');
+        $mainSchema->getRenderingDefinition()->setGeneralDescription('Use placeholders for environment variables: @{MY_ENV_VAR}');
 
         foreach ($this->globalConfigurationSchemaList as $key => $schema) {
             $property = $mainSchema->addProperty($key, $schema);

@@ -30,6 +30,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManager
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryTrait;
@@ -48,6 +49,7 @@ use DigitalMarketingFramework\Core\TestCase\TestCaseManagerAwareInterface;
 class Registry implements RegistryInterface
 {
     use GlobalConfigurationRegistryTrait;
+    use EnvironmentRegistryTrait;
     use ScriptAssetsRegistryTrait;
     use GlobalConfigurationSchemaRegistryTrait;
     use ResourceServiceRegistryTrait;
