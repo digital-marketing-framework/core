@@ -80,7 +80,7 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_DEFAULT_DOCUMENT, $defaultConfigurationDocumentSchema);
 
         $documentAliasesSchema = new StringSchema();
-        $documentAliasesSchema->getRenderingDefinition()->setGeneralDescription('Configuration document aliases to override documents per environment. Use environment variables to inject different document paths for different systems. Example: main=%env(ANYREL_MAIN_DOCUMENT_PATH)%,shop=%env(ANYREL_SHOP_DOCUMENT_PATH)%');
+        $documentAliasesSchema->getRenderingDefinition()->setGeneralDescription('Configuration document aliases to override documents per environment. Use environment variables to inject different document paths for different systems. Example: main=@{ANYREL_MAIN_DOCUMENT_PATH},shop=@{ANYREL_SHOP_DOCUMENT_PATH}');
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_DOCUMENT_ALIASES, $documentAliasesSchema);
 
         $additionalDocumentFoldersSchema = new StringSchema();

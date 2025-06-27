@@ -18,6 +18,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManager
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryInterface;
@@ -32,6 +33,7 @@ use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistr
 
 interface RegistryInterface extends
     GlobalConfigurationRegistryInterface,
+    EnvironmentRegistryInterface,
     ScriptAssetsRegistryInterface,
     GlobalConfigurationSchemaRegistryInterface,
     ResourceServiceRegistryInterface,

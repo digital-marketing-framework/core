@@ -67,11 +67,17 @@ class DefaultGlobalConfiguration implements GlobalConfigurationInterface
         return $settings;
     }
 
-    public function get(string $key, mixed $default = null): mixed
+    public function get(string $key, mixed $default = null, bool $resolvePlaceholders = true): mixed
     {
         $key = $this->packageAliases->resolveAlias($key);
 
-        return array_key_exists($key, $this->config) ? $this->config[$key] : $default;
+        $value = array_key_exists($key, $this->config) ? $this->config[$key] : $default;
+
+        if ($resolvePlaceholders) {
+            $value = $this->registry->getEnvironmentService()->insertEnvironmentVariables($value);
+        }
+
+        return $value;
     }
 
     public function set(string $key, mixed $value): void
