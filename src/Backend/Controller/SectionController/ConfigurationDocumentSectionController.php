@@ -5,6 +5,9 @@ namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
@@ -12,8 +15,9 @@ use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 /**
  * @extends ListSectionController<ConfigurationDocumentInformation>
  */
-class ConfigurationDocumentSectionController extends ListSectionController implements ConfigurationDocumentManagerAwareInterface
+class ConfigurationDocumentSectionController extends ListSectionController implements GlobalConfigurationAwareInterface, ConfigurationDocumentManagerAwareInterface
 {
+    use GlobalConfigurationAwareTrait;
     use ConfigurationDocumentManagerAwareTrait;
 
     protected SchemaDocument $schemaDocument;
@@ -63,13 +67,6 @@ class ConfigurationDocumentSectionController extends ListSectionController imple
         return $list;
     }
 
-    protected function listAction(): Response
-    {
-        $this->setUpListView();
-
-        return $this->render();
-    }
-
     protected function editAction(): Response
     {
         $this->addConfigurationEditorAssets();
@@ -78,6 +75,8 @@ class ConfigurationDocumentSectionController extends ListSectionController imple
         $document = $this->configurationDocumentManager->getDocumentInformation($documentIdentifier);
         $document->setContent($this->configurationDocumentManager->getDocumentFromIdentifier($documentIdentifier));
         $this->viewData['document'] = $document;
+
+        $this->viewData['debug'] = $this->globalConfiguration->getGlobalSettings(CoreSettings::class)->debug();
 
         return $this->render();
     }
