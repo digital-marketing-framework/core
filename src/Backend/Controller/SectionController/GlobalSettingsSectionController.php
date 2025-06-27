@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDoc
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserAwareTrait;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
@@ -46,6 +47,8 @@ class GlobalSettingsSectionController extends SectionController implements Globa
         $this->schemaProcessor->convertValueTypes($this->schemaDocument, $data);
         $document = $this->configurationDocumentParser->produceDocument($data, $this->schemaDocument);
         $this->viewData['document'] = $document;
+
+        $this->viewData['debug'] = $this->globalConfiguration->getGlobalSettings(CoreSettings::class)->debug();
 
         return $this->render();
     }
