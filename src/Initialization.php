@@ -77,6 +77,14 @@ abstract class Initialization implements InitializationInterface
         return [];
     }
 
+    /**
+     * @return array<"core"|"distributor"|"collector",array<class-string<PluginInterface>,array<string|int,class-string<PluginInterface>>>>
+     */
+    protected function getPluginDefinitions(): array
+    {
+        return static::PLUGINS;
+    }
+
     public function initPlugins(string $domain, RegistryInterface $registry): void
     {
         $this->initTemplateFolders($registry);
@@ -84,7 +92,7 @@ abstract class Initialization implements InitializationInterface
         $this->initLayoutFolders($registry);
         $this->initBackendSections($registry);
 
-        $pluginLists = static::PLUGINS[$domain] ?? [];
+        $pluginLists = $this->getPluginDefinitions()[$domain] ?? [];
         foreach ($pluginLists as $interface => $plugins) {
             foreach ($plugins as $keyword => $class) {
                 $registry->registerPlugin(

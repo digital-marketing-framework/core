@@ -73,6 +73,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchemaInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryDomain;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\ConvertValueTypesSchemaProcessor\BooleanConvertValueTypesSchemaProcessor;
@@ -309,8 +310,11 @@ class CoreInitialization extends Initialization
         }
     }
 
-    public function __construct(string $packageAlias = '')
-    {
-        parent::__construct('core', '1.0.0', $packageAlias, new CoreGlobalConfigurationSchema());
+    public function __construct(
+        string $packageAlias = '',
+        ?GlobalConfigurationSchemaInterface $globalConfigurationSchema = null,
+    ) {
+        $globalConfigurationSchema ??= new CoreGlobalConfigurationSchema();
+        parent::__construct('core', '1.0.0', $packageAlias, $globalConfigurationSchema);
     }
 }
