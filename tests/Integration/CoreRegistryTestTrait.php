@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Tests\Integration;
 use DigitalMarketingFramework\Core\Registry\Registry;
 use DigitalMarketingFramework\Core\Registry\RegistryCollection;
 use DigitalMarketingFramework\Core\Registry\RegistryCollectionInterface;
+use DigitalMarketingFramework\Core\Registry\RegistryDomain;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 trait CoreRegistryTestTrait
@@ -19,6 +20,6 @@ trait CoreRegistryTestTrait
     {
         $this->registryCollection = new RegistryCollection();
         $this->registry = new Registry();
-        $this->registry->setRegistryCollection($this->registryCollection);
+        $this->registryCollection->addRegistry(RegistryDomain::CORE, $this->registry);
     }
 }
