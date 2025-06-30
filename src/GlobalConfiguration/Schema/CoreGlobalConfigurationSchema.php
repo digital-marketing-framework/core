@@ -74,9 +74,12 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_FOLDER, new StringSchema());
 
         $defaultConfigurationDocumentSchema = new StringSchema();
-        $defaultConfigurationDocumentSchema->getAllowedValues()->addValue('', '-- NONE --');
-        $defaultConfigurationDocumentSchema->getAllowedValues()->addValueSet('document/all');
-        $defaultConfigurationDocumentSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
+        // TODO the configuration folder (and document aliases) are configured in the global settings,
+        //      which is why fetching all documents in the scope of building the global settings schema is a recursive endeavour,
+        //      mainly because the defaults of the global settings are derived from the global settings schema
+        // $defaultConfigurationDocumentSchema->getAllowedValues()->addValue('', '-- NONE --');
+        // $defaultConfigurationDocumentSchema->getAllowedValues()->addValueSet('document/all');
+        // $defaultConfigurationDocumentSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_DEFAULT_DOCUMENT, $defaultConfigurationDocumentSchema);
 
         $documentAliasesSchema = new StringSchema();
