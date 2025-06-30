@@ -10,8 +10,6 @@ trait GlobalConfigurationSchemaRegistryTrait
     /** @var array<string,GlobalConfigurationSchemaInterface> */
     protected array $globalConfigurationSchemaList = [];
 
-    protected SchemaDocument $globalConfigurationSchemaDocument;
-
     /**
      * @return array<string,string>
      */
@@ -24,10 +22,6 @@ trait GlobalConfigurationSchemaRegistryTrait
 
     public function addGlobalConfigurationSchemaDocument(SchemaDocument $globalConfigurationSchemaDocument): void
     {
-        foreach ($this->getIncludeValueSet() as $documentIdentifier => $label) {
-            $globalConfigurationSchemaDocument->addValueToValueSet('document/all', $documentIdentifier, $label);
-        }
-
         $mainSchema = $globalConfigurationSchemaDocument->getMainSchema();
         $mainSchema->getRenderingDefinition()->setLabel('Global Settings');
         $mainSchema->getRenderingDefinition()->setGeneralDescription('Use placeholders for environment variables: @{MY_ENV_VAR}');
@@ -38,18 +32,8 @@ trait GlobalConfigurationSchemaRegistryTrait
         }
     }
 
-    /**
-     * This method will produce the global configuration schema document for this registry. There may be others.
-     * If you want to produce the global configuration schema for all registries, create your own SchemaDocument
-     * and call addGlobalConfigurationSchema() on all DMF registries in the system.
-     */
     public function getGlobalConfigurationSchemaDocument(): SchemaDocument
     {
-        if (!isset($this->globalConfigurationSchemaDocument)) {
-            $this->globalConfigurationSchemaDocument = new SchemaDocument();
-            $this->addGlobalConfigurationSchemaDocument($this->globalConfigurationSchemaDocument);
-        }
-
-        return $this->globalConfigurationSchemaDocument;
+        return $this->getRegistryCollection()->getGlobalConfigurationSchemaDocument();
     }
 }

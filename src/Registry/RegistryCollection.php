@@ -24,6 +24,10 @@ class RegistryCollection implements RegistryCollectionInterface
 
     protected AlertManagerInterface $alertManager;
 
+    protected ?SchemaDocument $configurationSchemaDocument = null;
+
+    protected ?SchemaDocument $globalConfigurationSchemaDocument = null;
+
     /**
      * @param array{core?:RegistryInterface,distributor?:RegistryInterface,collector?:RegistryInterface} $collection
      */
@@ -136,22 +140,26 @@ class RegistryCollection implements RegistryCollectionInterface
 
     public function getConfigurationSchemaDocument(): SchemaDocument
     {
-        $document = new SchemaDocument();
-        foreach ($this->collection as $registry) {
-            $registry->addConfigurationSchemaDocument($document);
+        if (!$this->configurationSchemaDocument instanceof SchemaDocument) {
+            $this->configurationSchemaDocument = new SchemaDocument();
+            foreach ($this->collection as $registry) {
+                $registry->addConfigurationSchemaDocument($this->configurationSchemaDocument);
+            }
         }
 
-        return $document;
+        return $this->configurationSchemaDocument;
     }
 
     public function getGlobalConfigurationSchemaDocument(): SchemaDocument
     {
-        $document = new SchemaDocument();
-        foreach ($this->collection as $registry) {
-            $registry->addGlobalConfigurationSchemaDocument($document);
+        if (!$this->globalConfigurationSchemaDocument instanceof SchemaDocument) {
+            $this->globalConfigurationSchemaDocument = new SchemaDocument();
+            foreach ($this->collection as $registry) {
+                $registry->addGlobalConfigurationSchemaDocument($this->globalConfigurationSchemaDocument);
+            }
         }
 
-        return $document;
+        return $this->globalConfigurationSchemaDocument;
     }
 
     public function getFrontendScripts(bool $activeOnly = false): array
