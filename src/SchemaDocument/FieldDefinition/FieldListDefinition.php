@@ -25,7 +25,12 @@ class FieldListDefinition
 
     public function addField(FieldDefinition $fieldDefinition): void
     {
-        $this->fields[$fieldDefinition->getName()] = $fieldDefinition;
+        $name = $fieldDefinition->getName();
+        if (isset($this->fields[$name])) {
+            $this->fields[$name]->merge($fieldDefinition);
+        } else {
+            $this->fields[$name] = $fieldDefinition;
+        }
     }
 
     public function fieldExists(string $name): bool
@@ -58,13 +63,8 @@ class FieldListDefinition
 
     public function merge(FieldListDefinition $fieldListDefinition): void
     {
-        foreach ($fieldListDefinition->getFields() as $name => $field) {
-            $myField = $this->fields[$name] ?? null;
-            if ($myField instanceof FieldDefinition) {
-                $myField->merge($field);
-            } else {
-                $this->addField($field);
-            }
+        foreach ($fieldListDefinition->getFields() as $field) {
+            $this->addField($field);
         }
     }
 }

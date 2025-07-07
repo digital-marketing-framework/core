@@ -165,7 +165,10 @@ class SchemaDocument
         }
 
         foreach ($this->fieldContexts as $name => $fieldContext) {
-            $schemaDocument['fieldContexts'][$name] = $fieldContext->toArray();
+            $context = $fieldContext->toArray();
+            if ($context !== []) {
+                $schemaDocument['fieldContexts'][$name] = $context;
+            }
         }
 
         foreach ($this->customTypes as $type => $customTypeSchema) {

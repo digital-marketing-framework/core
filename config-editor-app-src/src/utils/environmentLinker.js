@@ -129,6 +129,7 @@ const getSettings = (textarea) => {
   settings['readonly'] = textarea.dataset.readonly === 'true';
   settings['globalDocument'] = textarea.dataset.globalDocument === 'true';
   settings['debug'] = textarea.dataset.debug === 'true';
+  settings['contextIdentifier'] = textarea.dataset.contextIdentifier || '';
   urlKeys.forEach((key) => {
     settings.urls[key] = textarea.dataset['url' + ucfirst(key)];
   });
