@@ -132,6 +132,7 @@ const getSettings = (textarea) => {
   settings['contextIdentifier'] = textarea.dataset.contextIdentifier || '';
   settings['documentType'] = textarea.dataset.documentType || '';
   settings['documentGroup'] = textarea.dataset.documentGroup || '';
+  settings['uid'] = textarea.dataset.uid || '';
   urlKeys.forEach((key) => {
     settings.urls[key] = textarea.dataset['url' + ucfirst(key)];
   });

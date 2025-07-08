@@ -7,7 +7,14 @@
         readonly: false,
         globalDocument: false,
         includes: false,
-        debug: debug ?? false
+        debug: debug ?? false,
+        uid: 'global-settings'
     } %}
-    {{ include('configuration-editor/editor-setup.html.twig', { documentType: 'global-settings', returnUri: uri('page.core.index'), title: 'Global Settings', config, document }) }}
+    {{ include('configuration-editor/editor-setup.html.twig', {
+        documentType: 'global-settings',
+        returnUri: uri('page.core.index'),
+        title: 'Global Settings',
+        config,
+        document
+    }) }}
 {% endblock %}

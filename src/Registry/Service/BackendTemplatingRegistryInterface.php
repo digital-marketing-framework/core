@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\Backend\AssetUriBuilderInterface;
 use DigitalMarketingFramework\Core\Backend\BackendManagerInterface;
+use DigitalMarketingFramework\Core\Backend\RenderingServiceInterface;
 use DigitalMarketingFramework\Core\Backend\UriBuilderInterface;
 
 interface BackendTemplatingRegistryInterface
@@ -19,4 +20,8 @@ interface BackendTemplatingRegistryInterface
     public function getBackendManager(): BackendManagerInterface;
 
     public function setBackendManager(BackendManagerInterface $backendManager): void;
+
+    public function getBackendRenderingService(): RenderingServiceInterface;
+
+    public function setBackendRenderingService(RenderingServiceInterface $renderingService): void;
 }
