@@ -20,5 +20,6 @@ interface RenderingServiceInterface
         bool $includes = true,
         array $parameters = [],
         string $contextIdentifier = '',
+        string $uid = '',
     ): array;
 }
