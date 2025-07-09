@@ -12,6 +12,7 @@ import { useDynamicProcessor } from '@/composables/dynamicItem';
 import { useValidation } from '@/composables/validation';
 import { useSwitch } from '@/composables/switch';
 import { useDefaults } from '@/composables/defaults';
+import { useNavigation } from '@/composables/navigation';
 
 export const useDmfStore = defineStore('dmf', {
   state: () => ({
@@ -119,21 +120,24 @@ export const useDmfStore = defineStore('dmf', {
       // this.triggerRerender();
     },
     async open() {
-      const { selectPath } = usePathProcessor(this);
-      selectPath('/');
+      const { loadNavigationState } = useNavigation(this);
+      loadNavigationState();
       this.isOpen = true;
       // this.triggerRerender();
     },
     async close() {
+      const { saveNavigationState } = useNavigation(this);
       this.isOpen = false;
+      saveNavigationState();
       await this.onClose();
       // this.triggerRerender();
     },
     async save() {
-      // TODO purge switch elements > do not delete, but reset the config items that are not selected
       // TODO check if includes have changed, updateIncludes() if they have
+      const { saveNavigationState } = useNavigation(this);
       this.isSaving = true;
       this.finish('/');
+      saveNavigationState();
       await this.onSave(this.data);
       this.isSaving = false;
     },

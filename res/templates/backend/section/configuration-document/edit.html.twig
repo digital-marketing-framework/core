@@ -7,7 +7,8 @@
         readonly: document.readonly,
         globalDocument: true,
         includes: true,
-        debug: debug ?? false
+        debug: debug ?? false,
+        uid: 'configuration-document:' ~ document.id
     } %}
     {{ include('configuration-editor/editor-setup.html.twig', {
         documentType: 'configuration-document',

@@ -393,11 +393,11 @@ const getActiveOutputContextNames = (store, path) => {
     return ['distributor.out.defaults.' + outboundRoute.integration + '.' + outboundRoute.keyword];
   }
 
-  const inboundRoute = isInboundRoutePath(path);
-  if (inboundRoute) {
-    // inbound routes do not have a default output context
-    // return ['collector.out.defaults.' + inboundRouteKeyword];
-  }
+  // NOTE inbound routes do not have a default output context
+  // const inboundRoute = isInboundRoutePath(path);
+  // if (inboundRoute) {
+  //   return ['collector.out.defaults.' + inboundRouteKeyword];
+  // }
 
   return [];
 };
@@ -416,7 +416,9 @@ const getInputContextNames = (store, path) => {
   const { getInboundRouteKeywords, getDataMapperGroupIds } = useFieldContextReference(store);
   const result = {};
 
-  const inputIdentifier = store.settings.contextIdentifier || 'all';
+  const contextIdentifier = store.settings.contextIdentifier || '';
+  const fieldContexts = store.schemaDocument.fieldContexts || {};
+  const inputIdentifier = (contextIdentifier && fieldContexts['distributor.in.defaults.' + contextIdentifier]) ? contextIdentifier : 'all';
   result['distributor.in.defaults.' + inputIdentifier] = 'Distributor Input';
 
   const collectorKeywords = getInboundRouteKeywords(store);

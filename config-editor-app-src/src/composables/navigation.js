@@ -3,6 +3,9 @@ import { isContainerType } from '../helpers/type';
 import { useDmfStore } from '../stores/dmf';
 import { usePathProcessor } from './path';
 
+const NAVIGATION_STORAGE_KEY_PREFIX = 'anyrel-config-editor-navigation-';
+const navigationStorage = window.sessionStorage;
+
 // TODO this method is probably not useful because the different components
 //      have the schema anyway and then they jsut need to read one variable
 //      instead of calling this method, which would fetch the schema again
@@ -104,6 +107,40 @@ const toggleContainerNavigationState = (store, path, currentPath) => {
   store.collapsedMenuPaths[absolutePath] = !store.collapsedMenuPaths[absolutePath];
 };
 
+const saveNavigationState = (store) => {
+  if (!store.settings.uid) {
+    return;
+  }
+
+  const key = NAVIGATION_STORAGE_KEY_PREFIX + store.settings.uid;
+  const value = {
+    selectedPath: store.selectedPath,
+    collapsedMenuPaths: store.collapsedMenuPaths,
+    collapsedContainerPaths: store.collapsedContainerPaths,
+  };
+  navigationStorage.setItem(key, JSON.stringify(value));
+};
+
+const loadNavigationState = (store) => {
+  const { selectPath } = usePathProcessor(store);
+  let navigation = {};
+
+  if (store.settings.uid) {
+    const key = NAVIGATION_STORAGE_KEY_PREFIX + store.settings.uid;
+    let savedNavigation = navigationStorage.getItem(key);
+    if (savedNavigation) {
+      savedNavigation = JSON.parse(savedNavigation);
+      if (typeof savedNavigation === 'object') {
+        navigation = savedNavigation;
+      }
+    }
+  }
+
+  store.collapsedMenuPaths = navigation.collapsedMenuPaths || {};
+  store.collapsedContainerPaths = navigation.collapsedContainerPaths || {};
+  selectPath(navigation.selectedPath || '/');
+};
+
 export const useNavigation = (store) => {
   store = store || useDmfStore();
   return {
@@ -120,6 +157,8 @@ export const useNavigation = (store) => {
       setContainerState(store, path, currentPath, open),
     toggleContainerState: (path, currentPath) => toggleContainerState(store, path, currentPath),
     toggleContainerNavigationState: (path, currentPath) =>
-      toggleContainerNavigationState(store, path, currentPath)
+      toggleContainerNavigationState(store, path, currentPath),
+    loadNavigationState: () => loadNavigationState(store),
+    saveNavigationState: () => saveNavigationState(store)
   };
 };
