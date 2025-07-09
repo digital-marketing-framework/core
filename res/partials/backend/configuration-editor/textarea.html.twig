@@ -5,7 +5,7 @@
     data-global-document="{{ (config.globalDocument ?? false) ? 'true' : 'false' }}"
     data-debug="{{ (config.debug ?? false) ? 'true' : 'false' }}"
     data-uid="{{ config.uid }}"
-    data-context-identifier="{{ config.contextIdentifier ?? '' }}"
+    data-context-identifier="{{ config.contextIdentifier }}"
     data-document-type="{{ documentType }}"
     data-document-group="{{ config.documentGroup }}"
     data-url-schema="{{ uri('ajax.configuration-editor.schema', {documentType}) }}"
