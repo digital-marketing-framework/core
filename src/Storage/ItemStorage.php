@@ -110,8 +110,12 @@ abstract class ItemStorage implements ItemStorageInterface
         return $data;
     }
 
-    public function getGlobalConfiguration(): ?GlobalConfigurationInterface
+    public function getGlobalConfiguration(): GlobalConfigurationInterface
     {
+        if (!isset($this->globalConfiguration)) {
+            throw new DigitalMarketingFrameworkException('Global configuration not injected into item storage!');
+        }
+
         return $this->globalConfiguration;
     }
 
