@@ -1,12 +1,12 @@
 <?php
 
-namespace DigitalMarketingFramework\Core\Notification\Schema;
+namespace DigitalMarketingFramework\Core\Notification\GlobalConfiguration\Schema;
 
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 
-abstract class GlobalNotificationChannelConfigurationSchema extends GlobalConfigurationSchema
+abstract class NotificationChannelSchema extends GlobalConfigurationSchema
 {
     public const KEY_ENABLED = 'enabled';
 

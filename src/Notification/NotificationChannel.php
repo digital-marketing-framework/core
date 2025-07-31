@@ -7,7 +7,7 @@ use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareI
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
-use DigitalMarketingFramework\Core\Notification\Schema\GlobalNotificationChannelConfigurationSchema;
+use DigitalMarketingFramework\Core\Notification\GlobalConfiguration\Settings\NotificationChannelSettings;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
@@ -16,11 +16,6 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
 {
     use GlobalConfigurationAwareTrait;
     use LoggerAwareTrait;
-
-    /**
-     * @var ?array<string,mixed>
-     */
-    protected ?array $configuration = null;
 
     public function __construct(
         protected string $keyword,
@@ -37,7 +32,7 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
         int $level,
     ): void;
 
-    abstract protected function getConfigPackageKey(): string;
+    abstract protected function getConfiguration(): NotificationChannelSettings;
 
     protected function levelToString(int $level): string
     {
@@ -80,18 +75,6 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
         return $body . '</div>';
     }
 
-    /**
-     * @return array<string,mixed>
-     */
-    protected function getConfiguration(): array
-    {
-        if ($this->configuration === null) {
-            $this->configuration = $this->globalConfiguration->get($this->getConfigPackageKey());
-        }
-
-        return $this->configuration;
-    }
-
     protected function checkAllowList(string $list, string $item): bool
     {
         $allowList = GeneralUtility::castValueToArray($list);
@@ -107,23 +90,19 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
 
     public function enabled(): bool
     {
-        $config = $this->getConfiguration();
-
-        return $config[GlobalNotificationChannelConfigurationSchema::KEY_ENABLED] ?? GlobalNotificationChannelConfigurationSchema::DEFAULT_ENABLED;
+        return $this->getConfiguration()->enabled();
     }
 
     public function acceptComponent(string $component): bool
     {
-        $config = $this->getConfiguration();
-        $list = $config[GlobalNotificationChannelConfigurationSchema::KEY_COMPONENTS] ?? GlobalNotificationChannelConfigurationSchema::DEFAULT_COMPONENTS;
+        $list = $this->getConfiguration()->getComponents();
 
         return $this->checkAllowList($list, $component);
     }
 
     public function acceptLevel(int $level): bool
     {
-        $config = $this->getConfiguration();
-        $list = $config[GlobalNotificationChannelConfigurationSchema::KEY_LEVELS] ?? GlobalNotificationChannelConfigurationSchema::DEFAULT_LEVELS;
+        $list = $this->getConfiguration()->getLevels();
 
         return $this->checkAllowList($list, (string)$level);
     }
