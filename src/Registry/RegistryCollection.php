@@ -138,12 +138,15 @@ class RegistryCollection implements RegistryCollectionInterface
         $this->alertManager = $alertManager;
     }
 
-    public function getConfigurationSchemaDocument(): SchemaDocument
+    public function getConfigurationSchemaDocument(bool $addEditorContext = false): SchemaDocument
     {
         if (!$this->configurationSchemaDocument instanceof SchemaDocument) {
             $this->configurationSchemaDocument = new SchemaDocument();
             foreach ($this->collection as $registry) {
                 $registry->addConfigurationSchemaDocument($this->configurationSchemaDocument);
+                if ($addEditorContext) {
+                    $registry->addConfigurationSchemaDocumentEditorContext($this->configurationSchemaDocument);
+                }
             }
         }
 

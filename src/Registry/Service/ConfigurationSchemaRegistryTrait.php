@@ -141,6 +141,10 @@ trait ConfigurationSchemaRegistryTrait
         return new DataPrivacyPermissionSelectionSchema($this->getDataPrivacyManager()->getPermissionLabels());
     }
 
+    public function addConfigurationSchemaDocumentEditorContext(SchemaDocument $schemaDocument): void
+    {
+    }
+
     public function addConfigurationSchemaDocument(SchemaDocument $schemaDocument): void
     {
         // complex values

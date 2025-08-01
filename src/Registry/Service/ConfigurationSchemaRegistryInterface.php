@@ -10,6 +10,8 @@ interface ConfigurationSchemaRegistryInterface
 
     public function setActiveFieldContext(string $fieldContext): void;
 
+    public function addConfigurationSchemaDocumentEditorContext(SchemaDocument $schemaDocument): void;
+
     public function addConfigurationSchemaDocument(SchemaDocument $schemaDocument): void;
 
     public function getConfigurationSchemaDocument(): SchemaDocument;
