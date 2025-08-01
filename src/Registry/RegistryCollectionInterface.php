@@ -36,7 +36,7 @@ interface RegistryCollectionInterface extends ContextRegistryInterface
 
     // collect actions //
 
-    public function getConfigurationSchemaDocument(): SchemaDocument;
+    public function getConfigurationSchemaDocument(bool $addEditorContext = false): SchemaDocument;
 
     public function getGlobalConfigurationSchemaDocument(): SchemaDocument;
 

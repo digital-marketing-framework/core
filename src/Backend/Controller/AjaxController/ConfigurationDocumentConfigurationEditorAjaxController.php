@@ -17,7 +17,7 @@ class ConfigurationDocumentConfigurationEditorAjaxController extends InheritedDo
             'configuration-document'
         );
 
-        $this->schemaDocument = $this->registry->getRegistryCollection()->getConfigurationSchemaDocument();
+        $this->schemaDocument = $this->registry->getRegistryCollection()->getConfigurationSchemaDocument(true);
     }
 
     protected function getSchemaDocument(): SchemaDocument
