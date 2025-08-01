@@ -59,7 +59,9 @@ interface PluginRegistryInterface
     public function deletePlugin(string $keyword, string $interface): void;
 
     /**
-     * @param array<PluginInterface> $plugins
+     * @template ItemClass of PluginInterface
+     *
+     * @param array<ItemClass> $plugins
      */
     public function sortPlugins(array &$plugins): void;
 }
