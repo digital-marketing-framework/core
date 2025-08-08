@@ -2,10 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\Utility;
 
+use DateTime;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\DateTimeValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
@@ -64,6 +66,29 @@ final class GeneralUtility
     public static function isList(mixed $value): bool
     {
         return is_array($value) || $value instanceof MultiValueInterface;
+    }
+
+    public static function castValueToDateTimeValue(string|DateTime|ValueInterface|null $value, ?string $format = null): ?DateTimeValue
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if ($format === '') {
+            $format = null;
+        }
+
+        try {
+            if ($value instanceof DateTimeValue) {
+                return new DateTimeValue($value->getDate(), $format ?? $value->getFormat());
+            } else if ($value instanceof DateTime) {
+                return new DateTimeValue($value, $format ?? DateTimeValue::DEFAULT_FORMAT);
+            } else {
+                return new DateTimeValue((string)$value, $format ?? DateTimeValue::DEFAULT_FORMAT);
+            }
+        } catch (DigitalMarketingFrameworkException) {
+            return null;
+        }
     }
 
     /**
