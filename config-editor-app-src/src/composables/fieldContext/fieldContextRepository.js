@@ -174,6 +174,17 @@ const getDistributorInputDefaultsContext = (store, name) => {
   return combineContexts([context, additionalContext]);
 };
 
+const getCurrentDistributorInputDefaultsContext = (store) => {
+  const contextIdentifier = store.settings.contextIdentifier || '';
+  const fieldContexts = store.schemaDocument.fieldContexts || {};
+  const contextName = 'distributor.in.defaults.' + contextIdentifier;
+  if (contextIdentifier && fieldContexts[contextName]) {
+    return getDistributorInputDefaultsContext(store, contextName);
+  }
+
+  return getDistributorInputDefaultsAllContext(store);
+};
+
 const getDistributorOutputDefaultsContext = (store, name) => {
   return getStaticContext(store, name);
 };
@@ -290,7 +301,9 @@ const getContext = (store, name) => {
 
   // -- distributor --
   if (name.startsWith('distributor.')) {
-    if (name === 'distributor.in.defaults.all') {
+    if (name === 'distributor.in.defaults.current') {
+      return getCurrentDistributorInputDefaultsContext(store);
+    } else if (name === 'distributor.in.defaults.all') {
       return getDistributorInputDefaultsAllContext(store);
     } else if (name === 'distributor.in.dataProvider.all') {
       return getDistributorInputDataProviderAllContext(store);
@@ -416,10 +429,7 @@ const getInputContextNames = (store, path) => {
   const { getInboundRouteKeywords, getDataMapperGroupIds } = useFieldContextReference(store);
   const result = {};
 
-  const contextIdentifier = store.settings.contextIdentifier || '';
-  const fieldContexts = store.schemaDocument.fieldContexts || {};
-  const inputIdentifier = (contextIdentifier && fieldContexts['distributor.in.defaults.' + contextIdentifier]) ? contextIdentifier : 'all';
-  result['distributor.in.defaults.' + inputIdentifier] = 'Distributor Input';
+  result['distributor.in.defaults.current'] = 'Distributor Input';
 
   const collectorKeywords = getInboundRouteKeywords(store);
   for (let integration in collectorKeywords) {
