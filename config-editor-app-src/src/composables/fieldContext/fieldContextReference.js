@@ -1,4 +1,3 @@
-import { getAbsolutePath } from '@/helpers/path'
 
 const getDataMapperGroupIds = (store) => {
   const ids = {};
