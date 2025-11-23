@@ -23,7 +23,7 @@ abstract class SectionController extends BackendController implements SectionCon
             'menu' => 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/menu.js',
         ],
         'styles' => [
-            'backend' => 'EXT:backend/Resources/Public/Css/backend.css',
+            'backend' => 'PKG:digital-marketing-framework/core/res/assets/styles/backend.css',
         ],
     ];
 
