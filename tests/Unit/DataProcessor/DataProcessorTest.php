@@ -67,7 +67,7 @@ class DataProcessorTest extends TestCase
             }
 
             if (isset($this->valueSources[$keyword]['config'])) {
-                static::assertEquals($this->valueSources[$keyword]['config'], $config);
+                self::assertEquals($this->valueSources[$keyword]['config'], $config);
             }
 
             return $this->valueSources[$keyword]['object'];
@@ -79,7 +79,7 @@ class DataProcessorTest extends TestCase
             }
 
             if (isset($this->comparisons[$keyword]['config'])) {
-                static::assertEquals($this->comparisons[$keyword]['config'], $config);
+                self::assertEquals($this->comparisons[$keyword]['config'], $config);
             }
 
             return $this->comparisons[$keyword]['object'];
@@ -91,7 +91,7 @@ class DataProcessorTest extends TestCase
             }
 
             if (isset($this->conditions[$keyword]['config'])) {
-                static::assertEquals($this->conditions[$keyword]['config'], $config);
+                self::assertEquals($this->conditions[$keyword]['config'], $config);
             }
 
             return $this->conditions[$keyword]['object'];
@@ -103,7 +103,7 @@ class DataProcessorTest extends TestCase
             }
 
             if (isset($this->dataMappers[$keyword]['config'])) {
-                static::assertEquals($this->dataMappers[$keyword]['config'], $config);
+                self::assertEquals($this->dataMappers[$keyword]['config'], $config);
             }
 
             return $this->dataMappers[$keyword]['object'];
@@ -115,7 +115,7 @@ class DataProcessorTest extends TestCase
             }
 
             if (isset($this->valueModifiers[$keyword]['config'])) {
-                static::assertEquals($this->valueModifiers[$keyword]['config'], $config);
+                self::assertEquals($this->valueModifiers[$keyword]['config'], $config);
             }
 
             return $this->valueModifiers[$keyword]['object'];
@@ -244,7 +244,7 @@ class DataProcessorTest extends TestCase
         $config = [];
         $context = $this->subject->createContext(new Data(), new Configuration([[]]));
         $output = $this->subject->processDataMapper($config, $context);
-        static::assertEmpty($output->toArray());
+        self::assertEmpty($output->toArray());
     }
 
     #[Test]

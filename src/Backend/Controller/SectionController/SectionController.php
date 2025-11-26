@@ -122,7 +122,7 @@ abstract class SectionController extends BackendController implements SectionCon
         return $this->getParameters()['currentAction'] ?? $default;
     }
 
-    protected function getReturnUrl(string $default = null): ?string
+    protected function getReturnUrl(?string $default = null): ?string
     {
         return $this->getParameters()['returnUrl'] ?? $default;
     }

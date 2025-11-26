@@ -44,7 +44,7 @@ class GlobalSettingsTest extends TestCase
         $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals([], $config);
+        self::assertEquals([], $config);
     }
 
     #[Test]
@@ -56,7 +56,7 @@ class GlobalSettingsTest extends TestCase
         $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals(['a' => 'A'], $config);
+        self::assertEquals(['a' => 'A'], $config);
     }
 
     #[Test]
@@ -71,7 +71,7 @@ class GlobalSettingsTest extends TestCase
         $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals(['a' => 'A2'], $config);
+        self::assertEquals(['a' => 'A2'], $config);
     }
 
     #[Test]
@@ -87,7 +87,7 @@ class GlobalSettingsTest extends TestCase
         $settings = $this->registry->getGlobalConfiguration()->getGlobalSettings(GenericGlobalSettings::class, 'packageKey1');
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals(['a' => 'A2', 'b' => 'B'], $config);
+        self::assertEquals(['a' => 'A2', 'b' => 'B'], $config);
     }
 
     #[Test]
@@ -100,7 +100,7 @@ class GlobalSettingsTest extends TestCase
         );
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals([], $config);
+        self::assertEquals([], $config);
     }
 
     #[Test]
@@ -116,7 +116,7 @@ class GlobalSettingsTest extends TestCase
         );
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals(['b' => 'B'], $config);
+        self::assertEquals(['b' => 'B'], $config);
     }
 
     #[Test]
@@ -138,7 +138,7 @@ class GlobalSettingsTest extends TestCase
         );
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals(['b' => 'B2'], $config);
+        self::assertEquals(['b' => 'B2'], $config);
     }
 
     #[Test]
@@ -162,6 +162,6 @@ class GlobalSettingsTest extends TestCase
         );
         $config = $settings->getInjectedSettings();
 
-        static::assertEquals(['b' => 'B2', 'c' => 'C'], $config);
+        self::assertEquals(['b' => 'B2', 'c' => 'C'], $config);
     }
 }

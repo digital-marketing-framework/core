@@ -426,17 +426,17 @@ class NonPersistentQueueTest extends TestCase
     {
         $job = $this->createJob(['value1'], $initialStatus);
         $this->subject->add($job);
-        static::assertEquals($initialStatus, $job->getStatus());
+        self::assertEquals($initialStatus, $job->getStatus());
 
         $this->subject->$method($job, ...$arguments);
-        static::assertEquals($status, $job->getStatus());
+        self::assertEquals($status, $job->getStatus());
         if ($expectedStatusMessage === '') {
-            static::assertEquals('', $job->getStatusMessage());
+            self::assertEquals('', $job->getStatusMessage());
         } else {
-            static::assertStringEndsWith($expectedStatusMessage, $job->getStatusMessage());
+            self::assertStringEndsWith($expectedStatusMessage, $job->getStatusMessage());
         }
 
-        static::assertEquals($expectedSkipped, $job->getSkipped());
+        self::assertEquals($expectedSkipped, $job->getSkipped());
     }
 
     #[Test]

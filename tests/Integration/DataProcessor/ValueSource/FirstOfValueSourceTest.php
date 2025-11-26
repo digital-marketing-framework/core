@@ -80,6 +80,6 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
     public function firstOf(mixed $expectedResult, array $config): void
     {
         $output = $this->processValueSource(static::getValueSourceConfiguration($config));
-        static::assertEquals($expectedResult, $output);
+        self::assertEquals($expectedResult, $output);
     }
 }
