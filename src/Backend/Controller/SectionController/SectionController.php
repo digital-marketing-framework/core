@@ -44,7 +44,17 @@ abstract class SectionController extends BackendController implements SectionCon
 
         $rendered = $this->templateEngine->render($config, $this->viewData, false);
 
-        return new HtmlResponse($rendered);
+        $response = new HtmlResponse($rendered);
+
+        foreach ($this->viewData['scripts'] ?? [] as $name => $path) {
+            $response->setScript($name, $path);
+        }
+
+        foreach ($this->viewData['styles'] ?? [] as $name => $path) {
+            $response->setStyleSheet($name, $path);
+        }
+
+        return $response;
     }
 
     /**
