@@ -16,7 +16,7 @@ class ListUtilityTest extends TestCase
     protected static function assertValuesEqual(array $expected, array $actualList): void
     {
         $actualValues = array_values(array_map(static fn (array $item) => $item[ListUtility::KEY_VALUE], $actualList));
-        static::assertEquals($expected, $actualValues);
+        self::assertEquals($expected, $actualValues);
     }
 
     /**
@@ -26,7 +26,7 @@ class ListUtilityTest extends TestCase
     protected static function assertWeightsEqual(array $expected, array $actualList): void
     {
         $actualWeights = array_values(array_map(static fn (array $item) => $item[ListUtility::KEY_WEIGHT], $actualList));
-        static::assertEquals($expected, $actualWeights);
+        self::assertEquals($expected, $actualWeights);
     }
 
     /**
@@ -74,7 +74,7 @@ class ListUtilityTest extends TestCase
     public function flatten(array $list, array $expected): void
     {
         $result = ListUtility::flatten($list);
-        static::assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     /**

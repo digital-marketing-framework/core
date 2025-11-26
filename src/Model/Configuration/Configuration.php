@@ -41,7 +41,9 @@ class Configuration implements ConfigurationInterface
     {
         $this->readonlyCheck('addConfiguration');
         $this->configurationList[] = $configuration;
-        unset($this->manualOverride);
+        // Break the reference by assigning a non-reference value
+        $tmp = null;
+        $this->manualOverride = &$tmp;
         $this->manualOverride = null;
     }
 
