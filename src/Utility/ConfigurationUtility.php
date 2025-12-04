@@ -57,6 +57,7 @@ final class ConfigurationUtility
      */
     public static function mergeConfigurationStack(array $configurationStack, bool $resolveNull = true, array $excludeKeys = self::MERGE_EXCLUDE_FIELDS): array
     {
+        $configurationStack = array_values($configurationStack);
         $result = [];
         foreach ($configurationStack as $configuration) {
             $result = self::mergeConfiguration($result, $configuration, resolveNull: false, excludeKeys: $excludeKeys);
