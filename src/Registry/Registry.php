@@ -189,7 +189,7 @@ class Registry implements RegistryInterface
             throw new RegistryException('class "' . $class . '" does not exist.');
         }
 
-        if (!in_array($interface, class_implements($class))) {
+        if (!in_array($interface, class_implements($class), true)) {
             throw new RegistryException('class "' . $class . '" has to implement interface "' . $interface . '".');
         }
     }

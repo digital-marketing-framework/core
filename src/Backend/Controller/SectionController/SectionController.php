@@ -69,12 +69,12 @@ abstract class SectionController extends BackendController implements SectionCon
 
     protected function addScript(string $script, string $name = ''): void
     {
-        $this->viewData['scripts'][$name ?: $script] = $script;
+        $this->viewData['scripts'][$name !== '' ? $name : $script] = $script;
     }
 
     protected function addStyles(string $styles, string $name = ''): void
     {
-        $this->viewData['styles'][$name ?: $styles] = $styles;
+        $this->viewData['styles'][$name !== '' ? $name : $styles] = $styles;
     }
 
     protected function copyAsset(string $path): void

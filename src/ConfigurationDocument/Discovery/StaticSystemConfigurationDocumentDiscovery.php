@@ -55,7 +55,7 @@ abstract class StaticSystemConfigurationDocumentDiscovery implements StaticConfi
 
     public function exists(string $identifier): bool
     {
-        return in_array($identifier, $this->getIdentifiers());
+        return in_array($identifier, $this->getIdentifiers(), true);
     }
 
     public function isReadonly(string $identifier): bool

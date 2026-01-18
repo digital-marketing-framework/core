@@ -31,7 +31,7 @@ class MapReferenceValueModifier extends ValueModifier
         $map = $this->context->getConfiguration()->getValueMapConfiguration($this->getConfig(static::KEY_MAP_NAME));
         if ($map !== null) {
             $map = MapUtility::flatten($map);
-            if ($this->getConfig(static::KEY_INVERT)) {
+            if ($this->getBoolConfig(static::KEY_INVERT)) {
                 $map = array_flip($map);
             }
 

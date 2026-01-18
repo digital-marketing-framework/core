@@ -101,11 +101,12 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     {
         $storage = $this->getStorageForDocumentIdentifier($documentIdentifier);
         $documentConfiguration = $this->getDocumentConfigurationFromIdentifier($documentIdentifier, true);
+        $name = $this->getName($documentConfiguration);
 
         return new ConfigurationDocumentInformation(
             $documentIdentifier,
             $storage->getShortIdentifier($documentIdentifier),
-            $this->getName($documentConfiguration) ?: $documentIdentifier,
+            $name !== '' ? $name : $documentIdentifier,
             $storage->isReadOnly($documentIdentifier),
             $this->getIncludes($documentConfiguration)
         );
@@ -118,7 +119,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     {
         $identifiers = $this->staticStorage->getDocumentIdentifiers();
         foreach ($this->storage->getDocumentIdentifiers() as $identifier) {
-            if (!in_array($identifier, $identifiers)) {
+            if (!in_array($identifier, $identifiers, true)) {
                 $identifiers[] = $identifier;
             }
         }
@@ -127,7 +128,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string,mixed>
      */
     public function getDocumentConfigurationFromDocument(string $document): array
     {
@@ -145,7 +146,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string,mixed>
      */
     public function getDocumentConfigurationFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): array
     {
@@ -217,12 +218,12 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
             $subProcessedDocumentIdentifiers = $processedDocumentIdentifiers;
             $subProcessedDocumentIdentifiers[] = $documentIdentifier;
 
-            if (in_array($documentIdentifier, $processedDocumentIdentifiers)) {
+            if (in_array($documentIdentifier, $processedDocumentIdentifiers, true)) {
                 throw new ConfigurationDocumentIncludeLoopException(sprintf('Configuration document reference loop found: %s', implode(',', $subProcessedDocumentIdentifiers)));
             }
 
             // NOTE when building a configuration stack, we only include each document once
-            if (in_array($documentIdentifier, $allDocumentIdentifiers)) {
+            if (in_array($documentIdentifier, $allDocumentIdentifiers, true)) {
                 continue;
             }
 
@@ -257,7 +258,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     }
 
     /**
-     * @return array<array<mixed>>
+     * @return array<array<string,mixed>>
      */
     public function getConfigurationStackFromDocument(string $document): array
     {
@@ -267,7 +268,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     }
 
     /**
-     * @return array<array<mixed>>
+     * @return array<array<string,mixed>>
      */
     public function getConfigurationStackFromIdentifier(string $documentIdentifier): array
     {

@@ -26,23 +26,64 @@ abstract class ConfigurablePlugin extends Plugin implements ConfigurablePluginIn
     /**
      * @param ?array<string,mixed> $configuration
      * @param ?array<string,mixed> $defaultConfiguration
-     *
-     * @return array<string,mixed>
      */
-    protected function getMapConfig(string $key, mixed $default = [], ?array $configuration = null, ?array $defaultConfiguration = null): array
+    protected function getBoolConfig(string $key, ?bool $default = null, ?array $configuration = null, ?array $defaultConfiguration = null): bool
     {
-        return MapUtility::flatten($this->getConfig($key, $default, $configuration, $defaultConfiguration));
+        return (bool)$this->getConfig($key, $default, $configuration, $defaultConfiguration);
     }
 
     /**
      * @param ?array<string,mixed> $configuration
      * @param ?array<string,mixed> $defaultConfiguration
+     */
+    protected function getStringConfig(string $key, ?string $default = null, ?array $configuration = null, ?array $defaultConfiguration = null): string
+    {
+        return (string)$this->getConfig($key, $default, $configuration, $defaultConfiguration);
+    }
+
+    /**
+     * @param ?array<string,mixed> $configuration
+     * @param ?array<string,mixed> $defaultConfiguration
+     */
+    protected function getIntConfig(string $key, ?int $default = null, ?array $configuration = null, ?array $defaultConfiguration = null): int
+    {
+        return (int)$this->getConfig($key, $default, $configuration, $defaultConfiguration);
+    }
+
+    /**
+     * @param ?array<mixed> $default
+     * @param ?array<string,mixed> $configuration
+     * @param ?array<string,mixed> $defaultConfiguration
      *
      * @return array<mixed>
      */
-    protected function getListConfig(string $key, mixed $default = [], ?array $configuration = null, ?array $defaultConfiguration = null): array
+    protected function getArrayConfig(string $key, ?array $default = null, ?array $configuration = null, ?array $defaultConfiguration = null): array
     {
-        return ListUtility::flatten($this->getConfig($key, $default, $configuration, $defaultConfiguration));
+        return (array)$this->getConfig($key, $default, $configuration, $defaultConfiguration);
+    }
+
+    /**
+     * @param ?array<mixed> $default
+     * @param ?array<string,mixed> $configuration
+     * @param ?array<string,mixed> $defaultConfiguration
+     *
+     * @return array<string,mixed>
+     */
+    protected function getMapConfig(string $key, ?array $default = null, ?array $configuration = null, ?array $defaultConfiguration = null): array
+    {
+        return MapUtility::flatten($this->getArrayConfig($key, $default, $configuration, $defaultConfiguration));
+    }
+
+    /**
+     * @param ?array<mixed> $default
+     * @param ?array<string,mixed> $configuration
+     * @param ?array<string,mixed> $defaultConfiguration
+     *
+     * @return array<mixed>
+     */
+    protected function getListConfig(string $key, ?array $default = null, ?array $configuration = null, ?array $defaultConfiguration = null): array
+    {
+        return ListUtility::flatten($this->getArrayConfig($key, $default, $configuration, $defaultConfiguration));
     }
 
     /**

@@ -137,7 +137,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
 
     public function addTrigger(string $triggerName): void
     {
-        if (!in_array($triggerName, $this->triggers)) {
+        if (!in_array($triggerName, $this->triggers, true)) {
             $this->triggers[] = $triggerName;
         }
     }
@@ -262,7 +262,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
 
     public function addRole(string $role): void
     {
-        if (!in_array($role, $this->roles)) {
+        if (!in_array($role, $this->roles, true)) {
             $this->roles[] = $role;
         }
     }

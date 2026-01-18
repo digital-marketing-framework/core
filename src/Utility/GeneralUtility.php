@@ -45,10 +45,10 @@ final class GeneralUtility
     public static function isFalse(mixed $value): bool
     {
         if ($value instanceof MultiValueInterface) {
-            return !$value->toArray();
+            return $value->toArray() === [];
         }
 
-        return !$value;
+        return !(bool)$value;
     }
 
     public static function parseSeparatorString(string $str): string
@@ -224,7 +224,7 @@ final class GeneralUtility
      */
     public static function findInList(mixed $fieldValue, array $list): string|int|false
     {
-        return array_search($fieldValue, $list, false); // TODO should this be a strict search?
+        return array_search($fieldValue, $list, true);
     }
 
     /**
@@ -232,7 +232,7 @@ final class GeneralUtility
      */
     public static function isInList(mixed $fieldValue, array $list): bool
     {
-        return in_array($fieldValue, $list);
+        return in_array($fieldValue, $list, true);
     }
 
     public static function getPluginKeyword(string $class, string $interface): string
@@ -359,7 +359,7 @@ final class GeneralUtility
             throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
         }
 
-        if (!in_array(ValueInterface::class, class_implements($class))) {
+        if (!in_array(ValueInterface::class, class_implements($class), true)) {
             throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
         }
 

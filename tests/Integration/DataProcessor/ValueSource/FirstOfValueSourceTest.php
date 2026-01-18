@@ -23,8 +23,8 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
                 null,
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => static::createListitem(static::getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => static::createListitem(static::getValueConfiguration([], 'null'), 'id2', 20),
+                        'id1' => static::createListItem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListItem(static::getValueConfiguration([], 'null'), 'id2', 20),
                     ],
                 ],
             ],
@@ -32,9 +32,9 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
                 'foo',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => static::createListitem(static::getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
-                        'id3' => static::createListitem(static::getValueConfiguration([], 'null'), 'id3', 30),
+                        'id1' => static::createListItem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'foo'], 'constant'), 'id2', 20),
+                        'id3' => static::createListItem(static::getValueConfiguration([], 'null'), 'id3', 30),
                     ],
                 ],
             ],
@@ -42,9 +42,9 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
                 '',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => static::createListitem(static::getValueConfiguration([], 'null'), 'id1', 10),
-                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
-                        'id3' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
+                        'id1' => static::createListItem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
+                        'id3' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],
@@ -52,9 +52,9 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
                 'a',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
-                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
-                        'id3' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                        'id1' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
+                        'id2' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
+                        'id3' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],
@@ -62,9 +62,9 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
                 'b',
                 [
                     FirstOfValueSource::KEY_VALUE_LIST => [
-                        'id1' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 20),
-                        'id2' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 10),
-                        'id3' => static::createListitem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
+                        'id1' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 20),
+                        'id2' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 10),
+                        'id3' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'c'], 'constant'), 'id3', 30),
                     ],
                 ],
             ],

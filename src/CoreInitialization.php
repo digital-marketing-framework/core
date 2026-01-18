@@ -301,7 +301,7 @@ class CoreInitialization extends Initialization
             $registry->createObject(StaticAliasConfigurationDocumentDiscovery::class, [$registry])
         );
 
-        $enableUnregulatedDataPrivacyPlugin = $registry->getGlobalConfiguration()->get('core', [])[CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY][CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY_ENABLE_UNREGULATED] ?? false;
+        $enableUnregulatedDataPrivacyPlugin = (bool)($registry->getGlobalConfiguration()->get('core', [])[CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY][CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY_ENABLE_UNREGULATED] ?? false);
         if ($enableUnregulatedDataPrivacyPlugin) {
             $registry->getDataPrivacyManager()->addPlugin(
                 $registry->createObject(UnregulatedDataPrivacyPlugin::class)

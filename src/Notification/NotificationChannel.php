@@ -21,6 +21,7 @@ abstract class NotificationChannel extends Plugin implements NotificationChannel
         protected string $keyword,
         protected RegistryInterface $registry,
     ) {
+        parent::__construct($keyword);
     }
 
     abstract public function notify(

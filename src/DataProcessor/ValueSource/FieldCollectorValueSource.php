@@ -60,7 +60,7 @@ class FieldCollectorValueSource extends ValueSource
         }
 
         // exclude settings have the highest priority, even above include settings
-        if (in_array($key, $this->excludeFields)) {
+        if (in_array($key, $this->excludeFields, true)) {
             return false;
         }
 
@@ -71,7 +71,7 @@ class FieldCollectorValueSource extends ValueSource
 
         // include fields are ranked higher than "unprocessedOnly" filter
         // in fact, incude fields only exist to add fields specifically in addition to the unprocessed ones
-        if (in_array($key, $this->includeFields) || in_array('*', $this->includeFields)) {
+        if (in_array($key, $this->includeFields, true) || in_array('*', $this->includeFields, true)) {
             return true;
         }
 

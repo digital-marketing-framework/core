@@ -428,7 +428,7 @@ class NonPersistentQueueTest extends TestCase
         $this->subject->add($job);
         self::assertEquals($initialStatus, $job->getStatus());
 
-        $this->subject->$method($job, ...$arguments);
+        $this->subject->$method($job, ...$arguments); // @phpstan-ignore method.dynamicName
         self::assertEquals($status, $job->getStatus());
         if ($expectedStatusMessage === '') {
             self::assertEquals('', $job->getStatusMessage());
@@ -524,7 +524,7 @@ class NonPersistentQueueTest extends TestCase
         $jobs = $this->subject->fetchByStatus([$initialStatus]);
         $this->assertCount(2, $jobs);
 
-        $this->subject->$method($jobs, ...$arguments);
+        $this->subject->$method($jobs, ...$arguments); // @phpstan-ignore method.dynamicName
         foreach ($jobs as $job) {
             $this->assertEquals($status, $job->getStatus());
             $this->assertEquals($expectedStatusMessage, $job->getStatusMessage());
