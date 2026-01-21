@@ -374,7 +374,7 @@ const getActiveInputContextNames = (store, path) => {
   }
 
   if (isOutboundRoutePath(path)) {
-    return ['distributor.in.defaults.all'];
+    return ['distributor.in.defaults.current'];
   }
 
   const inboundRoute = isInboundRoutePath(path);
