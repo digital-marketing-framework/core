@@ -66,7 +66,7 @@ class NonPersistentCache implements CacheInterface
             }
 
             foreach ($entry->getTags() as $tag) {
-                if (in_array($tag, $tags)) {
+                if (in_array($tag, $tags, true)) {
                     $result[] = $entry;
                     continue;
                 }

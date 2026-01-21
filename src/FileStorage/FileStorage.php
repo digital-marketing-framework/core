@@ -123,7 +123,7 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
 
         $list = array_map(static fn (string $file): string => $path . '/' . $file, $list);
 
-        return array_filter($list, static fn (string $file): bool => is_file($file));
+        return array_filter($list, is_file(...));
     }
 
     public function folderExists(string $folderIdentifier): bool

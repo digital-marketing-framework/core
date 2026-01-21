@@ -72,7 +72,7 @@ class CacheEntry implements CacheEntryInterface
 
     public function addTag(string $tag): void
     {
-        if (!in_array($tag, $this->tags)) {
+        if (!in_array($tag, $this->tags, true)) {
             $this->tags[] = $tag;
         }
     }

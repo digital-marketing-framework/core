@@ -74,6 +74,6 @@ class ConditionValueSourceTest extends ValueSourceTestBase
             ConditionValueSource::KEY_ELSE => $else,
         ];
         $output = $this->processValueSource(static::getValueSourceConfiguration($config));
-        static::assertEquals($expectedResult, $output);
+        self::assertEquals($expectedResult, $output);
     }
 }

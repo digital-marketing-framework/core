@@ -31,7 +31,7 @@ class NegateValueModifier extends ValueModifier
             return null;
         }
 
-        $useCustomValues = $this->getConfig(static::KEY_CUSTOM_VALUES);
+        $useCustomValues = $this->getBoolConfig(static::KEY_CUSTOM_VALUES);
         $true = $useCustomValues ? $this->getConfig(static::KEY_TRUE) : static::DEFAULT_TRUE;
         $false = $useCustomValues ? $this->getConfig(static::KEY_FALSE) : static::DEFAULT_FALSE;
         if ($value instanceof BooleanValueInterface) {

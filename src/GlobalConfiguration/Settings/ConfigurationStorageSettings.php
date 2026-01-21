@@ -60,7 +60,7 @@ class ConfigurationStorageSettings extends GlobalSettings implements LoggerAware
                 continue;
             }
 
-            if (in_array($name, static::BLOCKED_ALIASES)) {
+            if (in_array($name, static::BLOCKED_ALIASES, true)) {
                 $this->logger->error(sprintf('Configuration document alias "%s" is not allowed.', $name));
                 continue;
             }

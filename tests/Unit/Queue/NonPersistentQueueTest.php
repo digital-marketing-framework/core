@@ -426,17 +426,17 @@ class NonPersistentQueueTest extends TestCase
     {
         $job = $this->createJob(['value1'], $initialStatus);
         $this->subject->add($job);
-        static::assertEquals($initialStatus, $job->getStatus());
+        self::assertEquals($initialStatus, $job->getStatus());
 
-        $this->subject->$method($job, ...$arguments);
-        static::assertEquals($status, $job->getStatus());
+        $this->subject->$method($job, ...$arguments); // @phpstan-ignore method.dynamicName
+        self::assertEquals($status, $job->getStatus());
         if ($expectedStatusMessage === '') {
-            static::assertEquals('', $job->getStatusMessage());
+            self::assertEquals('', $job->getStatusMessage());
         } else {
-            static::assertStringEndsWith($expectedStatusMessage, $job->getStatusMessage());
+            self::assertStringEndsWith($expectedStatusMessage, $job->getStatusMessage());
         }
 
-        static::assertEquals($expectedSkipped, $job->getSkipped());
+        self::assertEquals($expectedSkipped, $job->getSkipped());
     }
 
     #[Test]
@@ -524,7 +524,7 @@ class NonPersistentQueueTest extends TestCase
         $jobs = $this->subject->fetchByStatus([$initialStatus]);
         $this->assertCount(2, $jobs);
 
-        $this->subject->$method($jobs, ...$arguments);
+        $this->subject->$method($jobs, ...$arguments); // @phpstan-ignore method.dynamicName
         foreach ($jobs as $job) {
             $this->assertEquals($status, $job->getStatus());
             $this->assertEquals($expectedStatusMessage, $job->getStatusMessage());

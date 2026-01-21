@@ -40,7 +40,7 @@ abstract class DataPrivacyPlugin implements DataPrivacyPluginInterface, ContextA
 
     public function permissionMatches(string $permission): bool
     {
-        return in_array($permission, $this->getAllPossiblePermissions());
+        return in_array($permission, $this->getAllPossiblePermissions(), true);
     }
 
     abstract public function getGrantedPermissions(): array;
@@ -51,7 +51,7 @@ abstract class DataPrivacyPlugin implements DataPrivacyPluginInterface, ContextA
 
     public function getPermission(string $permission): bool
     {
-        return in_array($permission, $this->getGrantedPermissions());
+        return in_array($permission, $this->getGrantedPermissions(), true);
     }
 
     public function getPermissionDefault(string $permission): bool

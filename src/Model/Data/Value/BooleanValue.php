@@ -2,7 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-class BooleanValue extends Value implements BooleanValueInterface
+use Stringable;
+
+class BooleanValue extends Value implements Stringable, BooleanValueInterface
 {
     protected bool $value;
 

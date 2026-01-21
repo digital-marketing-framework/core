@@ -2,7 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-class FileValue extends Value implements FileValueInterface
+use Stringable;
+
+class FileValue extends Value implements Stringable, FileValueInterface
 {
     final public function __construct(
         protected string $relativePath = '',

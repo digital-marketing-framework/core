@@ -27,11 +27,11 @@ class PassthroughFieldsDataMapper extends DataMapper
 
     public function mapData(DataInterface $target): DataInterface
     {
-        if (!$this->getConfig(static::KEY_ENABLED)) {
+        if (!$this->getBoolConfig(static::KEY_ENABLED)) {
             return $target;
         }
 
-        $unprocessedOnly = $this->getConfig(static::KEY_UNPROCESSED_ONLY);
+        $unprocessedOnly = $this->getBoolConfig(static::KEY_UNPROCESSED_ONLY);
         $includeFields = GeneralUtility::castValueToArray($this->getConfig(static::KEY_INCLUDE_FIELDS));
 
         foreach ($this->context->getData() as $fieldName => $value) {

@@ -80,7 +80,7 @@ abstract class AbstractListUtility
      */
     public static function removeMultiple(array $list, array $idsToRemove): array
     {
-        return array_filter($list, static fn (array $item) => !in_array($item[static::KEY_UID], $idsToRemove));
+        return array_filter($list, static fn (array $item) => !in_array($item[static::KEY_UID], $idsToRemove, true));
     }
 
     /**

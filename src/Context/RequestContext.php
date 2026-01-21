@@ -58,10 +58,10 @@ class RequestContext extends Context
 
     public function getIpAddress(): ?string
     {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        if (isset($_SERVER['HTTP_CLIENT_IP']) && $_SERVER['HTTP_CLIENT_IP'] !== '') {
             // check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] !== '') {
             // to check ip is pass from proxy
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {

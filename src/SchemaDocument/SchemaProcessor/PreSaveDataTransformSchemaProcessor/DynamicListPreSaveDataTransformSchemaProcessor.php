@@ -17,7 +17,7 @@ class DynamicListPreSaveDataTransformSchemaProcessor extends PreSaveDataTransfor
             return;
         }
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = (object)[];
         } else {
             foreach (array_keys($data) as $key) {

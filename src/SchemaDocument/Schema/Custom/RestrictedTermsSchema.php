@@ -79,10 +79,10 @@ class RestrictedTermsSchema extends SwitchSchema
      */
     public static function isTermAllowed(array $allowedTerms, string $term): bool
     {
-        if (in_array('!' . $term, $allowedTerms)) {
+        if (in_array('!' . $term, $allowedTerms, true)) {
             return false;
         }
 
-        return in_array('*', $allowedTerms) || in_array($term, $allowedTerms);
+        return in_array('*', $allowedTerms, true) || in_array($term, $allowedTerms, true);
     }
 }
