@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorInterface;
 use DigitalMarketingFramework\Core\DataProcessor\FieldTracker;
 use DigitalMarketingFramework\Core\DataProcessor\FieldTrackerInterface;
+use DigitalMarketingFramework\Core\Log\LoggerInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
@@ -31,6 +32,8 @@ abstract class DataProcessorPluginTestBase extends TestCase
 
     protected DataProcessorInterface&MockObject $dataProcessor;
 
+    protected LoggerInterface&MockObject $logger;
+
     protected FieldTrackerInterface $fieldTracker;
 
     /** @var array<string,string|ValueInterface|null> */
@@ -43,7 +46,16 @@ abstract class DataProcessorPluginTestBase extends TestCase
     {
         $this->registry = $this->createMock(RegistryInterface::class);
         $this->dataProcessor = $this->createMock(DataProcessorInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
         $this->fieldTracker = new FieldTracker();
+    }
+
+    /**
+     * Create a fresh logger mock for tests that need specific expectations.
+     */
+    protected function createLoggerMock(): LoggerInterface&MockObject
+    {
+        return $this->createMock(LoggerInterface::class);
     }
 
     protected function getContext(): DataProcessorContextInterface

@@ -19,6 +19,7 @@ abstract class ValueSourceTestBase extends DataProcessorPluginTestBase
     protected function processObjectAwareness(): void
     {
         $this->subject->setDataProcessor($this->dataProcessor);
+        $this->subject->setLogger($this->logger);
     }
 
     /**

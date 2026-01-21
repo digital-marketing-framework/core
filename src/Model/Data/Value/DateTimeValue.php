@@ -2,18 +2,19 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-use DateMalformedStringException;
 use DateTime;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use Exception;
+use Stringable;
 
-class DateTimeValue extends Value
+class DateTimeValue extends Value implements Stringable, DateTimeValueInterface
 {
     public const DEFAULT_FORMAT = 'Y-m-d';
 
     protected DateTime $date;
 
-    public function __construct(
-        string|int|DateTime $date,
+    final public function __construct(
+        string|DateTime $date,
         protected string $format = self::DEFAULT_FORMAT,
     ) {
         $this->setDate($date);
@@ -26,14 +27,14 @@ class DateTimeValue extends Value
 
     public function setDate(string|DateTime $date): void
     {
-        if (is_numeric($date)) {
+        if (is_string($date) && is_numeric($date)) {
             $timestamp = $date;
             $date = new DateTime();
             $date->setTimestamp((int)$timestamp);
         } elseif (is_string($date)) {
             try {
                 $date = new DateTime($date);
-            } catch (DateMalformedStringException $e) {
+            } catch (Exception $e) {
                 throw new DigitalMarketingFrameworkException($e->getMessage(), $e->getCode(), $e);
             }
         }
@@ -64,12 +65,12 @@ class DateTimeValue extends Value
     public function pack(): array
     {
         return [
-            'timestamp' => $this->date->getTimestamp(),
+            'timestamp' => (string)$this->date->getTimestamp(),
             'format' => $this->format,
         ];
     }
 
-    public static function unpack(array $packed): ValueInterface
+    public static function unpack(array $packed): DateTimeValue
     {
         return new static(
             $packed['timestamp'],

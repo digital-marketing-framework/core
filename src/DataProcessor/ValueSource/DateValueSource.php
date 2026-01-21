@@ -2,7 +2,6 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueSource;
 
-use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\DateTimeValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
