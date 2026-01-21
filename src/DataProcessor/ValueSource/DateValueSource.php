@@ -37,7 +37,7 @@ class DateValueSource extends ValueSource
             return $dateTimeValue;
         }
 
-        $this->logger->warning('Cannot convert value to date-time: "' . (string)$value . '"');
+        $this->logger->warning('Cannot convert value to date-time: "' . $value . '"');
 
         return null;
     }

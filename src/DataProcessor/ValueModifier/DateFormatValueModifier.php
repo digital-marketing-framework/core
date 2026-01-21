@@ -31,7 +31,7 @@ class DateFormatValueModifier extends ValueModifier
             return $dateTimeValue;
         }
 
-        $this->logger->warning('Cannot convert value to date-time: "' . (string)$value . '"');
+        $this->logger->warning('Cannot convert value to date-time: "' . $value . '"');
 
         return $value;
     }

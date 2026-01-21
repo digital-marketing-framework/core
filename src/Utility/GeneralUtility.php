@@ -81,7 +81,7 @@ final class GeneralUtility
         try {
             if ($value instanceof DateTimeValue) {
                 return new DateTimeValue($value->getDate(), $format ?? $value->getFormat());
-            } else if ($value instanceof DateTime) {
+            } elseif ($value instanceof DateTime) {
                 return new DateTimeValue($value, $format ?? DateTimeValue::DEFAULT_FORMAT);
             } else {
                 return new DateTimeValue((string)$value, $format ?? DateTimeValue::DEFAULT_FORMAT);
