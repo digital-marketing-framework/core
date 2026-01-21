@@ -63,7 +63,7 @@ class NonPersistentQueue extends ItemStorage implements QueueInterface
         $now = new DateTime();
         $count = 0;
         foreach ($this->queue as $job) {
-            if ($status !== [] && !in_array($job->getStatus(), $status)) {
+            if ($status !== [] && !in_array($job->getStatus(), $status, true)) {
                 continue;
             }
 
@@ -214,7 +214,7 @@ class NonPersistentQueue extends ItemStorage implements QueueInterface
             $job->setId($this->getNewId());
         }
 
-        if (!in_array($job, $this->queue)) {
+        if (!in_array($job, $this->queue, true)) {
             $this->queue[$job->getId()] = $job;
         }
     }

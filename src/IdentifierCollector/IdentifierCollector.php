@@ -56,7 +56,7 @@ abstract class IdentifierCollector extends IntegrationPlugin implements Identifi
 
     protected function proceed(): bool
     {
-        if (!$this->getConfig(static::KEY_ENABLED)) {
+        if (!$this->getBoolConfig(static::KEY_ENABLED)) {
             return false;
         }
 

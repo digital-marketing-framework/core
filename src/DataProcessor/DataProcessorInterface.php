@@ -5,9 +5,8 @@ namespace DigitalMarketingFramework\Core\DataProcessor;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
-use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 
-interface DataProcessorInterface extends PluginInterface
+interface DataProcessorInterface
 {
     public function createContext(DataInterface $data, ConfigurationInterface $configuration): DataProcessorContextInterface;
 

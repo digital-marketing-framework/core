@@ -82,18 +82,19 @@ trait PluginRegistryTrait
 
         if ($class === null && $this->checkKeywordAsClass($keyword, $interface)) {
             $class = $keyword;
-            $keyword = GeneralUtility::getPluginKeyword($keyword, $interface) ?: $keyword;
+            $generatedKeyword = GeneralUtility::getPluginKeyword($keyword, $interface);
+            $keyword = $generatedKeyword !== '' ? $generatedKeyword : $keyword;
             $additionalArguments = [];
         }
 
-        if ($class && class_exists($class)) {
+        if ($class !== null && class_exists($class)) {
             $constructorArguments = [$keyword, $this];
             array_push($constructorArguments, ...$arguments);
             array_push($constructorArguments, ...$additionalArguments);
             /** @var PluginInterface */
             $plugin = $this->createObject($class, $constructorArguments);
 
-            $this->processPLuginAwareness($plugin);
+            $this->processPluginAwareness($plugin);
 
             return $plugin;
         }
@@ -134,7 +135,8 @@ trait PluginRegistryTrait
     public function registerPlugin(string $interface, string $class, array $additionalArguments = [], string $keyword = ''): void
     {
         if ($keyword === '' || is_numeric($keyword)) {
-            $keyword = GeneralUtility::getPluginKeyword($class, $interface) ?: $keyword;
+            $generatedKeyword = GeneralUtility::getPluginKeyword($class, $interface);
+            $keyword = $generatedKeyword !== '' ? $generatedKeyword : $keyword;
         }
 
         $this->interfaceValidation($interface, PluginInterface::class);

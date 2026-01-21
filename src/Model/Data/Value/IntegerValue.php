@@ -2,7 +2,9 @@
 
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
-class IntegerValue extends Value implements IntegerValueInterface
+use Stringable;
+
+class IntegerValue extends Value implements Stringable, IntegerValueInterface
 {
     protected int $value;
 

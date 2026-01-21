@@ -46,7 +46,7 @@ class DataCache implements DataCacheInterface
             /** @var string */
             $reference = $result[static::CACHE_KEY_REFERENCE];
 
-            $loopFound = in_array($reference, $processedKeys);
+            $loopFound = in_array($reference, $processedKeys, true);
             $processedKeys[] = $reference;
             if ($loopFound) {
                 throw new DigitalMarketingFrameworkException('Cache reference loop found: ' . implode(',', $processedKeys));
@@ -108,7 +108,7 @@ class DataCache implements DataCacheInterface
      */
     protected function followReferenceKeys(string $key, array $processedKeys = []): string
     {
-        $loopFound = in_array($key, $processedKeys);
+        $loopFound = in_array($key, $processedKeys, true);
         $processedKeys[] = $key;
         if ($loopFound) {
             throw new DigitalMarketingFrameworkException('Cache reference loop found: ' . implode(',', $processedKeys));

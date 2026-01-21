@@ -86,7 +86,7 @@ abstract class ResourceService implements ResourceServiceInterface, GlobalConfig
             }
 
             foreach ($files as $file) {
-                if (in_array($file, self::IGNORE_FILES)) {
+                if (in_array($file, self::IGNORE_FILES, true)) {
                     continue;
                 }
 
@@ -115,7 +115,7 @@ abstract class ResourceService implements ResourceServiceInterface, GlobalConfig
 
     public function readOnly(string $identifier): bool
     {
-        return !($this->globalConfiguration->get('core', [])['configurationStorage']['allowSaveToExtensionPaths'] ?? false);
+        return !(bool)($this->globalConfiguration->get('core', [])['configurationStorage']['allowSaveToExtensionPaths'] ?? false);
     }
 
     public function resourceExists(string $identifier): bool

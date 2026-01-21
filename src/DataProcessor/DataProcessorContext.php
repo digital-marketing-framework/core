@@ -60,7 +60,7 @@ class DataProcessorContext extends ArrayObject implements DataProcessorContextIn
         }
 
         foreach ($this as $key => $value) {
-            if (!in_array($key, ['data', 'configuration', 'tracker'])) {
+            if (!in_array($key, ['data', 'configuration', 'tracker'], true)) {
                 $copy[$key] = $value;
             }
         }

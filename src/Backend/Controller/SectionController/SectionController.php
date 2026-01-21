@@ -23,7 +23,7 @@ abstract class SectionController extends BackendController implements SectionCon
             'menu' => 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/menu.js',
         ],
         'styles' => [
-            'backend' => 'EXT:backend/Resources/Public/Css/backend.css',
+            'backend' => 'PKG:digital-marketing-framework/core/res/assets/styles/backend.css',
         ],
     ];
 
@@ -44,7 +44,17 @@ abstract class SectionController extends BackendController implements SectionCon
 
         $rendered = $this->templateEngine->render($config, $this->viewData, false);
 
-        return new HtmlResponse($rendered);
+        $response = new HtmlResponse($rendered);
+
+        foreach ($this->viewData['scripts'] ?? [] as $name => $path) {
+            $response->setScript($name, $path);
+        }
+
+        foreach ($this->viewData['styles'] ?? [] as $name => $path) {
+            $response->setStyleSheet($name, $path);
+        }
+
+        return $response;
     }
 
     /**
@@ -59,12 +69,12 @@ abstract class SectionController extends BackendController implements SectionCon
 
     protected function addScript(string $script, string $name = ''): void
     {
-        $this->viewData['scripts'][$name ?: $script] = $script;
+        $this->viewData['scripts'][$name !== '' ? $name : $script] = $script;
     }
 
     protected function addStyles(string $styles, string $name = ''): void
     {
-        $this->viewData['styles'][$name ?: $styles] = $styles;
+        $this->viewData['styles'][$name !== '' ? $name : $styles] = $styles;
     }
 
     protected function copyAsset(string $path): void
@@ -112,7 +122,7 @@ abstract class SectionController extends BackendController implements SectionCon
         return $this->getParameters()['currentAction'] ?? $default;
     }
 
-    protected function getReturnUrl(string $default = null): ?string
+    protected function getReturnUrl(?string $default = null): ?string
     {
         return $this->getParameters()['returnUrl'] ?? $default;
     }

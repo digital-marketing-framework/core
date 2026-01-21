@@ -19,9 +19,9 @@ abstract class FieldTestBase extends TestCase
 
     public static function assertFieldEquals(mixed $expected, mixed $result): void
     {
-        static::assertInstanceOf(ValueInterface::class, $expected);
-        static::assertInstanceOf(ValueInterface::class, $result);
-        static::assertEquals($expected->pack(), $result->pack());
+        self::assertInstanceOf(ValueInterface::class, $expected);
+        self::assertInstanceOf(ValueInterface::class, $result);
+        self::assertEquals($expected->pack(), $result->pack());
     }
 
     /**
