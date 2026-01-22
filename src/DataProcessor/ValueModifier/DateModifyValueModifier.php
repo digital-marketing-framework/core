@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataProcessor\ValueModifier;
 
+use DateMalformedStringException;
 use DigitalMarketingFramework\Core\Model\Data\Value\DateTimeValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
@@ -26,7 +27,13 @@ class DateModifyValueModifier extends ValueModifier
         $dateTimeValue = GeneralUtility::castValueToDateTimeValue($value);
 
         if ($dateTimeValue instanceof DateTimeValue) {
-            if ($dateTimeValue->getDate()->modify($modifier) === false) {
+            try {
+                // @phpstan-ignore identical.alwaysFalse (PHP 8.1/8.2 returns false, PHP 8.3+ throws exception)
+                if ($dateTimeValue->getDate()->modify($modifier) === false) {
+                    $this->logger->warning('Date-time modifier cannot be applied: "' . $modifier . '"');
+                }
+            } catch (DateMalformedStringException) {
+                // PHP 8.3+ throws DateMalformedStringException for invalid modifiers
                 $this->logger->warning('Date-time modifier cannot be applied: "' . $modifier . '"');
             }
 
