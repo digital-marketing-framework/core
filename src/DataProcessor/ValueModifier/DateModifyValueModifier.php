@@ -40,8 +40,9 @@ class DateModifyValueModifier extends ValueModifier implements GlobalConfigurati
 
         if ($dateTimeValue instanceof DateTimeValue) {
             try {
+                // Suppress PHP warning since we handle the error condition ourselves
                 // @phpstan-ignore identical.alwaysFalse (PHP 8.1/8.2 returns false, PHP 8.3+ throws exception)
-                if ($dateTimeValue->getDate()->modify($modifier) === false) {
+                if (@$dateTimeValue->getDate()->modify($modifier) === false) {
                     $this->logger->warning('Date-time modifier cannot be applied: "' . $modifier . '"');
                 }
             } catch (DateMalformedStringException) {
