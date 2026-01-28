@@ -75,4 +75,19 @@ class DateModifyValueModifierTest extends ValueModifierTestBase
 
         $this->assertEquals('not-a-date', $output);
     }
+
+    #[Test]
+    public function invalidModifierReturnsUnmodifiedDateTimeValueAndLogsWarning(): void
+    {
+        $this->logger->expects($this->once())->method('warning');
+
+        $config = [
+            ValueModifier::KEY_ENABLED => true,
+            DateModifyValueModifier::KEY_MODIFIER => 'invalid modifier',
+        ];
+        $output = $this->processValueModifier($config, new DateTimeValue('2025-01-21', 'Y-m-d'));
+
+        $this->assertInstanceOf(DateTimeValue::class, $output);
+        $this->assertEquals('2025-01-21', (string)$output);
+    }
 }
