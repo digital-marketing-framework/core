@@ -8,7 +8,11 @@ interface DateTimeValueInterface extends ValueInterface
 {
     public function getDate(): DateTime;
 
-    public function setDate(string|DateTime $date): void;
+    public function setDate(DateTime $date): void;
+
+    public function getTimezone(): string;
+
+    public function setTimezone(string $timezone): void;
 
     public function getFormat(): string;
 

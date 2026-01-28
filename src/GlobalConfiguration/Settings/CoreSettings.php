@@ -15,4 +15,15 @@ class CoreSettings extends GlobalSettings
     {
         return $this->get(CoreGlobalConfigurationSchema::KEY_DEBUG);
     }
+
+    public function getDefaultTimezone(): string
+    {
+        $timezone = $this->get(CoreGlobalConfigurationSchema::KEY_DEFAULT_TIMEZONE);
+
+        if ($timezone === CoreGlobalConfigurationSchema::VALUE_TIMEZONE_SERVER || $timezone === '') {
+            return date_default_timezone_get();
+        }
+
+        return $timezone;
+    }
 }

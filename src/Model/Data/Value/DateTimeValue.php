@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
 use DateTime;
+use DateTimeZone;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use Exception;
 use Stringable;
@@ -11,13 +12,32 @@ class DateTimeValue extends Value implements Stringable, DateTimeValueInterface
 {
     public const DEFAULT_FORMAT = 'Y-m-d';
 
+    public const DEFAULT_TIMEZONE = 'UTC';
+
     protected DateTime $date;
 
     final public function __construct(
-        string|DateTime $date,
+        string $date,
         protected string $format = self::DEFAULT_FORMAT,
+        string $timezone = self::DEFAULT_TIMEZONE,
     ) {
-        $this->setDate($date);
+        $this->initDate($date, $timezone);
+    }
+
+    protected function initDate(string $date, string $timezone): void
+    {
+        try {
+            $tz = new DateTimeZone($timezone);
+
+            if (is_numeric($date)) {
+                $this->date = new DateTime('now', $tz);
+                $this->date->setTimestamp((int)$date);
+            } else {
+                $this->date = new DateTime($date, $tz);
+            }
+        } catch (Exception $e) {
+            throw new DigitalMarketingFrameworkException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     public function getDate(): DateTime
@@ -25,21 +45,19 @@ class DateTimeValue extends Value implements Stringable, DateTimeValueInterface
         return $this->date;
     }
 
-    public function setDate(string|DateTime $date): void
+    public function setDate(DateTime $date): void
     {
-        if (is_string($date) && is_numeric($date)) {
-            $timestamp = $date;
-            $date = new DateTime();
-            $date->setTimestamp((int)$timestamp);
-        } elseif (is_string($date)) {
-            try {
-                $date = new DateTime($date);
-            } catch (Exception $e) {
-                throw new DigitalMarketingFrameworkException($e->getMessage(), $e->getCode(), $e);
-            }
-        }
-
         $this->date = $date;
+    }
+
+    public function getTimezone(): string
+    {
+        return $this->date->getTimezone()->getName();
+    }
+
+    public function setTimezone(string $timezone): void
+    {
+        $this->date->setTimezone(new DateTimeZone($timezone));
     }
 
     public function getFormat(): string
@@ -67,6 +85,7 @@ class DateTimeValue extends Value implements Stringable, DateTimeValueInterface
         return [
             'timestamp' => (string)$this->date->getTimestamp(),
             'format' => $this->format,
+            'timezone' => $this->getTimezone(),
         ];
     }
 
@@ -74,7 +93,8 @@ class DateTimeValue extends Value implements Stringable, DateTimeValueInterface
     {
         return new static(
             $packed['timestamp'],
-            $packed['format']
+            $packed['format'],
+            $packed['timezone'] ?? self::DEFAULT_TIMEZONE,
         );
     }
 }

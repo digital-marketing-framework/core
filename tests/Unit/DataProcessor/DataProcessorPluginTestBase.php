@@ -7,9 +7,13 @@ use DigitalMarketingFramework\Core\DataProcessor\DataProcessorContextInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorInterface;
 use DigitalMarketingFramework\Core\DataProcessor\FieldTracker;
 use DigitalMarketingFramework\Core\DataProcessor\FieldTrackerInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Log\LoggerInterface;
 use DigitalMarketingFramework\Core\Model\Configuration\Configuration;
 use DigitalMarketingFramework\Core\Model\Data\Data;
+use DigitalMarketingFramework\Core\Model\Data\Value\DateTimeValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Tests\ListMapTestTrait;
@@ -34,6 +38,10 @@ abstract class DataProcessorPluginTestBase extends TestCase
 
     protected LoggerInterface&MockObject $logger;
 
+    protected GlobalConfigurationInterface&MockObject $globalConfiguration;
+
+    protected CoreSettings&MockObject $coreSettings;
+
     protected FieldTrackerInterface $fieldTracker;
 
     /** @var array<string,string|ValueInterface|null> */
@@ -48,6 +56,19 @@ abstract class DataProcessorPluginTestBase extends TestCase
         $this->dataProcessor = $this->createMock(DataProcessorInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->fieldTracker = new FieldTracker();
+
+        $this->coreSettings = $this->createMock(CoreSettings::class);
+        $this->coreSettings->method('getDefaultTimezone')->willReturn(DateTimeValue::DEFAULT_TIMEZONE);
+
+        $this->globalConfiguration = $this->createMock(GlobalConfigurationInterface::class);
+        $this->globalConfiguration->method('getGlobalSettings')->with(CoreSettings::class)->willReturn($this->coreSettings);
+    }
+
+    protected function injectGlobalConfiguration(object $subject): void
+    {
+        if ($subject instanceof GlobalConfigurationAwareInterface) {
+            $subject->setGlobalConfiguration($this->globalConfiguration);
+        }
     }
 
     /**

@@ -68,7 +68,7 @@ final class GeneralUtility
         return is_array($value) || $value instanceof MultiValueInterface;
     }
 
-    public static function castValueToDateTimeValue(string|DateTime|ValueInterface|null $value, ?string $format = null): ?DateTimeValue
+    public static function castValueToDateTimeValue(string|DateTime|ValueInterface|null $value, ?string $format = null, ?string $timezone = null): ?DateTimeValue
     {
         if ($value === null) {
             return null;
@@ -78,14 +78,30 @@ final class GeneralUtility
             $format = null;
         }
 
+        if ($timezone === '') {
+            $timezone = null;
+        }
+
         try {
             if ($value instanceof DateTimeValue) {
-                return new DateTimeValue($value->getDate(), $format ?? $value->getFormat());
+                return new DateTimeValue(
+                    (string)$value->getDate()->getTimestamp(),
+                    $format ?? $value->getFormat(),
+                    $timezone ?? $value->getTimezone(),
+                );
             } elseif ($value instanceof DateTime) {
-                return new DateTimeValue($value, $format ?? DateTimeValue::DEFAULT_FORMAT);
+                return new DateTimeValue(
+                    (string)$value->getTimestamp(),
+                    $format ?? DateTimeValue::DEFAULT_FORMAT,
+                    $timezone ?? $value->getTimezone()->getName(),
+                );
             }
 
-            return new DateTimeValue((string)$value, $format ?? DateTimeValue::DEFAULT_FORMAT);
+            return new DateTimeValue(
+                (string)$value,
+                $format ?? DateTimeValue::DEFAULT_FORMAT,
+                $timezone ?? DateTimeValue::DEFAULT_TIMEZONE,
+            );
         } catch (DigitalMarketingFrameworkException) {
             return null;
         }

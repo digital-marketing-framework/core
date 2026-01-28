@@ -20,6 +20,7 @@ abstract class ValueSourceTestBase extends DataProcessorPluginTestBase
     {
         $this->subject->setDataProcessor($this->dataProcessor);
         $this->subject->setLogger($this->logger);
+        $this->injectGlobalConfiguration($this->subject);
     }
 
     /**

@@ -29,6 +29,7 @@ abstract class ValueModifierTestBase extends DataProcessorPluginTestBase
         $this->subject->setDataProcessor($this->dataProcessor);
         $this->subject->setDefaultConfiguration($defaultConfig);
         $this->subject->setLogger($this->logger);
+        $this->injectGlobalConfiguration($this->subject);
 
         return $this->subject->modify($value);
     }
