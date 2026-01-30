@@ -21,5 +21,7 @@ interface RenderingServiceInterface
         array $parameters = [],
         string $contextIdentifier = '',
         string $uid = '',
+        string $documentName = '',
+        string $contextType = '',
     ): array;
 }
