@@ -30,7 +30,7 @@ class StaticConfigurationDocumentStorage extends ConfigurationDocumentStorage
         foreach ($this->registry->getStaticConfigurationDocumentDiscoveries() as $discovery) {
             $ids = $discovery->getIdentifiers();
             foreach ($ids as $id) {
-                if (!in_array($id, $result)) {
+                if (!in_array($id, $result, true)) {
                     $result[] = $id;
                 }
             }

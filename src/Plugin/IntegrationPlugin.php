@@ -39,19 +39,48 @@ abstract class IntegrationPlugin extends ConfigurablePlugin implements Integrati
         return $this->getConfig($key, $default, $this->integrationConfiguration, $this->defaultIntegrationConfiguration);
     }
 
-    /**
-     * @return array<string,mixed>
-     */
-    protected function getIntegrationMapConfig(string $key, mixed $default = null): array
+    protected function getIntegrationBoolConfig(string $key, ?bool $default = null): bool
     {
-        return MapUtility::flatten($this->getIntegrationConfig($key, $default));
+        return (bool)$this->getIntegrationConfig($key, $default);
+    }
+
+    protected function getIntegrationStringConfig(string $key, ?string $default = null): string
+    {
+        return (string)$this->getIntegrationConfig($key, $default);
+    }
+
+    protected function getIntegrationIntConfig(string $key, ?int $default = null): int
+    {
+        return (int)$this->getIntegrationConfig($key, $default);
     }
 
     /**
+     * @param ?array<mixed> $default
+     *
      * @return array<mixed>
      */
-    protected function getIntegrationListConfig(string $key, mixed $default = null): array
+    protected function getIntegrationArrayConfig(string $key, ?array $default = null): array
     {
-        return ListUtility::flatten($this->getIntegrationConfig($key, $default));
+        return (array)$this->getIntegrationConfig($key, $default);
+    }
+
+    /**
+     * @param ?array<mixed> $default
+     *
+     * @return array<string,mixed>
+     */
+    protected function getIntegrationMapConfig(string $key, ?array $default = null): array
+    {
+        return MapUtility::flatten($this->getIntegrationArrayConfig($key, $default));
+    }
+
+    /**
+     * @param ?array<mixed> $default
+     *
+     * @return array<mixed>
+     */
+    protected function getIntegrationListConfig(string $key, ?array $default = null): array
+    {
+        return ListUtility::flatten($this->getIntegrationArrayConfig($key, $default));
     }
 }

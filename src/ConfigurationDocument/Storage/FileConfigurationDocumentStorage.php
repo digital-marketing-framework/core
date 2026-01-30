@@ -55,7 +55,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     public function getDocumentIdentifiers(): array
     {
         $folderIdentifier = $this->getStorageConfiguration('folder');
-        if (empty($folderIdentifier)) {
+        if ($folderIdentifier === null || $folderIdentifier === '') {
             return [];
         }
 

@@ -26,7 +26,7 @@ trait StaticConfigurationDocumentRegistryTrait
 
     public function registerStaticConfigurationDocumentDiscovery(StaticConfigurationDocumentDiscoveryInterface $discovery): void
     {
-        if (!in_array($discovery, $this->staticConfigurationDocumentDiscoveries)) {
+        if (!in_array($discovery, $this->staticConfigurationDocumentDiscoveries, true)) {
             $this->staticConfigurationDocumentDiscoveries[] = $discovery;
         }
     }

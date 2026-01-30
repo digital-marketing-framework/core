@@ -210,6 +210,15 @@ const updateValue = (store, path, currentPath) => {
   if (typeof value === 'undefined') {
     store.setValue(path, currentPath, getDefaultValue(store, path, currentPath));
   } else {
+    // Migration: distributor.in.defaults.* → distributor.in.defaults.current (MFR-166)
+    const schema = store.getSchema(path, currentPath, true);
+    if (schema.allowedValues?.inputFieldContextSelection &&
+        typeof value === 'string' &&
+        value.startsWith('distributor.in.defaults.') &&
+        value !== 'distributor.in.defaults.current') {
+      store.setValue(path, currentPath, 'distributor.in.defaults.current');
+    }
+
     const { getChildPaths } = usePathProcessor(store);
     const absolutePath = getAbsolutePath(path, currentPath);
     getChildPaths(path, currentPath).forEach((childPath) => {

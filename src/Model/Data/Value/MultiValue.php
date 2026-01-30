@@ -4,11 +4,12 @@ namespace DigitalMarketingFramework\Core\Model\Data\Value;
 
 use ArrayObject;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
+use Stringable;
 
 /**
  * @extends ArrayObject<int|string,string|ValueInterface>
  */
-class MultiValue extends ArrayObject implements MultiValueInterface
+class MultiValue extends ArrayObject implements Stringable, MultiValueInterface
 {
     public function __construct(
         array $a = [],

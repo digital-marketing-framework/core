@@ -72,7 +72,7 @@ abstract class BackendController extends Plugin implements BackendControllerInte
             return false;
         }
 
-        return in_array($request->getInternalRoute(), $this->routes);
+        return in_array($request->getInternalRoute(), $this->routes, true);
     }
 
     protected function getInternalRoute(): string
@@ -105,6 +105,7 @@ abstract class BackendController extends Plugin implements BackendControllerInte
             throw new DigitalMarketingFrameworkException(sprintf('Unknown action "%s".', $action));
         }
 
+        /** @phpstan-ignore method.dynamicName (intentional action dispatch pattern) */
         $response = $this->$method();
 
         if (!$response instanceof Response) {

@@ -28,7 +28,7 @@ class SpliceValueModifier extends ValueModifier
         $slice = $this->getConfig(static::KEY_INDEX);
         $indices = explode(':', (string)$slice);
 
-        $offset = $indices[0] ?: 1;
+        $offset = $indices[0] !== '' ? (int)$indices[0] : 1;
         if ($offset > 0) {
             --$offset;
         }
@@ -38,7 +38,8 @@ class SpliceValueModifier extends ValueModifier
             $length = 1;
         } else {
             // 'X:' || ':Y' || 'X:Y'
-            $length = (int)$indices[1] ?: null;
+            $len = (int)$indices[1];
+            $length = $len !== 0 ? $len : null;
         }
 
         $parts = $token === '' ? [$value] : explode($token, (string)$value);

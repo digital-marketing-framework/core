@@ -12,7 +12,7 @@ import {
 import { useLabelProcessor } from "../../../composables/label";
 import { usePathProcessor } from "../../../composables/path";
 import { useValueSets } from '../../../composables/valueSets';
-import { useIconProcessor } from '@/composables/icon'
+import { useIconProcessor } from '@/composables/icon';
 
 const store = useDmfStore();
 const { getLabel } = useLabelProcessor(store);

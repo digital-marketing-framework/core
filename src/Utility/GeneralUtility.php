@@ -2,10 +2,12 @@
 
 namespace DigitalMarketingFramework\Core\Utility;
 
+use DateTime;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\DateTimeValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
@@ -45,10 +47,10 @@ final class GeneralUtility
     public static function isFalse(mixed $value): bool
     {
         if ($value instanceof MultiValueInterface) {
-            return !$value->toArray();
+            return $value->toArray() === [];
         }
 
-        return !$value;
+        return !(bool)$value;
     }
 
     public static function parseSeparatorString(string $str): string
@@ -64,6 +66,45 @@ final class GeneralUtility
     public static function isList(mixed $value): bool
     {
         return is_array($value) || $value instanceof MultiValueInterface;
+    }
+
+    public static function castValueToDateTimeValue(string|DateTime|ValueInterface|null $value, ?string $format = null, ?string $timezone = null): ?DateTimeValue
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if ($format === '') {
+            $format = null;
+        }
+
+        if ($timezone === '') {
+            $timezone = null;
+        }
+
+        try {
+            if ($value instanceof DateTimeValue) {
+                return new DateTimeValue(
+                    (string)$value->getDate()->getTimestamp(),
+                    $format ?? $value->getFormat(),
+                    $timezone ?? $value->getTimezone(),
+                );
+            } elseif ($value instanceof DateTime) {
+                return new DateTimeValue(
+                    (string)$value->getTimestamp(),
+                    $format ?? DateTimeValue::DEFAULT_FORMAT,
+                    $timezone ?? $value->getTimezone()->getName(),
+                );
+            }
+
+            return new DateTimeValue(
+                (string)$value,
+                $format ?? DateTimeValue::DEFAULT_FORMAT,
+                $timezone ?? DateTimeValue::DEFAULT_TIMEZONE,
+            );
+        } catch (DigitalMarketingFrameworkException) {
+            return null;
+        }
     }
 
     /**
@@ -224,7 +265,7 @@ final class GeneralUtility
      */
     public static function findInList(mixed $fieldValue, array $list): string|int|false
     {
-        return array_search($fieldValue, $list, false); // TODO should this be a strict search?
+        return array_search($fieldValue, $list, true);
     }
 
     /**
@@ -232,7 +273,7 @@ final class GeneralUtility
      */
     public static function isInList(mixed $fieldValue, array $list): bool
     {
-        return in_array($fieldValue, $list);
+        return in_array($fieldValue, $list, true);
     }
 
     public static function getPluginKeyword(string $class, string $interface): string
@@ -359,7 +400,7 @@ final class GeneralUtility
             throw new DigitalMarketingFrameworkException('Unknown class "' . $class . '"');
         }
 
-        if (!in_array(ValueInterface::class, class_implements($class))) {
+        if (!in_array(ValueInterface::class, class_implements($class), true)) {
             throw new DigitalMarketingFrameworkException('Invalid value class "' . $class . '"');
         }
 

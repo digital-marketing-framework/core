@@ -123,6 +123,6 @@ class OrConditionTest extends ConditionTestBase
     public function or(bool $expectedResult, array $config): void
     {
         $result = $this->processCondition($config);
-        static::assertEquals($expectedResult, $result);
+        self::assertEquals($expectedResult, $result);
     }
 }

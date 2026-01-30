@@ -49,7 +49,7 @@ abstract class ListSectionController extends SectionController
     {
         $list = $this->getParameters()['list'] ?? [];
 
-        return array_values(array_filter($list));
+        return array_values(array_filter($list, static fn ($item): bool => (bool)$item));
     }
 
     protected function getPage(): ?int

@@ -45,6 +45,8 @@ use DigitalMarketingFramework\Core\DataProcessor\DataMapper\PrefixDataMapper;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\DataMapperGroupInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\SequenceDataMapperGroup;
 use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\SingleDataMapperGroup;
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DateFormatValueModifier;
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DateModifyValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\IndexValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\InsertDataValueModifier;
@@ -62,6 +64,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\BooleanValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConcatenationValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\DateValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource;
@@ -116,6 +119,7 @@ class CoreInitialization extends Initialization
                 ConcatenationValueSource::class,
                 ConditionValueSource::class,
                 ConstantValueSource::class,
+                DateValueSource::class,
                 FieldCollectorValueSource::class,
                 FieldValueSource::class,
                 FileValueSource::class,
@@ -127,6 +131,8 @@ class CoreInitialization extends Initialization
                 SwitchValueSource::class,
             ],
             ValueModifierInterface::class => [
+                DateFormatValueModifier::class,
+                DateModifyValueModifier::class,
                 DefaultValueModifier::class,
                 IndexValueModifier::class,
                 InsertDataValueModifier::class,
@@ -301,7 +307,7 @@ class CoreInitialization extends Initialization
             $registry->createObject(StaticAliasConfigurationDocumentDiscovery::class, [$registry])
         );
 
-        $enableUnregulatedDataPrivacyPlugin = $registry->getGlobalConfiguration()->get('core', [])[CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY][CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY_ENABLE_UNREGULATED] ?? false;
+        $enableUnregulatedDataPrivacyPlugin = (bool)($registry->getGlobalConfiguration()->get('core', [])[CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY][CoreGlobalConfigurationSchema::KEY_DATA_PRIVACY_ENABLE_UNREGULATED] ?? false);
         if ($enableUnregulatedDataPrivacyPlugin) {
             $registry->getDataPrivacyManager()->addPlugin(
                 $registry->createObject(UnregulatedDataPrivacyPlugin::class)

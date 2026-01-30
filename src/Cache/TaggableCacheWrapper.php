@@ -132,7 +132,7 @@ class TaggableCacheWrapper implements CacheInterface
             $tagData = $this->cache->fetch(static::PREFIX_TAG . $tag);
             if ($tagData === null) {
                 $tagData = [$key];
-            } elseif (!in_array($key, $tagData)) {
+            } elseif (!in_array($key, $tagData, true)) {
                 $tagData[] = $key;
             }
 

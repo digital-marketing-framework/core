@@ -17,6 +17,12 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_ENVIRONMENT = '';
 
+    public const KEY_DEFAULT_TIMEZONE = 'defaultTimezone';
+
+    public const VALUE_TIMEZONE_SERVER = 'server';
+
+    public const DEFAULT_TIMEZONE = self::VALUE_TIMEZONE_SERVER;
+
     public const KEY_CONFIGURATION_STORAGE = 'configurationStorage';
 
     public const KEY_CONFIGURATION_STORAGE_FOLDER = 'folder';
@@ -74,6 +80,7 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_FOLDER, new StringSchema());
 
         $defaultConfigurationDocumentSchema = new StringSchema();
+        $defaultConfigurationDocumentSchema->getRenderingDefinition()->setGeneralDescription('Configuration document to automatically include in new embedded configurations (forms, API endpoints). New documents will inherit settings from this default.');
         // TODO the configuration folder (and document aliases) are configured in the global settings,
         //      which is why fetching all documents in the scope of building the global settings schema is a recursive endeavour,
         //      mainly because the defaults of the global settings are derived from the global settings schema
@@ -136,6 +143,69 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         return $notificationsSchema;
     }
 
+    /**
+     * Curated list of timezones with human-readable labels.
+     * One representative per unique UTC offset, using major recognizable cities.
+     *
+     * @return array<string,string> timezone identifier => label
+     */
+    public static function getTimezoneOptions(): array
+    {
+        return [
+            'Pacific/Midway' => 'UTC-11 Pacific/Midway (SST)',
+            'Pacific/Honolulu' => 'UTC-10 Pacific/Honolulu (HST)',
+            'America/Anchorage' => 'UTC-9 America/Anchorage (AKST)',
+            'America/Los_Angeles' => 'UTC-8 America/Los Angeles (PST)',
+            'America/Denver' => 'UTC-7 America/Denver (MST)',
+            'America/Chicago' => 'UTC-6 America/Chicago (CST)',
+            'America/New_York' => 'UTC-5 America/New York (EST)',
+            'America/Halifax' => 'UTC-4 America/Halifax (AST)',
+            'America/Sao_Paulo' => 'UTC-3 America/São Paulo',
+            'Atlantic/South_Georgia' => 'UTC-2 Atlantic/South Georgia',
+            'Atlantic/Azores' => 'UTC-1 Atlantic/Azores',
+            'UTC' => 'UTC+0 UTC',
+            'Europe/London' => 'UTC+0 Europe/London (GMT)',
+            'Europe/Berlin' => 'UTC+1 Europe/Berlin (CET)',
+            'Africa/Cairo' => 'UTC+2 Africa/Cairo (EET)',
+            'Europe/Moscow' => 'UTC+3 Europe/Moscow (MSK)',
+            'Asia/Tehran' => 'UTC+3:30 Asia/Tehran',
+            'Asia/Dubai' => 'UTC+4 Asia/Dubai',
+            'Asia/Kabul' => 'UTC+4:30 Asia/Kabul',
+            'Asia/Karachi' => 'UTC+5 Asia/Karachi (PKT)',
+            'Asia/Kolkata' => 'UTC+5:30 Asia/Kolkata (IST)',
+            'Asia/Kathmandu' => 'UTC+5:45 Asia/Kathmandu',
+            'Asia/Dhaka' => 'UTC+6 Asia/Dhaka',
+            'Asia/Yangon' => 'UTC+6:30 Asia/Yangon',
+            'Asia/Bangkok' => 'UTC+7 Asia/Bangkok',
+            'Asia/Singapore' => 'UTC+8 Asia/Singapore',
+            'Asia/Tokyo' => 'UTC+9 Asia/Tokyo (JST)',
+            'Australia/Darwin' => 'UTC+9:30 Australia/Darwin (ACST)',
+            'Australia/Sydney' => 'UTC+10 Australia/Sydney (AEST)',
+            'Pacific/Noumea' => 'UTC+11 Pacific/Noumea',
+            'Pacific/Auckland' => 'UTC+12 Pacific/Auckland (NZST)',
+            'Pacific/Tongatapu' => 'UTC+13 Pacific/Tongatapu',
+        ];
+    }
+
+    protected function getTimezoneSchema(): StringSchema
+    {
+        $timezoneSchema = new StringSchema(static::DEFAULT_TIMEZONE);
+        $timezoneSchema->getRenderingDefinition()->setLabel('Default Timezone');
+        $timezoneSchema->getRenderingDefinition()->setGeneralDescription('Timezone used for date/time values. "Server" uses the server\'s configured timezone.');
+        $timezoneSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
+
+        // Add special "server default" option with current server timezone in label
+        $serverTimezone = date_default_timezone_get();
+        $timezoneSchema->getAllowedValues()->addValue(static::VALUE_TIMEZONE_SERVER, 'Server Default (' . $serverTimezone . ')');
+
+        // Add curated timezone options
+        foreach (static::getTimezoneOptions() as $identifier => $label) {
+            $timezoneSchema->getAllowedValues()->addValue($identifier, $label);
+        }
+
+        return $timezoneSchema;
+    }
+
     public function __construct()
     {
         parent::__construct();
@@ -147,6 +217,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $environmentSchema->getRenderingDefinition()->setLabel('Default Host');
         $environmentSchema->getRenderingDefinition()->setGeneralDescription('Host address to use for logging when running CLI commands.');
         $this->addProperty(static::KEY_ENVIRONMENT, $environmentSchema);
+
+        $this->addProperty(static::KEY_DEFAULT_TIMEZONE, $this->getTimezoneSchema());
 
         $this->configurationStorageSchema = $this->getConfigurationStorageSchema();
         $this->addProperty(static::KEY_CONFIGURATION_STORAGE, $this->configurationStorageSchema);
