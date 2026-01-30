@@ -4,6 +4,296 @@ export const EVENT_INIT = 'dmf-configuration-editor-init';
 
 const RAW_LANGUAGE = 'YAML';
 
+const INCLUDE_KEY = 'global-configuration--configuration-document--default';
+
+/**
+ * Context type to document name prefix mapping.
+ */
+const CONTEXT_TYPE_PREFIXES = {
+  'form': 'Form',
+  'form-plugin': 'Form Plugin',
+  'api': 'API Endpoint',
+};
+
+/**
+ * Get the document name prefix for a context type.
+ *
+ * @param {string} contextType - The context type
+ * @returns {string} The prefix to use
+ */
+const getContextTypePrefix = (contextType) => {
+  return CONTEXT_TYPE_PREFIXES[contextType] || '';
+};
+
+/**
+ * Build a full document name with prefix.
+ *
+ * @param {string} documentName - The base document name
+ * @param {string} contextType - The context type
+ * @returns {string} The prefixed document name
+ */
+const buildPrefixedDocumentName = (documentName, contextType) => {
+  const prefix = getContextTypePrefix(contextType);
+  if (!documentName) {
+    return '';
+  }
+  return prefix ? `${prefix}: ${documentName}` : documentName;
+};
+
+/**
+ * Build a minimal YAML document with metaData.
+ * If defaultDocument is provided, includes the default configuration document include.
+ * Otherwise, includes an empty includes section.
+ *
+ * @param {string} documentName - The name to use in metaData.name
+ * @param {string} contextType - The context type for prefix
+ * @param {string} defaultDocument - The default document identifier (path), optional
+ * @returns {string} YAML document string
+ */
+const buildMetaDataYaml = (documentName, contextType, defaultDocument) => {
+  const name = buildPrefixedDocumentName(documentName, contextType);
+  const lines = [
+    'metaData:',
+    `    name: '${name}'`,
+    '    strictValidation: true',
+  ];
+
+  if (defaultDocument) {
+    lines.push(
+      '    includes:',
+      `        ${INCLUDE_KEY}:`,
+      `            uuid: ${INCLUDE_KEY}`,
+      '            weight: 10000',
+      `            value: '${defaultDocument}'`
+    );
+  } else {
+    lines.push('    includes: {}');
+  }
+
+  return lines.join('\n');
+};
+
+const CONFIGURATION_DOCUMENT_TYPE = 'configuration-document';
+
+const triggerTextareaUpdate = (textarea) => {
+  function trigger() {
+    textarea.dispatchEvent(new Event('paste', { bubbles: true }));
+    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    textarea.dispatchEvent(new Event('keyup', { bubbles: true }));
+    if (typeof textarea.onchange === 'function') {
+      textarea.onchange();
+    }
+  }
+  trigger();
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(trigger, { timeout: 1000 });
+  }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(trigger);
+  });
+  setTimeout(trigger, 100);
+};
+
+const updateTextarea = (textarea, value) => {
+  textarea.value = value;
+  triggerTextareaUpdate(textarea);
+};
+
+/**
+ * Parse the YAML document to find the metaData.name field.
+ * Scans line by line, tracking the current top-level key.
+ *
+ * @param {HTMLTextAreaElement} textarea - The textarea element
+ * @returns {object} Parsed structure:
+ *   - empty: whether the textarea content is empty
+ *   - lines: array of all lines (empty array if content is empty)
+ *   - nameLineIndex: index of the name line (-1 if not found)
+ *   - nameValue: the name value without quotes (empty string if empty/missing)
+ *   - nameIndent: the indentation string used for the name line
+ *   - hasMetaData: whether metaData section exists
+ *   - metaDataLineIndex: index of the metaData: line (-1 if not found)
+ */
+const parseDocument = (textarea) => {
+  const content = textarea.value.trim();
+  const lines = content === '' ? [] : content.split('\n');
+  let empty = true;
+  let currentTopLevelKey = '';
+  let nameLineIndex = -1;
+  let nameValue = '';
+  let nameIndent = '    ';
+  let hasMetaData = false;
+  let metaDataLineIndex = -1;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    empty = false;
+
+    // Skip empty lines and comments
+    if (!line.trim() || line.trim().startsWith('#')) {
+      continue;
+    }
+
+    // Check for top-level key (no leading whitespace)
+    const topLevelMatch = line.match(/^([a-zA-Z_][a-zA-Z0-9_]*):/);
+    if (topLevelMatch) {
+      currentTopLevelKey = topLevelMatch[1];
+      if (currentTopLevelKey === 'metaData') {
+        hasMetaData = true;
+        metaDataLineIndex = i;
+      }
+      continue;
+    }
+
+    // Check for name field when inside metaData
+    if (currentTopLevelKey === 'metaData') {
+      const nameMatch = line.match(/^(\s+)name:\s*(.*)$/);
+      if (nameMatch) {
+        nameLineIndex = i;
+        nameIndent = nameMatch[1];
+        const rawValue = nameMatch[2].trim();
+
+        // Extract value from quotes if present
+        const quotedMatch = rawValue.match(/^(['"])(.*)(\1)$/);
+        if (quotedMatch) {
+          nameValue = quotedMatch[2];
+        } else {
+          nameValue = rawValue;
+        }
+        break;
+      }
+    }
+  }
+
+  return {
+    empty,
+    lines,
+    nameLineIndex,
+    nameValue,
+    nameIndent,
+    hasMetaData,
+    metaDataLineIndex,
+  };
+};
+
+/**
+ * Rebuild content from parsed structure with an updated name line.
+ *
+ * @param {object} parsed - The parsed document structure
+ * @param {string} newName - The new name value
+ * @returns {string} The updated content
+ */
+const rebuildWithName = (parsed, newName) => {
+  const { lines, nameLineIndex, nameIndent, hasMetaData, metaDataLineIndex } = parsed;
+  const newLines = [...lines];
+
+  if (nameLineIndex >= 0) {
+    // Replace existing name line
+    newLines[nameLineIndex] = `${nameIndent}name: '${newName}'`;
+  } else if (hasMetaData && metaDataLineIndex >= 0) {
+    // Insert name line after metaData:
+    newLines.splice(metaDataLineIndex + 1, 0, `${nameIndent}name: '${newName}'`);
+  }
+
+  return newLines.join('\n');
+};
+
+/**
+ * Check if the document has an empty or missing metaData.name field.
+ *
+ * @param {object} parsed - The parsed document structure
+ * @returns {boolean} True if name is empty or missing under metaData
+ */
+const hasEmptyDocumentName = (parsed) => {
+  return parsed.hasMetaData && parsed.nameValue === '';
+};
+
+/**
+ * Update the document name from "Form: X" to "Form Plugin: X".
+ * Only updates if the current name starts with "Form: ".
+ *
+ * @param {HTMLTextAreaElement} textarea - The textarea element
+ * @param {object} parsed - The parsed document structure
+ */
+const updateFormPluginDocumentName = (textarea, parsed) => {
+  // Only update if name exists and starts with "Form: "
+  if (parsed.empty || parsed.nameLineIndex < 0 || !parsed.nameValue.startsWith('Form: ')) {
+    return;
+  }
+
+  const baseName = parsed.nameValue.substring('Form: '.length);
+  const newName = `Form Plugin: ${baseName}`;
+  const newContent = rebuildWithName(parsed, newName);
+
+  updateTextarea(textarea, newContent);
+};
+
+/**
+ * Add or update the document name when it's empty.
+ *
+ * @param {HTMLTextAreaElement} textarea - The textarea element
+ * @param {object} parsed - The parsed document structure
+ * @param {string} documentName - The base document name
+ * @param {string} contextType - The context type for prefix
+ */
+const updateEmptyDocumentName = (textarea, parsed, documentName, contextType) => {
+  if (parsed.empty || !documentName) {
+    return;
+  }
+
+  const prefixedName = buildPrefixedDocumentName(documentName, contextType);
+  if (!prefixedName) {
+    return;
+  }
+
+  // Only update if metaData exists and name is empty
+  if (!hasEmptyDocumentName(parsed)) {
+    return;
+  }
+
+  const newContent = rebuildWithName(parsed, prefixedName);
+  updateTextarea(textarea, newContent);
+};
+
+/**
+ * Initialize embedded document textarea metaData.
+ *
+ * For form and api contexts:
+ *   - Empty document: inject metaData with name and includes (or empty includes if no default)
+ *   - Non-empty with empty name: add just the name
+ * For form-plugin context:
+ *   - Update the document name from "Form: X" to "Form Plugin: X"
+ *
+ * @param {HTMLTextAreaElement} textarea - The textarea element
+ * @param {object} settings - The settings extracted from data attributes
+ */
+const initializeDocumentMetaData = (textarea, settings) => {
+  // Only process non-global configuration documents
+  if (settings.globalDocument || settings.documentType !== CONFIGURATION_DOCUMENT_TYPE) {
+    return;
+  }
+
+  const parsed = parseDocument(textarea);
+
+  // Special handling for form-plugins: only update document name, don't inject includes
+  if (settings.contextType === 'form-plugin') {
+    updateFormPluginDocumentName(textarea, parsed);
+    return;
+  }
+
+  // For form/api contexts
+  if (parsed.empty) {
+    // Empty document: inject metaData with name and includes (or empty includes if no default)
+    updateTextarea(
+      textarea,
+      buildMetaDataYaml(settings.documentName, settings.contextType, settings.defaultDocument)
+    );
+  } else if (hasEmptyDocumentName(parsed)) {
+    // Non-empty document with empty name: add just the name
+    updateEmptyDocumentName(textarea, parsed, settings.documentName, settings.contextType);
+  }
+};
+
 async function ajaxFetch(url, payload) {
   const options = {
     method: payload !== null ? 'POST' : 'GET',
@@ -42,13 +332,7 @@ const getSchema = async (settings) => {
 
 const setData = async (textarea, settings, data) => {
   const response = await ajaxFetch(settings.urls.split, data);
-  textarea.value = response.document;
-  textarea.dispatchEvent(new Event('paste'), { bubbles: true });
-  textarea.dispatchEvent(new Event('change'), { bubbles: true });
-  textarea.dispatchEvent(new Event('input'), { bubbles: true });
-  if (typeof textarea.onchange === 'function') {
-    textarea.onchange();
-  }
+  updateTextarea(textarea, response.document);
 };
 
 const getDocumentForm = (textarea) => {
@@ -133,6 +417,9 @@ const getSettings = (textarea) => {
   settings['documentType'] = textarea.dataset.documentType || '';
   settings['documentGroup'] = textarea.dataset.documentGroup || '';
   settings['uid'] = textarea.dataset.uid || '';
+  settings['defaultDocument'] = textarea.dataset.defaultDocument || '';
+  settings['documentName'] = textarea.dataset.documentName || '';
+  settings['contextType'] = textarea.dataset.contextType || '';
   urlKeys.forEach((key) => {
     settings.urls[key] = textarea.dataset['url' + ucfirst(key)];
   });
@@ -178,6 +465,10 @@ const initEnvironment = async (textarea, link) => {
   };
 
   settings = getSettings(textarea);
+
+  // Initialize metaData for embedded documents
+  initializeDocumentMetaData(textarea, settings);
+
   schemaDocument = await getSchema(settings);
 
   const start = async () => {

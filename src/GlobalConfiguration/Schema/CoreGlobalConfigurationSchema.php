@@ -80,6 +80,7 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $configurationStorageSchema->addProperty(static::KEY_CONFIGURATION_STORAGE_FOLDER, new StringSchema());
 
         $defaultConfigurationDocumentSchema = new StringSchema();
+        $defaultConfigurationDocumentSchema->getRenderingDefinition()->setGeneralDescription('Configuration document to automatically include in new embedded configurations (forms, API endpoints). New documents will inherit settings from this default.');
         // TODO the configuration folder (and document aliases) are configured in the global settings,
         //      which is why fetching all documents in the scope of building the global settings schema is a recursive endeavour,
         //      mainly because the defaults of the global settings are derived from the global settings schema
