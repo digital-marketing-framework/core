@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserAwareInterface;
 use DigitalMarketingFramework\Core\Context\ContextAwareInterface;
 use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
+use DigitalMarketingFramework\Core\Crypto\HashServiceAwareInterface;
 use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
@@ -29,6 +30,7 @@ use DigitalMarketingFramework\Core\Registry\Service\CacheRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationDocumentManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\CryptoRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
@@ -49,6 +51,7 @@ use DigitalMarketingFramework\Core\TestCase\TestCaseManagerAwareInterface;
 class Registry implements RegistryInterface
 {
     use GlobalConfigurationRegistryTrait;
+    use CryptoRegistryTrait;
     use EnvironmentRegistryTrait;
     use ScriptAssetsRegistryTrait;
     use GlobalConfigurationSchemaRegistryTrait;
@@ -108,6 +111,10 @@ class Registry implements RegistryInterface
     {
         if ($object instanceof GlobalConfigurationAwareInterface) {
             $object->setGlobalConfiguration($this->getGlobalConfiguration());
+        }
+
+        if ($object instanceof HashServiceAwareInterface) {
+            $object->setHashService($this->getHashService());
         }
 
         if ($object instanceof LoggerAwareInterface) {

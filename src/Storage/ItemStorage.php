@@ -14,6 +14,8 @@ use DigitalMarketingFramework\Core\Utility\GeneralUtility;
  */
 abstract class ItemStorage implements ItemStorageInterface
 {
+    protected const UID_FIELD = 'uid';
+
     /** @var array<string> */
     protected array $fields;
 
@@ -86,8 +88,8 @@ abstract class ItemStorage implements ItemStorageInterface
             $item->$method($value); // @phpstan-ignore-line dynamic method call based on item schema
         }
 
-        if (isset($data['uid'])) {
-            $item->setId($data['uid']);
+        if (isset($data[static::UID_FIELD])) {
+            $item->setId($data[static::UID_FIELD]);
         }
     }
 
@@ -110,8 +112,12 @@ abstract class ItemStorage implements ItemStorageInterface
         return $data;
     }
 
-    public function getGlobalConfiguration(): ?GlobalConfigurationInterface
+    public function getGlobalConfiguration(): GlobalConfigurationInterface
     {
+        if (!$this->globalConfiguration instanceof GlobalConfigurationInterface) {
+            throw new DigitalMarketingFrameworkException('Global configuration not injected into item storage!');
+        }
+
         return $this->globalConfiguration;
     }
 
