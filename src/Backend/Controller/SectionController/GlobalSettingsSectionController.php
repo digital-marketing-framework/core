@@ -53,10 +53,22 @@ class GlobalSettingsSectionController extends SectionController implements Globa
         return $this->render();
     }
 
+    /**
+     * Hook method called before saving configuration.
+     * Can be overridden by CMS-specific implementations to normalize data types.
+     *
+     * @param array<string,mixed> $configuration
+     */
+    protected function preSave(array &$configuration): void
+    {
+    }
+
     protected function saveAction(): Response
     {
         $document = $this->request->getData()['document'] ?? '';
         $configuration = $this->configurationDocumentParser->parseDocument($document);
+
+        $this->preSave($configuration);
 
         foreach ($configuration as $key => $value) {
             if ($key === ConfigurationDocumentManagerInterface::KEY_META_DATA) {
