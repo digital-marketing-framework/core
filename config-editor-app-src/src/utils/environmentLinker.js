@@ -48,15 +48,24 @@ const buildPrefixedDocumentName = (documentName, contextType) => {
  * @param {string} documentName - The name to use in metaData.name
  * @param {string} contextType - The context type for prefix
  * @param {string} defaultDocument - The default document identifier (path), optional
+ * @param {object} schemaVersions - Schema versions to include in metaData.version, optional
  * @returns {string} YAML document string
  */
-const buildMetaDataYaml = (documentName, contextType, defaultDocument) => {
+const buildMetaDataYaml = (documentName, contextType, defaultDocument, schemaVersions = {}) => {
   const name = buildPrefixedDocumentName(documentName, contextType);
   const lines = [
     'metaData:',
     `    name: '${name}'`,
     '    strictValidation: true',
   ];
+
+  // Add version section if schema versions are provided
+  if (Object.keys(schemaVersions).length > 0) {
+    lines.push('    version:');
+    Object.entries(schemaVersions).forEach(([key, version]) => {
+      lines.push(`        ${key}: '${version}'`);
+    });
+  }
 
   if (defaultDocument) {
     lines.push(
@@ -283,10 +292,10 @@ const initializeDocumentMetaData = (textarea, settings) => {
 
   // For form/api contexts
   if (parsed.empty) {
-    // Empty document: inject metaData with name and includes (or empty includes if no default)
+    // Empty document: inject metaData with name, version, and includes (or empty includes if no default)
     updateTextarea(
       textarea,
-      buildMetaDataYaml(settings.documentName, settings.contextType, settings.defaultDocument)
+      buildMetaDataYaml(settings.documentName, settings.contextType, settings.defaultDocument, settings.schemaVersions)
     );
   } else if (hasEmptyDocumentName(parsed)) {
     // Non-empty document with empty name: add just the name
@@ -420,6 +429,7 @@ const getSettings = (textarea) => {
   settings['defaultDocument'] = textarea.dataset.defaultDocument || '';
   settings['documentName'] = textarea.dataset.documentName || '';
   settings['contextType'] = textarea.dataset.contextType || '';
+  settings['schemaVersions'] = textarea.dataset.schemaVersions ? JSON.parse(textarea.dataset.schemaVersions) : {};
   urlKeys.forEach((key) => {
     settings.urls[key] = textarea.dataset['url' + ucfirst(key)];
   });
