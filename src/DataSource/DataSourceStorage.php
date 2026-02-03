@@ -28,6 +28,11 @@ abstract class DataSourceStorage extends Plugin implements DataSourceStorageInte
         return $this->getType() . ':' . $innerId;
     }
 
+    public function getAllDataSourceVariants(): array
+    {
+        return $this->getAllDataSources();
+    }
+
     public function matches(string $id): bool
     {
         return str_starts_with($id, $this->getType() . ':');

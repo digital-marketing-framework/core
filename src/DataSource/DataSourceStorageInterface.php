@@ -25,4 +25,14 @@ interface DataSourceStorageInterface extends PluginInterface
      * @return array<DataSourceClass>
      */
     public function getAllDataSources(): array;
+
+    /**
+     * Returns all data source variants, including inactive or disabled ones.
+     * Used by the migration system to discover all configuration documents.
+     *
+     * Default implementation falls back to getAllDataSources().
+     *
+     * @return array<DataSourceClass>
+     */
+    public function getAllDataSourceVariants(): array;
 }

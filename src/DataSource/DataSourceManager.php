@@ -51,4 +51,16 @@ abstract class DataSourceManager implements DataSourceManagerInterface
 
         return $result;
     }
+
+    public function getAllDataSourceVariants(): array
+    {
+        $result = [];
+        foreach ($this->getDataSourceStorages() as $storage) {
+            foreach ($storage->getAllDataSourceVariants() as $source) {
+                $result[] = $source;
+            }
+        }
+
+        return $result;
+    }
 }
