@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataSource;
 
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 use DigitalMarketingFramework\Core\Plugin\Plugin;
 
@@ -31,6 +32,34 @@ abstract class DataSourceStorage extends Plugin implements DataSourceStorageInte
     public function getAllDataSourceVariants(): array
     {
         return $this->getAllDataSources();
+    }
+
+    public function getAllDataSourceVariantIdentifiers(): array
+    {
+        return array_map(
+            static fn (DataSourceInterface $dataSource) => $dataSource->getIdentifier(),
+            $this->getAllDataSourceVariants()
+        );
+    }
+
+    public function getDataSourceVariantByIdentifier(string $identifier): ?DataSourceInterface
+    {
+        if (!$this->matches($identifier)) {
+            return null;
+        }
+
+        foreach ($this->getAllDataSourceVariants() as $dataSource) {
+            if ($dataSource->getIdentifier() === $identifier) {
+                return $dataSource;
+            }
+        }
+
+        return null;
+    }
+
+    public function updateConfigurationDocument(DataSourceInterface $dataSource, string $document): void
+    {
+        throw new DigitalMarketingFrameworkException(sprintf('updateConfigurationDocument() is not implemented for storage type "%s"', $this->getType()));
     }
 
     public function matches(string $id): bool

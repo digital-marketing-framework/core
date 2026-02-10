@@ -17,12 +17,9 @@ class RenderingService implements RenderingServiceInterface, GlobalConfiguration
 
     protected UriBuilderInterface $uriBuilder;
 
-    protected RegistryInterface $registry;
-
-    public function __construct(RegistryInterface $registry)
+    public function __construct(protected RegistryInterface $registry)
     {
-        $this->registry = $registry;
-        $this->uriBuilder = $registry->getBackendUriBuilder();
+        $this->uriBuilder = $this->registry->getBackendUriBuilder();
     }
 
     public function getTextAreaDataAttributes(

@@ -75,6 +75,8 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\MultiValueValueSour
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
+use DigitalMarketingFramework\Core\DataSource\CoreApiEndPointDataSourceStorage;
+use DigitalMarketingFramework\Core\DataSource\CoreDataSourceStorageInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\Registry\RegistryDomain;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
@@ -221,6 +223,10 @@ class CoreInitialization extends Initialization
                 'switch' => SwitchConvertValueTypesSchemaProcessor::class,
             ],
 
+            CoreDataSourceStorageInterface::class => [
+                CoreApiEndPointDataSourceStorage::class,
+            ],
+
             // backend
             SectionControllerInterface::class => [
                 DashboardSectionController::class,
@@ -279,6 +285,8 @@ class CoreInitialization extends Initialization
     public function initServices(string $domain, RegistryInterface $registry): void
     {
         parent::initServices($domain, $registry);
+
+        $registry->addDataSourceManager($registry->getCoreDataSourceManager());
 
         $additionalStorageFoldersString = trim(
             $registry->getGlobalConfiguration()->get('core')[CoreGlobalConfigurationSchema::KEY_CONFIGURATION_STORAGE][CoreGlobalConfigurationSchema::KEY_CONFIGURATION_STORAGE_ADDITIONAL_DOCUMENT_FOLDERS] ?? ''

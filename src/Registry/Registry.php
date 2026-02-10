@@ -32,6 +32,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryT
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\CryptoRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\DataSourceRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
@@ -44,6 +45,7 @@ use DigitalMarketingFramework\Core\Registry\Service\TemplateEngineRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TemplateRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\TestCaseRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\VendorResourceServiceRegistryTrait;
+use DigitalMarketingFramework\Core\SchemaDocument\ConfigurationSchemaAwareInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaProcessor\SchemaProcessorAwareInterface;
 use DigitalMarketingFramework\Core\TemplateEngine\TemplateEngineAwareInterface;
 use DigitalMarketingFramework\Core\TestCase\TestCaseManagerAwareInterface;
@@ -82,6 +84,7 @@ class Registry implements RegistryInterface
     use BackendTemplatingRegistryTrait;
     use BackendControllerRegistryTrait;
     use CleanupRegistryTrait;
+    use DataSourceRegistryTrait;
 
     protected RegistryCollectionInterface $registryCollection;
 
@@ -148,6 +151,10 @@ class Registry implements RegistryInterface
 
         if ($object instanceof ConfigurationDocumentManagerAwareInterface) {
             $object->setConfigurationDocumentManager($this->getConfigurationDocumentManager());
+        }
+
+        if ($object instanceof ConfigurationSchemaAwareInterface) {
+            $object->setConfigurationSchemaProvider($this);
         }
 
         if ($object instanceof ConfigurationDocumentParserAwareInterface) {

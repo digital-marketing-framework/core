@@ -4,6 +4,9 @@ namespace DigitalMarketingFramework\Core\Registry;
 
 use DigitalMarketingFramework\Core\Alert\AlertManagerInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMaintenanceServiceInterface;
+use DigitalMarketingFramework\Core\DataSource\DataSourceManagerInterface;
+use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
@@ -64,4 +67,18 @@ interface RegistryCollectionInterface extends ContextRegistryInterface
     public function getAlertManager(): AlertManagerInterface;
 
     public function setAlertManager(AlertManagerInterface $alertManager): void;
+
+    public function getConfigurationDocumentMaintenanceService(): ConfigurationDocumentMaintenanceServiceInterface;
+
+    /**
+     * @template T of DataSourceInterface
+     *
+     * @param DataSourceManagerInterface<T> $dataSourceManager
+     */
+    public function addDataSourceManager(DataSourceManagerInterface $dataSourceManager): void;
+
+    /**
+     * @return array<DataSourceManagerInterface<DataSourceInterface>>
+     */
+    public function getDataSourceManagers(): array;
 }

@@ -38,12 +38,13 @@ abstract class StaticSystemConfigurationDocumentDiscovery implements StaticConfi
 
         $schemaDocument = null;
         $config = [];
-        $metaData = $this->buildMetaData($this->getConfigurationDocumentName($identifier));
 
         if (!$metaDataOnly) {
             $schemaDocument = $this->registry->getRegistryCollection()->getConfigurationSchemaDocument();
             $config = $this->buildContent($identifier, $schemaDocument);
         }
+
+        $metaData = $this->buildMetaData($this->getConfigurationDocumentName($identifier), $schemaDocument);
 
         return $this->configurationDocumentParser->produceDocument($metaData + $config, $schemaDocument);
     }
@@ -69,14 +70,20 @@ abstract class StaticSystemConfigurationDocumentDiscovery implements StaticConfi
     }
 
     /**
-     * @return array{metaData:array{name:string}}
+     * @return array{metaData:array{name:string,version?:array<string,string>}}
      */
-    protected function buildMetaData(string $documentName): array
+    protected function buildMetaData(string $documentName, ?SchemaDocument $schemaDocument = null): array
     {
+        $metaData = [
+            ConfigurationDocumentManagerInterface::KEY_DOCUMENT_NAME => $documentName,
+        ];
+
+        if ($schemaDocument instanceof SchemaDocument) {
+            $metaData[ConfigurationDocumentManagerInterface::KEY_DOCUMENT_VERSION] = $schemaDocument->getVersion();
+        }
+
         return [
-            ConfigurationDocumentManagerInterface::KEY_META_DATA => [
-                ConfigurationDocumentManagerInterface::KEY_DOCUMENT_NAME => $documentName,
-            ],
+            ConfigurationDocumentManagerInterface::KEY_META_DATA => $metaData,
         ];
     }
 }

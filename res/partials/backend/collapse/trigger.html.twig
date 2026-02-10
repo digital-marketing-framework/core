@@ -1,4 +1,4 @@
-<span class="btn btn-default" data-collapse-trigger="{{ name }}">
+<span class="btn btn-default{% if btnSize is defined %} btn-{{ btnSize }}{% endif %}" data-collapse-trigger="{{ name }}">
     <span data-collapse-icon="closed" {% if initiallyOpen %}style="display:none;"{% endif %}>
         {{ include('t3-icon.html.twig', {name:'chevron-down'}) }}
     </span>

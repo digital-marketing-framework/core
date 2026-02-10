@@ -12,7 +12,7 @@ use DigitalMarketingFramework\Core\Storage\ItemStorageInterface;
  */
 abstract class ListSectionController extends SectionController
 {
-    protected const LIST_SCRIPT = 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/list.js';
+    public const LIST_SCRIPT = 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/list.js';
 
     protected const PAGINATION_ITEMS_EACH_SIDE = 3;
 

@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\DataSource;
 
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 
 /**
@@ -62,5 +63,34 @@ abstract class DataSourceManager implements DataSourceManagerInterface
         }
 
         return $result;
+    }
+
+    public function getAllDataSourceVariantIdentifiers(): array
+    {
+        $result = [];
+        foreach ($this->getDataSourceStorages() as $storage) {
+            foreach ($storage->getAllDataSourceVariantIdentifiers() as $identifier) {
+                $result[] = $identifier;
+            }
+        }
+
+        return $result;
+    }
+
+    public function getDataSourceVariantByIdentifier(string $identifier): ?DataSourceInterface
+    {
+        $storage = $this->getMatchingDataSourceStorage($identifier);
+
+        return $storage?->getDataSourceVariantByIdentifier($identifier);
+    }
+
+    public function updateConfigurationDocument(DataSourceInterface $dataSource, string $document): void
+    {
+        $storage = $this->getMatchingDataSourceStorage($dataSource->getIdentifier());
+        if (!$storage instanceof DataSourceStorageInterface) {
+            throw new DigitalMarketingFrameworkException(sprintf('No matching storage found for data source "%s"', $dataSource->getIdentifier()));
+        }
+
+        $storage->updateConfigurationDocument($dataSource, $document);
     }
 }
