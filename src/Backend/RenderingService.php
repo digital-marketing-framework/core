@@ -17,9 +17,9 @@ class RenderingService implements RenderingServiceInterface, GlobalConfiguration
 
     protected UriBuilderInterface $uriBuilder;
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(protected RegistryInterface $registry)
     {
-        $this->uriBuilder = $registry->getBackendUriBuilder();
+        $this->uriBuilder = $this->registry->getBackendUriBuilder();
     }
 
     public function getTextAreaDataAttributes(
@@ -69,6 +69,11 @@ class RenderingService implements RenderingServiceInterface, GlobalConfiguration
 
             if ($documentName !== '') {
                 $dataAttributes['document-name'] = $documentName;
+            }
+
+            $schemaVersions = $this->registry->getConfigurationSchemaDocument()->getVersion();
+            if ($schemaVersions !== []) {
+                $dataAttributes['schema-versions'] = json_encode($schemaVersions);
             }
         }
 

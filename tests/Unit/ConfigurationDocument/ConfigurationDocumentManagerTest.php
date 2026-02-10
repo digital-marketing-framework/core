@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManager;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationServiceInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,6 +20,8 @@ class ConfigurationDocumentManagerTest extends TestCase
 
     protected ConfigurationDocumentParserInterface&MockObject $parser;
 
+    protected ConfigurationDocumentMigrationServiceInterface&MockObject $migrationService;
+
     protected const SYS_DEFAULTS_CONFIGURATION = ['sys_config_key' => 'sys_config_value'];
 
     /** @var array<array{identifier:string,document:string,configuration:array<mixed>}> */
@@ -32,6 +35,7 @@ class ConfigurationDocumentManagerTest extends TestCase
         $this->staticStorage = $this->createMock(ConfigurationDocumentStorageInterface::class);
         $this->storage = $this->createMock(ConfigurationDocumentStorageInterface::class);
         $this->parser = $this->createMock(ConfigurationDocumentParserInterface::class);
+        $this->migrationService = $this->createMock(ConfigurationDocumentMigrationServiceInterface::class);
 
         $this->storage->method('getDocument')->willReturnCallback(function (string $identifier) {
             foreach ($this->documents as $doc) {
@@ -54,7 +58,7 @@ class ConfigurationDocumentManagerTest extends TestCase
         });
 
         $this->registerDocument('SYS:defaults', 'sysDefaultDocumentContent', static::SYS_DEFAULTS_CONFIGURATION);
-        $this->subject = new ConfigurationDocumentManager($this->storage, $this->parser, $this->staticStorage);
+        $this->subject = new ConfigurationDocumentManager($this->storage, $this->parser, $this->staticStorage, $this->migrationService);
     }
 
     /**
@@ -239,7 +243,7 @@ class ConfigurationDocumentManagerTest extends TestCase
             $this->registerDocument($doc['identifier'], $doc['document'], $doc['configuration']);
         }
 
-        $stack = $this->subject->getConfigurationStackFromIdentifier($id);
+        $stack = $this->subject->getConfigurationStackFromIdentifier($id, migrateInMemory: false);
         $stack = array_map(static function (array $config) {
             unset($config['metaData']);
 
@@ -271,7 +275,7 @@ class ConfigurationDocumentManagerTest extends TestCase
 
         $this->expectException(ConfigurationDocumentIncludeLoopException::class);
 
-        $this->subject->getConfigurationStackFromIdentifier('id1');
+        $this->subject->getConfigurationStackFromIdentifier('id1', migrateInMemory: false);
     }
 
     #[Test]
@@ -298,7 +302,7 @@ class ConfigurationDocumentManagerTest extends TestCase
 
         $this->expectException(ConfigurationDocumentIncludeLoopException::class);
 
-        $this->subject->getConfigurationStackFromIdentifier('id1');
+        $this->subject->getConfigurationStackFromIdentifier('id1', migrateInMemory: false);
     }
 
     // TODO implement more tests

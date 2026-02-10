@@ -69,6 +69,7 @@ class ConfigurationDocumentSectionController extends ListSectionController imple
 
     protected function editAction(): Response
     {
+        $this->assignCurrentRouteData(defaultReturnRoute: 'page.configuration-document.list');
         $this->addConfigurationEditorAssets();
         $documentIdentifier = $this->getIdentifier();
 
@@ -87,7 +88,7 @@ class ConfigurationDocumentSectionController extends ListSectionController imple
         $document = $this->getDocument();
         $this->configurationDocumentManager->saveDocument($documentIdentifier, $document, $this->schemaDocument);
 
-        return $this->redirect('page.configuration-document.edit', ['id' => $documentIdentifier]);
+        return $this->redirect('page.configuration-document.edit', ['id' => $documentIdentifier, 'returnUrl' => $this->getReturnUrl()]);
     }
 
     protected function createAction(): Response

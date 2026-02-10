@@ -16,6 +16,7 @@
             </div>
             <div>
                 {% if documentIdentifier %}<input type="hidden" name="documentIdentifier" value="{{ documentIdentifier }}" />{% endif %}
+                {% if returnUrl is defined and returnUrl %}<input type="hidden" name="returnUrl" value="{{ returnUrl }}" />{% endif %}
                 {{ include('configuration-editor/textarea.html.twig', { config, documentType, document }) }}
             </div>
         </form>

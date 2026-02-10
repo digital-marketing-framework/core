@@ -11,6 +11,8 @@ class SchemaDocument
 {
     public static bool $flattenSchema = true;
 
+    public const INITIAL_VERSION = '1.0.0';
+
     /** @var array<string,string> */
     protected array $version = [];
 
@@ -30,9 +32,16 @@ class SchemaDocument
     /**
      * @return array<string,string>
      */
-    public function getVersion(): array
+    public function getVersion(bool $includeInitialVersion = false): array
     {
-        return $this->version;
+        if ($includeInitialVersion) {
+            return $this->version;
+        }
+
+        return array_filter(
+            $this->version,
+            static fn (string $version): bool => $version !== '' && $version !== static::INITIAL_VERSION
+        );
     }
 
     public function addVersion(string $key, string $version): void

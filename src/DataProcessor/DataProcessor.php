@@ -190,6 +190,7 @@ class DataProcessor implements DataProcessorInterface, LoggerAwareInterface
                     ],
                 ],
             ],
+            static::KEY_MODIFIERS => [],
         ];
     }
 
@@ -209,6 +210,7 @@ class DataProcessor implements DataProcessorInterface, LoggerAwareInterface
                     ],
                 ],
             ],
+            static::KEY_MODIFIERS => [],
         ];
     }
 
@@ -223,6 +225,7 @@ class DataProcessor implements DataProcessorInterface, LoggerAwareInterface
             static::KEY_DATA => [
                 SwitchSchema::KEY_TYPE => $keyword,
             ],
+            static::KEY_MODIFIERS => [],
         ];
     }
 
@@ -249,6 +252,7 @@ class DataProcessor implements DataProcessorInterface, LoggerAwareInterface
                     ],
                 ],
             ],
+            static::KEY_MODIFIERS => [],
         ];
     }
 }

@@ -2,8 +2,10 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMaintenanceServiceInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationServiceInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 
@@ -17,6 +19,10 @@ interface ConfigurationDocumentManagerRegistryInterface
 
     public function setConfigurationDocumentParser(ConfigurationDocumentParserInterface $configurationDocumentParser): void;
 
+    public function getConfigurationDocumentMigrationService(): ConfigurationDocumentMigrationServiceInterface;
+
+    public function setConfigurationDocumentMigrationService(ConfigurationDocumentMigrationServiceInterface $configurationDocumentMigrationService): void;
+
     public function getConfigurationDocumentManager(): ConfigurationDocumentManagerInterface;
 
     public function setConfigurationDocumentManager(ConfigurationDocumentManagerInterface $configurationDocumentManager): void;
@@ -26,4 +32,6 @@ interface ConfigurationDocumentManagerRegistryInterface
     public function setStaticConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void;
 
     public function addSchemaMigration(ConfigurationDocumentMigrationInterface $migration): void;
+
+    public function getConfigurationDocumentMaintenanceService(): ConfigurationDocumentMaintenanceServiceInterface;
 }

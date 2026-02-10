@@ -12,7 +12,7 @@
     } %}
     {{ include('configuration-editor/editor-setup.html.twig', {
         documentType: 'configuration-document',
-        returnUri: uri('page.configuration-document.list'),
+        returnUri: returnUrl ?? uri('page.configuration-document.list'),
         title: document.name,
         document: document.content,
         documentIdentifier: document.id,

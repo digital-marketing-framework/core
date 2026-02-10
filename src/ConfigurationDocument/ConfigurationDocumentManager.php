@@ -4,13 +4,14 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Exception\ConfigurationDocumentIncludeLoopException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
-use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\FatalMigrationException;
-use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\MigrationException;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationServiceInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\MigrationContext;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\ConfigurationStorageSettings;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
@@ -22,13 +23,16 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     use GlobalConfigurationAwareTrait;
     use LoggerAwareTrait;
 
-    /** @var array<string,array<string,ConfigurationDocumentMigrationInterface>> */
-    protected array $migrations = [];
+    /** @var array<string, array<string,mixed>> */
+    protected array $parsedConfigurationCache = [];
+
+    protected bool $runtimeMigrationWarned = false;
 
     public function __construct(
         protected ConfigurationDocumentStorageInterface $storage,
         protected ConfigurationDocumentParserInterface $parser,
         protected ConfigurationDocumentStorageInterface $staticStorage,
+        protected ConfigurationDocumentMigrationServiceInterface $migrationService,
     ) {
     }
 
@@ -45,6 +49,11 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function getParser(): ConfigurationDocumentParserInterface
     {
         return $this->parser;
+    }
+
+    public function getMigrationService(): ConfigurationDocumentMigrationServiceInterface
+    {
+        return $this->migrationService;
     }
 
     protected function getStorageForDocumentIdentifier(string $documentIdentifier): ConfigurationDocumentStorageInterface
@@ -132,7 +141,16 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
      */
     public function getDocumentConfigurationFromDocument(string $document): array
     {
-        return $this->parser->parseDocument($document);
+        if ($document === '') {
+            return [];
+        }
+
+        $cacheKey = md5($document);
+        if (!isset($this->parsedConfigurationCache[$cacheKey])) {
+            $this->parsedConfigurationCache[$cacheKey] = $this->parser->parseDocument($document);
+        }
+
+        return $this->parsedConfigurationCache[$cacheKey];
     }
 
     public function getDocumentFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): string
@@ -242,136 +260,122 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
      *
      * @return array<array<mixed>>
      */
-    public function getConfigurationStackFromConfiguration(array $configuration): array
+    public function getConfigurationStackFromConfiguration(array $configuration, ?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array
     {
-        // TODO Trigger migrations here?
-        //      Should each configuration be migrated with its parents or on its own?
-        //      What if some version cannot be reached? Distinguish between fatal issues and non-fatal issues?
         $includes = $this->getIncludes($configuration);
         array_unshift($includes, 'SYS:defaults');
         $includedConfigurations = $this->getIncludedConfigurations($includes);
 
-        return [
+        $stack = [
             ...$includedConfigurations,
             $configuration,
         ];
+
+        if ($schemaDocument instanceof SchemaDocument && $migrateInMemory) {
+            $this->warnIfOutdated($stack, $schemaDocument);
+            $this->migrationService->migrateStackInMemory($stack, $schemaDocument->getVersion());
+        }
+
+        return $stack;
     }
 
     /**
      * @return array<array<string,mixed>>
      */
-    public function getConfigurationStackFromDocument(string $document): array
+    public function getConfigurationStackFromDocument(string $document, ?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array
     {
         $configuration = $this->parser->parseDocument($document);
 
-        return $this->getConfigurationStackFromConfiguration($configuration);
+        return $this->getConfigurationStackFromConfiguration($configuration, $schemaDocument, $migrateInMemory);
     }
 
     /**
      * @return array<array<string,mixed>>
      */
-    public function getConfigurationStackFromIdentifier(string $documentIdentifier): array
+    public function getConfigurationStackFromIdentifier(string $documentIdentifier, ?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array
     {
         $document = $this->storage->getDocument($documentIdentifier);
 
-        return $this->getConfigurationStackFromDocument($document);
+        return $this->getConfigurationStackFromDocument($document, $schemaDocument, $migrateInMemory);
     }
 
     public function getDefaultConfigurationIdentifier(): string
     {
-        return $this->globalConfiguration->get('core')['configurationStorage']['defaultConfigurationDocument'] ?? '';
+        return $this->globalConfiguration->getGlobalSettings(ConfigurationStorageSettings::class)->getDefaultConfigurationDocument();
     }
 
-    public function getDefaultConfigurationStack(): array
+    public function getDefaultConfigurationStack(?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array
     {
         $documentIdentifier = $this->getDefaultConfigurationIdentifier();
         if ($documentIdentifier === '') {
             throw new DigitalMarketingFrameworkException('No default configuration document given');
         }
 
-        return $this->getConfigurationStackFromIdentifier($documentIdentifier);
-    }
-
-    public function addMigration(ConfigurationDocumentMigrationInterface $migration): void
-    {
-        $this->migrations[$migration->getKey()][$migration->getSourceVersion()] = $migration;
+        return $this->getConfigurationStackFromIdentifier($documentIdentifier, $schemaDocument, $migrateInMemory);
     }
 
     /**
-     * @param array<string,mixed> $configuration
+     * Log a single warning per process if any configuration in the stack is outdated.
+     *
+     * @param array<array<string, mixed>> $stack
      */
-    protected function migrateByKey(array &$configuration, string $key, string $targetVersion): void
+    protected function warnIfOutdated(array $stack, SchemaDocument $schemaDocument): void
     {
-        $version = $this->getVersionByKey($configuration, $key);
-        while ($version !== $targetVersion) {
-            if (isset($this->migrations[$key][$version])) {
-                // migration found
-                try {
-                    $migration = $this->migrations[$key][$version];
-                    if (!$migration->checkVersions()) {
-                        throw new FatalMigrationException(sprintf('Migration source version "%s" seems to be bigger than or equal to target version "%s".', $migration->getSourceVersion(), $migration->getTargetVersion()));
-                    }
+        if ($this->runtimeMigrationWarned) {
+            return;
+        }
 
-                    $configuration = $migration->migrate($configuration);
-                    $version = $migration->getTargetVersion();
-                } catch (MigrationException $e) {
-                    // a non fatal migration exception aborts the migration for this key only
-                    // a fatal migration exception is not caught by the migration process at all
-                    $this->logger->warning($e->getMessage());
-                    break;
-                }
-            } else {
-                // no migration found
-                // TODO now what? i guess the version mismatch can be detected at a later point
-                break;
+        for ($i = 1, $count = count($stack); $i < $count; ++$i) {
+            if ($this->migrationService->outdated($stack[$i], $schemaDocument)) {
+                $this->runtimeMigrationWarned = true;
+                $this->logger->warning('Outdated configuration documents were migrated in-memory. Run "anyrel:migrate" or use the upgrade wizard to update permanently.');
+
+                return;
             }
         }
+    }
 
-        if ($version === '') {
-            // if there is no initial migration present
-            // assume that none is necessary to get from no verison to the current version
-            $this->setVersionByKey($configuration, $key, $targetVersion);
-        } else {
-            $this->setVersionByKey($configuration, $key, $version);
-        }
+    // -- Migration facade methods (delegate to MigrationService) --
+
+    public function addMigration(ConfigurationDocumentMigrationInterface $migration): void
+    {
+        $this->migrationService->addMigration($migration);
     }
 
     public function migrate(array $configuration, SchemaDocument $schemaDocument): array
     {
-        $schemaVersion = $schemaDocument->getVersion();
-        foreach ($schemaVersion as $key => $targetVersion) {
-            if ($this->getVersionByKey($configuration, $key) !== $targetVersion) {
-                // document does not have a version key or the version does not match
-                $this->migrateByKey($configuration, $key, $targetVersion);
-            }
-        }
+        $includes = $this->getIncludes($configuration);
+        $sysDefaultsConfig = $this->getDocumentConfigurationFromIdentifier('SYS:defaults');
+        $parentConfigurations = $this->getIncludedConfigurations($includes);
 
-        foreach (array_keys($this->getVersion($configuration)) as $key) {
-            if (!isset($schemaVersion[$key])) {
-                // document has a version key that does not exist in the current schema
-                // TODO should the version really be unset in this case?
-                $this->unsetVersionByKey($configuration, $key);
-            }
-        }
+        $context = new MigrationContext($parentConfigurations, $sysDefaultsConfig);
 
-        return $configuration;
+        return $this->migrationService->migrateConfiguration(
+            $configuration,
+            $context,
+            $schemaDocument
+        );
     }
 
     public function outdated(array $configuration, SchemaDocument $schemaDocument): bool
     {
-        $schemaVersion = $schemaDocument->getVersion();
-        foreach ($schemaVersion as $key => $targetVersion) {
-            if ($this->getVersionByKey($configuration, $key) !== $targetVersion) {
-                return true;
-            }
+        return $this->migrationService->outdated($configuration, $schemaDocument);
+    }
+
+    public function genuinelyOutdated(array $configuration, SchemaDocument $schemaDocument): bool
+    {
+        // Quick check first
+        if (!$this->migrationService->outdated($configuration, $schemaDocument)) {
+            return false;
         }
 
-        foreach (array_keys($this->getVersion($configuration)) as $key) {
-            if (!isset($schemaVersion[$key])) {
-                return true;
-            }
-        }
+        // Build context from includes
+        $includes = $this->getIncludes($configuration);
+        $sysDefaultsConfig = $this->getDocumentConfigurationFromIdentifier('SYS:defaults');
+        $parentConfigurations = $this->getIncludedConfigurations($includes);
 
-        return false;
+        $context = new MigrationContext($parentConfigurations, $sysDefaultsConfig);
+
+        return $this->migrationService->genuinelyOutdated($configuration, $context, $schemaDocument);
     }
 }

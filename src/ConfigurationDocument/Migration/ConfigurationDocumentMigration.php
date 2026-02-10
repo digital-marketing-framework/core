@@ -4,13 +4,21 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument\Migration;
 
 abstract class ConfigurationDocumentMigration implements ConfigurationDocumentMigrationInterface
 {
-    abstract public function getKey(): string;
+    public function __construct(
+        protected string $key,
+    ) {
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
+    }
 
     abstract public function getSourceVersion(): string;
 
     abstract public function getTargetVersion(): string;
 
-    abstract public function migrate(array $configuration): array;
+    abstract public function migrate(array $delta, MigrationContext $context): array;
 
     protected function checkVersion(string $version): bool
     {
@@ -29,8 +37,8 @@ abstract class ConfigurationDocumentMigration implements ConfigurationDocumentMi
             return false;
         }
 
-        $sourceParts = $sourceVersion === '' ? explode('.', $sourceVersion) : [];
-        $targetParts = $targetVersion === '' ? explode('.', $targetVersion) : [];
+        $sourceParts = $sourceVersion !== '' ? explode('.', $sourceVersion) : [];
+        $targetParts = $targetVersion !== '' ? explode('.', $targetVersion) : [];
 
         while (count($sourceParts) < count($targetParts)) {
             $sourceParts[] = '0';

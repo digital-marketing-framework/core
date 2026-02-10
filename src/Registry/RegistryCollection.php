@@ -6,11 +6,15 @@ use DigitalMarketingFramework\Core\Alert\AlertManager;
 use DigitalMarketingFramework\Core\Alert\AlertManagerInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\EntryRouteResolverInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMaintenanceService;
+use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMaintenanceServiceInterface;
 use DigitalMarketingFramework\Core\Context\ContextInterface;
 use DigitalMarketingFramework\Core\Context\ContextStack;
 use DigitalMarketingFramework\Core\Context\ContextStackInterface;
 use DigitalMarketingFramework\Core\Context\RequestContext;
+use DigitalMarketingFramework\Core\DataSource\DataSourceManagerInterface;
 use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
+use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManager;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
@@ -27,6 +31,11 @@ class RegistryCollection implements RegistryCollectionInterface
     protected ?SchemaDocument $configurationSchemaDocument = null;
 
     protected ?SchemaDocument $globalConfigurationSchemaDocument = null;
+
+    protected ?ConfigurationDocumentMaintenanceServiceInterface $configurationDocumentMaintenanceService = null;
+
+    /** @var array<string, DataSourceManagerInterface<DataSourceInterface>> keyed by class name */
+    protected array $dataSourceManagers = [];
 
     /**
      * @param array{core?:RegistryInterface,distributor?:RegistryInterface,collector?:RegistryInterface} $collection
@@ -163,6 +172,28 @@ class RegistryCollection implements RegistryCollectionInterface
         }
 
         return $this->globalConfigurationSchemaDocument;
+    }
+
+    public function getConfigurationDocumentMaintenanceService(): ConfigurationDocumentMaintenanceServiceInterface
+    {
+        if (!$this->configurationDocumentMaintenanceService instanceof ConfigurationDocumentMaintenanceServiceInterface) {
+            $registry = $this->getRegistry();
+            $service = $registry->createObject(ConfigurationDocumentMaintenanceService::class);
+            $service->setDataSourceManagers($this->getDataSourceManagers());
+            $this->configurationDocumentMaintenanceService = $service;
+        }
+
+        return $this->configurationDocumentMaintenanceService;
+    }
+
+    public function addDataSourceManager(DataSourceManagerInterface $dataSourceManager): void
+    {
+        $this->dataSourceManagers[$dataSourceManager::class] = $dataSourceManager;
+    }
+
+    public function getDataSourceManagers(): array
+    {
+        return array_values($this->dataSourceManagers);
     }
 
     public function getFrontendScripts(bool $activeOnly = false): array

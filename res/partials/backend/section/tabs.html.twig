@@ -1,0 +1,8 @@
+<div class="my-4">
+    {% for tab in tabs %}
+    <a class="btn btn-default{% if current == tab.action %} active{% endif %}" href="{{ tab.url }}">
+        {% if tab.icon %}{{ include('t3-icon.html.twig', { name: tab.icon }) }}{% endif %}
+        {{ tab.label }}
+    </a>
+    {% endfor %}
+</div>

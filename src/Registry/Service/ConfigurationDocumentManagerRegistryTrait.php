@@ -2,12 +2,16 @@
 
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
+use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMaintenanceServiceInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManager;
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationService;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationServiceInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\StaticConfigurationDocumentStorage;
+use DigitalMarketingFramework\Core\Registry\RegistryCollectionInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
 
 trait ConfigurationDocumentManagerRegistryTrait
@@ -18,9 +22,13 @@ trait ConfigurationDocumentManagerRegistryTrait
 
     protected ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage;
 
+    protected ConfigurationDocumentMigrationServiceInterface $configurationDocumentMigrationService;
+
     protected ConfigurationDocumentManagerInterface $configurationDocumentManager;
 
     abstract public function createObject(string $class, array $arguments = []): object;
+
+    abstract public function getRegistryCollection(): RegistryCollectionInterface;
 
     public function getConfigurationDocumentStorage(): ConfigurationDocumentStorageInterface
     {
@@ -68,18 +76,32 @@ trait ConfigurationDocumentManagerRegistryTrait
         $this->configurationDocumentParser = $configurationDocumentParser;
     }
 
+    public function getConfigurationDocumentMigrationService(): ConfigurationDocumentMigrationServiceInterface
+    {
+        if (!isset($this->configurationDocumentMigrationService)) {
+            $this->configurationDocumentMigrationService = $this->createObject(
+                ConfigurationDocumentMigrationService::class
+            );
+        }
+
+        return $this->configurationDocumentMigrationService;
+    }
+
+    public function setConfigurationDocumentMigrationService(ConfigurationDocumentMigrationServiceInterface $configurationDocumentMigrationService): void
+    {
+        $this->configurationDocumentMigrationService = $configurationDocumentMigrationService;
+    }
+
     public function getConfigurationDocumentManager(): ConfigurationDocumentManagerInterface
     {
         if (!isset($this->configurationDocumentManager)) {
-            $configurationDocumentStorage = $this->getConfigurationDocumentStorage();
-            $configurationDocumentParser = $this->getConfigurationDocumentParser();
-            $staticConfigurationDocumentStorage = $this->getStaticConfigurationDocumentStorage();
             $this->configurationDocumentManager = $this->createObject(
                 ConfigurationDocumentManager::class,
                 [
-                    $configurationDocumentStorage,
-                    $configurationDocumentParser,
-                    $staticConfigurationDocumentStorage,
+                    $this->getConfigurationDocumentStorage(),
+                    $this->getConfigurationDocumentParser(),
+                    $this->getStaticConfigurationDocumentStorage(),
+                    $this->getConfigurationDocumentMigrationService(),
                 ]
             );
         }
@@ -90,6 +112,7 @@ trait ConfigurationDocumentManagerRegistryTrait
     public function setConfigurationDocumentManager(ConfigurationDocumentManagerInterface $configurationDocumentManager): void
     {
         $this->configurationDocumentManager = $configurationDocumentManager;
+        $this->setConfigurationDocumentMigrationService($configurationDocumentManager->getMigrationService());
         $this->setStaticConfigurationDocumentStorage($configurationDocumentManager->getStaticStorage());
         $this->setConfigurationDocumentStorage($configurationDocumentManager->getStorage());
         $this->setConfigurationDocumentParser($configurationDocumentManager->getParser());
@@ -97,7 +120,12 @@ trait ConfigurationDocumentManagerRegistryTrait
 
     public function addSchemaMigration(ConfigurationDocumentMigrationInterface $migration): void
     {
-        $this->getConfigurationDocumentManager()->addMigration($migration);
+        $this->getConfigurationDocumentMigrationService()->addMigration($migration);
+    }
+
+    public function getConfigurationDocumentMaintenanceService(): ConfigurationDocumentMaintenanceServiceInterface
+    {
+        return $this->getRegistryCollection()->getConfigurationDocumentMaintenanceService();
     }
 
     /**

@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\Configuration
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchemaInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
 abstract class Initialization implements InitializationInterface
 {
@@ -55,7 +56,7 @@ abstract class Initialization implements InitializationInterface
 
     public function __construct(
         protected string $packageName,
-        protected string $schemaVersion,
+        protected string $schemaVersion = SchemaDocument::INITIAL_VERSION,
         protected string $packageAlias = '',
         protected ?GlobalConfigurationSchemaInterface $globalConfigurationSchema = null,
     ) {
@@ -220,8 +221,9 @@ abstract class Initialization implements InitializationInterface
         $this->initFrontendScripts($registry);
         $this->initStaticConfigurationDocuments($registry);
 
-        foreach (static::SCHEMA_MIGRATIONS as $migrationClass) {
-            $migration = new $migrationClass();
+        foreach (static::SCHEMA_MIGRATIONS as $index => $migrationClass) {
+            $key = is_numeric($index) ? $this->packageName : $index;
+            $migration = $registry->createObject($migrationClass, [$key]);
             $registry->addSchemaMigration($migration);
         }
     }

@@ -16,7 +16,8 @@ abstract class InheritedDocumentConfigurationEditorAjaxController extends Config
 
     protected function mergeConfiguration(array $configuration, bool $inheritedConfigurationOnly = false): array
     {
-        $configurationStack = $this->configurationDocumentManager->getConfigurationStackFromConfiguration($configuration);
+        $schemaDocument = $this->getSchemaDocument();
+        $configurationStack = $this->configurationDocumentManager->getConfigurationStackFromConfiguration($configuration, $schemaDocument);
 
         if ($inheritedConfigurationOnly) {
             array_pop($configurationStack);
@@ -27,7 +28,8 @@ abstract class InheritedDocumentConfigurationEditorAjaxController extends Config
 
     protected function splitConfiguration(array $mergedConfiguration): array
     {
-        $configurationStack = $this->configurationDocumentManager->getConfigurationStackFromConfiguration($mergedConfiguration);
+        $schemaDocument = $this->getSchemaDocument();
+        $configurationStack = $this->configurationDocumentManager->getConfigurationStackFromConfiguration($mergedConfiguration, $schemaDocument);
         array_pop($configurationStack);
         $parentConfiguration = ConfigurationUtility::mergeConfigurationStack($configurationStack);
 
@@ -36,13 +38,14 @@ abstract class InheritedDocumentConfigurationEditorAjaxController extends Config
 
     protected function processIncludesChange(array $referenceMergedConfiguration, array $mergedConfiguration, bool $inheritedConfigurationOnly = false): array
     {
+        $schemaDocument = $this->getSchemaDocument();
         $oldIncludes = $this->configurationDocumentManager->getIncludes($referenceMergedConfiguration);
         $newIncludes = $this->configurationDocumentManager->getIncludes($mergedConfiguration);
         $this->configurationDocumentManager->setIncludes($mergedConfiguration, $oldIncludes);
         $splitConfiguration = $this->splitConfiguration($mergedConfiguration);
 
         $this->configurationDocumentManager->setIncludes($splitConfiguration, $newIncludes);
-        $configurationStack = $this->configurationDocumentManager->getConfigurationStackFromConfiguration($splitConfiguration);
+        $configurationStack = $this->configurationDocumentManager->getConfigurationStackFromConfiguration($splitConfiguration, $schemaDocument);
         if ($inheritedConfigurationOnly) {
             array_pop($configurationStack);
         }

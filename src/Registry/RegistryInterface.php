@@ -19,6 +19,7 @@ use DigitalMarketingFramework\Core\Registry\Service\ConfigurationSchemaRegistryI
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\CryptoRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\DataSourceRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
@@ -64,7 +65,8 @@ interface RegistryInterface extends
     TestCaseRegistryInterface,
     BackendTemplatingRegistryInterface,
     BackendControllerRegistryInterface,
-    CleanupRegistryInterface
+    CleanupRegistryInterface,
+    DataSourceRegistryInterface
 {
     public function init(): void;
 

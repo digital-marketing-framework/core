@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
+use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationServiceInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Storage\ConfigurationDocumentStorageInterface;
 use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
@@ -30,6 +31,8 @@ interface ConfigurationDocumentManagerInterface
     public function getParser(): ConfigurationDocumentParserInterface;
 
     public function getStaticStorage(): ConfigurationDocumentStorageInterface;
+
+    public function getMigrationService(): ConfigurationDocumentMigrationServiceInterface;
 
     public function tidyDocument(string $document, SchemaDocument $schemaDocument): string;
 
@@ -95,9 +98,23 @@ interface ConfigurationDocumentManagerInterface
     public function unsetVersionByKey(array &$configuration, string $key): void;
 
     /**
+     * Quick check if a configuration is outdated based on version tags.
+     *
      * @param array<string,mixed> $configuration
      */
     public function outdated(array $configuration, SchemaDocument $schemaDocument): bool;
+
+    /**
+     * Check if a configuration is genuinely outdated — meaning migration would
+     * actually change the configuration data, not just the version tags.
+     *
+     * This is slower than outdated() because it runs the actual migration and
+     * compares before/after. Use this when you need to know if a document
+     * truly needs migration (e.g., to decide whether to show a warning in the editor).
+     *
+     * @param array<string,mixed> $configuration
+     */
+    public function genuinelyOutdated(array $configuration, SchemaDocument $schemaDocument): bool;
 
     public function addMigration(ConfigurationDocumentMigrationInterface $migration): void;
 
@@ -126,26 +143,45 @@ interface ConfigurationDocumentManagerInterface
     public function getDocumentConfigurationFromIdentifier(string $documentIdentifier, bool $metaDataOnly = false): array;
 
     /**
+     * Build the configuration stack from a configuration array.
+     *
      * @param array<mixed> $configuration
+     * @param SchemaDocument|null $schemaDocument If provided and $migrateInMemory is true, the stack will be migrated in memory
+     * @param bool $migrateInMemory Whether to migrate the stack in memory (requires $schemaDocument)
      *
      * @return array<array<mixed>>
      */
-    public function getConfigurationStackFromConfiguration(array $configuration): array;
+    public function getConfigurationStackFromConfiguration(array $configuration, ?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array;
 
     /**
+     * Build the configuration stack from a document string.
+     *
+     * @param SchemaDocument|null $schemaDocument If provided and $migrateInMemory is true, the stack will be migrated in memory
+     * @param bool $migrateInMemory Whether to migrate the stack in memory (requires $schemaDocument)
+     *
      * @return array<array<string,mixed>>
      */
-    public function getConfigurationStackFromDocument(string $document): array;
+    public function getConfigurationStackFromDocument(string $document, ?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array;
 
     /**
+     * Build the configuration stack from a document identifier.
+     *
+     * @param SchemaDocument|null $schemaDocument If provided and $migrateInMemory is true, the stack will be migrated in memory
+     * @param bool $migrateInMemory Whether to migrate the stack in memory (requires $schemaDocument)
+     *
      * @return array<array<string,mixed>>
      */
-    public function getConfigurationStackFromIdentifier(string $documentIdentifier): array;
+    public function getConfigurationStackFromIdentifier(string $documentIdentifier, ?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array;
 
     public function getDefaultConfigurationIdentifier(): string;
 
     /**
+     * Build the configuration stack from the default document.
+     *
+     * @param SchemaDocument|null $schemaDocument If provided and $migrateInMemory is true, the stack will be migrated in memory
+     * @param bool $migrateInMemory Whether to migrate the stack in memory (requires $schemaDocument)
+     *
      * @return array<array<string,mixed>>
      */
-    public function getDefaultConfigurationStack(): array;
+    public function getDefaultConfigurationStack(?SchemaDocument $schemaDocument = null, bool $migrateInMemory = true): array;
 }
