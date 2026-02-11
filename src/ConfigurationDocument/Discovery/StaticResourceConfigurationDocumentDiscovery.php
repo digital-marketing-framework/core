@@ -31,6 +31,13 @@ class StaticResourceConfigurationDocumentDiscovery implements StaticConfiguratio
         return $this->configurationStorageSettings;
     }
 
+    protected function checkFileValidity(string $fileName): bool
+    {
+        $baseName = pathinfo($fileName, PATHINFO_FILENAME);
+
+        return (bool)preg_match('/\.config$/', strtolower($baseName));
+    }
+
     public function getIdentifiers(): array
     {
         $result = [];
@@ -47,6 +54,10 @@ class StaticResourceConfigurationDocumentDiscovery implements StaticConfiguratio
             }
 
             foreach ($files as $file) {
+                if (!$this->checkFileValidity($file)) {
+                    continue;
+                }
+
                 $result[] = $assetService->getFileIdentifierInResourceFolder($folderIdentifier, $file);
             }
         }
