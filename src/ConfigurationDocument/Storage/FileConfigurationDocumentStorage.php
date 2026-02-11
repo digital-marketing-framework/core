@@ -49,7 +49,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
     {
         $baseFileName = $this->fileStorage->getFileBaseName($fileIdentifier);
 
-        return (bool)preg_match('/.config$/', strtolower((string)$baseFileName));
+        return (bool)preg_match('/\.config$/', strtolower((string)$baseFileName));
     }
 
     public function getDocumentIdentifiers(): array
