@@ -31,14 +31,11 @@ abstract class DataSourceManager implements DataSourceManagerInterface
         return null;
     }
 
-    public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface
+    public function getDataSourceByIdentifier(string $identifier): ?DataSourceInterface
     {
-        $storage = $this->getMatchingDataSourceStorage($id);
-        if (!$storage instanceof DataSourceStorageInterface) {
-            return null;
-        }
+        $storage = $this->getMatchingDataSourceStorage($identifier);
 
-        return $storage->getDataSourceById($id, $dataSourceContext);
+        return $storage?->getDataSourceByIdentifier($identifier);
     }
 
     public function getAllDataSources(): array
@@ -77,11 +74,11 @@ abstract class DataSourceManager implements DataSourceManagerInterface
         return $result;
     }
 
-    public function getDataSourceVariantByIdentifier(string $identifier): ?DataSourceInterface
+    public function getDataSourceVariantByIdentifier(string $identifier, bool $maintenanceMode = false): ?DataSourceInterface
     {
         $storage = $this->getMatchingDataSourceStorage($identifier);
 
-        return $storage?->getDataSourceVariantByIdentifier($identifier);
+        return $storage?->getDataSourceVariantByIdentifier($identifier, $maintenanceMode);
     }
 
     public function updateConfigurationDocument(DataSourceInterface $dataSource, string $document): void

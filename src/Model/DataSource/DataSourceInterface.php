@@ -31,6 +31,12 @@ interface DataSourceInterface
     public function getDescription(): string;
 
     /**
+     * Whether this variant's document is identical to the base data source's document.
+     * Always false for non-variant data sources.
+     */
+    public function isIdenticalToBase(): bool;
+
+    /**
      * Whether this data source type supports variants (e.g. form plugin overrides).
      * Used by the backend maintenance UI to indicate expandable children.
      */

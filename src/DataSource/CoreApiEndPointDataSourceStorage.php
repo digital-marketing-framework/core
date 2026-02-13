@@ -19,7 +19,7 @@ class CoreApiEndPointDataSourceStorage extends AbstractApiEndPointDataSourceStor
     }
 
     /**
-     * Filter for getAllDataSources() and getDataSourceById().
+     * Filter for getAllDataSources() and getDataSourceByIdentifier().
      * Core: only checks the general enabled flag.
      */
     protected function filterEndPoint(EndPointInterface $endPoint): bool

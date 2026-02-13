@@ -100,6 +100,12 @@ interface MigratableInterface extends ItemInterface
     public function setHasOutdatedParents(bool $hasOutdatedParents): void;
 
     /**
+     * Whether this variant's document is identical to the base document.
+     * Always false for non-variant migratables.
+     */
+    public function isIdenticalToBase(): bool;
+
+    /**
      * Whether this document can be migrated individually.
      * False when child documents (that include this one) are still outdated.
      */

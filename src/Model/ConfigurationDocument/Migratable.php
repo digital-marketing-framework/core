@@ -118,6 +118,11 @@ abstract class Migratable implements MigratableInterface
         $this->hasOutdatedParents = $hasOutdatedParents;
     }
 
+    public function isIdenticalToBase(): bool
+    {
+        return false;
+    }
+
     public function canMigrateIndividually(): bool
     {
         return $this->canMigrateIndividually;

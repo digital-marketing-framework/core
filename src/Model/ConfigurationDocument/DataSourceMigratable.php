@@ -72,6 +72,11 @@ class DataSourceMigratable extends Migratable
         return $this->dataSource->canHaveVariants();
     }
 
+    public function isIdenticalToBase(): bool
+    {
+        return $this->dataSource->isIdenticalToBase();
+    }
+
     public function getBaseMigratableIdentifier(): ?string
     {
         return $this->dataSource->getBaseDataSourceIdentifier();

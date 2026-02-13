@@ -36,7 +36,7 @@ abstract class AbstractApiEndPointDataSourceStorage extends DataSourceStorage im
     abstract protected function createDataSource(EndPointInterface $endPoint): DataSourceInterface;
 
     /**
-     * Filter for getAllDataSources() and getDataSourceById().
+     * Filter for getAllDataSources() and getDataSourceByIdentifier().
      */
     abstract protected function filterEndPoint(EndPointInterface $endPoint): bool;
 
@@ -45,13 +45,13 @@ abstract class AbstractApiEndPointDataSourceStorage extends DataSourceStorage im
      */
     abstract protected function filterEndPointVariant(EndPointInterface $endPoint): bool;
 
-    public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface
+    public function getDataSourceByIdentifier(string $identifier): ?DataSourceInterface
     {
-        if (!$this->matches($id)) {
+        if (!$this->matches($identifier)) {
             return null;
         }
 
-        $name = $this->getInnerIdentifier($id);
+        $name = $this->getInnerIdentifier($identifier);
         $endPoint = $this->endPointStorage->fetchByName($name);
 
         if (!$endPoint instanceof EndPointInterface || !$this->filterEndPoint($endPoint)) {
@@ -97,7 +97,7 @@ abstract class AbstractApiEndPointDataSourceStorage extends DataSourceStorage im
         return $result;
     }
 
-    public function getDataSourceVariantByIdentifier(string $identifier): ?DataSourceInterface
+    public function getDataSourceVariantByIdentifier(string $identifier, bool $maintenanceMode = false): ?DataSourceInterface
     {
         if (!$this->matches($identifier)) {
             return null;

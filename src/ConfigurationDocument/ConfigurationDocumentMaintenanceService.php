@@ -334,7 +334,7 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
 
         // Try data source managers
         foreach ($this->dataSourceManagers as $dataSourceManager) {
-            $dataSource = $dataSourceManager->getDataSourceVariantByIdentifier($identifier);
+            $dataSource = $dataSourceManager->getDataSourceVariantByIdentifier($identifier, maintenanceMode: true);
             if ($dataSource === null) {
                 continue;
             }

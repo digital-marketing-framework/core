@@ -71,6 +71,11 @@ abstract class DataSource implements DataSourceInterface
         return new FieldListDefinition($this->idPrefix . '.in.defaults.' . $this->getIdentifier());
     }
 
+    public function isIdenticalToBase(): bool
+    {
+        return false;
+    }
+
     public function getBaseDataSourceIdentifier(): ?string
     {
         return null;
