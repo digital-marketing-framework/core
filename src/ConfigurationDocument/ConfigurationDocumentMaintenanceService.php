@@ -15,6 +15,7 @@ use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareInterfac
 use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareTrait;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
+use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
 
 class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMaintenanceServiceInterface, ConfigurationDocumentManagerAwareInterface, LoggerAwareInterface, NotificationManagerAwareInterface
 {
@@ -33,6 +34,23 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
 
     /** @var array<DataSourceManagerInterface<DataSourceInterface>> */
     protected array $dataSourceManagers = [];
+
+    /**
+     * Per-document parsed configuration cache (own document, without includes).
+     * Populated during getAllMigratables() Phase 3 / computeMigratableStatus().
+     *
+     * @var array<string, array<string,mixed>>
+     */
+    protected array $ownConfigurationCache = [];
+
+    /**
+     * Per-document merged configuration cache (with all includes resolved).
+     * Populated lazily: piggybacks on computeMigrationInfo() for outdated documents,
+     * built on demand for others when needed by the value inspector.
+     *
+     * @var array<string, array<string,mixed>>
+     */
+    protected array $mergedConfigurationCache = [];
 
     /**
      * @param array<DataSourceManagerInterface<DataSourceInterface>> $dataSourceManagers
@@ -111,7 +129,7 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
         }
 
         // Phase 3: compute empty and outdated status, per-package migration info
-        foreach ($migratables as $migratable) {
+        foreach ($migratables as $identifier => $migratable) {
             $document = $migratable->getConfigurationDocument();
             if ($document === '') {
                 $migratable->setEmpty(true);
@@ -119,11 +137,12 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
             }
 
             $configuration = $manager->getDocumentConfigurationFromDocument($document);
+            $this->ownConfigurationCache[$identifier] = $configuration;
             $outdated = $migrationService->outdated($configuration, $schemaDocument);
             $migratable->setOutdated($outdated);
 
             if ($outdated) {
-                $migratable->setMigrationInfo($this->computeMigrationInfo($configuration, $schemaDocument));
+                $migratable->setMigrationInfo($this->computeMigrationInfo($configuration, $schemaDocument, $identifier));
             }
         }
 
@@ -376,7 +395,7 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
         }
 
         // Compute empty and outdated status, per-package migration info
-        foreach ($migratables as $migratable) {
+        foreach ($migratables as $identifier => $migratable) {
             $document = $migratable->getConfigurationDocument();
             if ($document === '') {
                 $migratable->setEmpty(true);
@@ -384,11 +403,12 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
             }
 
             $configuration = $manager->getDocumentConfigurationFromDocument($document);
+            $this->ownConfigurationCache[$identifier] = $configuration;
             $outdated = $migrationService->outdated($configuration, $schemaDocument);
             $migratable->setOutdated($outdated);
 
             if ($outdated) {
-                $migratable->setMigrationInfo($this->computeMigrationInfo($configuration, $schemaDocument));
+                $migratable->setMigrationInfo($this->computeMigrationInfo($configuration, $schemaDocument, $identifier));
             }
         }
 
@@ -490,11 +510,14 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
      * The migration service records per-key results (from/to versions, genuine change flags)
      * on the MigrationContext as it processes each package's migration chain.
      *
+     * When an identifier is provided, the merged configuration is cached as a side effect
+     * for later use by the value inspector.
+     *
      * @param array<string, mixed> $configuration
      *
      * @return array<string, array{from: string, to: string, status: string, message: string}>
      */
-    protected function computeMigrationInfo(array $configuration, SchemaDocument $schemaDocument): array
+    protected function computeMigrationInfo(array $configuration, SchemaDocument $schemaDocument, ?string $identifier = null): array
     {
         $manager = $this->configurationDocumentManager;
         $migrationService = $manager->getMigrationService();
@@ -502,6 +525,11 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
         $stack = $manager->getConfigurationStackFromConfiguration($configuration, $schemaDocument, false);
         if (count($stack) < 2) {
             return [];
+        }
+
+        // Cache merged configuration for value inspector (piggyback on existing stack)
+        if ($identifier !== null && !isset($this->mergedConfigurationCache[$identifier])) {
+            $this->mergedConfigurationCache[$identifier] = ConfigurationUtility::mergeConfigurationStack($stack);
         }
 
         $sysDefaults = $stack[0];
@@ -517,6 +545,104 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
         }
 
         return $context->getMigrationInfo();
+    }
+
+    public function getInspectedValue(string $identifier, string $path, SchemaDocument $schemaDocument): ?array
+    {
+        if ($path === '' || !isset($this->ownConfigurationCache[$identifier])) {
+            return null;
+        }
+
+        // Check own configuration first (extracted value)
+        $ownConfig = $this->ownConfigurationCache[$identifier];
+        $result = static::resolveConfigurationPath($ownConfig, $path);
+        if ($result !== null) {
+            if ($result['value'] === null) {
+                // Null in own config is a deletion override — merged config won't have it either
+                return ['value' => null, 'source' => 'removed'];
+            }
+
+            return ['value' => $result['value'], 'source' => 'extracted'];
+        }
+
+        // Check merged configuration (inherited value)
+        $mergedConfig = $this->getMergedConfiguration($identifier, $schemaDocument);
+        $result = static::resolveConfigurationPath($mergedConfig, $path);
+        if ($result !== null) {
+            return ['value' => $result['value'], 'source' => 'inherited'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Get or build the merged configuration for a document (with all includes resolved).
+     *
+     * @return array<string,mixed>
+     */
+    protected function getMergedConfiguration(string $identifier, SchemaDocument $schemaDocument): array
+    {
+        if (!isset($this->mergedConfigurationCache[$identifier])) {
+            $ownConfig = $this->ownConfigurationCache[$identifier] ?? [];
+            if ($ownConfig === []) {
+                return [];
+            }
+
+            $stack = $this->configurationDocumentManager->getConfigurationStackFromConfiguration(
+                $ownConfig,
+                $schemaDocument,
+                false
+            );
+            $this->mergedConfigurationCache[$identifier] = ConfigurationUtility::mergeConfigurationStack($stack);
+        }
+
+        return $this->mergedConfigurationCache[$identifier];
+    }
+
+    /**
+     * Resolve a dot-notation path on a configuration array.
+     *
+     * Supports index-based access with [N] for positional key resolution
+     * (useful for UUID-keyed arrays where keys are not human-readable).
+     *
+     * Examples:
+     *   "integrations.pardot.outboundRoutes.[0].url"
+     *   "metaData.name"
+     *   "dataProcessing.valueMaps.[0].[1]"
+     *
+     * @param array<string,mixed> $configuration
+     *
+     * @return array{value: mixed}|null Wrapped value if found, null if path doesn't exist
+     */
+    protected static function resolveConfigurationPath(array $configuration, string $path): ?array
+    {
+        $segments = explode('.', $path);
+        $current = $configuration;
+
+        foreach ($segments as $segment) {
+            if (!is_array($current)) {
+                return null;
+            }
+
+            if (preg_match('/^\[(\d+)]$/', $segment, $matches)) {
+                // Index-based access: [N] resolves to the Nth key by position
+                $index = (int)$matches[1];
+                $keys = array_keys($current);
+                if (!isset($keys[$index])) {
+                    return null;
+                }
+
+                $current = $current[$keys[$index]];
+            } else {
+                if (!array_key_exists($segment, $current)) {
+                    return null;
+                }
+
+                $current = $current[$segment];
+            }
+        }
+
+        return ['value' => $current];
     }
 
     public function migrateAll(SchemaDocument $schemaDocument): array

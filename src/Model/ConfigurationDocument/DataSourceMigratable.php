@@ -25,6 +25,11 @@ class DataSourceMigratable extends Migratable
     ) {
     }
 
+    public function getDataSource(): DataSourceInterface
+    {
+        return $this->dataSource;
+    }
+
     public function getIdentifier(): string
     {
         return $this->dataSource->getIdentifier();
@@ -80,5 +85,15 @@ class DataSourceMigratable extends Migratable
     public function getBaseMigratableIdentifier(): ?string
     {
         return $this->dataSource->getBaseDataSourceIdentifier();
+    }
+
+    public function canLinkToEmbeddingRecord(): bool
+    {
+        return $this->dataSource->canLinkToEmbeddingRecord();
+    }
+
+    public function getEmbeddingRecordLinkUnavailableReason(): ?string
+    {
+        return $this->dataSource->getEmbeddingRecordLinkUnavailableReason();
     }
 }

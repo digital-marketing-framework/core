@@ -118,6 +118,16 @@ abstract class Migratable implements MigratableInterface
         $this->hasOutdatedParents = $hasOutdatedParents;
     }
 
+    public function canLinkToEmbeddingRecord(): bool
+    {
+        return false;
+    }
+
+    public function getEmbeddingRecordLinkUnavailableReason(): ?string
+    {
+        return null;
+    }
+
     public function isIdenticalToBase(): bool
     {
         return false;
@@ -136,6 +146,11 @@ abstract class Migratable implements MigratableInterface
     public function getMigrationInfo(): array
     {
         return $this->migrationInfo;
+    }
+
+    public function getGenuineMigrationInfo(): array
+    {
+        return array_filter($this->migrationInfo, static fn (array $info): bool => $info['status'] !== 'tagOnly');
     }
 
     public function setMigrationInfo(array $migrationInfo): void

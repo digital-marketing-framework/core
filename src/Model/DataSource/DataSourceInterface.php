@@ -41,4 +41,16 @@ interface DataSourceInterface
      * Used by the backend maintenance UI to indicate expandable children.
      */
     public function canHaveVariants(): bool;
+
+    /**
+     * Whether this data source entry can link to its embedding record's edit form.
+     * False for form plugin variants where the form is not selected or overrides are disabled.
+     */
+    public function canLinkToEmbeddingRecord(): bool;
+
+    /**
+     * Returns a human-readable reason why this data source entry cannot link
+     * to its embedding record's edit form. Returns null if linking IS possible.
+     */
+    public function getEmbeddingRecordLinkUnavailableReason(): ?string;
 }

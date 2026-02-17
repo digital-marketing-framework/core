@@ -84,4 +84,20 @@ interface ConfigurationDocumentMaintenanceServiceInterface
      * @return bool Whether the reset was performed (false if not a variant or base not found)
      */
     public function resetVariant(MigratableInterface $variant, SchemaDocument $schemaDocument): bool;
+
+    /**
+     * Inspect a configuration value at a dot-notation path for a specific document.
+     *
+     * Checks the document's own configuration first ("extracted"), then falls back
+     * to the merged configuration with includes resolved ("inherited").
+     *
+     * Must be called after getAllMigratables() or getMigratablePage() to ensure
+     * the own configuration cache is populated.
+     *
+     * Supports index-based access with [N] for positional key resolution
+     * (e.g. "integrations.pardot.outboundRoutes.[0].url").
+     *
+     * @return array{value: mixed, source: string}|null Result with source ('extracted' or 'inherited'), or null if not found
+     */
+    public function getInspectedValue(string $identifier, string $path, SchemaDocument $schemaDocument): ?array;
 }

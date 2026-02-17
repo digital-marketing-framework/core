@@ -90,4 +90,14 @@ abstract class DataSource implements DataSourceInterface
     {
         return false;
     }
+
+    public function canLinkToEmbeddingRecord(): bool
+    {
+        return true;
+    }
+
+    public function getEmbeddingRecordLinkUnavailableReason(): ?string
+    {
+        return null;
+    }
 }
