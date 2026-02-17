@@ -31,8 +31,26 @@ interface DataSourceInterface
     public function getDescription(): string;
 
     /**
+     * Whether this variant's document is identical to the base data source's document.
+     * Always false for non-variant data sources.
+     */
+    public function isIdenticalToBase(): bool;
+
+    /**
      * Whether this data source type supports variants (e.g. form plugin overrides).
      * Used by the backend maintenance UI to indicate expandable children.
      */
     public function canHaveVariants(): bool;
+
+    /**
+     * Whether this data source entry can link to its embedding record's edit form.
+     * False for form plugin variants where the form is not selected or overrides are disabled.
+     */
+    public function canLinkToEmbeddingRecord(): bool;
+
+    /**
+     * Returns a human-readable reason why this data source entry cannot link
+     * to its embedding record's edit form. Returns null if linking IS possible.
+     */
+    public function getEmbeddingRecordLinkUnavailableReason(): ?string;
 }

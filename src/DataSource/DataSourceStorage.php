@@ -15,7 +15,20 @@ abstract class DataSourceStorage extends Plugin implements DataSourceStorageInte
 {
     abstract public function getType(): string;
 
-    abstract public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface;
+    public function getDataSourceByIdentifier(string $identifier): ?DataSourceInterface
+    {
+        if (!$this->matches($identifier)) {
+            return null;
+        }
+
+        foreach ($this->getAllDataSources() as $dataSource) {
+            if ($dataSource->getIdentifier() === $identifier) {
+                return $dataSource;
+            }
+        }
+
+        return null;
+    }
 
     abstract public function getAllDataSources(): array;
 
@@ -42,7 +55,7 @@ abstract class DataSourceStorage extends Plugin implements DataSourceStorageInte
         );
     }
 
-    public function getDataSourceVariantByIdentifier(string $identifier): ?DataSourceInterface
+    public function getDataSourceVariantByIdentifier(string $identifier, bool $maintenanceMode = false): ?DataSourceInterface
     {
         if (!$this->matches($identifier)) {
             return null;

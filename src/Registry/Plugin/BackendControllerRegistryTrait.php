@@ -4,6 +4,7 @@ namespace DigitalMarketingFramework\Core\Registry\Plugin;
 
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\AjaxControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionControllerInterface;
+use DigitalMarketingFramework\Core\Backend\UriRouteResolver\UriRouteResolverInterface;
 
 trait BackendControllerRegistryTrait
 {
@@ -47,5 +48,25 @@ trait BackendControllerRegistryTrait
     public function getAllBackendAjaxControllers(): array
     {
         return $this->getAllPlugins(AjaxControllerInterface::class);
+    }
+
+    public function registerBackendUriRouteResolver(string $class, array $additionalArguments = [], string $keyword = ''): void
+    {
+        $this->registerPlugin(UriRouteResolverInterface::class, $class, $additionalArguments, $keyword);
+    }
+
+    public function deleteBackendUriRouteResolver(string $keyword): void
+    {
+        $this->deletePlugin($keyword, UriRouteResolverInterface::class);
+    }
+
+    public function getBackendUriRouteResolver(string $keyword): ?UriRouteResolverInterface
+    {
+        return $this->getPlugin($keyword, UriRouteResolverInterface::class);
+    }
+
+    public function getAllBackendUriRouteResolvers(): array
+    {
+        return $this->getAllPlugins(UriRouteResolverInterface::class);
     }
 }

@@ -100,12 +100,32 @@ interface MigratableInterface extends ItemInterface
     public function setHasOutdatedParents(bool $hasOutdatedParents): void;
 
     /**
+     * Whether this variant's document is identical to the base document.
+     * Always false for non-variant migratables.
+     */
+    public function isIdenticalToBase(): bool;
+
+    /**
      * Whether this document can be migrated individually.
      * False when child documents (that include this one) are still outdated.
      */
     public function canMigrateIndividually(): bool;
 
     public function setCanMigrateIndividually(bool $canMigrateIndividually): void;
+
+    /**
+     * Whether this migratable can link to its embedding record's edit form.
+     * True for data source migratables where the data source supports linking.
+     * False for storage migratables (no embedding record).
+     */
+    public function canLinkToEmbeddingRecord(): bool;
+
+    /**
+     * Returns a human-readable reason why this migratable cannot link
+     * to its embedding record's edit form. Returns null if linking IS possible
+     * or if no embedding record exists (storage migratables).
+     */
+    public function getEmbeddingRecordLinkUnavailableReason(): ?string;
 
     /**
      * Migration details per package: version differences and migration status.
@@ -118,6 +138,15 @@ interface MigratableInterface extends ItemInterface
      * @return array<string, array{from: string, to: string, status: string, message: string}>
      */
     public function getMigrationInfo(): array;
+
+    /**
+     * Migration info filtered to only genuine data migrations and errors.
+     * Excludes tag-only version updates. Useful for readonly documents
+     * where tag-only mismatches are not actionable.
+     *
+     * @return array<string, array{from: string, to: string, status: string, message: string}>
+     */
+    public function getGenuineMigrationInfo(): array;
 
     /**
      * @param array<string, array{from: string, to: string, status: string, message: string}> $migrationInfo

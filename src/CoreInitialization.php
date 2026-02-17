@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\Backend\Controller\SectionController\Dashboar
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\GlobalSettingsSectionController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Section\Section;
+use DigitalMarketingFramework\Core\Backend\UriBuilder;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticAliasConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticCoreSystemConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticResourceConfigurationDocumentDiscovery;
@@ -285,6 +286,10 @@ class CoreInitialization extends Initialization
     public function initServices(string $domain, RegistryInterface $registry): void
     {
         parent::initServices($domain, $registry);
+
+        $registry->setBackendUriBuilder(
+            $registry->createObject(UriBuilder::class, [$registry])
+        );
 
         $registry->addDataSourceManager($registry->getCoreDataSourceManager());
 

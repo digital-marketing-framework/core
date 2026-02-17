@@ -10,11 +10,9 @@ use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 interface DataSourceManagerInterface
 {
     /**
-     * @param array<string,mixed> $dataSourceContext
-     *
      * @return ?DataSourceClass
      */
-    public function getDataSourceById(string $id, array $dataSourceContext): ?DataSourceInterface;
+    public function getDataSourceByIdentifier(string $identifier): ?DataSourceInterface;
 
     /**
      * @return array<DataSourceClass>
@@ -41,9 +39,13 @@ interface DataSourceManagerInterface
      * Returns a single data source variant by its full identifier.
      * Routes to the matching storage based on the identifier prefix.
      *
+     * @param bool $maintenanceMode When true, the data source returns raw stored data
+     *        (e.g. override documents regardless of activation flags).
+     *        When false (default), the data source respects runtime flags.
+     *
      * @return ?DataSourceClass
      */
-    public function getDataSourceVariantByIdentifier(string $identifier): ?DataSourceInterface;
+    public function getDataSourceVariantByIdentifier(string $identifier, bool $maintenanceMode = false): ?DataSourceInterface;
 
     /**
      * Updates the configuration document for a data source.
