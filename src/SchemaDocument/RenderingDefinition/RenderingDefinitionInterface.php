@@ -13,6 +13,8 @@ interface RenderingDefinitionInterface
     public const FORMAT_TEXT = 'text';
 
     public const FORMAT_HIDDEN = 'hidden';
+    
+    public const FORMAT_COMBOBOX = 'combobox';
 
     public const TRIGGER_SWITCH = 'switch';
 

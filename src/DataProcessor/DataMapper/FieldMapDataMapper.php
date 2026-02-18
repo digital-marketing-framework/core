@@ -43,6 +43,7 @@ class FieldMapDataMapper extends DataMapper
         $fieldMapKey->getRenderingDefinition()->setLabel('Target Field Name');
         $fieldMapKey->getRenderingDefinition()->addRole(RenderingDefinitionInterface::ROLE_OUTPUT_FIELD);
         $fieldMapKey->getSuggestedValues()->setContextual();
+        $fieldMapKey->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_COMBOBOX);
         $fieldMapValue = new CustomSchema(ValueSchema::TYPE);
         $fieldMap = new MapSchema($fieldMapValue, $fieldMapKey);
         $fieldMap->setDynamicOrder(true);
