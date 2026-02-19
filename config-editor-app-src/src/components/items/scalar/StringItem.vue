@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useDmfStore } from '../../../stores/dmf';
 import { useValueSets } from '../../../composables/valueSets';
 import { getLeafKey } from '../../../helpers/path';
@@ -43,13 +43,20 @@ const filteredSuggestions = computed(() => {
 });
 const hasSuggestions = computed(() => Object.keys(filteredSuggestions.value).length > 0);
 
+const editingCombobox = ref(false);
+const comboboxInputRef = ref(null);
+
 function selectSuggestion(value) {
     parentValue.value[currentKey.value] = value;
     showSuggestions.value = false;
+    editingCombobox.value = false;
 }
 
-function clearComboboxValue() {
-    parentValue.value[currentKey.value] = '';
+function editComboboxValue() {
+    if (!store.settings.readonly) {
+        editingCombobox.value = true;
+        nextTick(() => comboboxInputRef.value?.focus());
+    }
 }
 </script>
 
@@ -83,26 +90,24 @@ function clearComboboxValue() {
                        v-model="parentValue[currentKey]"
                        type="hidden" />
                 <div v-else-if="schema.format === 'combobox'" class="tw-relative">
-                    <div v-if="currentValue && isValueSuggested"
+                    <div v-if="currentValue && isValueSuggested && !editingCombobox"
                          class="tw-flex tw-items-center tw-gap-1">
-                        <span class="tw-inline-flex tw-items-center tw-gap-1.5 tw-rounded tw-border tw-border-blue-300 tw-bg-blue-50 tw-px-2.5 tw-py-1.5 tw-text-sm tw-text-gray-900">
+                        <span class="tw-inline-flex tw-items-center tw-gap-1.5 tw-rounded tw-border tw-border-blue-300 tw-bg-blue-50 tw-px-2.5 tw-py-1.5 tw-text-sm tw-text-gray-900 tw-cursor-pointer hover:tw-bg-blue-100"
+                              @click="editComboboxValue">
                             {{ suggestedValues[currentValue] }}
                             <span class="tw-text-xs tw-text-gray-500">({{ currentValue }})</span>
-                            <button v-if="!store.settings.readonly"
-                                    @click="clearComboboxValue"
-                                    class="tw-ml-1 tw-text-gray-400 hover:tw-text-gray-600 tw-leading-none"
-                                    type="button">&times;</button>
                         </span>
                     </div>
                     <div v-else>
-                        <input v-model="parentValue[currentKey]"
+                        <input ref="comboboxInputRef"
+                               v-model="parentValue[currentKey]"
                                :id="'input_' + currentPath"
                                :name="'input_' + currentPath"
                                type="text"
                                autocomplete="off"
                                placeholder="Enter value"
                                @focus="showSuggestions = true"
-                               @blur="showSuggestions = false"
+                               @blur="showSuggestions = false; editingCombobox = false"
                                class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
                                :class="{
                                    'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
