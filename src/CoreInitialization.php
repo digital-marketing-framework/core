@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core;
 
+use DigitalMarketingFramework\Core\Alert\AlertHandlerInterface;
+use DigitalMarketingFramework\Core\Alert\ConfigurationStorageAlertHandler;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\AjaxControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\ConfigurationDocumentConfigurationEditorAjaxController;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\GlobalSettingsConfigurationEditorAjaxController;
@@ -226,6 +228,10 @@ class CoreInitialization extends Initialization
 
             CoreDataSourceStorageInterface::class => [
                 CoreApiEndPointDataSourceStorage::class,
+            ],
+
+            AlertHandlerInterface::class => [
+                ConfigurationStorageAlertHandler::class,
             ],
 
             // backend

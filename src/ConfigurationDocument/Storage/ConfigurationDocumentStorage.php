@@ -44,4 +44,9 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
     public function initializeConfigurationDocumentStorage(): void
     {
     }
+
+    public function isStorageReady(): bool
+    {
+        return true;
+    }
 }
