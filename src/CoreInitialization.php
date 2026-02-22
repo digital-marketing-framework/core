@@ -14,6 +14,8 @@ use DigitalMarketingFramework\Core\Backend\Controller\SectionController\GlobalSe
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Section\Section;
 use DigitalMarketingFramework\Core\Backend\UriBuilder;
+use DigitalMarketingFramework\Core\Backend\UriRouteResolver\ApiEndPointDataSourceEditUriRouteResolver;
+use DigitalMarketingFramework\Core\Backend\UriRouteResolver\UriRouteResolverInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticAliasConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticCoreSystemConfigurationDocumentDiscovery;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Discovery\StaticResourceConfigurationDocumentDiscovery;
@@ -235,6 +237,9 @@ class CoreInitialization extends Initialization
             ],
 
             // backend
+            UriRouteResolverInterface::class => [
+                ApiEndPointDataSourceEditUriRouteResolver::class,
+            ],
             SectionControllerInterface::class => [
                 DashboardSectionController::class,
                 ConfigurationDocumentSectionController::class,
