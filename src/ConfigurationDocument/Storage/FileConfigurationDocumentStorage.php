@@ -115,4 +115,11 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
             $this->fileStorage->createFolder($folderIdentifier);
         }
     }
+
+    public function isStorageReady(): bool
+    {
+        $folderIdentifier = $this->getStorageFolderIdentifier();
+
+        return $folderIdentifier !== '' && $this->fileStorage->folderExists($folderIdentifier);
+    }
 }

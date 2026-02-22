@@ -22,4 +22,6 @@ interface ConfigurationDocumentStorageInterface
     public function isReadOnly(string $documentIdentifier): bool;
 
     public function initializeConfigurationDocumentStorage(): void;
+
+    public function isStorageReady(): bool;
 }

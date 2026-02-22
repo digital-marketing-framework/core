@@ -9,7 +9,7 @@
     {% embed 'list/list.html.twig' with {
         route: 'page.configuration-document',
         icon: { path: 'PKG:digital-marketing-framework/core/res/assets/icons/record-configuration-document.svg' },
-        create: true,
+        create: storageAvailable,
         useActions: true,
         listLabel: 'Configuration documents',
         noResultsText: 'No configuration documents created yet.',
