@@ -55,16 +55,16 @@
   /* TODO */
 }
 
-/* Prism editor: prevent line wrapping to keep line numbers aligned */
+/* Prism editor: prevent line wrapping, expand to content width */
 .prism-editor-wrapper .prism-editor__editor,
 .prism-editor-wrapper .prism-editor__textarea {
   white-space: pre !important;
   overflow-wrap: normal !important;
+  width: max-content !important;
+  min-width: 100% !important;
 }
 
-/* Let the container grow to content width so the wrapper scrolls horizontally */
+/* Allow horizontal scrolling for long lines within the code area */
 .prism-editor-wrapper .prism-editor__container {
-  overflow: visible !important;
-  min-width: max-content !important;
-  flex: 1 0 0% !important;
+  overflow-x: auto !important;
 }
