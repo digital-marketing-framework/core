@@ -54,3 +54,14 @@
 .custom-class-readonly {
   /* TODO */
 }
+
+/* Prism editor: prevent line wrapping to keep line numbers aligned */
+.prism-editor-wrapper .prism-editor__editor,
+.prism-editor-wrapper .prism-editor__textarea {
+  white-space: pre !important;
+  overflow-wrap: normal !important;
+}
+
+.prism-editor-wrapper .prism-editor__container {
+  overflow-x: auto;
+}

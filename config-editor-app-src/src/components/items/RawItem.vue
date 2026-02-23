@@ -6,7 +6,7 @@ import { useRawProcessor } from "../../composables/raw";
 import { getPrismHighlighter } from '../../helpers/rawValue';
 
 import 'vue-prism-editor/dist/prismeditor.min.css'; // import the styles somewhere
-import 'prismjs/themes/prism-funky.css';
+import 'prismjs/themes/prism-tomorrow.css';
 
 import { PrismEditor } from 'vue-prism-editor';
 import UuidGenerator from "./meta/UuidGenerator.vue";
@@ -40,7 +40,7 @@ const rawValue = computed({
 const rawIssue = computed(() => getRawIssue(props.currentPath));
 </script>
 <template>
-    <PrismEditor class="tw-flex-1 tw-block tw-w-full tw-p-4 tw-overflow-y-auto tw-font-mono tw-text-sm tw-whitespace-pre-wrap tw-bg-indigo-900 tw-overscroll-none"
+    <PrismEditor class="tw-flex-1 tw-block tw-w-full tw-p-4 tw-overflow-y-auto tw-font-mono tw-text-sm tw-bg-indigo-900 tw-overscroll-none"
                  v-model="rawValue"
                  :readonly="store.settings.readonly"
                  :highlight="highlighter"
