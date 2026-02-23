@@ -62,6 +62,9 @@
   overflow-wrap: normal !important;
 }
 
+/* Let the container grow to content width so the wrapper scrolls horizontally */
 .prism-editor-wrapper .prism-editor__container {
-  overflow-x: auto;
+  overflow: visible !important;
+  min-width: max-content !important;
+  flex: 1 0 0% !important;
 }
