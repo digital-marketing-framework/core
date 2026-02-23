@@ -145,19 +145,12 @@ const _getDefaultValue = (store, schema, path, staticDefault) => {
       staticDefault = cloneValue(schema.default);
     }
   }
-  const { getFirstAllowedValue, getFirstSuggestedValue } = useValueSets(store);
+  const { getFirstAllowedValue } = useValueSets(store);
   if (staticDefault === null) {
     // TODO we already have the schema, can we pass it instead of the path?
     const firstAllowedValue = getFirstAllowedValue(path);
     if (firstAllowedValue !== null) {
       staticDefault = firstAllowedValue;
-    }
-  }
-  if (staticDefault === null) {
-    // TODO we already have the schema, can we pass it instead of the path?
-    const firstSuggestedValue = getFirstSuggestedValue(path);
-    if (firstSuggestedValue !== null) {
-      staticDefault = firstSuggestedValue;
     }
   }
 
