@@ -89,7 +89,7 @@ function editComboboxValue() {
                        :name="'input_' + currentPath"
                        v-model="parentValue[currentKey]"
                        type="hidden" />
-                <div v-else-if="schema.format === 'combobox'" class="tw-relative">
+                <div v-else-if="schema.format === 'combobox'" class="tw-relative" :class="{ 'tw-z-50': showSuggestions }">
                     <div v-if="currentValue && isValueSuggested && !editingCombobox"
                          class="tw-flex tw-items-center tw-gap-1">
                         <span class="tw-inline-flex tw-items-center tw-gap-1.5 tw-rounded tw-border tw-border-blue-300 tw-bg-blue-50 tw-px-2.5 tw-py-1.5 tw-text-sm tw-text-gray-900 tw-cursor-pointer hover:tw-bg-blue-100"
@@ -114,7 +114,7 @@ function editComboboxValue() {
                                }"
                                :disabled="store.settings.readonly" />
                         <ul v-if="showSuggestions && hasSuggestions"
-                            class="tw-absolute tw-z-10 tw-mt-1 tw-max-h-60 tw-w-full tw-overflow-auto tw-rounded tw-bg-white tw-py-1 tw-shadow-lg tw-ring-1 tw-ring-black/5">
+                            class="combobox-suggestions tw-absolute tw-z-10 tw-mt-1 tw-max-h-60 tw-w-full tw-overflow-auto tw-rounded tw-bg-white tw-py-1 tw-shadow-lg tw-ring-1 tw-ring-black/5">
                             <li v-for="(label, value) in filteredSuggestions"
                                 :key="value"
                                 @mousedown.prevent="selectSuggestion(value)"
