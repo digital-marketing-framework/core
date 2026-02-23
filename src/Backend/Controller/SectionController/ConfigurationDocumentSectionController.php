@@ -67,6 +67,13 @@ class ConfigurationDocumentSectionController extends ListSectionController imple
         return $list;
     }
 
+    protected function listAction(): Response
+    {
+        $this->viewData['storageAvailable'] = $this->configurationDocumentManager->getStorage()->isStorageReady();
+
+        return parent::listAction();
+    }
+
     protected function editAction(): Response
     {
         $this->assignCurrentRouteData(defaultReturnRoute: 'page.configuration-document.list');
