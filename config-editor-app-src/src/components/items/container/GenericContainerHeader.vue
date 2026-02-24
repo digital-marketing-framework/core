@@ -46,7 +46,7 @@ const description = computed(() => schema.value.description || '');
                             class="!tw-text-indigo-800 tw-mr-2.5" />
                     <span>{{ label }}</span>
                     <span v-if="itemCount !== null"
-                          class="tw-text-xs tw-font-normal tw-opacity-60 tw-ml-1 tw-self-center">{{ itemCount }}</span>
+                          class="tw-text-xs tw-font-normal tw-opacity-60 tw-ml-1 tw-self-center">[{{ itemCount }}]</span>
                 </label>
             </div>
             <HeaderActions :currentPath="currentPath"
