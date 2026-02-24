@@ -58,6 +58,8 @@
 /* Prism editor: prevent line wrapping, expand to content width */
 .prism-editor-wrapper .prism-editor__editor,
 .prism-editor-wrapper .prism-editor__textarea {
+  color: var(--token-color-neutral-15);
+  caret-color: var(--token-color-neutral-15);
   white-space: pre !important;
   overflow-wrap: normal !important;
   width: max-content !important;
