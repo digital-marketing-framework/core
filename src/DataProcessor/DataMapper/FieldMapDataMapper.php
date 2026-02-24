@@ -39,7 +39,8 @@ class FieldMapDataMapper extends DataMapper
         $schema = parent::getSchema();
         $schema->getRenderingDefinition()->setSkipHeader(true);
 
-        $fieldMapKey = new StringSchema('fieldName');
+        $fieldMapKey = new StringSchema('');
+        $fieldMapKey->setRequired();
         $fieldMapKey->getRenderingDefinition()->setLabel('Target Field Name');
         $fieldMapKey->getRenderingDefinition()->addRole(RenderingDefinitionInterface::ROLE_OUTPUT_FIELD);
         $fieldMapKey->getSuggestedValues()->setContextual();
