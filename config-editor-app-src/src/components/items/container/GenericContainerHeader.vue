@@ -20,6 +20,11 @@ const props = defineProps({
         type: String,
         required: false,
         default: null
+    },
+    itemCount: {
+        type: Number,
+        required: false,
+        default: null
     }
 });
 
@@ -40,6 +45,8 @@ const description = computed(() => schema.value.description || '');
                             :custom-icon="customIcon"
                             class="!tw-text-indigo-800 tw-mr-2.5" />
                     <span>{{ label }}</span>
+                    <span v-if="itemCount !== null"
+                          class="tw-text-xs tw-font-normal tw-opacity-60 tw-ml-1 tw-self-center">{{ itemCount }}</span>
                 </label>
             </div>
             <HeaderActions :currentPath="currentPath"
