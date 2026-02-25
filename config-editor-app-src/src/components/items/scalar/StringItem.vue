@@ -45,11 +45,46 @@ const hasSuggestions = computed(() => Object.keys(filteredSuggestions.value).len
 
 const editingCombobox = ref(false);
 const comboboxInputRef = ref(null);
+const highlightedIndex = ref(-1);
+const suggestionKeys = computed(() => Object.keys(filteredSuggestions.value));
 
 function selectSuggestion(value) {
     parentValue.value[currentKey.value] = value;
     showSuggestions.value = false;
     editingCombobox.value = false;
+    highlightedIndex.value = -1;
+}
+
+function confirmCombobox() {
+    if (highlightedIndex.value >= 0 && highlightedIndex.value < suggestionKeys.value.length) {
+        selectSuggestion(suggestionKeys.value[highlightedIndex.value]);
+    }
+    comboboxInputRef.value?.blur();
+}
+
+function onComboboxKeydown(event) {
+    if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (!showSuggestions.value) {
+            showSuggestions.value = true;
+        }
+        if (highlightedIndex.value < suggestionKeys.value.length - 1) {
+            highlightedIndex.value++;
+        }
+    } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (highlightedIndex.value > 0) {
+            highlightedIndex.value--;
+        }
+    } else if (event.key === 'Enter') {
+        event.preventDefault();
+        confirmCombobox();
+    } else if (event.key === 'Escape') {
+        showSuggestions.value = false;
+        highlightedIndex.value = -1;
+    } else {
+        highlightedIndex.value = -1;
+    }
 }
 
 function editComboboxValue() {
@@ -106,8 +141,9 @@ function editComboboxValue() {
                                type="text"
                                autocomplete="off"
                                placeholder="Enter value"
-                               @focus="showSuggestions = true"
-                               @blur="showSuggestions = false; editingCombobox = false"
+                               @focus="showSuggestions = true; editingCombobox = true"
+                               @blur="showSuggestions = false; editingCombobox = false; highlightedIndex = -1"
+                               @keydown="onComboboxKeydown"
                                class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
                                :class="{
                                    'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
@@ -115,10 +151,11 @@ function editComboboxValue() {
                                :disabled="store.settings.readonly" />
                         <ul v-if="showSuggestions && hasSuggestions"
                             class="combobox-suggestions tw-absolute tw-z-10 tw-mt-1 tw-max-h-60 tw-w-full tw-overflow-auto tw-rounded tw-bg-white tw-py-1 tw-shadow-lg tw-ring-1 tw-ring-black/5">
-                            <li v-for="(label, value) in filteredSuggestions"
+                            <li v-for="(label, value, index) in filteredSuggestions"
                                 :key="value"
                                 @mousedown.prevent="selectSuggestion(value)"
-                                class="tw-cursor-pointer tw-px-3 tw-py-2 tw-text-sm hover:tw-bg-blue-50">
+                                class="tw-cursor-pointer tw-px-3 tw-py-2 tw-text-sm"
+                                :class="index === highlightedIndex ? 'tw-bg-blue-100' : 'hover:tw-bg-blue-50'">
                                 {{ label }}
                                 <span v-if="label !== value" class="tw-text-xs tw-text-gray-400 tw-ml-1">({{ value }})</span>
                             </li>
