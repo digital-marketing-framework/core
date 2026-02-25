@@ -70,6 +70,10 @@ const icon = computed(() => getIcon(props.currentPath, undefined, schema.value))
                 <td class="tw-p-1 tw-align-top">{{ schema.type }}</td>
             </tr>
             <tr>
+                <th class="tw-p-1 tw-align-top">Format</th>
+                <td class="tw-p-1 tw-align-top">{{ schema.format }}</td>
+            </tr>
+            <tr>
                 <th class="tw-p-1 tw-align-top">Level</th>
                 <td class="tw-p-1 tw-align-top">{{ level }}</td>
             </tr>

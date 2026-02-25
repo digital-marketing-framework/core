@@ -14,6 +14,8 @@ interface RenderingDefinitionInterface
 
     public const FORMAT_HIDDEN = 'hidden';
 
+    public const FORMAT_COMBOBOX = 'combobox';
+
     public const TRIGGER_SWITCH = 'switch';
 
     public const GROUP_SECONDARY = 'secondary';

@@ -70,9 +70,10 @@ const isOverwritten = computed(() => store.isOverwritten(props.currentPath));
 const showOverwritten = computed(() => isOverwritten.value && isVisible.value && !skipHeader.value);
 const issueFound = computed(() => hasIssues(props.currentPath));
 const issue = computed(() => getIssue(props.currentPath));
+
 </script>
 <template>
-    <div class="tw-w-full tw-max-w-3xl tw-relative"
+    <div class="generic-item tw-w-full tw-max-w-3xl tw-relative"
          :class="{
              'tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded': !isContainer
          }"

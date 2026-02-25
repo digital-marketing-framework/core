@@ -36,6 +36,7 @@ class FieldValueSource extends ValueSource
         $fieldName->getRenderingDefinition()->setLabel('Source Field Name');
         $fieldName->getRenderingDefinition()->addRole(RenderingDefinitionInterface::ROLE_INPUT_FIELD);
         $fieldName->getSuggestedValues()->setContextual();
+        $fieldName->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_COMBOBOX);
         $schema->addProperty(static::KEY_FIELD_NAME, $fieldName);
 
         return $schema;
