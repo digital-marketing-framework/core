@@ -71,6 +71,7 @@
   overflow-x: auto !important;
 }
 
+/* Fix z-index problem with tippy and autosuggest */
 .generic-item:has(.combobox-suggestions),
 .generic-item:has(.tippy-box[data-state="visible"]) {
   z-index: 1;
