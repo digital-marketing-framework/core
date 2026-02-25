@@ -64,7 +64,7 @@ onUnmounted(() => {
 </script>
 <template>
     <PrismEditor ref="editorRef"
-                 class="tw-flex-1 tw-block tw-w-full tw-p-4 tw-overflow-y-auto tw-font-mono tw-text-sm tw-bg-indigo-900 tw-overscroll-none"
+                 class="tw-flex-1 tw-block tw-w-full tw-p-4 tw-overflow-y-auto tw-font-mono tw-text-sm tw-bg-indigo-900"
                  v-model="rawValue"
                  :readonly="store.settings.readonly"
                  :highlight="highlighter"
