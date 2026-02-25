@@ -75,7 +75,7 @@
   overflow-x: auto !important;
 }
 
-.prism-editor-wrapper .prism-editor__container:focus-visible {
+.prism-editor-wrapper .prism-editor__textarea:focus-visible {
   outline: none;
 }
 
