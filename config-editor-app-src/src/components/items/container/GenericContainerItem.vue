@@ -15,6 +15,7 @@ import { useDmfStore } from '../../../stores/dmf';
 import { usePathProcessor } from '../../../composables/path';
 import { useNavigation } from '../../../composables/navigation';
 import { useRawProcessor } from '../../../composables/raw';
+import { isDynamicContainerType } from '../../../helpers/type';
 
 const store = useDmfStore();
 const { getChildPaths } = usePathProcessor(store);
@@ -40,6 +41,7 @@ const selected = computed(() => isSelected(props.currentPath));
 const skipHeader = computed(() => schema.value.skipHeader && !selected.value);
 const childPaths = computed(() => getChildPaths(props.currentPath));
 const rawView = computed(() => isRawView(props.currentPath));
+const itemCount = computed(() => isDynamicContainerType(schema.value.type) ? childPaths.value.length : null);
 </script>
 
 <template>
@@ -47,7 +49,8 @@ const rawView = computed(() => isRawView(props.currentPath));
                 :default-open="containerState"
                 v-slot="{ open }">
         <GenericContainerHeader :currentPath="currentPath"
-                                :dynamicItemPath="dynamicItemPath">
+                                :dynamicItemPath="dynamicItemPath"
+                                :itemCount="itemCount">
             <template #disclosureButton>
                 <DisclosureButton v-if="!selected"
                                   class="tw-p-1"
