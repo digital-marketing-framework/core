@@ -2,6 +2,7 @@ import YAML from 'yaml';
 
 import prism from 'prismjs';
 import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-json';
 
 /**
  * example detail object:
@@ -126,7 +127,7 @@ document.addEventListener(EVENT_RAW_DATA_PRISM_HIGHLIGHTER, (e) => {
   const language = e.detail.language;
   const resolve = e.detail.resolve;
   if (language === 'JSON') {
-    const highlighter = (code) => prism.highlight(code, prism.languages.js);
+    const highlighter = (code) => prism.highlight(code, prism.languages.json);
     resolve(highlighter);
   }
 });

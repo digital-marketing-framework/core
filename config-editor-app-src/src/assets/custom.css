@@ -55,6 +55,31 @@
   /* TODO */
 }
 
+/* Prism editor: prevent line wrapping */
+.prism-editor-wrapper .prism-editor__editor,
+.prism-editor-wrapper .prism-editor__textarea {
+  color: var(--token-color-neutral-15);
+  caret-color: var(--token-color-neutral-15);
+  white-space: pre !important;
+  overflow-wrap: normal !important;
+}
+
+/* Editor: expand to content width */
+.prism-editor-wrapper .prism-editor__editor {
+  width: max-content !important;
+  min-width: 100% !important;
+}
+
+/* Allow horizontal scrolling for long lines within the code area */
+.prism-editor-wrapper .prism-editor__container {
+  overflow-x: auto !important;
+}
+
+.prism-editor-wrapper .prism-editor__textarea:focus-visible {
+  outline: none;
+}
+
+/* Fix z-index problem with tippy and autosuggest */
 .generic-item:has(.combobox-suggestions),
 .generic-item:has(.tippy-box[data-state="visible"]) {
   z-index: 1;
