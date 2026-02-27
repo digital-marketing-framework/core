@@ -73,6 +73,10 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function saveDocument(string $documentIdentifier, string $document, SchemaDocument $schemaDocument): void
     {
         $storage = $this->getStorageForDocumentIdentifier($documentIdentifier);
+        if ($storage->isReadOnly($documentIdentifier)) {
+            throw new DigitalMarketingFrameworkException(sprintf('Configuration document "%s" is read-only and cannot be saved.', $documentIdentifier));
+        }
+
         $document = $this->tidyDocument($document, $schemaDocument);
         $storage->setDocument($documentIdentifier, $document);
     }
@@ -98,6 +102,10 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
     public function deleteDocument(string $documentIdentifier): void
     {
         $storage = $this->getStorageForDocumentIdentifier($documentIdentifier);
+        if ($storage->isReadOnly($documentIdentifier)) {
+            throw new DigitalMarketingFrameworkException(sprintf('Configuration document "%s" is read-only and cannot be deleted.', $documentIdentifier));
+        }
+
         $storage->deleteDocument($documentIdentifier);
     }
 

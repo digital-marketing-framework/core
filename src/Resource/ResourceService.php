@@ -158,4 +158,19 @@ abstract class ResourceService implements ResourceServiceInterface, GlobalConfig
 
         return true;
     }
+
+    public function deleteResource(string $identifier): bool
+    {
+        $path = $this->getResourcePath($identifier);
+
+        if ($path === null) {
+            return false;
+        }
+
+        if (!file_exists($path)) {
+            return false;
+        }
+
+        return unlink($path);
+    }
 }

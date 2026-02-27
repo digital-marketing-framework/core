@@ -69,6 +69,11 @@ abstract class StaticSystemConfigurationDocumentDiscovery implements StaticConfi
         throw new BadMethodCallException('System configuration cannot be saved or overwritten.');
     }
 
+    public function deleteContent(string $identifier): void
+    {
+        throw new BadMethodCallException('System configuration cannot be deleted.');
+    }
+
     /**
      * @return array{metaData:array{name:string,version?:array<string,string>}}
      */

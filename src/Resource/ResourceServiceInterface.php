@@ -51,4 +51,6 @@ interface ResourceServiceInterface
     public function getResourceContent(string $identifier): ?string;
 
     public function setResourceContent(string $identifier, string $content): bool;
+
+    public function deleteResource(string $identifier): bool;
 }

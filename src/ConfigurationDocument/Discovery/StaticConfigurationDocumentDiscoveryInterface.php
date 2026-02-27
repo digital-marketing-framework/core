@@ -18,4 +18,6 @@ interface StaticConfigurationDocumentDiscoveryInterface
     public function getContent(string $identifier, bool $metaDataOnly = false): ?string;
 
     public function setContent(string $identifier, string $content): void;
+
+    public function deleteContent(string $identifier): void;
 }

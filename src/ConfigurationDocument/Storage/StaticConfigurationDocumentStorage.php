@@ -60,7 +60,7 @@ class StaticConfigurationDocumentStorage extends ConfigurationDocumentStorage
 
     public function deleteDocument(string $documentIdentifier): void
     {
-        throw new BadMethodCallException('Static documents cannot be deleted');
+        $this->getDiscovery($documentIdentifier)?->deleteContent($documentIdentifier);
     }
 
     public function isReadOnly(string $documentIdentifier): bool

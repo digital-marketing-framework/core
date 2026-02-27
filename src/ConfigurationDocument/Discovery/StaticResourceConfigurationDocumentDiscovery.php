@@ -107,4 +107,12 @@ class StaticResourceConfigurationDocumentDiscovery implements StaticConfiguratio
             $assetService->setResourceContent($identifier, $content);
         }
     }
+
+    public function deleteContent(string $identifier): void
+    {
+        $assetService = $this->registry->getResourceService($identifier);
+        if ($assetService instanceof ResourceServiceInterface) {
+            $assetService->deleteResource($identifier);
+        }
+    }
 }
