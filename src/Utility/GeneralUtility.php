@@ -13,6 +13,7 @@ use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
 use InvalidArgumentException;
+use Stringable;
 
 final class GeneralUtility
 {
@@ -21,6 +22,62 @@ final class GeneralUtility
         '\\s' => ' ',
         '\\t' => "\t",
     ];
+
+    /**
+     * Converts a raw PHP value into an Anyrel field value.
+     *
+     * This is the generic entry point for external data (e.g. CMS form submissions)
+     * that has not yet been interpreted as a specific field type.
+     * Returns null for values that cannot be converted, signalling that the field should be skipped.
+     */
+    public static function convertToFieldValue(mixed $value): string|ValueInterface|null
+    {
+        // null gets filtered out
+        if ($value === null) {
+            return null;
+        }
+
+        // stings are the default format
+        if (is_string($value)) {
+            return $value;
+        }
+
+        // integers are recognized, other numbers are not
+        if (is_int($value)) {
+            return new IntegerValue($value);
+        }
+
+        // booleans are recognized
+        if (is_bool($value)) {
+            return new BooleanValue($value);
+        }
+
+        // arrays (and array-like objects) can be processed recursively
+        if (is_iterable($value)) {
+            $multiValue = new MultiValue();
+            foreach ($value as $childKey => $childValue) {
+                $formattedChildValue = self::convertToFieldValue($childValue);
+                if ($formattedChildValue !== null) {
+                    $multiValue[$childKey] = $formattedChildValue;
+                }
+            }
+
+            return $multiValue;
+        }
+
+        // stingable objects become strings
+        if ($value instanceof Stringable) {
+            return (string)$value;
+        }
+
+        // non-integer numbers become strings
+        if (is_numeric($value)) {
+            return (string)$value;
+        }
+
+        // unrecognized values resolve to null
+        return null;
+    }
 
     public static function isEmpty(mixed $value): bool
     {
