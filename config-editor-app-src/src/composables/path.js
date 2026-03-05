@@ -324,6 +324,17 @@ const isPersonalizationContentModifierPath = (store, path, currentPath) => {
   return matches[1];
 };
 
+const isPersonalizationPersonasPath = (store, path, currentPath) => {
+  // /personalization/personas/ID
+  const matches = getAbsolutePath(path, currentPath).match(
+    /^\/personalization\/personas\/([^/]+)/
+  );
+  if (matches === null) {
+    return false;
+  }
+  return matches[1];
+};
+
 // actions
 
 const selectPath = (store, path, currentPath) => {
@@ -364,6 +375,7 @@ export const usePathProcessor = (store) => {
     isConditionPath: (path, currentPath) => isConditionPath(store, path, currentPath),
     isPersonalizationDataTransformationPath: (path, currentPath) => isPersonalizationDataTransformationPath(store, path, currentPath),
     isPersonalizationContentModifierPath: (path, currentPath) => isPersonalizationContentModifierPath(store, path, currentPath),
+    isPersonalizationPersonasPath: (path, currentPath) => isPersonalizationPersonasPath(store, path, currentPath),
 
     selectPath: (path, currentPath) => selectPath(store, path, currentPath),
     selectParentPath: () => selectParentPath(store)

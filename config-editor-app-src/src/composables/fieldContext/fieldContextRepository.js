@@ -215,9 +215,15 @@ const getCollectorOutputAllContext = (store) => {
 
 const getCollectorOutputContext = (store, name) => {
   const [integration, keyword] = name.substring('collector.out.'.length).split('.');
-  const inputContext = getContext(store, 'collector.in.defaults.' + integration + '.' + keyword);
   const collectorConfig = store.data.integrations[integration].inboundRoutes[keyword];
+  if (!collectorConfig.enabled) {
+    return {};
+  }
   const dataMapperGroupId = collectorConfig.dataMap;
+  if (!dataMapperGroupId) {
+    return {};
+  }
+  const inputContext = getContext(store, 'collector.in.defaults.' + integration + '.' + keyword);
   return processDataMapperGroup(store, dataMapperGroupId, inputContext);
 };
 
@@ -257,6 +263,29 @@ const getConditionInputDefaultsContext = (store, name) => {
   return getContext(store, contextName);
 };
 
+// -- data transformation --
+
+const getDataTransformationOutputContext = (store, dataTransformationId) => {
+  const collectorOutput = getCollectorOutputAllContext(store);
+  if (!dataTransformationId) {
+    return collectorOutput;
+  }
+  const dataMapperGroupId = store.data.personalization.dataTransformations[dataTransformationId].value.dataMap;
+  if (!dataMapperGroupId) {
+    return collectorOutput;
+  }
+  return processDataMapperGroup(store, dataMapperGroupId, collectorOutput);
+};
+
+// -- persona group --
+
+const getPersonaGroupInputDefaultContext = (store, name) => {
+  const personaGroupId = name.substring('personalization.personas.in.defaults.'.length);
+  const personaGroupConfig = store.data.personalization.personas[personaGroupId].value;
+  const dataTransformationId = personaGroupConfig.dataTransformationId;
+  return getDataTransformationOutputContext(store, dataTransformationId);
+};
+
 // -- content modifier --
 
 const getContentModifierInputDefaultContext = (store, name) => {
@@ -264,14 +293,7 @@ const getContentModifierInputDefaultContext = (store, name) => {
   const contentModifierConfig = store.data.personalization.contentModifiers[contentModifierId].value;
   const contentModifierType = contentModifierConfig.type;
   const dataTransformationId = contentModifierConfig.config[contentModifierType].dataTransformationId;
-  if (dataTransformationId === '') {
-    return getCollectorOutputAllContext(store);
-  }
-  const dataMapperGroupId = store.data.personalization.dataTransformations[dataTransformationId].value.dataMap;
-  if (dataMapperGroupId === '') {
-    return getCollectorOutputAllContext(store);
-  }
-  return getDataMapperGroupOutputContext(store, 'dataMapperGroup.out.' + dataMapperGroupId);
+  return getDataTransformationOutputContext(store, dataTransformationId);
 };
 
 /*
@@ -292,6 +314,7 @@ const getContentModifierInputDefaultContext = (store, name) => {
 
   condition.in.defaults.ID
 
+  personalization.personas.in.defaults.ID
   personalization.contentModifiers.in.defaults.ID
 */
 const getContext = (store, name) => {
@@ -339,7 +362,9 @@ const getContext = (store, name) => {
     }
   } else if (name.startsWith('personalization.')) {
     // -- personalization --
-    if (name.startsWith('personalization.contentModifiers.in.defaults.')) {
+    if (name.startsWith('personalization.personas.in.defaults.')) {
+      return getPersonaGroupInputDefaultContext(store, name);
+    } else if (name.startsWith('personalization.contentModifiers.in.defaults.')) {
       return getContentModifierInputDefaultContext(store, name);
     }
   }
@@ -360,6 +385,7 @@ const getActiveInputContextNames = (store, path) => {
     isDataMapperGroupPath,
     isConditionPath,
     isPersonalizationDataTransformationPath,
+    isPersonalizationPersonasPath,
     isPersonalizationContentModifierPath
   } = usePathProcessor(store);
 
@@ -384,6 +410,11 @@ const getActiveInputContextNames = (store, path) => {
 
   if (isPersonalizationDataTransformationPath(path)) {
     return ['collector.out.all'];
+  }
+
+  const personalizationPersonasId = isPersonalizationPersonasPath(path);
+  if (personalizationPersonasId) {
+    return ['personalization.personas.in.defaults.' + personalizationPersonasId];
   }
 
   const personalizationContentModifierId = isPersonalizationContentModifierPath(path);
