@@ -12,11 +12,9 @@
         REQUEST_READY: 'dmf-request-ready'
       },
       classes: {
+        HIDDEN: '',
         LOADING: 'loading',
         DISABLED: 'disabled'
-      },
-      fields: {
-        REQUIRED_PERMISSION: 'requiredPermission'
       },
       html: {
         INTERACTIVE_ELEMENTS: ['A', 'BUTTON', 'FORM']
@@ -353,7 +351,7 @@
 
   DMF.disableInteractivity = function(elements, tags = INTERACTIVE_ELEMENTS) {
     elements = DMF.getInteractiveElements(elements, tags)
-    DMF.setAttribute(elements, 'data-dmf-disabled', true)
+    DMF.setAttribute(elements, DMF.getPluginAttributeName('disabled'), true)
     DMF.addClass(elements, DMF.settings.classes.DISABLED)
     DMF.on(elements, 'click submit', disableHandler)
   }
@@ -362,7 +360,7 @@
     elements = DMF.getInteractiveElements(elements, tags)
     DMF.off(elements, 'click submit', disableHandler)
     DMF.removeClass(elements, DMF.settings.classes.DISABLED)
-    DMF.removeAttribute(elements, 'data-dmf-disabled')
+    DMF.removeAttribute(elements, DMF.getPluginAttributeName('disabled'))
   }
 
   DMF.updateInteractivity = function(elements, condition, tags = INTERACTIVE_ELEMENTS) {
@@ -466,13 +464,21 @@
 
   DMF.show = function(elements) {
     convertElementToArray(elements).forEach(element => {
-      element.style.display = ''
+      if (DMF.settings.classes.HIDDEN) {
+        element.classList.remove(DMF.settings.classes.HIDDEN)
+      } else {
+        element.style.display = ''
+      }
     })
   }
 
   DMF.hide = function(elements) {
     convertElementToArray(elements).forEach(element => {
-      element.style.display = 'none'
+      if (DMF.settings.classes.HIDDEN) {
+        element.classList.add(DMF.settings.classes.HIDDEN)
+      } else {
+        element.style.display = 'none'
+      }
     })
   }
 
@@ -683,7 +689,7 @@
       },
       checkPermission: async function(permission = null) {
         if (permission === null) {
-          permission = this.settings[this.settings.fields.REQUIRED_PERMISSION]
+          permission = this.settings.requiredPermission
         }
 
         return await DMF.checkPermission(permission)
@@ -695,16 +701,24 @@
     const plugin = createPlugin(pluginId, element, container, contentSettings)
 
     plugin.pull = async function(arguments = {}, bypassPermissions = false) {
+      if (this.settings.markAsLoading) {
+        this.markAsLoading()
+      }
+
       let proceed = true
-      if (!bypassPermissions && typeof this.settings[this.settings.fields.REQUIRED_PERMISSION] !== 'undefined') {
+      if (!bypassPermissions && typeof this.settings.requiredPermission !== 'undefined') {
         proceed = await this.checkPermission()
       }
 
+      let result = false
       if (proceed) {
-        return await DMF.pull(pluginId, arguments)
+        result = await DMF.pull(pluginId, arguments)
       }
 
-      return false
+      if (this.settings.markAsLoading) {
+        this.markAsLoaded()
+      }
+      return result
     }
 
     plugin.pullAndHydrate = async function(

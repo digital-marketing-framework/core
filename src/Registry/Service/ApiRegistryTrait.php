@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\Registry\Service;
 use DigitalMarketingFramework\Core\Api\EndPoint\EndPointStorageInterface;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolver;
 use DigitalMarketingFramework\Core\Api\RouteResolver\CoreRouteResolverInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\FrontendSettings;
 use DigitalMarketingFramework\Core\Registry\RegistryException;
 
 trait ApiRegistryTrait
@@ -60,9 +61,16 @@ trait ApiRegistryTrait
 
     public function getFrontendSettings(): array
     {
+        $frontendSettings = $this->getGlobalConfiguration()->getGlobalSettings(FrontendSettings::class);
+
         $settings = [
             'settings' => [
-                'prefix' => 'dmf', // TODO make the markup data attribute name prefix configurable
+                'prefix' => $frontendSettings->getPrefix(),
+                'classes' => [
+                    'HIDDEN' => $frontendSettings->getHiddenClass(),
+                    'DISABLED' => $frontendSettings->getDisabledClass(),
+                    'LOADING' => $frontendSettings->getLoadingClass(),
+                ],
             ],
             'urls' => [],
             'pluginSettings' => [],

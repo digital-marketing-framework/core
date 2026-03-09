@@ -59,6 +59,24 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_NOTIFICATIONS_ENABLED = false;
 
+    public const KEY_FRONTEND = 'frontend';
+
+    public const KEY_FRONTEND_PREFIX = 'prefix';
+
+    public const DEFAULT_FRONTEND_PREFIX = 'dmf';
+
+    public const KEY_FRONTEND_HIDDEN_CLASS = 'hiddenClass';
+
+    public const DEFAULT_FRONTEND_HIDDEN_CLASS = '';
+
+    public const KEY_FRONTEND_DISABLED_CLASS = 'disabledClass';
+
+    public const DEFAULT_FRONTEND_DISABLED_CLASS = 'disabled';
+
+    public const KEY_FRONTEND_LOADING_CLASS = 'loadingClass';
+
+    public const DEFAULT_FRONTEND_LOADING_CLASS = 'loading';
+
     protected ContainerSchema $configurationStorageSchema;
 
     protected ContainerSchema $apiSchema;
@@ -66,6 +84,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
     protected ContainerSchema $dataPrivacySchema;
 
     protected ContainerSchema $notificationsSchema;
+
+    protected ContainerSchema $frontendSchema;
 
     public function getWeight(): int
     {
@@ -141,6 +161,31 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $notificationsSchema->addProperty(static::KEY_NOTIFICATIONS_ENABLED, $enableNotificationsSchema);
 
         return $notificationsSchema;
+    }
+
+    protected function getFrontendSchema(): ContainerSchema
+    {
+        $frontendSchema = new ContainerSchema();
+        $frontendSchema->getRenderingDefinition()->setLabel('Frontend');
+
+        $prefixSchema = new StringSchema(static::DEFAULT_FRONTEND_PREFIX);
+        $prefixSchema->getRenderingDefinition()->setLabel('Data Attribute Prefix');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_PREFIX, $prefixSchema);
+
+        $hiddenClassSchema = new StringSchema(static::DEFAULT_FRONTEND_HIDDEN_CLASS);
+        $hiddenClassSchema->getRenderingDefinition()->setLabel('Hidden CSS Class');
+        $hiddenClassSchema->getRenderingDefinition()->setGeneralDescription('CSS class used to hide elements. If empty, inline styles (display:none) will be used instead.');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_HIDDEN_CLASS, $hiddenClassSchema);
+
+        $disabledClassSchema = new StringSchema(static::DEFAULT_FRONTEND_DISABLED_CLASS);
+        $disabledClassSchema->getRenderingDefinition()->setLabel('Disabled CSS Class');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_DISABLED_CLASS, $disabledClassSchema);
+
+        $loadingClassSchema = new StringSchema(static::DEFAULT_FRONTEND_LOADING_CLASS);
+        $loadingClassSchema->getRenderingDefinition()->setLabel('Loading CSS Class');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_LOADING_CLASS, $loadingClassSchema);
+
+        return $frontendSchema;
     }
 
     /**
@@ -231,5 +276,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
         $this->notificationsSchema = $this->getNotificationsSchema();
         $this->addProperty(static::KEY_NOTIFICATIONS, $this->notificationsSchema);
+
+        $this->frontendSchema = $this->getFrontendSchema();
+        $this->addProperty(static::KEY_FRONTEND, $this->frontendSchema);
     }
 }
