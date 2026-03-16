@@ -84,6 +84,17 @@ interface MigratableInterface extends ItemInterface
     // -- Migration status (computed by maintenance service) --
 
     /**
+     * Whether the document's YAML/JSON could not be parsed.
+     * Documents with parse errors are shown with an error badge
+     * and skip migration checks.
+     */
+    public function hasParseError(): bool;
+
+    public function getParseError(): ?string;
+
+    public function setParseError(?string $parseError): void;
+
+    /**
      * Whether the configuration document is empty (no content).
      * Empty documents skip migration checks and show a distinct status.
      */
@@ -100,10 +111,14 @@ interface MigratableInterface extends ItemInterface
     public function setHasOutdatedParents(bool $hasOutdatedParents): void;
 
     /**
-     * Whether this variant's document is identical to the base document.
+     * Whether this variant's configuration is identical to the base document's
+     * configuration. Ignores metaData differences (name, version tags, etc.)
+     * but considers includes (order-sensitive, UUID-insensitive).
      * Always false for non-variant migratables.
      */
     public function isIdenticalToBase(): bool;
+
+    public function setIdenticalToBase(bool $identicalToBase): void;
 
     /**
      * Whether this document can be migrated individually.

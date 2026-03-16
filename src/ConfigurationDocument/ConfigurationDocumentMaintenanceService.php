@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\ConfigurationDocument;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\FatalMigrationException;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\MigrationContext;
 use DigitalMarketingFramework\Core\DataSource\DataSourceManagerInterface;
+use DigitalMarketingFramework\Core\Exception\DigitalMarketingFrameworkException;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Model\ConfigurationDocument\DataSourceMigratable;
@@ -16,6 +17,7 @@ use DigitalMarketingFramework\Core\Notification\NotificationManagerAwareTrait;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 use DigitalMarketingFramework\Core\Utility\ConfigurationUtility;
+use DigitalMarketingFramework\Core\Utility\ListUtility;
 
 class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMaintenanceServiceInterface, ConfigurationDocumentManagerAwareInterface, LoggerAwareInterface, NotificationManagerAwareInterface
 {
@@ -107,12 +109,22 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
                     continue;
                 }
 
-                $document = $dataSource->getConfigurationDocument();
-                $configuration = $document !== '' ? $manager->getDocumentConfigurationFromDocument($document) : [];
-                $includes = $manager->getIncludes($configuration);
-
                 $migratable = new DataSourceMigratable($dataSource, $dataSourceManager);
-                $migratable->setIncludes($includes);
+
+                $document = $dataSource->getConfigurationDocument();
+                if ($document !== '') {
+                    try {
+                        $configuration = $manager->getDocumentConfigurationFromDocument($document);
+                        $migratable->setIncludes($manager->getIncludes($configuration));
+                    } catch (DigitalMarketingFrameworkException $e) {
+                        $migratable->setParseError($e->getMessage());
+                        $this->logger->warning(sprintf(
+                            'Failed to parse configuration document "%s": %s',
+                            $identifier,
+                            $e->getMessage()
+                        ));
+                    }
+                }
 
                 $migratables[$identifier] = $migratable;
             }
@@ -130,13 +142,28 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
 
         // Phase 3: compute empty and outdated status, per-package migration info
         foreach ($migratables as $identifier => $migratable) {
+            if ($migratable->hasParseError()) {
+                continue;
+            }
+
             $document = $migratable->getConfigurationDocument();
             if ($document === '') {
                 $migratable->setEmpty(true);
                 continue;
             }
 
-            $configuration = $manager->getDocumentConfigurationFromDocument($document);
+            try {
+                $configuration = $manager->getDocumentConfigurationFromDocument($document);
+            } catch (DigitalMarketingFrameworkException $e) {
+                $migratable->setParseError($e->getMessage());
+                $this->logger->warning(sprintf(
+                    'Failed to parse configuration document "%s": %s',
+                    $identifier,
+                    $e->getMessage()
+                ));
+                continue;
+            }
+
             $this->ownConfigurationCache[$identifier] = $configuration;
             $outdated = $migrationService->outdated($configuration, $schemaDocument);
             $migratable->setOutdated($outdated);
@@ -161,6 +188,25 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
         foreach ($migratables as $migratable) {
             $hasOutdatedParents = $this->computeHasOutdatedParents($migratable, $migratables);
             $migratable->setHasOutdatedParents($hasOutdatedParents);
+        }
+
+        // Phase 6: compute identicalToBase for variants
+        foreach ($migratables as $identifier => $migratable) {
+            $baseIdentifier = $migratable->getBaseMigratableIdentifier();
+            if ($baseIdentifier === null) {
+                continue;
+            }
+
+            if (!isset($this->ownConfigurationCache[$identifier], $this->ownConfigurationCache[$baseIdentifier])) {
+                continue;
+            }
+
+            $migratable->setIdenticalToBase(
+                static::configurationsEqualIgnoringMetaData(
+                    $this->ownConfigurationCache[$identifier],
+                    $this->ownConfigurationCache[$baseIdentifier]
+                )
+            );
         }
 
         return $migratables;
@@ -358,12 +404,17 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
                 continue;
             }
 
-            $document = $dataSource->getConfigurationDocument();
-            $configuration = $document !== '' ? $manager->getDocumentConfigurationFromDocument($document) : [];
-            $includes = $manager->getIncludes($configuration);
-
             $migratable = new DataSourceMigratable($dataSource, $dataSourceManager);
-            $migratable->setIncludes($includes);
+
+            $document = $dataSource->getConfigurationDocument();
+            if ($document !== '') {
+                try {
+                    $configuration = $manager->getDocumentConfigurationFromDocument($document);
+                    $migratable->setIncludes($manager->getIncludes($configuration));
+                } catch (DigitalMarketingFrameworkException $e) {
+                    $migratable->setParseError($e->getMessage());
+                }
+            }
 
             return $migratable;
         }
@@ -396,13 +447,28 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
 
         // Compute empty and outdated status, per-package migration info
         foreach ($migratables as $identifier => $migratable) {
+            if ($migratable->hasParseError()) {
+                continue;
+            }
+
             $document = $migratable->getConfigurationDocument();
             if ($document === '') {
                 $migratable->setEmpty(true);
                 continue;
             }
 
-            $configuration = $manager->getDocumentConfigurationFromDocument($document);
+            try {
+                $configuration = $manager->getDocumentConfigurationFromDocument($document);
+            } catch (DigitalMarketingFrameworkException $e) {
+                $migratable->setParseError($e->getMessage());
+                $this->logger->warning(sprintf(
+                    'Failed to parse configuration document "%s": %s',
+                    $identifier,
+                    $e->getMessage()
+                ));
+                continue;
+            }
+
             $this->ownConfigurationCache[$identifier] = $configuration;
             $outdated = $migrationService->outdated($configuration, $schemaDocument);
             $migratable->setOutdated($outdated);
@@ -430,6 +496,42 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
                 $schemaDocument
             );
             $migratable->setHasOutdatedParents($hasOutdatedParents);
+        }
+
+        // Compute identicalToBase for variants
+        foreach ($migratables as $identifier => $migratable) {
+            $baseIdentifier = $migratable->getBaseMigratableIdentifier();
+            if ($baseIdentifier === null) {
+                continue;
+            }
+
+            $variantConfig = $this->ownConfigurationCache[$identifier] ?? null;
+            if ($variantConfig === null) {
+                continue;
+            }
+
+            // Base may be outside the current page — resolve on demand
+            $baseConfig = $this->ownConfigurationCache[$baseIdentifier] ?? null;
+            if ($baseConfig === null) {
+                $baseMigratable = $this->buildMigratable($baseIdentifier, null);
+                if ($baseMigratable instanceof MigratableInterface && !$baseMigratable->hasParseError()) {
+                    $baseDocument = $baseMigratable->getConfigurationDocument();
+                    if ($baseDocument !== '') {
+                        try {
+                            $baseConfig = $manager->getDocumentConfigurationFromDocument($baseDocument);
+                            $this->ownConfigurationCache[$baseIdentifier] = $baseConfig;
+                        } catch (DigitalMarketingFrameworkException) {
+                            // Base document has a parse error — cannot compare
+                        }
+                    }
+                }
+            }
+
+            if ($baseConfig !== null) {
+                $migratable->setIdenticalToBase(
+                    static::configurationsEqualIgnoringMetaData($variantConfig, $baseConfig)
+                );
+            }
         }
     }
 
@@ -472,9 +574,21 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
                     continue;
                 }
 
+                if ($parentMigratable->hasParseError()) {
+                    $outdatedCache[$parentIdentifier] = false;
+                    $ancestorCache[$parentIdentifier] = false;
+                    continue;
+                }
+
                 $document = $parentMigratable->getConfigurationDocument();
-                $configuration = $manager->getDocumentConfigurationFromDocument($document);
-                $outdatedCache[$parentIdentifier] = $migrationService->outdated($configuration, $schemaDocument);
+                try {
+                    $configuration = $manager->getDocumentConfigurationFromDocument($document);
+                    $outdatedCache[$parentIdentifier] = $migrationService->outdated($configuration, $schemaDocument);
+                } catch (DigitalMarketingFrameworkException) {
+                    $outdatedCache[$parentIdentifier] = false;
+                    $ancestorCache[$parentIdentifier] = false;
+                    continue;
+                }
             }
 
             if ($outdatedCache[$parentIdentifier]) {
@@ -643,6 +757,33 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
         }
 
         return ['value' => $current];
+    }
+
+    /**
+     * Compare two parsed configurations ignoring all metaData except includes.
+     *
+     * MetaData fields like name, version tags, and strict validation are
+     * per-document concerns that can legitimately differ between a base form
+     * and its plugin override. Includes are compared order-sensitively but
+     * UUID-insensitively (via ListUtility::flatten()).
+     *
+     * @param array<string,mixed> $configA
+     * @param array<string,mixed> $configB
+     */
+    protected static function configurationsEqualIgnoringMetaData(array $configA, array $configB): bool
+    {
+        $normalizeIncludes = static function (array $config): array {
+            $includeList = $config[ConfigurationDocumentManagerInterface::KEY_META_DATA][ConfigurationDocumentManagerInterface::KEY_INCLUDES] ?? [];
+            unset($config[ConfigurationDocumentManagerInterface::KEY_META_DATA]);
+
+            if ($includeList !== []) {
+                $config['__includes__'] = ListUtility::flatten($includeList);
+            }
+
+            return $config;
+        };
+
+        return $normalizeIncludes($configA) === $normalizeIncludes($configB);
     }
 
     public function migrateAll(SchemaDocument $schemaDocument): array

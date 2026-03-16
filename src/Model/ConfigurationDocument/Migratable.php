@@ -16,11 +16,15 @@ abstract class Migratable implements MigratableInterface
     /** @var array<string> */
     protected array $includedBy = [];
 
+    protected ?string $parseError = null;
+
     protected bool $empty = false;
 
     protected bool $outdated = false;
 
     protected bool $hasOutdatedParents = false;
+
+    protected bool $identicalToBase = false;
 
     protected bool $canMigrateIndividually = true;
 
@@ -88,6 +92,21 @@ abstract class Migratable implements MigratableInterface
 
     // -- Migration status --
 
+    public function hasParseError(): bool
+    {
+        return $this->parseError !== null;
+    }
+
+    public function getParseError(): ?string
+    {
+        return $this->parseError;
+    }
+
+    public function setParseError(?string $parseError): void
+    {
+        $this->parseError = $parseError;
+    }
+
     public function isEmpty(): bool
     {
         return $this->empty;
@@ -130,7 +149,12 @@ abstract class Migratable implements MigratableInterface
 
     public function isIdenticalToBase(): bool
     {
-        return false;
+        return $this->identicalToBase;
+    }
+
+    public function setIdenticalToBase(bool $identicalToBase): void
+    {
+        $this->identicalToBase = $identicalToBase;
     }
 
     public function canMigrateIndividually(): bool
