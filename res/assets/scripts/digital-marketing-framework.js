@@ -700,11 +700,7 @@
   function createPullPlugin(pluginId, element = null, container = null, contentSettings = {}) {
     const plugin = createPlugin(pluginId, element, container, contentSettings)
 
-    plugin.pull = async function(arguments = {}, bypassPermissions = false) {
-      if (this.settings.markAsLoading) {
-        this.markAsLoading()
-      }
-
+    plugin.pull = async function(pullArguments = {}, bypassPermissions = false) {
       let proceed = true
       if (!bypassPermissions && typeof this.settings.requiredPermission !== 'undefined') {
         proceed = await this.checkPermission()
@@ -712,36 +708,39 @@
 
       let result = false
       if (proceed) {
-        result = await DMF.pull(pluginId, arguments)
+        result = await DMF.pull(pluginId, pullArguments)
       }
 
-      if (this.settings.markAsLoading) {
-        this.markAsLoaded()
-      }
       return result
     }
 
-    plugin.pullAndHydrate = async function(
-      arguments = {},
-      markAsLoading = true,
-      defaultVariables = false,
-      refresh = true
-    ) {
+    plugin.pullAndProcess = async function(processCallback, options = {}) {
+      const {
+        pullArguments = {},
+        markAsLoading = this.settings.markAsLoading ?? true,
+        defaultData = this.settings.defaultData ?? false,
+        refresh = true,
+      } = options
+
+      processCallback = typeof processCallback === 'function' ? processCallback : () => {}
+
       const processElement = async () => {
         if (markAsLoading) {
           plugin.markAsLoading()
         }
-        const variables = await this.pull(arguments)
-        plugin.hydrate(variables)
+
+        const data = await this.pull(pullArguments)
+        processCallback.call(this, data || defaultData)
+
         if (markAsLoading) {
           plugin.markAsLoaded()
         }
 
-        return variables
+        return data
       }
 
-      if (typeof defaultVariables === 'object' && defaultVariables !== null) {
-        this.hydrate(defaultVariables)
+      if (defaultData) {
+        processCallback.call(this, defaultData)
       }
 
       if (refresh) {
@@ -751,6 +750,18 @@
       }
 
       return await processElement()
+    }
+
+    plugin.pullAndHydrate = async function(
+      pullArguments = {},
+      markAsLoading = null,
+      defaultVariables = null,
+      refresh = true
+    ) {
+      return await this.pullAndProcess(
+        function(variables) { this.hydrate(variables) },
+        { pullArguments, markAsLoading, defaultData: defaultVariables, refresh }
+      )
     }
 
     return plugin

@@ -38,7 +38,7 @@ class ContainerSchema extends Schema
             $this->properties[$name] = new ContainerProperty($name, $schema);
         } else {
             if ($this->properties[$name]->getSchema()::class !== $schema::class) {
-                throw new DigitalMarketingFrameworkException(sprintf('Schema container property does not match existing property ("%s%, "%s").', $this->properties[$name]->getSchema()::class, $schema::class));
+                throw new DigitalMarketingFrameworkException(sprintf('Schema container property does not match existing property ("%s", "%s").', $this->properties[$name]->getSchema()::class, $schema::class));
             }
 
             if ($overwrite) {
