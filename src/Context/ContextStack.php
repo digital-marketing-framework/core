@@ -117,8 +117,9 @@ class ContextStack implements ContextStackInterface
         string $domain = '',
         bool $secure = true,
         bool $httponly = true,
+        string $sameSite = '',
     ): void {
-        $this->getActiveContext()->setResponseCookie($name, $value, $expires, $path, $domain, $secure, $httponly);
+        $this->getActiveContext()->setResponseCookie($name, $value, $expires, $path, $domain, $secure, $httponly, $sameSite);
     }
 
     public function getResponseData(): array

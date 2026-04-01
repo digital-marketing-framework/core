@@ -71,6 +71,7 @@ interface ContextInterface extends ArrayAccess
         string $domain = '',
         bool $secure = true,
         bool $httponly = true,
+        string $sameSite = '',
     ): void;
 
     /**

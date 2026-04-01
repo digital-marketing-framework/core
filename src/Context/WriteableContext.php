@@ -6,7 +6,7 @@ class WriteableContext extends Context implements WriteableContextInterface
 {
     protected bool $responsive = false;
 
-    /** @var array<array{name:string,value:string,expires?:int,path?:string,domain?:string,secure?:bool,httponly?:bool}> */
+    /** @var array<array{name:string,value:string,expires?:int,path?:string,domain?:string,secure?:bool,httponly?:bool,samesite?:string}> */
     protected array $outgoingCookies = [];
 
     public function setCookie(string $name, string $value): void
@@ -175,6 +175,7 @@ class WriteableContext extends Context implements WriteableContextInterface
         string $domain = '',
         bool $secure = true,
         bool $httponly = true,
+        string $sameSite = '',
     ): void {
         $this->setCookie($name, $value);
         if ($this->isResponsive()) {
@@ -186,6 +187,7 @@ class WriteableContext extends Context implements WriteableContextInterface
                 'domain' => $domain,
                 'secure' => $secure,
                 'httponly' => $httponly,
+                'samesite' => $sameSite,
             ];
         }
     }
@@ -200,13 +202,19 @@ class WriteableContext extends Context implements WriteableContextInterface
     public function applyResponseData(): void
     {
         foreach ($this->outgoingCookies as $cookie) {
-            setcookie($cookie['name'], $cookie['value'], [
+            $options = [
                 'expires' => $cookie['expires'] ?? 0,
                 'path' => $cookie['path'] ?? '/',
                 'domain' => $cookie['domain'] ?? '',
                 'secure' => $cookie['secure'],
                 'httponly' => $cookie['httponly'],
-            ]);
+            ];
+            $samesite = $cookie['samesite'] ?? '';
+            if ($samesite !== '') {
+                $options['samesite'] = $samesite;
+            }
+
+            setcookie($cookie['name'], $cookie['value'], $options);
         }
     }
 }

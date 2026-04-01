@@ -96,6 +96,7 @@ abstract class Context extends ArrayObject implements ContextInterface
         string $domain = '',
         bool $secure = true,
         bool $httponly = true,
+        string $sameSite = '',
     ): void {
         throw new BadMethodCallException('Generic context cannot set response cookies.');
     }

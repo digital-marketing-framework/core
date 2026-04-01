@@ -121,18 +121,14 @@ class QueueUtility
                 }
 
                 $sortDirection = $direction;
-                $value1 = match ($sort) {
-                    'count' => $row1['count'],
-                    'lastSeen' => $row1['lastSeenTime']->getTimestamp(),
-                    'firstSeen' => $row1['firstSeenTime']->getTimestamp(),
+                $getSortValue = static fn (array $row): int|string => match ($sort) {
+                    'count' => $row['count'],
+                    'lastSeen' => $row['lastSeenTime']->getTimestamp(),
+                    'firstSeen' => $row['firstSeenTime']->getTimestamp(),
                     default => throw new DigitalMarketingFrameworkException(sprintf('unknown sort attribute "%s"', $sort), 6991592528),
                 };
-                $value2 = match ($sort) {
-                    'count' => $row2['count'],
-                    'lastSeen' => $row2['lastSeenTime']->getTimestamp(),
-                    'firstSeen' => $row2['firstSeenTime']->getTimestamp(),
-                    default => throw new DigitalMarketingFrameworkException(sprintf('unknown sort attribute "%s"', $sort), 8729504902),
-                };
+                $value1 = $getSortValue($row1);
+                $value2 = $getSortValue($row2);
                 if ($value1 !== $value2) {
                     break;
                 }
