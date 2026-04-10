@@ -1,23 +1,21 @@
-;(function () {
+;(async function () {
+
   // wait until DMF is fully initialised
-  async function loadDMF() {
-    setTimeout(() => {
-      document.dispatchEvent(new Event('dmf-request-ready'))
-    }, 0)
+  async function loadDMF(services = []) {
     return new Promise(resolve => {
-      document.addEventListener('dmf-ready', event => {
-        resolve(event.detail.DMF)
-      })
+      document.addEventListener('dmf-ready', ({ detail: { DMF } }) => DMF.servicesLoaded(services) && resolve(DMF))
+      document.dispatchEvent(new Event('dmf-request-ready'))
     })
   }
 
+  const DMF = await loadDMF()
+
   // deal with plugins individually
-  DMF.plugins('collector:contentModifiers:myModifierName').forEach(async plugin => {
-    const snippets = plugin.getSnippets()
+  DMF.plugins('collector:contentModifiers:myModifierName', async plugin => {
     plugin.hide()
     const data = await plugin.pull()
     plugin.hydrate(data)
     plugin.show()
-    plugin.show(snippets['done-notification']);
+    plugin.show('done-notification')
   })
 })()

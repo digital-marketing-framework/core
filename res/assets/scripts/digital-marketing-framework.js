@@ -7,7 +7,6 @@
     settings: {
       prefix: 'dmf',
       events: {
-        INIT: 'dmf-init',
         READY: 'dmf-ready',
         REQUEST_READY: 'dmf-request-ready'
       },
@@ -18,6 +17,18 @@
       },
       html: {
         INTERACTIVE_ELEMENTS: ['A', 'BUTTON', 'FORM']
+      },
+      snippets: {
+        LOADING_INDICATOR: 'loading-indicator'
+      },
+      frames: {
+        ALLOWED_ORIGINS: '',
+        TIMEOUT: 0,
+        RESIZE_EVENT: 'frame-resize',
+        AUTO_RESIZE_PARAM: 'dmfAutoResize',
+        DEBOUNCE_MS: 50,
+        MEASURING_CLASS: '',
+        FORM_SUBMITTED_EVENT: 'form-submitted'
       }
     },
     urls: {},
@@ -30,9 +41,10 @@
   const refreshCallbacks = []
   const rescanCallbacks = []
   const permissionChangeCallbacks = []
-  const plugins = {}
+  const services = []
   let fetchCache = {}
   let DMF = null
+  let initialized = false
 
   // helpers //
 
@@ -69,6 +81,14 @@
       }
     }
     return out
+  }
+
+  function debounce(fn, ms) {
+    let timer
+    return function() {
+      clearTimeout(timer)
+      timer = setTimeout(fn, ms)
+    }
   }
 
   function convertElementToArray(element) {
@@ -206,14 +226,7 @@
     }
   }
 
-  function callReady(init = false) {
-    // event for other scripts to enrich the API
-    if (init) {
-      document.dispatchEvent(
-        new CustomEvent(DMF.settings.events.INIT, { detail: { DMF: DMF } })
-      )
-    }
-    // event for other scripts to start using the API
+  function callReady() {
     document.dispatchEvent(
       new CustomEvent(DMF.settings.events.READY, { detail: { DMF: DMF } })
     )
@@ -267,6 +280,24 @@
 
   DMF.register = function(name, api) {
     DMF[name] = api
+    if (!services.includes(name)) {
+      services.push(name)
+    }
+    if (initialized) {
+      callReady()
+    }
+  }
+
+  DMF.servicesLoaded = function(names = []) {
+    if (typeof names === 'string') {
+      names = [names]
+    }
+    for (let name of names) {
+      if (!services.includes(name)) {
+        return false
+      }
+    }
+    return true
   }
 
   DMF.pull = async function(pluginId, arguments = {}) {
@@ -442,24 +473,6 @@
 
   DMF.markAsLoaded = function(elements) {
     DMF.removeClass(elements, DMF.settings.classes.LOADING)
-  }
-
-  DMF.getCookie = function(name) {
-    return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || null
-  }
-
-  DMF.setCookie = function(name, value, days = 0, path = '/', domain = null) {
-    const date = new Date()
-    date.setTime(date.getTime() + (days*24*60*60*1000))
-    const expires = date.toUTCString()
-    document.cookie = name + '=' + (value || '')
-      + (expires ? '; expires= ' + expires : '')
-      + (path ? '; path=' + path : '')
-      + (domain ? '; domain=' + domain : '')
-  }
-
-  DMF.deleteCookie = function(name, path = '/', domain = null) {
-    DMF.setCookie(name, '', -1, path, domain)
   }
 
   DMF.show = function(elements) {
@@ -670,13 +683,20 @@
         const elements = this.resolveElement(element)
         DMF.updateClass(elements, classNames, condition)
       },
+      getLoadingIndicator: function() {
+        return this.snippet(this.settings.snippets.LOADING_INDICATOR)
+      },
       markAsLoading: function(element = null) {
         const elements = this.resolveElement(element)
         DMF.markAsLoading(elements)
+        const loadingIndicator = this.getLoadingIndicator()
+        DMF.show(loadingIndicator)
       },
       markAsLoaded: function(element = null) {
         const elements = this.resolveElement(element)
         DMF.markAsLoaded(elements)
+        const loadingIndicator = this.getLoadingIndicator()
+        DMF.hide(loadingIndicator)
       },
       flushCache: function() {
         DMF.flushCache(pluginId)
@@ -692,6 +712,10 @@
           permission = this.settings.requiredPermission
         }
 
+        if (typeof permission === 'undefined' || permission === null) {
+          return true
+        }
+
         return await DMF.checkPermission(permission)
       }
     }
@@ -702,7 +726,7 @@
 
     plugin.pull = async function(pullArguments = {}, bypassPermissions = false) {
       let proceed = true
-      if (!bypassPermissions && typeof this.settings.requiredPermission !== 'undefined') {
+      if (!bypassPermissions) {
         proceed = await this.checkPermission()
       }
 
@@ -1003,12 +1027,243 @@
     }
   }
 
+  DMF.register('cookies', {
+    get: function(name) {
+      return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || null
+    },
+    exists: function(name) {
+      return this.get(name) !== null
+    },
+    set: function(name, value, days = 0, path = '/', domain = null) {
+      const date = new Date()
+      date.setTime(date.getTime() + (days*24*60*60*1000))
+      const expires = date.toUTCString()
+      document.cookie = name + '=' + (value || '')
+          + (days !== 0 ? '; expires= ' + expires : '')
+          + (path ? '; path=' + path : '')
+          + (domain ? '; domain=' + domain : '')
+    },
+    delete: function(name, path = '/', domain = null) {
+      this.set(name, '', -1, path, domain)
+    }
+  })
+
+  DMF.register('frames', (function() {
+    const listeners = []
+    const handlers = []
+    const pendingRequests = {}
+
+    function isOriginAllowed(origin) {
+      if (origin === window.origin) {
+        return true
+      }
+      const setting = DMF.settings.frames.ALLOWED_ORIGINS
+      if (!setting) {
+        return true
+      }
+      const origins = setting.split(',').map(o => o.trim()).filter(o => o)
+      if (origins.length === 0) {
+        return true
+      }
+      return origins.includes(origin)
+    }
+
+    function resolveFrame(frame) {
+      if (frame && frame.contentWindow) {
+        return frame.contentWindow
+      }
+      return frame
+    }
+
+    function generateId() {
+      return Math.random().toString(36).substring(2) + Date.now().toString(36)
+    }
+
+    function sendMessage(targetWindow, name, payload, requestId) {
+      const message = {
+        dmf: true,
+        name: name,
+        payload: payload || {}
+      }
+      if (requestId) {
+        message.requestId = requestId
+      }
+      targetWindow.postMessage(message, '*')
+    }
+
+    window.addEventListener('message', function(event) {
+      const data = event.data
+      if (!data || !data.dmf) {
+        return
+      }
+
+      if (!isOriginAllowed(event.origin)) {
+        return
+      }
+
+      const source = event.source
+      const name = data.name
+      const payload = data.payload || {}
+      const requestId = data.requestId
+
+      // resolve pending requests
+      if (requestId && pendingRequests[requestId]) {
+        pendingRequests[requestId](payload)
+        delete pendingRequests[requestId]
+        return
+      }
+
+      // handle incoming requests
+      if (name.startsWith('request-')) {
+        const responseName = name.substring(8)
+        for (let i = handlers.length - 1; i >= 0; i--) {
+          const h = handlers[i]
+          if ((!h.frame || h.frame === source) && h.name === responseName) {
+            Promise.resolve(h.handler(payload, source)).then(function(response) {
+              sendMessage(source, responseName, response, requestId)
+            })
+            break
+          }
+        }
+        return
+      }
+
+      // notify listeners
+      listeners.forEach(function(l) {
+        if ((!l.frame || l.frame === source) && l.name === name) {
+          l.callback(payload, source)
+        }
+      })
+    })
+
+    return {
+      isParentFrame: window.parent === window,
+      send: function(frame, name, payload) {
+        sendMessage(resolveFrame(frame), name, payload)
+      },
+      listen: function(name, callback, frame) {
+        listeners.push({ frame: resolveFrame(frame) || null, name: name, callback: callback })
+      },
+      request: function(frame, name, payload) {
+        frame = resolveFrame(frame)
+        const requestId = generateId()
+        const timeout = DMF.settings.frames.TIMEOUT
+        return new Promise(function(resolve, reject) {
+          pendingRequests[requestId] = resolve
+          if (timeout > 0) {
+            setTimeout(function() {
+              if (pendingRequests[requestId]) {
+                delete pendingRequests[requestId]
+                reject(new Error('Frame request "' + name + '" timed out'))
+              }
+            }, timeout)
+          }
+          sendMessage(frame, 'request-' + name, payload, requestId)
+        })
+      },
+      respond: function(name, handler, frame) {
+        frame = resolveFrame(frame) || null
+        const existing = handlers.findIndex(function(h) {
+          return h.frame === frame && h.name === name
+        })
+        if (existing !== -1) {
+          handlers[existing] = { frame: frame, name: name, handler: handler }
+        } else {
+          handlers.push({ frame: frame, name: name, handler: handler })
+        }
+      },
+      sendToParent: function(name, payload) {
+        if (this.isParentFrame) {
+          return
+        }
+        this.send(window.parent, name, payload)
+      },
+      listenToParent: function(name, callback) {
+        if (this.isParentFrame) {
+          return
+        }
+        this.listen(name, callback, window.parent)
+      },
+      requestFromParent: function(name, payload) {
+        if (this.isParentFrame) {
+          return Promise.reject(new Error('Cannot request from parent: already the top frame'))
+        }
+        return this.request(window.parent, name, payload)
+      },
+      respondToParent: function(name, handler) {
+        if (this.isParentFrame) {
+          return
+        }
+        this.respond(name, handler, window.parent)
+      },
+      findIframeBySource: function(source) {
+        const iframes = document.querySelectorAll('iframe')
+        for (const iframe of iframes) {
+          if (iframe.contentWindow === source) {
+            return iframe
+          }
+        }
+        return null
+      },
+      getDocumentHeight: function() {
+        const measuringClass = DMF.settings.frames.MEASURING_CLASS
+        if (measuringClass) {
+          document.documentElement.classList.add(measuringClass)
+        }
+        const height = document.body.scrollHeight
+        if (measuringClass) {
+          document.documentElement.classList.remove(measuringClass)
+        }
+        return height
+      },
+      sendResizeToParent: function() {
+        this.sendToParent(DMF.settings.frames.RESIZE_EVENT, {
+          height: this.getDocumentHeight()
+        })
+      },
+      listenToResize: function(callback) {
+        this.listen(DMF.settings.frames.RESIZE_EVENT, callback)
+      },
+      sendFormSubmittedToParent: function(data) {
+        this.sendToParent(DMF.settings.frames.FORM_SUBMITTED_EVENT, data || {})
+      },
+      listenToFormSubmitted: function(callback) {
+        this.listen(DMF.settings.frames.FORM_SUBMITTED_EVENT, function(payload, source) {
+          callback(payload, DMF.frames.findIframeBySource(source), source)
+        })
+      },
+      initFrameResize: function() {
+        this.listenToResize(function(payload, source) {
+          const iframe = DMF.frames.findIframeBySource(source)
+          if (iframe) {
+            iframe.style.height = payload.height + 'px'
+          }
+        })
+
+        if (!DMF.frames.isParentFrame) {
+          const params = new URLSearchParams(window.location.search)
+          if (params.get(DMF.settings.frames.AUTO_RESIZE_PARAM) === '1') {
+            const observer = new ResizeObserver(debounce(function() {
+              DMF.frames.sendResizeToParent()
+            }, DMF.settings.frames.DEBOUNCE_MS))
+            observer.observe(document.documentElement)
+            DMF.frames.sendResizeToParent()
+          }
+        }
+      }
+    }
+  })())
+
   // ready //
 
+  window.DMF = DMF
   DMF.updateAllKnownElements()
 
-  window.DMF = DMF
+  setTimeout(() => {
+    initialized = true
+    callReady()
+    document.addEventListener(DMF.settings.events.REQUEST_READY, callReady)
 
-  document.addEventListener(DMF.settings.events.REQUEST_READY, callReady)
-  callReady(true)
+    DMF.frames.initFrameResize()
+  }, 0)
 })()

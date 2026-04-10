@@ -71,6 +71,12 @@ trait ApiRegistryTrait
                     'DISABLED' => $frontendSettings->getDisabledClass(),
                     'LOADING' => $frontendSettings->getLoadingClass(),
                 ],
+                'frames' => [
+                    'ALLOWED_ORIGINS' => $frontendSettings->getFrameAllowedOrigins(),
+                    'TIMEOUT' => $frontendSettings->getFrameTimeout(),
+                    'AUTO_RESIZE_PARAM' => $frontendSettings->getFrameAutoResizeParam(),
+                    'MEASURING_CLASS' => $frontendSettings->getFrameMeasuringClass(),
+                ],
             ],
             'urls' => [],
             'pluginSettings' => [],

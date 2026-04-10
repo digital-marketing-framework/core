@@ -1,15 +1,14 @@
-;(function () {
+;(async function () {
 
-  // wait until DMF core is initialised so that you can add API functionality
-  async function initDMF() {
+  // wait until DMF is fully initialised
+  async function loadDMF(services = []) {
     return new Promise(resolve => {
-      document.addEventListener('dmf-init', event => {
-        resolve(event.detail.DMF)
-      })
+      document.addEventListener('dmf-ready', ({ detail: { DMF } }) => DMF.servicesLoaded(services) && resolve(DMF))
+      document.dispatchEvent(new Event('dmf-request-ready'))
     })
   }
 
-  const DMF = initDMF()
+  const DMF = await loadDMF()
 
   DMF.register('campaigns', {
     get: function(name) {
@@ -26,21 +25,17 @@
   })
 })()
 
-;(function () {
+;(async function () {
 
   // wait until DMF is fully initialised
-  async function loadDMF() {
-    setTimeout(() => {
-      document.dispatchEvent(new Event('dmf-request-ready'))
-    }, 0)
+  async function loadDMF(services = []) {
     return new Promise(resolve => {
-      document.addEventListener('dmf-ready', event => {
-        resolve(event.detail.DMF)
-      })
+      document.addEventListener('dmf-ready', ({ detail: { DMF } }) => DMF.servicesLoaded(services) && resolve(DMF))
+      document.dispatchEvent(new Event('dmf-request-ready'))
     })
   }
 
-  const DMF = loadDMF()
+  const DMF = await loadDMF(['campaigns'])
 
   DMF.campaigns.add(window.pageMetaData.campaignId)
 })()

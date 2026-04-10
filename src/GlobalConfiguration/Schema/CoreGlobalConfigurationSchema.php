@@ -5,6 +5,7 @@ namespace DigitalMarketingFramework\Core\GlobalConfiguration\Schema;
 use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\BooleanSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
+use DigitalMarketingFramework\Core\SchemaDocument\Schema\IntegerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 
 class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
@@ -76,6 +77,22 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
     public const KEY_FRONTEND_LOADING_CLASS = 'loadingClass';
 
     public const DEFAULT_FRONTEND_LOADING_CLASS = 'loading';
+
+    public const KEY_FRONTEND_FRAME_ALLOWED_ORIGINS = 'frameAllowedOrigins';
+
+    public const DEFAULT_FRONTEND_FRAME_ALLOWED_ORIGINS = '';
+
+    public const KEY_FRONTEND_FRAME_TIMEOUT = 'frameTimeout';
+
+    public const DEFAULT_FRONTEND_FRAME_TIMEOUT = 0;
+
+    public const KEY_FRONTEND_FRAME_AUTO_RESIZE_PARAM = 'frameAutoResizeParam';
+
+    public const DEFAULT_FRONTEND_FRAME_AUTO_RESIZE_PARAM = 'dmfAutoResize';
+
+    public const KEY_FRONTEND_FRAME_MEASURING_CLASS = 'frameMeasuringClass';
+
+    public const DEFAULT_FRONTEND_FRAME_MEASURING_CLASS = '';
 
     protected ContainerSchema $configurationStorageSchema;
 
@@ -184,6 +201,26 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $loadingClassSchema = new StringSchema(static::DEFAULT_FRONTEND_LOADING_CLASS);
         $loadingClassSchema->getRenderingDefinition()->setLabel('Loading CSS Class');
         $frontendSchema->addProperty(static::KEY_FRONTEND_LOADING_CLASS, $loadingClassSchema);
+
+        $frameAllowedOriginsSchema = new StringSchema(static::DEFAULT_FRONTEND_FRAME_ALLOWED_ORIGINS);
+        $frameAllowedOriginsSchema->getRenderingDefinition()->setLabel('Frame Communication: Allowed Origins');
+        $frameAllowedOriginsSchema->getRenderingDefinition()->setGeneralDescription('Comma-separated list of allowed origins for cross-frame communication. Leave empty to allow all origins.');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_FRAME_ALLOWED_ORIGINS, $frameAllowedOriginsSchema);
+
+        $frameTimeoutSchema = new IntegerSchema(static::DEFAULT_FRONTEND_FRAME_TIMEOUT);
+        $frameTimeoutSchema->getRenderingDefinition()->setLabel('Frame Communication: Request Timeout (ms)');
+        $frameTimeoutSchema->getRenderingDefinition()->setGeneralDescription('Timeout in milliseconds for frame request/response calls. 0 means no timeout.');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_FRAME_TIMEOUT, $frameTimeoutSchema);
+
+        $frameAutoResizeParamSchema = new StringSchema(static::DEFAULT_FRONTEND_FRAME_AUTO_RESIZE_PARAM);
+        $frameAutoResizeParamSchema->getRenderingDefinition()->setLabel('Frame Communication: Auto-Resize URL Parameter');
+        $frameAutoResizeParamSchema->getRenderingDefinition()->setGeneralDescription('URL parameter name that activates automatic iframe height synchronisation in child frames.');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_FRAME_AUTO_RESIZE_PARAM, $frameAutoResizeParamSchema);
+
+        $frameMeasuringClassSchema = new StringSchema(static::DEFAULT_FRONTEND_FRAME_MEASURING_CLASS);
+        $frameMeasuringClassSchema->getRenderingDefinition()->setLabel('Frame Communication: Measuring CSS Class');
+        $frameMeasuringClassSchema->getRenderingDefinition()->setGeneralDescription('CSS class temporarily added to the document element when measuring content height. Useful to neutralise viewport-relative sizing.');
+        $frontendSchema->addProperty(static::KEY_FRONTEND_FRAME_MEASURING_CLASS, $frameMeasuringClassSchema);
 
         return $frontendSchema;
     }
