@@ -67,7 +67,7 @@ class TemplateService implements TemplateServiceInterface, LoggerAwareInterface
             }
 
             if (!$resourceService->resourceExists($folderIdentifier)) {
-                $this->logger->warning(sprintf('Resource "%s" not found.', $folderIdentifier));
+                // Not all registered template paths have to exist.
                 continue;
             }
 
