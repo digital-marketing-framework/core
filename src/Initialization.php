@@ -78,6 +78,11 @@ abstract class Initialization implements InitializationInterface
         return [];
     }
 
+    protected function getPathIdentifier(): string
+    {
+        return $this->getFullPackageName();
+    }
+
     public function initPlugins(string $domain, RegistryInterface $registry): void
     {
         $this->initTemplateFolders($registry);
@@ -130,54 +135,54 @@ abstract class Initialization implements InitializationInterface
 
     protected function initFrontendScripts(RegistryInterface $registry): void
     {
-        $package = $this->getFullPackageName();
+        $pathIdentifier = $this->getPathIdentifier();
         foreach (static::FRONTEND_SCRIPTS as $type => $paths) {
-            $paths = array_map(static fn (string $path): string => sprintf(static::FRONTEND_SCRIPT_PATTERN, $package, $path), $paths);
-            $registry->addFrontendScripts($type, $package, $paths);
+            $paths = array_map(static fn (string $path): string => sprintf(static::FRONTEND_SCRIPT_PATTERN, $pathIdentifier, $path), $paths);
+            $registry->addFrontendScripts($type, $pathIdentifier, $paths);
         }
     }
 
     protected function initStaticConfigurationDocuments(RegistryInterface $registry): void
     {
-        $package = $this->getFullPackageName();
+        $pathIdentifier = $this->getPathIdentifier();
         foreach (static::CONFIGURATION_DOCUMENT_FOLDERS as $path) {
-            $registry->addStaticConfigurationDocumentFolderIdentifier(sprintf(static::CONFIGURATION_DOCUMENT_FOLDER_PATTERN, $package, $path));
+            $registry->addStaticConfigurationDocumentFolderIdentifier(sprintf(static::CONFIGURATION_DOCUMENT_FOLDER_PATTERN, $pathIdentifier, $path));
         }
     }
 
     protected function initTemplateFolders(RegistryInterface $registry): void
     {
-        $package = $this->getFullPackageName();
+        $pathIdentifier = $this->getPathIdentifier();
         foreach (static::TEMPLATE_FOLDERS as $folder => $priority) {
-            $registry->getTemplateService()->addTemplateFolder(sprintf(static::TEMPLATE_FOLDER_PATTERN, $package, $folder), $priority);
+            $registry->getTemplateService()->addTemplateFolder(sprintf(static::TEMPLATE_FOLDER_PATTERN, $pathIdentifier, $folder), $priority);
         }
 
         foreach (static::BACKEND_TEMPLATE_FOLDERS as $folder => $priority) {
-            $registry->getBackendTemplateService()->addTemplateFolder(sprintf(static::TEMPLATE_FOLDER_PATTERN, $package, $folder), $priority);
+            $registry->getBackendTemplateService()->addTemplateFolder(sprintf(static::TEMPLATE_FOLDER_PATTERN, $pathIdentifier, $folder), $priority);
         }
     }
 
     protected function initPartialFolders(RegistryInterface $registry): void
     {
-        $package = $this->getFullPackageName();
+        $pathIdentifier = $this->getPathIdentifier();
         foreach (static::PARTIAL_FOLDERS as $folder => $priority) {
-            $registry->getTemplateService()->addPartialFolder(sprintf(static::PARTIAL_FOLDER_PATTERN, $package, $folder), $priority);
+            $registry->getTemplateService()->addPartialFolder(sprintf(static::PARTIAL_FOLDER_PATTERN, $pathIdentifier, $folder), $priority);
         }
 
         foreach (static::BACKEND_PARTIAL_FOLDERS as $folder => $priority) {
-            $registry->getBackendTemplateService()->addPartialFolder(sprintf(static::PARTIAL_FOLDER_PATTERN, $package, $folder), $priority);
+            $registry->getBackendTemplateService()->addPartialFolder(sprintf(static::PARTIAL_FOLDER_PATTERN, $pathIdentifier, $folder), $priority);
         }
     }
 
     protected function initLayoutFolders(RegistryInterface $registry): void
     {
-        $package = $this->getFullPackageName();
+        $pathIdentifier = $this->getPathIdentifier();
         foreach (static::LAYOUT_FOLDERS as $folder => $priority) {
-            $registry->getTemplateService()->addPartialFolder(sprintf(static::LAYOUT_FOLDER_PATTERN, $package, $folder), $priority);
+            $registry->getTemplateService()->addPartialFolder(sprintf(static::LAYOUT_FOLDER_PATTERN, $pathIdentifier, $folder), $priority);
         }
 
         foreach (static::BACKEND_LAYOUT_FOLDERS as $folder => $priority) {
-            $registry->getBackendTemplateService()->addPartialFolder(sprintf(static::LAYOUT_FOLDER_PATTERN, $package, $folder), $priority);
+            $registry->getBackendTemplateService()->addPartialFolder(sprintf(static::LAYOUT_FOLDER_PATTERN, $pathIdentifier, $folder), $priority);
         }
     }
 
@@ -198,8 +203,12 @@ abstract class Initialization implements InitializationInterface
         $this->globalConfigurationSchema = $globalConfigurationSchema;
     }
 
-    public function initMetaData(RegistryInterface $registry): void
+    protected function initPackageIdentity(RegistryInterface $registry): void
     {
+        if ($this->packageName === '') {
+            return;
+        }
+
         $registry->addSchemaVersion($this->packageName, $this->schemaVersion);
 
         $registry->addPackageAlias($this->packageName, $this->packageAlias);
@@ -207,6 +216,13 @@ abstract class Initialization implements InitializationInterface
         $package = $this->getFullPackageName();
         if ($package !== $this->packageName) {
             $registry->addPackageAlias($package, $this->packageAlias);
+        }
+    }
+
+    protected function initGlobalConfigurationSchemaRegistration(RegistryInterface $registry): void
+    {
+        if ($this->packageName === '' && $this->packageAlias === '') {
+            return;
         }
 
         $globalConfigurationSchema = $this->getGlobalConfigurationSchema();
@@ -216,15 +232,24 @@ abstract class Initialization implements InitializationInterface
                 $globalConfigurationSchema
             );
         }
+    }
 
-        $this->initConfigurationEditorScripts($registry);
-        $this->initFrontendScripts($registry);
-        $this->initStaticConfigurationDocuments($registry);
-
+    protected function initSchemaMigrations(RegistryInterface $registry): void
+    {
         foreach (static::SCHEMA_MIGRATIONS as $index => $migrationClass) {
             $key = is_numeric($index) ? $this->packageName : $index;
             $migration = $registry->createObject($migrationClass, [$key]);
             $registry->addSchemaMigration($migration);
         }
+    }
+
+    public function initMetaData(RegistryInterface $registry): void
+    {
+        $this->initPackageIdentity($registry);
+        $this->initGlobalConfigurationSchemaRegistration($registry);
+        $this->initConfigurationEditorScripts($registry);
+        $this->initFrontendScripts($registry);
+        $this->initStaticConfigurationDocuments($registry);
+        $this->initSchemaMigrations($registry);
     }
 }
