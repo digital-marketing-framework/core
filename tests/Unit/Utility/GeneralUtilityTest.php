@@ -4,6 +4,8 @@ namespace DigitalMarketingFramework\Core\Tests\Unit\Utility;
 
 use DigitalMarketingFramework\Core\Model\Data\Data;
 use DigitalMarketingFramework\Core\Model\Data\DataInterface;
+use DigitalMarketingFramework\Core\Model\Data\Value\BooleanValue;
+use DigitalMarketingFramework\Core\Model\Data\Value\IntegerValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\MultiValueInterface;
 use DigitalMarketingFramework\Core\Model\Data\Value\ValueInterface;
@@ -69,6 +71,16 @@ class GeneralUtilityTest extends TestCase
             [new MultiValue(['5']), true],
             [new MultiValue(['']), true],
             [new MultiValue(['value1']), true],
+            [new BooleanValue(true), true],
+            [new BooleanValue(false), false],
+            [new BooleanValue(true, 'yes', 'no'), true],
+            [new BooleanValue(false, 'yes', 'no'), false],
+            [new BooleanValue(true, '0', '1'), true],
+            [new BooleanValue(false, '0', '1'), false],
+            [new IntegerValue(0), false],
+            [new IntegerValue(1), true],
+            [new IntegerValue(5), true],
+            [new IntegerValue(-1), true],
         ];
     }
 

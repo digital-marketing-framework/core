@@ -4,10 +4,9 @@ namespace DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom;
 
 use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\ContainerSchema;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\IntegerSchema;
 use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
 
-class InheritableIntegerSchema extends ContainerSchema
+class InheritableStringSchema extends ContainerSchema
 {
     public const KEY_INHERITED = 'inherited';
 
@@ -19,16 +18,16 @@ class InheritableIntegerSchema extends ContainerSchema
 
     protected StringSchema $inheritedSchema;
 
-    protected IntegerSchema $customValueSchema;
+    protected StringSchema $customValueSchema;
 
-    public function __construct(?int $defaultValue = null)
+    public function __construct(?string $defaultValue = null)
     {
         parent::__construct($defaultValue);
         $this->getRenderingDefinition()->setNavigationItem(false);
         $this->getRenderingDefinition()->setSkipHeader(true);
 
         $inheritedDefaultValue = $defaultValue === null ? static::VALUE_INHERITED_YES : static::VALUE_INHERITED_NO;
-        $customDefaultValue = $defaultValue ?? 0;
+        $customDefaultValue = $defaultValue ?? '';
 
         $this->inheritedSchema = new StringSchema($inheritedDefaultValue);
         $this->inheritedSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
@@ -36,7 +35,7 @@ class InheritableIntegerSchema extends ContainerSchema
         $this->inheritedSchema->getAllowedValues()->addValue(static::VALUE_INHERITED_NO);
         $this->addProperty(static::KEY_INHERITED, $this->inheritedSchema);
 
-        $this->customValueSchema = new IntegerSchema($customDefaultValue);
+        $this->customValueSchema = new StringSchema($customDefaultValue);
         $this->customValueSchema->getRenderingDefinition()
             ->addVisibilityConditionByValue('../' . static::KEY_INHERITED)
             ->addValue(static::VALUE_INHERITED_NO)
@@ -58,15 +57,15 @@ class InheritableIntegerSchema extends ContainerSchema
     }
 
     /**
-     * @param array{inherited?:bool,customValue?:int} $config
+     * @param array{inherited?:string,customValue?:string} $config
      */
-    public static function convert(array $config): ?int
+    public static function convert(array $config): ?string
     {
         $inherited = $config[static::KEY_INHERITED] ?? static::VALUE_INHERITED_YES;
         if ($inherited === static::VALUE_INHERITED_YES) {
             return null;
         }
 
-        return $config[static::KEY_CUSTOM_VALUE] ?? 0;
+        return $config[static::KEY_CUSTOM_VALUE] ?? '';
     }
 }

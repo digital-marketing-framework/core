@@ -50,7 +50,6 @@ trait PluginRegistryTrait
         }
 
         if ($plugin instanceof IntegrationPluginInterface) {
-            $schemaDocument ??= $this->getConfigurationSchemaDocument();
             $integrationName = $plugin->getIntegrationInfo()->getName();
 
             $integrationContainerSchema = $schemaDocument->getMainSchema()

@@ -94,8 +94,8 @@ final class GeneralUtility
 
     public static function isTrue(mixed $value): bool
     {
-        if ($value instanceof MultiValueInterface) {
-            return (bool)$value->toArray();
+        if ($value instanceof ValueInterface) {
+            return self::isTrue($value->getValue());
         }
 
         return (bool)$value;
@@ -103,8 +103,8 @@ final class GeneralUtility
 
     public static function isFalse(mixed $value): bool
     {
-        if ($value instanceof MultiValueInterface) {
-            return $value->toArray() === [];
+        if ($value instanceof ValueInterface) {
+            return self::isFalse($value->getValue());
         }
 
         return !(bool)$value;
