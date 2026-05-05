@@ -74,10 +74,14 @@ interface ContextInterface extends ArrayAccess
         string $sameSite = '',
     ): void;
 
+    public function setResponseRedirect(string $url): void;
+
     /**
      * @return array<string,mixed>
      */
     public function getResponseData(): array;
+
+    public function getResponseRedirect(): ?string;
 
     public function applyResponseData(): void;
 }

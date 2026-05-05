@@ -24,6 +24,11 @@ class RootApiResponse implements ApiResponseInterface
         return null;
     }
 
+    public function getRedirectUrl(): ?string
+    {
+        return null;
+    }
+
     public function getData(): array
     {
         $result = [];

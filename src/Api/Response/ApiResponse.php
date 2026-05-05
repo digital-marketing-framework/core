@@ -11,6 +11,7 @@ class ApiResponse implements ApiResponseInterface
         protected ?array $data = null,
         protected int $statusCode = 200,
         protected ?string $message = null,
+        protected ?string $redirectUrl = null,
     ) {
     }
 
@@ -22,6 +23,11 @@ class ApiResponse implements ApiResponseInterface
     public function getStatusMessage(): ?string
     {
         return $this->message;
+    }
+
+    public function getRedirectUrl(): ?string
+    {
+        return $this->redirectUrl;
     }
 
     public function getData(): array

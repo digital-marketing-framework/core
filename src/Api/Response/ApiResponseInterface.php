@@ -8,6 +8,8 @@ interface ApiResponseInterface
 
     public function getStatusMessage(): ?string;
 
+    public function getRedirectUrl(): ?string;
+
     /**
      * @return array{status:array{code:int,message?:string},response?:array<string,mixed>}|array{resources:array<array<string,mixed>>}
      */

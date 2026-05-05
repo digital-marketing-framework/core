@@ -101,9 +101,19 @@ abstract class Context extends ArrayObject implements ContextInterface
         throw new BadMethodCallException('Generic context cannot set response cookies.');
     }
 
+    public function setResponseRedirect(string $url): void
+    {
+        throw new BadMethodCallException('Generic context cannot set a response redirect.');
+    }
+
     public function getResponseData(): array
     {
         return [];
+    }
+
+    public function getResponseRedirect(): ?string
+    {
+        return null;
     }
 
     public function applyResponseData(): void

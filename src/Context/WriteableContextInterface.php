@@ -39,4 +39,6 @@ interface WriteableContextInterface extends ContextInterface
     public function copyRequestArgumentFromContext(ContextInterface $context, string $name): bool;
 
     public function setResponsive(bool $responsive = true): void;
+
+    public function setResponseRedirect(string $url): void;
 }

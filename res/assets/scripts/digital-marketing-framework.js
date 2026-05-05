@@ -19,7 +19,10 @@
         INTERACTIVE_ELEMENTS: ['A', 'BUTTON', 'FORM']
       },
       snippets: {
-        LOADING_INDICATOR: 'loading-indicator'
+        LOADING_INDICATOR: 'loading-indicator',
+        SUCCESS: 'success',
+        ERROR: 'error',
+        RESET: 'reset'
       },
       frames: {
         ALLOWED_ORIGINS: '',
@@ -191,11 +194,57 @@
     if (typeof context !== 'undefined') {
       bodyData.context = context
     }
-    const response = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(bodyData)
-    })
-    return await response.json()
+
+    let response
+    try {
+      response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(bodyData)
+      })
+    } catch (fetchError) {
+      return {
+        status: {
+          code: 0,
+          message: 'Failed to reach API endpoint: ' + fetchError.message,
+        },
+        response: {
+          error: 'fetch-failed',
+          fetchError: fetchError.message,
+        },
+      }
+    }
+
+    // The push API contract is "the response always comes from the endpoint
+    // I called". Any redirect breaks that contract and is treated as an error,
+    // regardless of what the destination's body contains.
+    if (response.redirected) {
+      return {
+        status: {
+          code: 502,
+          message: 'Endpoint returned a server-side redirect. JS clients require ' +
+                   'httpRedirect=false on the endpoint configuration.',
+        },
+        response: {
+          error: 'unhandled-server-side-redirect',
+          redirectUrl: response.url || null,
+        },
+      }
+    }
+
+    try {
+      return await response.json()
+    } catch (parseError) {
+      return {
+        status: {
+          code: response.status >= 400 ? response.status : 502,
+          message: 'Invalid response from API: ' + parseError.message,
+        },
+        response: {
+          error: 'invalid-response',
+          parseError: parseError.message,
+        },
+      }
+    }
   }
 
   function getPluginSettings(pluginId, contentSettings = {}) {
@@ -697,6 +746,23 @@
         DMF.markAsLoaded(elements)
         const loadingIndicator = this.getLoadingIndicator()
         DMF.hide(loadingIndicator)
+      },
+      markAsSucceeded: function() {
+        this.show(this.settings.snippets.SUCCESS)
+        this.hide(this.settings.snippets.ERROR)
+      },
+      markAsFailed: function(message = null) {
+        this.show(this.settings.snippets.ERROR)
+        this.hide(this.settings.snippets.SUCCESS)
+        if (message) {
+          this.hydrate({ message }, this.settings.snippets.ERROR)
+        }
+      },
+      markAsCleared: function() {
+        this.markAsLoaded()
+        this.hide(this.settings.snippets.SUCCESS)
+        this.hide(this.settings.snippets.ERROR)
+        this.hide(this.settings.snippets.RESET)
       },
       flushCache: function() {
         DMF.flushCache(pluginId)

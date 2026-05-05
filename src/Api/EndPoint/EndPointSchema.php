@@ -23,6 +23,7 @@ class EndPointSchema extends ContainerSchema
         $this->addProperty('allow_context_override', new BooleanSchema(false));
 
         $this->addProperty('expose_to_frontend', new BooleanSchema(false));
+        $this->addProperty('http_redirect', new BooleanSchema(false));
 
         $configurationDocumentSchema = new StringSchema('');
         $configurationDocumentSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_TEXT);
