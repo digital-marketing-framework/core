@@ -14,6 +14,7 @@ class EndPoint extends Item implements EndPointInterface
         protected bool $disableContext = false,
         protected bool $allowContextOverride = false,
         protected bool $exposeToFrontend = false,
+        protected bool $httpRedirect = false,
         protected string $configurationDocument = '',
     ) {
     }
@@ -91,6 +92,16 @@ class EndPoint extends Item implements EndPointInterface
     public function setExposeToFrontend(bool $exposeToFrontend): void
     {
         $this->exposeToFrontend = $exposeToFrontend;
+    }
+
+    public function getHttpRedirect(): bool
+    {
+        return $this->httpRedirect;
+    }
+
+    public function setHttpRedirect(bool $httpRedirect): void
+    {
+        $this->httpRedirect = $httpRedirect;
     }
 
     public function getConfigurationDocument(): string

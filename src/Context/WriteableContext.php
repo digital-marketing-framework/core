@@ -9,6 +9,8 @@ class WriteableContext extends Context implements WriteableContextInterface
     /** @var array<array{name:string,value:string,expires?:int,path?:string,domain?:string,secure?:bool,httponly?:bool,samesite?:string}> */
     protected array $outgoingCookies = [];
 
+    protected ?string $responseRedirect = null;
+
     public function setCookie(string $name, string $value): void
     {
         $this[static::KEY_COOKIES][$name] = $value;
@@ -192,10 +194,23 @@ class WriteableContext extends Context implements WriteableContextInterface
         }
     }
 
+    public function setResponseRedirect(string $url): void
+    {
+        if ($this->isResponsive()) {
+            $this->responseRedirect = $url;
+        }
+    }
+
+    public function getResponseRedirect(): ?string
+    {
+        return $this->responseRedirect;
+    }
+
     public function getResponseData(): array
     {
         return [
             'cookies' => $this->outgoingCookies,
+            'redirect' => $this->responseRedirect,
         ];
     }
 

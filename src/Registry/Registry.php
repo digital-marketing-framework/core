@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\Crypto\HashServiceAwareInterface;
 use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
+use DigitalMarketingFramework\Core\Frontend\FrontendUriBuilderAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
 use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
@@ -35,6 +36,7 @@ use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryTr
 use DigitalMarketingFramework\Core\Registry\Service\DataSourceRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\FrontendTemplatingRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryTrait;
@@ -83,6 +85,7 @@ class Registry implements RegistryInterface
     use TestCaseRegistryTrait;
     use BackendTemplatingRegistryTrait;
     use BackendControllerRegistryTrait;
+    use FrontendTemplatingRegistryTrait;
     use CleanupRegistryTrait;
     use DataSourceRegistryTrait;
 
@@ -143,6 +146,10 @@ class Registry implements RegistryInterface
 
         if ($object instanceof TemplateEngineAwareInterface) {
             $object->setTemplateEngine($this->getTemplateEngine());
+        }
+
+        if ($object instanceof FrontendUriBuilderAwareInterface) {
+            $object->setFrontendUriBuilder($this->getFrontendUriBuilder());
         }
 
         if ($object instanceof SchemaProcessorAwareInterface) {

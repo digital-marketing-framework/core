@@ -22,6 +22,7 @@ use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryIn
 use DigitalMarketingFramework\Core\Registry\Service\DataSourceRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\FrontendTemplatingRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationSchemaRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\LoggerFactoryRegistryInterface;
@@ -65,6 +66,7 @@ interface RegistryInterface extends
     TestCaseRegistryInterface,
     BackendTemplatingRegistryInterface,
     BackendControllerRegistryInterface,
+    FrontendTemplatingRegistryInterface,
     CleanupRegistryInterface,
     DataSourceRegistryInterface
 {

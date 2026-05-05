@@ -122,9 +122,19 @@ class ContextStack implements ContextStackInterface
         $this->getActiveContext()->setResponseCookie($name, $value, $expires, $path, $domain, $secure, $httponly, $sameSite);
     }
 
+    public function setResponseRedirect(string $url): void
+    {
+        $this->getActiveContext()->setResponseRedirect($url);
+    }
+
     public function getResponseData(): array
     {
         return $this->getActiveContext()->getResponseData();
+    }
+
+    public function getResponseRedirect(): ?string
+    {
+        return $this->getActiveContext()->getResponseRedirect();
     }
 
     public function applyResponseData(): void

@@ -34,6 +34,10 @@ interface EndPointInterface extends ItemInterface
 
     public function setExposeToFrontend(bool $exposeToFrontend): void;
 
+    public function getHttpRedirect(): bool;
+
+    public function setHttpRedirect(bool $httpRedirect): void;
+
     public function getConfigurationDocument(): string;
 
     public function setConfigurationDocument(string $configurationDocument): void;
