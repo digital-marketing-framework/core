@@ -38,21 +38,17 @@ class SwitchReferenceValueSource extends ValueSource
         $switchConfig = $this->getConfig(static::KEY_SWITCH);
         $switchValue = $this->dataProcessor->processValue($switchConfig, $this->context->copy());
 
-        if ($switchValue === null) {
-            return null;
-        }
+        if ($switchValue !== null) {
+            $map = $this->context->getConfiguration()->getValueMapConfiguration($this->getStringConfig(static::KEY_MAP_NAME));
+            if ($map !== null) {
+                $map = MapUtility::flatten($map);
+                if ($this->getBoolConfig(static::KEY_INVERT)) {
+                    $map = array_flip($map);
+                }
 
-        $switchValue = (string)$switchValue;
-
-        $map = $this->context->getConfiguration()->getValueMapConfiguration($this->getStringConfig(static::KEY_MAP_NAME));
-        if ($map !== null) {
-            $map = MapUtility::flatten($map);
-            if ($this->getBoolConfig(static::KEY_INVERT)) {
-                $map = array_flip($map);
-            }
-
-            if (isset($map[$switchValue])) {
-                return (string)$map[$switchValue];
+                if (isset($map[(string)$switchValue])) {
+                    return (string)$map[(string)$switchValue];
+                }
             }
         }
 

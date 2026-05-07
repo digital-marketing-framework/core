@@ -35,25 +35,16 @@ class SwitchValueSource extends ValueSource
         $switchConfig = $this->getConfig(static::KEY_SWITCH);
         $switchValue = $this->dataProcessor->processValue($switchConfig, $this->context->copy());
 
-        if ($switchValue === null) {
-            return null;
+        if ($switchValue !== null) {
+            /** @var array<string,string> */
+            $cases = $this->getMapConfig(static::KEY_CASES);
+            if (isset($cases[(string)$switchValue])) {
+                return $cases[(string)$switchValue];
+            }
         }
 
-        $switchValue = (string)$switchValue;
-
-        /** @var array<string,string> */
-        $cases = $this->getMapConfig(static::KEY_CASES);
-        if (isset($cases[$switchValue])) {
-            return $cases[$switchValue];
-        }
-
-        /** @var bool */
-        $useDefault = $this->getConfig(static::KEY_USE_DEFAULT);
-        if ($useDefault) {
-            /** @var string */
-            $default = $this->getConfig(static::KEY_DEFAULT);
-
-            return $default;
+        if ($this->getBoolConfig(static::KEY_USE_DEFAULT)) {
+            return $this->getStringConfig(static::KEY_DEFAULT);
         }
 
         return null;

@@ -19,7 +19,7 @@ class SwitchValueSourceTest extends ValueSourceTestBase
     public static function switchDataProvider(): array
     {
         return [
-            'originalValueIsNull' => [
+            'originalValueIsNullNoDefault' => [
                 null,
                 null,
                 [
@@ -29,6 +29,15 @@ class SwitchValueSourceTest extends ValueSourceTestBase
                 ],
                 false,
                 '',
+            ],
+            'originalValueIsNullWithDefault' => [
+                null,
+                'fallback',
+                [
+                    'id1' => static::createMapItem('value1', 'value1b', 'id1', 10),
+                ],
+                true,
+                'fallback',
             ],
             'switchMatch' => [
                 'value2',

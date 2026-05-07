@@ -32,13 +32,21 @@ class SwitchReferenceValueSourceTest extends ValueSourceTestBase
     public static function switchReferenceDataProvider(): array
     {
         return [
-            'originalValueIsNull' => [
+            'originalValueIsNullNoDefault' => [
                 null,
                 null,
                 'id.m1',
                 false,
                 false,
                 '',
+            ],
+            'originalValueIsNullWithDefault' => [
+                null,
+                'fallback',
+                'id.m1',
+                false,
+                true,
+                'fallback',
             ],
             'switchMatch' => [
                 'a1',
