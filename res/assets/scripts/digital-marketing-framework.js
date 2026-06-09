@@ -906,13 +906,25 @@
   }
 
   let number = 1
-  function getUniqueId(container = null) {
+
+  DMF.getRootDocument = function(container = null) {
     container = container || DMF.container
+    // A Document, DocumentFragment or ShadowRoot resolves ids via
+    // getElementById directly. A plain Element does not, so fall back to its
+    // owner document — the scope in which its ids have to be unique.
+    if (typeof container.getElementById === 'function') {
+      return container
+    }
+    return container.ownerDocument ?? document
+  }
+
+  DMF.getUniqueId = function(container = null) {
+    const root = DMF.getRootDocument(container)
     let id
     do {
       id = 'dmf-element-' + number
       number++
-    } while (container.getElementById(id) !== null)
+    } while (root.getElementById(id) !== null)
     return id
   }
 
@@ -947,7 +959,7 @@
       const pluginId = DMF.getPluginAttribute(element, 'plugin')
 
       if (!element.id) {
-        element.id = getUniqueId(container)
+        element.id = DMF.getUniqueId(container)
       }
 
       if (DMF.getPluginAttribute(element, 'settingsUpdated')) {
