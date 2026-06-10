@@ -200,4 +200,132 @@ class ListUtilityTest extends TestCase
         static::assertValuesEqual($expectedValues, $result);
         static::assertWeightsEqual($expectedWeights, $result);
     }
+
+    /**
+     * @return array<string,array{0:array<string,array{uuid:string,weight:int,value:mixed}>,1:string,2:bool,3:array<mixed>}>
+     */
+    public static function findAllPredecessorsDataProvider(): array
+    {
+        // Intentionally unsorted insertion order; the weights define the sorted
+        // order a, b, c, d — so a correct result also proves sort() runs first.
+        $list = [
+            'C' => static::createItem('c', 'C', 30),
+            'A' => static::createItem('a', 'A', 10),
+            'D' => static::createItem('d', 'D', 40),
+            'B' => static::createItem('b', 'B', 20),
+        ];
+
+        return [
+            'middleExcludingInitial' => [$list, 'C', false, ['a', 'b']],
+            'middleIncludingInitial' => [$list, 'C', true, ['a', 'b', 'c']],
+            'firstExcludingInitial' => [$list, 'A', false, []],
+            'firstIncludingInitial' => [$list, 'A', true, ['a']],
+            'lastExcludingInitial' => [$list, 'D', false, ['a', 'b', 'c']],
+            'lastIncludingInitial' => [$list, 'D', true, ['a', 'b', 'c', 'd']],
+            // id not in the list: the loop never breaks, so the whole (sorted)
+            // list is returned — and includeInitialItem makes no difference.
+            'absentExcludingInitial' => [$list, 'X', false, ['a', 'b', 'c', 'd']],
+            'absentIncludingInitial' => [$list, 'X', true, ['a', 'b', 'c', 'd']],
+            'emptyList' => [[], 'A', false, []],
+            'emptyListIncludingInitial' => [[], 'A', true, []],
+        ];
+    }
+
+    /**
+     * @param array<string,array{uuid:string,weight:int,value:mixed}> $list
+     * @param array<mixed> $expectedValues
+     */
+    #[Test]
+    #[DataProvider('findAllPredecessorsDataProvider')]
+    public function findAllPredecessors(array $list, string $id, bool $includeInitialItem, array $expectedValues): void
+    {
+        $result = ListUtility::findAllPredecessors($list, $id, $includeInitialItem);
+        static::assertValuesEqual($expectedValues, $result);
+    }
+
+    /**
+     * @return array<string,array{0:array<string,array{uuid:string,weight:int,value:mixed}>,1:array<mixed>,2:array<mixed>,3:array<int>}>
+     */
+    public static function prependMultipleDataProvider(): array
+    {
+        return [
+            'prependToNonEmpty' => [
+                [
+                    'A' => static::createItem('a', 'A', 10),
+                    'B' => static::createItem('b', 'B', 20),
+                ],
+                ['c'],
+                ['c', 'a', 'b'],
+                [-90, 10, 20],
+            ],
+            // Prepended values get descending weights in input order, so after
+            // sorting the input order is reversed (the last value ends up first).
+            'prependMultipleReversesInputOrder' => [
+                [
+                    'A' => static::createItem('a', 'A', 10),
+                    'B' => static::createItem('b', 'B', 20),
+                ],
+                ['c', 'd'],
+                ['d', 'c', 'a', 'b'],
+                [-190, -90, 10, 20],
+            ],
+            'prependToEmpty' => [
+                [],
+                ['c'],
+                ['c'],
+                [ListUtility::WEIGHT_START],
+            ],
+        ];
+    }
+
+    /**
+     * @param array<string,array{uuid:string,weight:int,value:mixed}> $list
+     * @param array<mixed> $values
+     * @param array<mixed> $expectedValues
+     * @param array<int> $expectedWeights
+     */
+    #[Test]
+    #[DataProvider('prependMultipleDataProvider')]
+    public function prependMultiple(array $list, array $values, array $expectedValues, array $expectedWeights): void
+    {
+        $result = ListUtility::sort(ListUtility::prependMultiple($list, $values));
+        static::assertValuesEqual($expectedValues, $result);
+        static::assertWeightsEqual($expectedWeights, $result);
+    }
+
+    /**
+     * @return array<string,array{0:array<string,array{uuid:string,weight:int,value:mixed}>,1:string,2:array<mixed>,3:array<mixed>,4:array<int>}>
+     */
+    public static function insertMultipleAfterDataProvider(): array
+    {
+        $list = [
+            'A' => static::createItem('a', 'A', 10),
+            'B' => static::createItem('b', 'B', 20),
+            'C' => static::createItem('c', 'C', 30),
+        ];
+
+        return [
+            // Successor exists → moveMultipleBetween: placed between the neighbours.
+            'afterMiddle' => [$list, 'A', ['x'], ['a', 'x', 'b', 'c'], [10, 15, 20, 30]],
+            // No successor → moveMultipleToEnd: appended after the last item.
+            'afterLast' => [$list, 'C', ['x'], ['a', 'b', 'c', 'x'], [10, 20, 30, 130]],
+            // Multiple values keep their input order (ascending weights between).
+            'multipleAfterMiddle' => [$list, 'A', ['x', 'y'], ['a', 'x', 'y', 'b', 'c'], [10, 14, 18, 20, 30]],
+        ];
+    }
+
+    /**
+     * @param array<string,array{uuid:string,weight:int,value:mixed}> $list
+     * @param array<mixed> $values
+     * @param array<mixed> $expectedValues
+     * @param array<int> $expectedWeights
+     */
+    #[Test]
+    #[DataProvider('insertMultipleAfterDataProvider')]
+    public function insertMultipleAfter(array $list, string $id, array $values, array $expectedValues, array $expectedWeights): void
+    {
+        $result = ListUtility::sort(ListUtility::insertMultipleAfter($list, $id, $values));
+        static::assertValuesEqual($expectedValues, $result);
+        static::assertWeightsEqual($expectedWeights, $result);
+    }
 }

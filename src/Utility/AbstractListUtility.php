@@ -147,14 +147,16 @@ abstract class AbstractListUtility
         $list = static::sort($list);
         $result = [];
         foreach ($list as $itemId => $item) {
-            if ($itemId === $id && !$includeInitialItem) {
+            if ($itemId === $id) {
+                // Reached the boundary item: include it only if asked, then stop.
+                if ($includeInitialItem) {
+                    $result[$itemId] = $item;
+                }
+
                 break;
             }
 
             $result[$itemId] = $item;
-            if ($itemId === $id && $includeInitialItem) {
-                break;
-            }
         }
 
         /** @var array<string,Item> */
