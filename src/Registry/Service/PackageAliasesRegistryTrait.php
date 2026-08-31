@@ -16,9 +16,7 @@ trait PackageAliasesRegistryTrait
 
     public function getPackageAliases(): PackageAliasesInterface
     {
-        if (!isset($this->packageAliases)) {
-            $this->packageAliases = new PackageAliases();
-        }
+        $this->packageAliases ??= new PackageAliases();
 
         return $this->packageAliases;
     }

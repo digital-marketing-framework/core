@@ -50,9 +50,7 @@ trait BackendTemplatingRegistryTrait
 
     public function getBackendManager(): BackendManagerInterface
     {
-        if (!isset($this->backendManager)) {
-            $this->backendManager = $this->createObject(BackendManager::class, [$this]);
-        }
+        $this->backendManager ??= $this->createObject(BackendManager::class, [$this]);
 
         return $this->backendManager;
     }
@@ -64,9 +62,7 @@ trait BackendTemplatingRegistryTrait
 
     public function getBackendRenderingService(): RenderingServiceInterface
     {
-        if (!isset($this->renderingService)) {
-            $this->renderingService = $this->createObject(RenderingService::class, [$this]);
-        }
+        $this->renderingService ??= $this->createObject(RenderingService::class, [$this]);
 
         return $this->renderingService;
     }

@@ -26,9 +26,7 @@ trait AssetServiceRegistryTrait
 
     public function getAssetService(): AssetServiceInterface
     {
-        if (!isset($this->assetService)) {
-            $this->assetService = $this->createObject(AssetService::class, [$this]);
-        }
+        $this->assetService ??= $this->createObject(AssetService::class, [$this]);
 
         return $this->assetService;
     }

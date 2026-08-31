@@ -11,9 +11,7 @@ trait EnvironmentRegistryTrait
 
     public function getEnvironmentService(): EnvironmentServiceInterface
     {
-        if (!isset($this->environmentService)) {
-            $this->environmentService = $this->createObject(EnvironmentService::class);
-        }
+        $this->environmentService ??= $this->createObject(EnvironmentService::class);
 
         return $this->environmentService;
     }

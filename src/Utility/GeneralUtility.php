@@ -146,7 +146,9 @@ final class GeneralUtility
                     $format ?? $value->getFormat(),
                     $timezone ?? $value->getTimezone(),
                 );
-            } elseif ($value instanceof DateTime) {
+            }
+
+            if ($value instanceof DateTime) {
                 return new DateTimeValue(
                     (string)$value->getTimestamp(),
                     $format ?? DateTimeValue::DEFAULT_FORMAT,
@@ -181,7 +183,7 @@ final class GeneralUtility
         }
 
         if ($trim) {
-            $array = array_map(fn ($v) => is_string($v) ? trim($v) : $v, $array);
+            return array_map(fn ($v) => is_string($v) ? trim($v) : $v, $array);
         }
 
         return $array;
@@ -343,7 +345,7 @@ final class GeneralUtility
         $className = array_pop($classNamespaceParts);
 
         if (str_ends_with($className . 'Interface', $interfaceName)) {
-            $keyword = lcfirst(substr($className . 'Interface', 0, -strlen($interfaceName)));
+            return lcfirst(substr($className . 'Interface', 0, -strlen($interfaceName)));
         }
 
         return $keyword;

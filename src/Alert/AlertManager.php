@@ -21,9 +21,7 @@ class AlertManager implements AlertManagerInterface
      */
     protected function getAllAlertHandlers(): array
     {
-        if ($this->alertHandlers === null) {
-            $this->alertHandlers = $this->registry->getAllAlertHandlers();
-        }
+        $this->alertHandlers ??= $this->registry->getAllAlertHandlers();
 
         return $this->alertHandlers;
     }

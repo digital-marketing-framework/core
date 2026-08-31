@@ -18,17 +18,15 @@ class InsertDataValueModifier extends ValueModifier
         $result = GeneralUtility::parseSeparatorString($value);
         $matches = [];
         if (preg_match('/^\\{([^\\}]+)\\}$/', $result, $matches)) {
-            $result = $this->getFieldValue($matches[1]);
-        } else {
-            foreach (array_keys($this->context->getData()->toArray()) as $key) {
-                if (str_contains($result, '{' . $key . '}')) {
-                    $result = str_replace('{' . $key . '}', $this->getFieldValue((string)$key), $result);
-                }
-            }
-
-            $result = preg_replace('/\\{[-_a-zA-Z0-9]+\\}/', '', $result);
+            return $this->getFieldValue($matches[1]);
         }
 
-        return $result;
+        foreach (array_keys($this->context->getData()->toArray()) as $key) {
+            if (str_contains($result, '{' . $key . '}')) {
+                $result = str_replace('{' . $key . '}', $this->getFieldValue((string)$key), $result);
+            }
+        }
+
+        return preg_replace('/\\{[-_a-zA-Z0-9]+\\}/', '', $result);
     }
 }

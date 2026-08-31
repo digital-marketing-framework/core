@@ -89,11 +89,9 @@ class MigrationContext
      */
     public function getParentConfiguration(): array
     {
-        if ($this->parentConfiguration === null) {
-            $this->parentConfiguration = $this->parentStack !== []
-                ? ConfigurationUtility::mergeConfigurationStack($this->parentStack)
-                : [];
-        }
+        $this->parentConfiguration ??= $this->parentStack !== []
+            ? ConfigurationUtility::mergeConfigurationStack($this->parentStack)
+            : [];
 
         return $this->parentConfiguration;
     }

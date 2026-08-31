@@ -43,9 +43,7 @@ abstract class ComparisonTestBase extends DataProcessorPluginTestBase
         ?string $anyAll = null,
         ?array $defaultConfig = null,
     ): void {
-        if ($defaultConfig === null) {
-            $defaultConfig = static::DEFAULT_CONFIG;
-        }
+        $defaultConfig ??= static::DEFAULT_CONFIG;
 
         $with = [
             [$firstOperand],

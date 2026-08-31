@@ -23,9 +23,7 @@ trait DataSourceRegistryTrait
      */
     public function getCoreDataSourceManager(): DataSourceManagerInterface
     {
-        if ($this->coreDataSourceManager === null) {
-            $this->coreDataSourceManager = $this->createObject(CoreDataSourceManager::class, [$this]);
-        }
+        $this->coreDataSourceManager ??= $this->createObject(CoreDataSourceManager::class, [$this]);
 
         return $this->coreDataSourceManager;
     }

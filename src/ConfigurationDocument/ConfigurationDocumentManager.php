@@ -154,9 +154,7 @@ class ConfigurationDocumentManager implements ConfigurationDocumentManagerInterf
         }
 
         $cacheKey = md5($document);
-        if (!isset($this->parsedConfigurationCache[$cacheKey])) {
-            $this->parsedConfigurationCache[$cacheKey] = $this->parser->parseDocument($document);
-        }
+        $this->parsedConfigurationCache[$cacheKey] ??= $this->parser->parseDocument($document);
 
         return $this->parsedConfigurationCache[$cacheKey];
     }

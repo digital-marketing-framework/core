@@ -73,7 +73,7 @@ class Configuration implements ConfigurationInterface
         }
 
         if ($resolveNull) {
-            $result = ConfigurationUtility::resolveNullInMergedConfiguration($result);
+            return ConfigurationUtility::resolveNullInMergedConfiguration($result);
         }
 
         return $result;

@@ -26,9 +26,7 @@ trait DataPrivacyManagerRegistryTrait
 
     public function getDataPrivacyManager(): DataPrivacyManagerInterface
     {
-        if (!isset($this->dataPrivacyManager)) {
-            $this->dataPrivacyManager = $this->createObject(DataPrivacyManager::class);
-        }
+        $this->dataPrivacyManager ??= $this->createObject(DataPrivacyManager::class);
 
         return $this->dataPrivacyManager;
     }

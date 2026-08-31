@@ -11,11 +11,9 @@ use DigitalMarketingFramework\Core\SchemaDocument\Schema\SchemaInterface;
  */
 abstract class ScalarDefaultValueSchemaProcessor extends DefaultValueSchemaProcessor
 {
-    public function getDefaultValue(SchemaInterface $schema): mixed
-    {
-        // TODO take allowed values into account
-        // return parent::getDefaultValue($schema) ?? $this->schemaProcessor->getFirstAllowedValue($this->schemaDocument, $schema);
-
-        return parent::getDefaultValue($schema);
-    }
+    // TODO take allowed values into account
+    // public function getDefaultValue(SchemaInterface $schema): mixed
+    // {
+    //     return parent::getDefaultValue($schema) ?? $this->schemaProcessor->getFirstAllowedValue($this->schemaDocument, $schema);
+    // }
 }

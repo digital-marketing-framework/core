@@ -11,9 +11,7 @@ trait VendorResourceServiceRegistryTrait
 
     public function getVendorResourceService(): VendorResourceServiceInterface
     {
-        if (!isset($this->vendorResourceService)) {
-            $this->vendorResourceService = $this->createObject(VendorResourceService::class);
-        }
+        $this->vendorResourceService ??= $this->createObject(VendorResourceService::class);
 
         return $this->vendorResourceService;
     }

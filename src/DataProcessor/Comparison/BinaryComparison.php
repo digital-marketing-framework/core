@@ -54,7 +54,9 @@ abstract class BinaryComparison extends Comparison
         $b = $this->dataProcessor->processValue($this->getConfig(static::KEY_SECOND_OPERAND), $this->context->copy());
         if (!static::handleMultiValuesIndividually() || !$a instanceof MultiValueInterface) {
             return $this->compareValues($a, $b);
-        } elseif ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
+        }
+
+        if ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
             return $this->compareAny($a, $b);
         }
 

@@ -253,15 +253,11 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
         // Compute in-degree: how many documents include this one
         $inDegree = [];
         foreach ($migratables as $identifier => $migratable) {
-            if (!isset($inDegree[$identifier])) {
-                $inDegree[$identifier] = 0;
-            }
+            $inDegree[$identifier] ??= 0;
 
             foreach ($migratable->getIncludes() as $parentIdentifier) {
                 if (isset($migratables[$parentIdentifier])) {
-                    if (!isset($inDegree[$parentIdentifier])) {
-                        $inDegree[$parentIdentifier] = 0;
-                    }
+                    $inDegree[$parentIdentifier] ??= 0;
 
                     ++$inDegree[$parentIdentifier];
                 }
@@ -316,9 +312,7 @@ class ConfigurationDocumentMaintenanceService implements ConfigurationDocumentMa
 
         foreach ($this->dataSourceManagers as $dataSourceManager) {
             foreach ($dataSourceManager->getAllDataSourceVariantIdentifiers() as $identifier) {
-                if (!isset($index[$identifier])) {
-                    $index[$identifier] = 'dataSource';
-                }
+                $index[$identifier] ??= 'dataSource';
             }
         }
 

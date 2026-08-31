@@ -30,9 +30,7 @@ trait DataProcessorRegistryTrait
 
     public function getDataProcessor(): DataProcessorInterface
     {
-        if (!isset($this->dataProcessor)) {
-            $this->dataProcessor = $this->createObject(DataProcessor::class, [$this]);
-        }
+        $this->dataProcessor ??= $this->createObject(DataProcessor::class, [$this]);
 
         return $this->dataProcessor;
     }

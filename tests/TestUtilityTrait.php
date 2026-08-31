@@ -45,7 +45,9 @@ trait TestUtilityTrait
             ++$count;
             if (is_array($return)) {
                 return $this->computeReturn($return[$count - 1], $arguments);
-            } elseif ($return !== null) {
+            }
+
+            if ($return !== null) {
                 return $this->computeReturn($return, $arguments);
             }
         });
