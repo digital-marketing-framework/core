@@ -16,9 +16,7 @@ trait ApiRegistryTrait
 
     public function getCoreApiRouteResolver(): CoreRouteResolverInterface
     {
-        if (!isset($this->coreRouteResolver)) {
-            $this->coreRouteResolver = $this->createObject(CoreRouteResolver::class, [$this]);
-        }
+        $this->coreRouteResolver ??= $this->createObject(CoreRouteResolver::class, [$this]);
 
         return $this->coreRouteResolver;
     }

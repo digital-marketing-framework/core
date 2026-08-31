@@ -24,9 +24,7 @@ class SequenceDataMapperGroup extends DataMapperGroup
 
     protected function loopDetection(string $dataMapperGroupId, DataProcessorContextInterface $context): void
     {
-        if (!isset($context[static::KEY_DATA_MAPPER_LOOP_DETECTION])) {
-            $context[static::KEY_DATA_MAPPER_LOOP_DETECTION] = [];
-        }
+        $context[static::KEY_DATA_MAPPER_LOOP_DETECTION] ??= [];
 
         if (isset($context[static::KEY_DATA_MAPPER_LOOP_DETECTION][$dataMapperGroupId])) {
             throw new DigitalMarketingFrameworkException(sprintf(static::MESSAGE_LOOP_DETECTED, $dataMapperGroupId));

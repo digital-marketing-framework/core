@@ -19,9 +19,7 @@ trait CleanupRegistryTrait
 
     public function getCleanupManager(): CleanupManagerInterface
     {
-        if (!isset($this->cleanupManager)) {
-            $this->cleanupManager = $this->createObject(CleanupManager::class, [$this]);
-        }
+        $this->cleanupManager ??= $this->createObject(CleanupManager::class, [$this]);
 
         return $this->cleanupManager;
     }

@@ -22,9 +22,7 @@ class CoreDataSourceManager extends DataSourceManager
 
     protected function getDataSourceStorages(): array
     {
-        if ($this->sourceStorages === null) {
-            $this->sourceStorages = $this->registry->getAllCoreSourceStorages();
-        }
+        $this->sourceStorages ??= $this->registry->getAllCoreSourceStorages();
 
         return $this->sourceStorages;
     }

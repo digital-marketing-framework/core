@@ -19,9 +19,7 @@ abstract class ReferenceSchema extends StringSchema
             $this->setRequired();
         }
 
-        if ($firstEmptyOptionLabel === null) {
-            $firstEmptyOptionLabel = $this->getDefaultFirstEmptyOptionLabel();
-        }
+        $firstEmptyOptionLabel ??= $this->getDefaultFirstEmptyOptionLabel();
 
         $this->allowedValues->addValue('', $firstEmptyOptionLabel);
 

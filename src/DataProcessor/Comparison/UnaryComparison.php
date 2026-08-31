@@ -62,7 +62,9 @@ abstract class UnaryComparison extends Comparison
         $value = $this->dataProcessor->processValue($this->getConfig(static::KEY_VALUE), $this->context->copy());
         if (!static::handleMultiValuesIndividually() || !$value instanceof MultiValueInterface) {
             return $this->compareValue($value);
-        } elseif ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
+        }
+
+        if ($this->getConfig(static::KEY_ANY_ALL) === 'any') {
             return $this->compareAny($value);
         }
 

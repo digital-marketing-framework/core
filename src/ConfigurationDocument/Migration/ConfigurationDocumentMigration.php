@@ -54,7 +54,9 @@ abstract class ConfigurationDocumentMigration implements ConfigurationDocumentMi
             if ($source > $target) {
                 // source:1.2.3 > target:1.1.4
                 return false;
-            } elseif ($source < $target) {
+            }
+
+            if ($source < $target) {
                 // source:1.2.3 < target:1.3.2
                 return true;
             }

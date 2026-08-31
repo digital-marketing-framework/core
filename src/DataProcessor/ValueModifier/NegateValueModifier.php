@@ -48,7 +48,9 @@ class NegateValueModifier extends ValueModifier
 
         if ($value === $true) {
             return $false;
-        } elseif ($value === $false) {
+        }
+
+        if ($value === $false) {
             return $true;
         }
 

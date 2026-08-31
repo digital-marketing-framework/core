@@ -20,9 +20,7 @@ trait SchemaProcessorRegistryTrait
 
     public function getSchemaProcessor(): SchemaProcessorInterface
     {
-        if (!isset($this->schemaProcessor)) {
-            $this->schemaProcessor = $this->createObject(SchemaProcessor::class, [$this]);
-        }
+        $this->schemaProcessor ??= $this->createObject(SchemaProcessor::class, [$this]);
 
         return $this->schemaProcessor;
     }

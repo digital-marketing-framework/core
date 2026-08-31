@@ -74,7 +74,7 @@ class DefaultGlobalConfiguration implements GlobalConfigurationInterface
         $value = array_key_exists($key, $this->config) ? $this->config[$key] : $default;
 
         if ($resolvePlaceholders) {
-            $value = $this->registry->getEnvironmentService()->insertEnvironmentVariables($value);
+            return $this->registry->getEnvironmentService()->insertEnvironmentVariables($value);
         }
 
         return $value;

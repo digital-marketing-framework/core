@@ -15,9 +15,7 @@ class ScalarValues
 
     public function addValue(string|int|bool $value, ?string $label = null): void
     {
-        if (!isset($this->values['list'])) {
-            $this->values['list'] = new ValueSet();
-        }
+        $this->values['list'] ??= new ValueSet();
 
         $this->values['list']->addValue($value, $label);
     }

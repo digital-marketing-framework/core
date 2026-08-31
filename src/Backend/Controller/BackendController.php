@@ -79,7 +79,7 @@ abstract class BackendController extends Plugin implements BackendControllerInte
     {
         $internalRoute = $this->request->getData()['action'] ?? '';
         if (!in_array($internalRoute, $this->getSupportedRoutes(), true)) {
-            $internalRoute = $this->request->getInternalRoute();
+            return $this->request->getInternalRoute();
         }
 
         return $internalRoute;

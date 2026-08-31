@@ -231,7 +231,7 @@ class Registry implements RegistryInterface
         $host = $this->getContext()->getHost();
 
         if ($host === null || $host === '') {
-            $host = $this->getGlobalConfiguration()->get('core')[CoreGlobalConfigurationSchema::KEY_ENVIRONMENT]
+            return $this->getGlobalConfiguration()->get('core')[CoreGlobalConfigurationSchema::KEY_ENVIRONMENT]
                 ?? CoreGlobalConfigurationSchema::DEFAULT_ENVIRONMENT;
         }
 

@@ -13,9 +13,7 @@ trait TemplateRegistryTrait
 
     public function getTemplateService(): TemplateServiceInterface
     {
-        if (!isset($this->templateService)) {
-            $this->templateService = $this->createObject(TemplateService::class, [$this]);
-        }
+        $this->templateService ??= $this->createObject(TemplateService::class, [$this]);
 
         return $this->templateService;
     }
@@ -27,9 +25,7 @@ trait TemplateRegistryTrait
 
     public function getBackendTemplateService(): TemplateServiceInterface
     {
-        if (!isset($this->backendTemplateService)) {
-            $this->backendTemplateService = $this->createObject(TemplateService::class, [$this]);
-        }
+        $this->backendTemplateService ??= $this->createObject(TemplateService::class, [$this]);
 
         return $this->backendTemplateService;
     }

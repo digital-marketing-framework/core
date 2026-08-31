@@ -12,9 +12,7 @@ trait CacheRegistryTrait
 
     public function getCache(): DataCacheInterface
     {
-        if (!isset($this->cache)) {
-            $this->cache = new DataCache(new NullCache());
-        }
+        $this->cache ??= new DataCache(new NullCache());
 
         return $this->cache;
     }

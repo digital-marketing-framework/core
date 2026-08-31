@@ -37,9 +37,7 @@ abstract class Schema implements SchemaInterface
 
     public function addValueToValueSet(string $name, string|int|bool $value, ?string $label = null): void
     {
-        if (!isset($this->valueSets[$name])) {
-            $this->valueSets[$name] = new ValueSet();
-        }
+        $this->valueSets[$name] ??= new ValueSet();
 
         $this->valueSets[$name]->addValue($value, $label);
     }

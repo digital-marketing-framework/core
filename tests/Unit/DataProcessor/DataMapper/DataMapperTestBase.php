@@ -21,9 +21,7 @@ abstract class DataMapperTestBase extends DataProcessorPluginTestBase
      */
     protected function processDataMapper(array $config, ?array $target = null, ?array $defaultConfig = null): DataInterface
     {
-        if ($defaultConfig === null) {
-            $defaultConfig = static::DEFAULT_CONFIG;
-        }
+        $defaultConfig ??= static::DEFAULT_CONFIG;
 
         $class = static::CLASS_NAME;
         $this->subject = new $class(static::KEYWORD, $this->registry, $config, $this->getContext());

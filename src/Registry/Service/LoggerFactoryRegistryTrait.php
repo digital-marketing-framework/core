@@ -11,9 +11,7 @@ trait LoggerFactoryRegistryTrait
 
     public function getLoggerFactory(): LoggerFactoryInterface
     {
-        if (!isset($this->loggerFactory)) {
-            $this->loggerFactory = new NullLoggerFactory();
-        }
+        $this->loggerFactory ??= new NullLoggerFactory();
 
         return $this->loggerFactory;
     }

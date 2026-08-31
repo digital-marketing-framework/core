@@ -53,9 +53,7 @@ trait TestCaseRegistryTrait
 
     public function getTestCaseManager(): TestCaseManagerInterface
     {
-        if (!isset($this->testCaseManager)) {
-            $this->testCaseManager = $this->createObject(TestCaseManager::class, [$this]);
-        }
+        $this->testCaseManager ??= $this->createObject(TestCaseManager::class, [$this]);
 
         return $this->testCaseManager;
     }

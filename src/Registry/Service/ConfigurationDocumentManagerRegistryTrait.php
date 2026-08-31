@@ -78,11 +78,9 @@ trait ConfigurationDocumentManagerRegistryTrait
 
     public function getConfigurationDocumentMigrationService(): ConfigurationDocumentMigrationServiceInterface
     {
-        if (!isset($this->configurationDocumentMigrationService)) {
-            $this->configurationDocumentMigrationService = $this->createObject(
-                ConfigurationDocumentMigrationService::class
-            );
-        }
+        $this->configurationDocumentMigrationService ??= $this->createObject(
+            ConfigurationDocumentMigrationService::class
+        );
 
         return $this->configurationDocumentMigrationService;
     }
@@ -94,17 +92,15 @@ trait ConfigurationDocumentManagerRegistryTrait
 
     public function getConfigurationDocumentManager(): ConfigurationDocumentManagerInterface
     {
-        if (!isset($this->configurationDocumentManager)) {
-            $this->configurationDocumentManager = $this->createObject(
-                ConfigurationDocumentManager::class,
-                [
-                    $this->getConfigurationDocumentStorage(),
-                    $this->getConfigurationDocumentParser(),
-                    $this->getStaticConfigurationDocumentStorage(),
-                    $this->getConfigurationDocumentMigrationService(),
-                ]
-            );
-        }
+        $this->configurationDocumentManager ??= $this->createObject(
+            ConfigurationDocumentManager::class,
+            [
+                $this->getConfigurationDocumentStorage(),
+                $this->getConfigurationDocumentParser(),
+                $this->getStaticConfigurationDocumentStorage(),
+                $this->getConfigurationDocumentMigrationService(),
+            ]
+        );
 
         return $this->configurationDocumentManager;
     }

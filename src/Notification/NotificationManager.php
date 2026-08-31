@@ -33,9 +33,7 @@ class NotificationManager implements NotificationManagerInterface, GlobalConfigu
      */
     protected function getChannels(): array
     {
-        if ($this->channels === null) {
-            $this->channels = $this->registry->getAllNotificationChannels();
-        }
+        $this->channels ??= $this->registry->getAllNotificationChannels();
 
         return $this->channels;
     }

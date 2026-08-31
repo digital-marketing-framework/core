@@ -12,9 +12,7 @@ trait TemplateEngineRegistryTrait
 
     public function getTemplateEngine(): TemplateEngineInterface
     {
-        if (!isset($this->templateEngine)) {
-            $this->templateEngine = new DefaultTemplateEngine();
-        }
+        $this->templateEngine ??= new DefaultTemplateEngine();
 
         return $this->templateEngine;
     }

@@ -18,9 +18,7 @@ abstract class ConditionTestBase extends DataProcessorPluginTestBase
      */
     protected function processCondition(array $config, ?DataProcessorContextInterface $context = null, ?array $defaultConfig = null): bool
     {
-        if ($defaultConfig === null) {
-            $defaultConfig = static::DEFAULT_CONFIG;
-        }
+        $defaultConfig ??= static::DEFAULT_CONFIG;
 
         $class = static::CLASS_NAME;
         $this->subject = new $class(static::KEYWORD, $this->registry, $config, $context ?? $this->getContext());

@@ -11,9 +11,7 @@ trait FrontendTemplatingRegistryTrait
 
     public function getFrontendUriBuilder(): FrontendUriBuilderInterface
     {
-        if (!isset($this->frontendUriBuilder)) {
-            $this->frontendUriBuilder = $this->createObject(PassthroughFrontendUriBuilder::class);
-        }
+        $this->frontendUriBuilder ??= $this->createObject(PassthroughFrontendUriBuilder::class);
 
         return $this->frontendUriBuilder;
     }

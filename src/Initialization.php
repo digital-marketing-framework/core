@@ -120,7 +120,7 @@ abstract class Initialization implements InitializationInterface
     {
         $package = $this->packageName;
         if (!str_contains($package, '/')) {
-            $package = 'digital-marketing-framework/' . $package;
+            return 'digital-marketing-framework/' . $package;
         }
 
         return $package;
