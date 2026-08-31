@@ -161,6 +161,24 @@ class Configuration implements ConfigurationInterface
         return null;
     }
 
+    public function getVariableConfiguration(string $id): ?string
+    {
+        $variables = $this->getDataProcessingConfiguration()[static::KEY_VARIABLES] ?? [];
+        if (isset($variables[$id])) {
+            return (string)MapUtility::getItemValue($variables[$id]);
+        }
+
+        return null;
+    }
+
+    public function getVariableConfigurationByKey(string $key): ?string
+    {
+        $variables = $this->getDataProcessingConfiguration()[static::KEY_VARIABLES] ?? [];
+        $value = MapUtility::flatten($variables)[$key] ?? null;
+
+        return $value === null ? null : (string)$value;
+    }
+
     public function getGeneralIntegrationConfiguration(): array
     {
         return $this->getIntegrationConfiguration(static::KEY_GENERAL_INTEGRATION);

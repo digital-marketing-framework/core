@@ -37,4 +37,13 @@ abstract class DataProcessorPlugin extends ConfigurablePlugin implements DataPro
             ? $this->context->getData()[$key]
             : null;
     }
+
+    /**
+     * Variables are addressed by key here, not by UUID, so that they can be referenced
+     * from within a string. Returns null if no variable with that key is declared.
+     */
+    protected function getVariableValue(string $key): ?string
+    {
+        return $this->context->getConfiguration()->getVariableConfigurationByKey($key);
+    }
 }

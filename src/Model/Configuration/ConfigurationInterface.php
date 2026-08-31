@@ -21,6 +21,8 @@ interface ConfigurationInterface extends ArrayAccess
 
     public const KEY_VALUE_MAPS = 'valueMaps';
 
+    public const KEY_VARIABLES = 'variables';
+
     public const KEY_IDENTIFIERS = 'identifiers';
 
     public function isReadonly(): bool;
@@ -67,6 +69,18 @@ interface ConfigurationInterface extends ArrayAccess
      * @return ?array<string, array{uuid:string,weight:int,key:string,value:string}>
      */
     public function getValueMapConfiguration(string $id): ?array;
+
+    /**
+     * Returns the value of the variable with the given UUID,
+     * or null if no such variable is declared.
+     */
+    public function getVariableConfiguration(string $id): ?string;
+
+    /**
+     * Returns the value of the variable with the given key,
+     * or null if no such variable is declared.
+     */
+    public function getVariableConfigurationByKey(string $key): ?string;
 
     /**
      * @return array<string,mixed>

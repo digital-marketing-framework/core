@@ -81,6 +81,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\NullValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchReferenceValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\SwitchValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ValueSourceInterface;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\VariableValueSource;
 use DigitalMarketingFramework\Core\DataSource\CoreApiEndPointDataSourceStorage;
 use DigitalMarketingFramework\Core\DataSource\CoreDataSourceStorageInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\CoreGlobalConfigurationSchema;
@@ -138,6 +139,7 @@ class CoreInitialization extends Initialization
                 NullValueSource::class,
                 SwitchReferenceValueSource::class,
                 SwitchValueSource::class,
+                VariableValueSource::class,
             ],
             ValueModifierInterface::class => [
                 DateFormatValueModifier::class,
