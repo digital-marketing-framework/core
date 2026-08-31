@@ -31,4 +31,8 @@ class Icon
     public const VALUE_MAPS = 'value-maps';
 
     public const VALUE_MAP = 'value-map';
+
+    public const VARIABLES = 'variables';
+
+    public const VARIABLE = 'variable';
 }

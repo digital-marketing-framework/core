@@ -216,6 +216,20 @@ trait ConfigurationSchemaRegistryTrait
         // data processing
         $dataProcessingSchema = $this->getDataProcessingSchema($schemaDocument);
 
+        // data processing - variables
+        $variableValueSchema = new StringSchema();
+        $variableValueSchema->getRenderingDefinition()->setLabel('Value');
+        $variableValueSchema->getRenderingDefinition()->setIcon(Icon::VARIABLE);
+
+        $variablesKeySchema = new StringSchema('variableName');
+        $variablesKeySchema->getRenderingDefinition()->setLabel('Variable Name');
+
+        $variablesSchema = new MapSchema($variableValueSchema, $variablesKeySchema);
+        $variablesSchema->getRenderingDefinition()->setLabel('Variables');
+        $variablesSchema->getRenderingDefinition()->setIcon(Icon::VARIABLES);
+
+        $dataProcessingSchema->addProperty(ConfigurationInterface::KEY_VARIABLES, $variablesSchema);
+
         // data processing - value maps
         $valueMapKeySchema = new StringSchema();
         $valueMapKeySchema->getRenderingDefinition()->setLabel('Original Value');
