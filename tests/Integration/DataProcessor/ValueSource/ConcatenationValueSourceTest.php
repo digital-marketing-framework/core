@@ -155,4 +155,60 @@ class ConcatenationValueSourceTest extends ValueSourceTestBase
         $output = $this->processValueSource($this->getValueSourceConfiguration($config));
         $this->assertEquals('value1-value2', $output);
     }
+
+    #[Test]
+    public function emptyFieldWillReturnNullIfEmptyValuesAreSkipped(): void
+    {
+        $this->data['field1'] = '';
+        $config = [
+            ConcatenationValueSource::KEY_VALUES => [
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field1',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
+            ],
+            ConcatenationValueSource::KEY_SKIP_EMPTY_VALUES => true,
+        ];
+        $output = $this->processValueSource($this->getValueSourceConfiguration($config));
+        $this->assertNull($output);
+    }
+
+    #[Test]
+    public function emptyValuesAreSkipped(): void
+    {
+        $this->data['field1'] = 'value1';
+        $this->data['field2'] = '';
+        $this->data['field3'] = 'value3';
+        $config = [
+            ConcatenationValueSource::KEY_VALUES => [
+                'id1' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field1',
+                    ], 'field'),
+                    'id1',
+                    10
+                ),
+                'id2' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field2',
+                    ], 'field'),
+                    'id2',
+                    20
+                ),
+                'id3' => $this->createListItem(
+                    $this->getValueConfiguration([
+                        FieldValueSource::KEY_FIELD_NAME => 'field3',
+                    ], 'field'),
+                    'id3',
+                    30
+                ),
+            ],
+            ConcatenationValueSource::KEY_SKIP_EMPTY_VALUES => true,
+        ];
+        $output = $this->processValueSource($this->getValueSourceConfiguration($config));
+        $this->assertEquals('value1 value3', $output);
+    }
 }

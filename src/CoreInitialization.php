@@ -53,6 +53,7 @@ use DigitalMarketingFramework\Core\DataProcessor\DataMapperGroup\SingleDataMappe
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DateFormatValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DateModifyValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\DefaultValueModifier;
+use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\FilterEmptyValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\IndexValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\InsertDataValueModifier;
 use DigitalMarketingFramework\Core\DataProcessor\ValueModifier\JoinValueModifier;
@@ -145,6 +146,7 @@ class CoreInitialization extends Initialization
                 DateFormatValueModifier::class,
                 DateModifyValueModifier::class,
                 DefaultValueModifier::class,
+                FilterEmptyValueModifier::class,
                 IndexValueModifier::class,
                 InsertDataValueModifier::class,
                 JoinValueModifier::class,
