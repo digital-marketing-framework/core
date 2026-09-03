@@ -18,5 +18,5 @@ interface DataProcessorContextInterface
 
     public function getConfiguration(): ConfigurationInterface;
 
-    public function copy(bool $keepFieldTracker = true, ?DataInterface $data = null): DataProcessorContextInterface;
+    public function copy(bool $keepFieldTracker = true, ?DataInterface $data = null, ?ConfigurationInterface $configuration = null): DataProcessorContextInterface;
 }
