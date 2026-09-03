@@ -14,9 +14,15 @@ class SingleDataMapperGroup extends DataMapperGroup
 
     public function compute(): DataInterface
     {
+        // The field tracker is scoped to a single data mapper group.
+        // Within the group, the field map marks the fields it consumed so that the
+        // passthrough and field collector mechanisms can pick up the remaining ones.
+        // Beyond the group those marks are meaningless: a subsequent group in a sequence
+        // operates on the output of its predecessor, so the tracked names refer to a
+        // different set of fields than the ones the next group is about to process.
         return $this->dataProcessor->processDataMapper(
             $this->getConfig(static::KEY_DATA_MAPPER),
-            $this->context->copy(keepFieldTracker: true)
+            $this->context->copy(keepFieldTracker: false)
         );
     }
 
