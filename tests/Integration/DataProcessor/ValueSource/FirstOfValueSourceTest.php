@@ -82,4 +82,55 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
         $output = $this->processValueSource(static::getValueSourceConfiguration($config));
         self::assertEquals($expectedResult, $output);
     }
+
+    /**
+     * @return array<array{0:mixed,1:array<string,mixed>}>
+     */
+    public static function firstOfSkippingEmptyValuesDataProvider(): array
+    {
+        return [
+            [
+                'a',
+                [
+                    FirstOfValueSource::KEY_SKIP_EMPTY_VALUES => true,
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => static::createListItem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
+                        'id3' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id3', 30),
+                    ],
+                ],
+            ],
+            [
+                null,
+                [
+                    FirstOfValueSource::KEY_SKIP_EMPTY_VALUES => true,
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => static::createListItem(static::getValueConfiguration([], 'null'), 'id1', 10),
+                        'id2' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => ''], 'constant'), 'id2', 20),
+                    ],
+                ],
+            ],
+            [
+                'a',
+                [
+                    FirstOfValueSource::KEY_SKIP_EMPTY_VALUES => true,
+                    FirstOfValueSource::KEY_VALUE_LIST => [
+                        'id1' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'a'], 'constant'), 'id1', 10),
+                        'id2' => static::createListItem(static::getValueConfiguration([ConstantValueSource::KEY_VALUE => 'b'], 'constant'), 'id2', 20),
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param array<string,mixed> $config
+     */
+    #[Test]
+    #[DataProvider('firstOfSkippingEmptyValuesDataProvider')]
+    public function firstOfSkippingEmptyValues(mixed $expectedResult, array $config): void
+    {
+        $output = $this->processValueSource(static::getValueSourceConfiguration($config));
+        self::assertEquals($expectedResult, $output);
+    }
 }
