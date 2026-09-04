@@ -15,6 +15,11 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
 
     protected const CLASS_NAME = FirstOfValueSource::class;
 
+    protected const DEFAULT_CONFIG = [
+        FirstOfValueSource::KEY_SKIP_EMPTY_VALUES => FirstOfValueSource::DEFAULT_SKIP_EMPTY_VALUES,
+        FirstOfValueSource::KEY_VALUE_LIST => [],
+    ];
+
     #[Test]
     public function emptyConfigurationLeadsToNullValue(): void
     {
@@ -99,6 +104,79 @@ class FirstOfValueSourceTest extends ValueSourceTestBase
         }
 
         $config = [
+            FirstOfValueSource::KEY_VALUE_LIST => $listConfig,
+        ];
+        $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', $with, $subResults);
+        $output = $this->processValueSource($config);
+        $this->assertEquals($expectedResult, $output);
+    }
+
+    /**
+     * @return array<array{0:mixed,1:array<array<string,mixed>>,2:array<mixed>}>
+     */
+    public static function firstOfSkippingEmptyValuesDataProvider(): array
+    {
+        return [
+            [
+                'a',
+                [
+                    ['confKey1' => 'confValue1'],
+                    ['confKey2' => 'confValue2'],
+                    ['confKey3' => 'confValue3'],
+                ],
+                [
+                    null,
+                    '',
+                    'a',
+                ],
+            ],
+            [
+                null,
+                [
+                    ['confKey1' => 'confValue1'],
+                    ['confKey2' => 'confValue2'],
+                    ['confKey3' => 'confValue3'],
+                ],
+                [
+                    null,
+                    '',
+                    '',
+                ],
+            ],
+            [
+                'a',
+                [
+                    ['confKey1' => 'confValue1'],
+                    ['confKey2' => 'confValue2'],
+                    ['confKey3' => 'confValue3'],
+                ],
+                [
+                    'a',
+                    'b',
+                    'c',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param array<array<string,mixed>> $subConfigurations
+     * @param array<mixed> $subResults
+     */
+    #[Test]
+    #[DataProvider('firstOfSkippingEmptyValuesDataProvider')]
+    public function firstOfSkippingEmptyValues(mixed $expectedResult, array $subConfigurations, array $subResults): void
+    {
+        $with = array_map(static fn (array $subConfigItem) => [$subConfigItem], $subConfigurations);
+        $with = array_splice($with, 0, count($subResults));
+
+        $listConfig = [];
+        foreach ($subConfigurations as $index => $subConfig) {
+            $listConfig[$index] = $this->createListItem($subConfig, $index, $index * 10);
+        }
+
+        $config = [
+            FirstOfValueSource::KEY_SKIP_EMPTY_VALUES => true,
             FirstOfValueSource::KEY_VALUE_LIST => $listConfig,
         ];
         $this->withConsecutiveWillReturn($this->dataProcessor, 'processValue', $with, $subResults);
