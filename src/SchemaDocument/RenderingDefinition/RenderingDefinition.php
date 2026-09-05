@@ -274,7 +274,7 @@ class RenderingDefinition implements RenderingDefinitionInterface
 
     public function getGeneralDescription(): string
     {
-        return $this->getGeneralDescription();
+        return $this->description;
     }
 
     public function setHint(string $hint): void
