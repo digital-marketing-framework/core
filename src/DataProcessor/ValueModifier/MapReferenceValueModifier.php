@@ -49,7 +49,7 @@ class MapReferenceValueModifier extends ValueModifier
         $mapNameSchema->setRequired();
         $mapNameSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $mapNameSchema->getAllowedValues()->addValue(static::DEFAULT_MAP_NAME, 'Please select');
-        $mapNameSchema->getAllowedValues()->addReference('/dataProcessing/valueMaps/*', label: '{key}');
+        $mapNameSchema->getAllowedValues()->addReference('/dataProcessing/valueMaps/*', label: '{pretty(key)}');
         $schema->addProperty(static::KEY_MAP_NAME, $mapNameSchema);
         $schema->addProperty(static::KEY_INVERT, new BooleanSchema(false));
 

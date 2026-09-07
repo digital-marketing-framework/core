@@ -1,0 +1,39 @@
+{
+  "_comment": [
+    "Shared fixture for the label prettifier, consumed by both implementations so they",
+    "cannot drift apart: GeneralUtility::getLabelFromValue() in PHP and prettifyLabel()",
+    "in the config editor app. Add a case here before changing either implementation.",
+    "The expected values were verified to match lodash's words() tokenizer."
+  ],
+  "cases": {
+    "fooBar": "Foo Bar",
+    "FooBar": "Foo Bar",
+    "foo_bar": "Foo Bar",
+    "foo-bar": "Foo Bar",
+    "fooBAR": "Foo BAR",
+    "first_name": "First Name",
+    "ueber_uns_strasse": "Ueber Uns Strasse",
+    "Contact Owner": "Contact Owner",
+    "E-Mail": "E Mail",
+    "foo__": "Foo",
+    "  padded  ": "Padded",
+
+    "XMLHttpRequest": "XML Http Request",
+    "HTTPSConnection": "HTTPS Connection",
+    "iOSDevice": "I OS Device",
+
+    "Straße": "Straße",
+    "straßenName": "Straßen Name",
+    "Über uns": "Über Uns",
+    "ÄpfelUndBirnen": "Äpfel Und Birnen",
+    "über": "Über",
+
+    "user2Id": "User 2 Id",
+    "a1b2": "A 1 B 2",
+    "00N58000006Sucg": "00 N 58000006 Sucg",
+
+    "": "",
+    "___": "",
+    "42": "42"
+  }
+}

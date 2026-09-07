@@ -20,6 +20,35 @@ class GeneralUtilityTest extends TestCase
     use MultiValueTestTrait;
 
     /**
+     * The fixture is shared with prettifyLabel() in the config editor app so the two
+     * implementations cannot drift apart.
+     *
+     * @return array<string,array{0:string,1:string}>
+     */
+    public static function labelFromValueProvider(): array
+    {
+        $file = __DIR__ . '/../../Fixtures/pretty-label.json';
+        $fixture = json_decode((string)file_get_contents($file), true);
+
+        $cases = [];
+        // PHP turns numeric fixture keys into integers, hence the cast below.
+        /** @var array<int|string,string> */
+        $fixtureCases = $fixture['cases'];
+        foreach ($fixtureCases as $value => $expectedLabel) {
+            $cases[sprintf('"%s" => "%s"', $value, $expectedLabel)] = [(string)$value, $expectedLabel];
+        }
+
+        return $cases;
+    }
+
+    #[Test]
+    #[DataProvider('labelFromValueProvider')]
+    public function getLabelFromValue(string $value, string $expectedLabel): void
+    {
+        $this->assertSame($expectedLabel, GeneralUtility::getLabelFromValue($value));
+    }
+
+    /**
      * @return array<array{0:mixed,1:bool}>
      */
     public static function valueIsEmptyProvider(): array

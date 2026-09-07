@@ -25,7 +25,7 @@ class SwitchSchema extends ContainerSchema
         mixed $defaultValue = null,
     ) {
         parent::__construct($defaultValue);
-        $this->getRenderingDefinition()->setLabel('{type}');
+        $this->getRenderingDefinition()->setLabel('{pretty(type)}');
 
         $this->typeSchema = new StringSchema();
         $this->typeSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);

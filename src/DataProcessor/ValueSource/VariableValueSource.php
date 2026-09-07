@@ -37,7 +37,7 @@ class VariableValueSource extends ValueSource
         $variableNameSchema->getRenderingDefinition()->setLabel('Variable');
         $variableNameSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
         $variableNameSchema->getAllowedValues()->addValue(static::DEFAULT_VARIABLE_NAME, 'Please select');
-        $variableNameSchema->getAllowedValues()->addReference('/dataProcessing/variables/*', label: '{key}');
+        $variableNameSchema->getAllowedValues()->addReference('/dataProcessing/variables/*', label: '{pretty(key)}');
         $schema->addProperty(static::KEY_VARIABLE_NAME, $variableNameSchema);
 
         return $schema;

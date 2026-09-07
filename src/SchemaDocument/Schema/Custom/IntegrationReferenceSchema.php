@@ -33,7 +33,7 @@ class IntegrationReferenceSchema extends ContainerSchema
         $this->integrationReferenceSchema->getRenderingDefinition()->setLabel('Integration');
         $this->addProperty(static::KEY_INTEGRATION_REFERENCE, $this->integrationReferenceSchema);
 
-        $this->getRenderingDefinition()->setLabel('{integrationReference}');
+        $this->getRenderingDefinition()->setLabel('{pretty(integrationReference)}');
         $this->getRenderingDefinition()->setSkipHeader(true);
     }
 
