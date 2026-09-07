@@ -17,6 +17,13 @@ use Stringable;
 
 final class GeneralUtility
 {
+    /**
+     * Splits an identifier into words: an acronym before a capitalised word, an optionally
+     * capitalised lowercase run, a remaining uppercase run, or a digit run. Anything else
+     * (separators, punctuation) is a boundary and is dropped.
+     */
+    private const LABEL_WORD_PATTERN = '/\p{Lu}+(?=\p{Lu}\p{Ll})|\p{Lu}?\p{Ll}+|\p{Lu}+|\d+/u';
+
     protected const CHARACTER_MAP = [
         '\\n' => PHP_EOL,
         '\\s' => ' ',
@@ -467,18 +474,40 @@ final class GeneralUtility
     }
 
     /**
-     * fooBar => Foo Bar
-     * foo-bar => Foo Bar
-     * foo_bar => Foo Bar
-     * fooBAR => Foo BAR
+     * Derives a human-readable label from a machine-readable identifier.
+     *
+     * Word boundaries follow the usual identifier conventions: separators, a lower-to-upper
+     * transition, the end of an acronym before a capitalised word, and letter-to-digit
+     * transitions. A word is capitalised only when it is entirely lowercase, so acronyms
+     * survive intact.
+     *
+     *     fooBar          => Foo Bar
+     *     fooBAR          => Foo BAR
+     *     first_name      => First Name
+     *     XMLHttpRequest  => XML Http Request
+     *     user2Id         => User 2 Id
+     *     Straße          => Straße
+     *
+     * An opaque identifier has no word structure to find and comes out no more readable
+     * than it went in (00N58000006Sucg => 00 N 58000006 Sucg). That is a property of the
+     * input, not a defect here; a configured label is the answer for those.
+     *
+     * Must stay behaviourally identical to prettifyLabel() in the config editor app. Both
+     * are covered by tests/Fixtures/pretty-label.json — change the fixture first.
      */
     public static function getLabelFromValue(string $value): string
     {
-        $label = $value;
-        $label = preg_replace_callback('/[A-Z]+/', static fn (array $matches): string => ' ' . $matches[0], $label);
-        $label = preg_replace_callback('/[^a-zA-Z0-9]+([a-zA-Z0-9]+)/', static fn (array $matches): string => ' ' . ucfirst($matches[1]), (string)$label);
-        $label = preg_replace('/[^a-zA-Z0-9]$/', '', (string)$label);
+        preg_match_all(self::LABEL_WORD_PATTERN, $value, $matches);
 
-        return ucfirst((string)$label);
+        return implode(' ', array_map(
+            static function (string $word): string {
+                if ($word !== mb_strtolower($word)) {
+                    return $word;
+                }
+
+                return mb_strtoupper(mb_substr($word, 0, 1)) . mb_substr($word, 1);
+            },
+            $matches[0]
+        ));
     }
 }

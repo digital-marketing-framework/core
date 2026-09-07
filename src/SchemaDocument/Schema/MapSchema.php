@@ -15,7 +15,7 @@ class MapSchema extends ListSchema
         parent::__construct($valueSchema, $defaultValue);
         $this->itemSchema->addProperty(MapUtility::KEY_KEY, $nameSchema);
         if ($this->valueSchema->getRenderingDefinition()->getLabel() === null) {
-            $this->valueSchema->getRenderingDefinition()->setLabel(sprintf('{../%s}', MapUtility::KEY_KEY));
+            $this->valueSchema->getRenderingDefinition()->setLabel(sprintf('{pretty(../%s)}', MapUtility::KEY_KEY));
         }
 
         $this->nameSchema->addValidation(new UniqueCondition('.', sprintf('../../*/%s', MapUtility::KEY_KEY)), 'Map key must be unique', true);

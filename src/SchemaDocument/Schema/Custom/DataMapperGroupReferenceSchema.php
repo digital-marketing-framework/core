@@ -24,6 +24,6 @@ class DataMapperGroupReferenceSchema extends ReferenceSchema
 
     protected function getLabel(): string
     {
-        return '{key}';
+        return '{pretty(key)}';
     }
 }

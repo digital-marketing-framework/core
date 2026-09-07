@@ -130,7 +130,8 @@ function editComboboxValue() {
                         <span class="tw-inline-flex tw-items-center tw-gap-1.5 tw-rounded tw-border tw-border-blue-300 tw-bg-blue-50 tw-px-2.5 tw-py-1.5 tw-text-sm tw-text-gray-900 tw-cursor-pointer hover:tw-bg-blue-100"
                               @click="editComboboxValue">
                             {{ suggestedValues[currentValue] }}
-                            <span class="tw-text-xs tw-text-gray-500">({{ currentValue }})</span>
+                            <span v-if="suggestedValues[currentValue] !== currentValue"
+                                  class="tw-text-xs tw-text-gray-500">({{ currentValue }})</span>
                         </span>
                     </div>
                     <div v-else>

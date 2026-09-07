@@ -36,7 +36,7 @@ const label = computed(() => {
     if (!props.referenceLabel || !path.value) {
         return '';
     }
-    const result = processLabel(props.referenceLabel, path.value, props.currentPath, true);
+    const result = processLabel(props.referenceLabel, path.value, props.currentPath);
     return result || '';
 });
 const valid = computed(() => path.value && (label.value || icon.value));

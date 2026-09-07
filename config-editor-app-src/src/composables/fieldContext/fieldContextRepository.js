@@ -1,4 +1,5 @@
 import { useFieldContextReference } from './fieldContextReference';
+import { useLabelProcessor } from '../label';
 import { usePathProcessor } from '../path';
 
 // *** data mapper group processor ***
@@ -458,6 +459,7 @@ const getActiveOutputContext = (store, path) => {
 
 const getInputContextNames = (store, path) => {
   const { getInboundRouteKeywords, getDataMapperGroupIds } = useFieldContextReference(store);
+  const { prettifyLabel } = useLabelProcessor(store);
   const result = {};
 
   result['distributor.in.defaults.current'] = 'Distributor Input';
@@ -465,7 +467,9 @@ const getInputContextNames = (store, path) => {
   const collectorKeywords = getInboundRouteKeywords(store);
   for (let integration in collectorKeywords) {
     for (let key in collectorKeywords[integration]) {
-      result['collector.in.defaults.' + integration + '.' + key] = 'Collector Input ' + (collectorKeywords[integration][key] || key);
+      // The value set supplies a label; fall back to deriving one from the keyword.
+      const routeLabel = collectorKeywords[integration][key] || prettifyLabel(key);
+      result['collector.in.defaults.' + integration + '.' + key] = 'Collector Input: ' + routeLabel;
     }
   }
 
@@ -476,7 +480,7 @@ const getInputContextNames = (store, path) => {
     if (path.startsWith('/dataProcessing/dataMapperGroups/' + id + '/')) {
       continue;
     }
-    result['dataMapperGroup.out.' + id] = 'Data Mapper Output ' + dataMapperGroupIds[id];
+    result['dataMapperGroup.out.' + id] = 'Data Mapper Output: ' + prettifyLabel(dataMapperGroupIds[id]);
   }
 
   return result;
@@ -484,12 +488,15 @@ const getInputContextNames = (store, path) => {
 
 const getOutputContextNames = (store) => {
   const { getOutboundRouteKeywords } = useFieldContextReference(store);
+  const { prettifyLabel } = useLabelProcessor(store);
   const result = {};
 
   const routeKeywords = getOutboundRouteKeywords(store);
   for (let integration in routeKeywords) {
     for (let key in routeKeywords[integration]) {
-      result['distributor.out.defaults.' + integration + '.' + key] = 'Distributor Output ' + (routeKeywords[integration][key] || key);
+      // The value set supplies a label; fall back to deriving one from the keyword.
+      const routeLabel = routeKeywords[integration][key] || prettifyLabel(key);
+      result['distributor.out.defaults.' + integration + '.' + key] = 'Distributor Output: ' + routeLabel;
     }
   }
 

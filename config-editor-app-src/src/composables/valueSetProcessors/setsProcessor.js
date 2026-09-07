@@ -10,10 +10,10 @@ const keyword = 'sets';
  * ]
  */
 const processor = (store, config, currentPath, add) => {
-  const { processLabel } = useLabelProcessor(store);
+  const { interpolatePath } = useLabelProcessor(store);
   const valueSets = store.schemaDocument.valueSets;
   config.forEach((setName) => {
-    const processedSetName = processLabel(setName, currentPath, null, true);
+    const processedSetName = interpolatePath(setName, currentPath);
     const set = valueSets[processedSetName] || {};
     Object.keys(set).forEach((value) => {
       add(value, set[value]);
