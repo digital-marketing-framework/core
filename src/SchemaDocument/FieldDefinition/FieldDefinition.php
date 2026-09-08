@@ -118,9 +118,16 @@ class FieldDefinition
             $this->required = null;
         }
 
-        foreach ($fieldDefinition->getValues() as $value) {
-            if (!in_array($value, $this->values, true)) {
-                $this->values[] = $value;
+        // A null value list means the definition contributes no known values, which is not
+        // the same as contributing an empty list. Only a non-null list turns this one into
+        // an array, so "no information from either side" stays null.
+        $values = $fieldDefinition->getValues();
+        if ($values !== null) {
+            $this->values ??= [];
+            foreach ($values as $value) {
+                if (!in_array($value, $this->values, true)) {
+                    $this->values[] = $value;
+                }
             }
         }
     }
