@@ -23,6 +23,9 @@ class FieldListDefinition
         return $this->fields[$name] ?? null;
     }
 
+    /**
+     * Combines the definition with any existing one for the same field name.
+     */
     public function addField(FieldDefinition $fieldDefinition): void
     {
         $name = $fieldDefinition->getName();
@@ -46,7 +49,7 @@ class FieldListDefinition
     }
 
     /**
-     * @return array<string,array{name:string,type:string,label:string,multiValue:?bool}>
+     * @return array<string,array{name:string,type:string,label:string,multiValue?:bool,dedicated?:string,values?:array<mixed>,required?:bool}>
      */
     public function toArray(): array
     {
@@ -54,7 +57,7 @@ class FieldListDefinition
     }
 
     /**
-     * @return array<FieldDefinition>
+     * @return array<string,FieldDefinition>
      */
     public function getFields(): array
     {
