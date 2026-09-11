@@ -17,13 +17,17 @@ abstract class SectionController extends BackendController implements SectionCon
 {
     use TemplateEngineAwareTrait;
 
+    public const MENU_SCRIPT = 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/menu.js';
+
+    public const BACKEND_STYLES = 'PKG:digital-marketing-framework/core/res/assets/styles/backend.css';
+
     /** @var array<string,mixed> */
     protected array $viewData = [
         'scripts' => [
-            'menu' => 'PKG:digital-marketing-framework/core/res/assets/scripts/backend/menu.js',
+            'menu' => self::MENU_SCRIPT,
         ],
         'styles' => [
-            'backend' => 'PKG:digital-marketing-framework/core/res/assets/styles/backend.css',
+            'backend' => self::BACKEND_STYLES,
         ],
     ];
 
@@ -171,6 +175,7 @@ abstract class SectionController extends BackendController implements SectionCon
         $this->request = $request;
 
         $this->viewData['menu'] = $this->registry->getBackendManager()->getSectionMenu($request);
+        $this->viewData['subSectionMenu'] = $this->registry->getBackendManager()->getSubSectionMenu($request);
         $this->viewData['section'] = $this->registry->getBackendManager()->getSection($this->getSection());
 
         if (!$this->matchRequest($request)) {

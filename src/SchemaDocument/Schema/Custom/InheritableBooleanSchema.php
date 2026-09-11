@@ -2,36 +2,27 @@
 
 namespace DigitalMarketingFramework\Core\SchemaDocument\Schema\Custom;
 
-use DigitalMarketingFramework\Core\SchemaDocument\RenderingDefinition\RenderingDefinitionInterface;
-use DigitalMarketingFramework\Core\SchemaDocument\Schema\StringSchema;
-
-class InheritableBooleanSchema extends StringSchema
+/**
+ * A boolean whose unspecified state means "take the value from somewhere else in this
+ * configuration", such as an outbound route falling back to the general route settings.
+ *
+ * This is not document inheritance, which happens on its own and offers nothing to decide.
+ * Where the value comes from instead is the caller's business — convert() only reports that
+ * none was given here.
+ */
+class InheritableBooleanSchema extends NullableBooleanSchema
 {
     public const VALUE_INHERIT = 'inherit';
 
-    public const VALUE_TRUE = 'yes';
+    public const VALUE_NULL = self::VALUE_INHERIT;
 
-    public const VALUE_FALSE = 'no';
-
+    /**
+     * Declared here on purpose: PHP resolves self:: in a default parameter value against the
+     * class that declares the constructor, so inheriting the parent's would default this
+     * schema to the parent's keyword instead of "inherit".
+     */
     public function __construct(string $defaultValue = self::VALUE_INHERIT)
     {
         parent::__construct($defaultValue);
-        $this->getAllowedValues()->addValue(static::VALUE_INHERIT);
-        $this->getAllowedValues()->addValue(static::VALUE_TRUE);
-        $this->getAllowedValues()->addValue(static::VALUE_FALSE);
-        $this->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
-    }
-
-    /**
-     * Converts a saved value (a string) to the actual (possibly inherited) boolean value
-     * Will return null if the value is to be inherited, true or false otherwise.
-     */
-    public static function convert(string $value): ?bool
-    {
-        return match ($value) {
-            static::VALUE_TRUE => true,
-            static::VALUE_FALSE => false,
-            default => null,
-        };
     }
 }

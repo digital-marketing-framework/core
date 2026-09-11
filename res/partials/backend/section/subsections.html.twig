@@ -1,0 +1,15 @@
+{#
+  The row of links to a section's other actions, rendered from what packages registered.
+  Empty for a section with fewer than two subsections, so a section that registers none never
+  has to know about any of this.
+#}
+{% if subSectionMenu is defined and subSectionMenu is not empty %}
+    <div class="my-4">
+        {% for subSection in subSectionMenu %}
+            <a class="btn btn-default{% if subSection.active %} active{% endif %}" href="{{ uri(subSection.route) }}">
+                {% if subSection.icon %}{{ include('t3-icon.html.twig', { name: subSection.icon }) }}{% endif %}
+                {{ subSection.label }}
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}

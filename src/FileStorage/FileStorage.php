@@ -7,9 +7,12 @@ use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
+use DigitalMarketingFramework\Core\Utility\WebServerUtility;
 
 class FileStorage implements FileStorageInterface, LoggerAwareInterface
 {
+    use AccessProtectionTrait;
+
     use LoggerAwareTrait;
 
     protected function getFilePath(string $fileIdentifier): string
@@ -30,8 +33,25 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
 
     public function putFileContents(string $fileIdentifier, string $fileContent): void
     {
-        if ($this->fileIsWriteable($fileIdentifier)) {
-            file_put_contents($this->getFilePath($fileIdentifier), $fileContent);
+        $path = $this->getFilePath($fileIdentifier);
+
+        // Writing a file implies the folder it goes in: nobody should have to create the
+        // storage folder by hand before the first document can be saved. This matches the
+        // Drupal file storage, which has always done it.
+        $folder = dirname($path);
+        if (!is_dir($folder)) {
+            $this->createFolder($folder);
+        }
+
+        // A file that does not exist yet is never is_writable(), so asking about the file alone
+        // would refuse to create anything. For a new file the question is whether its folder
+        // takes one.
+        $writeable = file_exists($path)
+            ? $this->fileIsWriteable($fileIdentifier)
+            : is_writable($folder);
+
+        if ($writeable) {
+            file_put_contents($path, $fileContent);
         } else {
             $this->logger->warning(sprintf('File %s does not seem to be writeable.', $fileIdentifier));
         }
@@ -133,12 +153,53 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return is_dir($path);
     }
 
+    public function folderIsWriteable(string $folderIdentifier): bool
+    {
+        $path = rtrim($this->getFilePath($folderIdentifier), '/');
+
+        // Walk up to the nearest existing ancestor: a folder that does not exist yet is
+        // writeable exactly when something above it will take a new directory.
+        while ($path !== '' && !is_dir($path)) {
+            $parent = dirname($path);
+            if ($parent === $path) {
+                return false;
+            }
+
+            $path = $parent;
+        }
+
+        return $path !== '' && is_writable($path);
+    }
+
     public function createFolder(string $folderIdentifier): void
     {
         if (!$this->folderExists($folderIdentifier)) {
             $path = rtrim($this->getFilePath($folderIdentifier), '/');
             mkdir($path, recursive: true);
         }
+
+        $this->protectFolder($folderIdentifier);
+    }
+
+    public function isPubliclyAccessible(string $identifier): bool
+    {
+        // A plain path says nothing about what a web server serves, so the cautious answer is
+        // the one that makes callers warn rather than stay quiet.
+        return true;
+    }
+
+    public function protectFolder(string $folderIdentifier): void
+    {
+        if (!WebServerUtility::supportsAccessFile() || !$this->folderExists($folderIdentifier)) {
+            return;
+        }
+
+        $accessFilePath = rtrim($this->getFilePath($folderIdentifier), '/') . '/' . static::ACCESS_FILE_NAME;
+        if (file_exists($accessFilePath)) {
+            return;
+        }
+
+        file_put_contents($accessFilePath, static::ACCESS_FILE_CONTENTS);
     }
 
     public function getPublicUrl(string $fileIdentifier): string

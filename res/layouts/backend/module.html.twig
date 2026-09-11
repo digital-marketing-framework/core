@@ -24,6 +24,10 @@
                             <h1>{{ section.title }}</h1>
                         {% endblock %}
 
+                        {% block subsections %}
+                            {{ include('section/subsections.html.twig', {subSectionMenu}) }}
+                        {% endblock %}
+
                         {% block section %}{% endblock %}
                     </div>
                 </div>
