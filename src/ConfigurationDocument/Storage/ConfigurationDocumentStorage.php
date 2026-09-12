@@ -41,7 +41,7 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
         return $config;
     }
 
-    public function initializeConfigurationDocumentStorage(): void
+    public function protectStorageFolder(): void
     {
     }
 

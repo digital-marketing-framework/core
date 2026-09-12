@@ -295,6 +295,11 @@ class FieldDefinitionSectionController extends ListSectionController implements 
         return $folder;
     }
 
+    protected function isValidContextIdentifier(string $contextIdentifier): bool
+    {
+        return preg_match(static::CONTEXT_IDENTIFIER_PATTERN, $contextIdentifier) === 1;
+    }
+
     protected function fieldDefinitionsEditAction(): Response
     {
         $this->assignCurrentRouteData(defaultReturnRoute: 'page.integrations.field-definitions');
@@ -341,6 +346,12 @@ class FieldDefinitionSectionController extends ListSectionController implements 
         $contextIdentifier = $this->getDocumentIdentifier();
         $folder = $this->getRequiredFolder();
 
+        // setContent() writes the file whether or not the context was already there, so save
+        // is a creating action too and is held to the same identifier rule as create.
+        if (!$this->isValidContextIdentifier($contextIdentifier)) {
+            throw new DigitalMarketingFrameworkException(sprintf('"%s" is not a valid field context identifier.', $contextIdentifier));
+        }
+
         $document = $this->configurationDocumentParser->parseDocument($this->getDocument());
         unset($document[ConfigurationDocumentManagerInterface::KEY_META_DATA]);
 
@@ -361,12 +372,12 @@ class FieldDefinitionSectionController extends ListSectionController implements 
     {
         $contextIdentifier = $this->getNewContextIdentifier();
         if ($contextIdentifier === '') {
-            return $this->redirect('page.integrations.field-definitions');
+            return $this->redirect('page.integrations.field-definitions', ['returnUrl' => $this->getReturnUrl()]);
         }
 
         $folder = $this->getFolder() ?? $this->storage->getStorageFolder();
 
-        if (preg_match(static::CONTEXT_IDENTIFIER_PATTERN, $contextIdentifier) !== 1) {
+        if (!$this->isValidContextIdentifier($contextIdentifier)) {
             return $this->refuseCreation(sprintf('"%s" is not a valid field context identifier.', $contextIdentifier));
         }
 
@@ -390,7 +401,11 @@ class FieldDefinitionSectionController extends ListSectionController implements 
             $folder
         );
 
-        return $this->redirect('page.integrations.field-definitions-edit', ['id' => $contextIdentifier, 'folder' => $folder]);
+        return $this->redirect('page.integrations.field-definitions-edit', [
+            'id' => $contextIdentifier,
+            'folder' => $folder,
+            'returnUrl' => $this->getReturnUrl(),
+        ]);
     }
 
     /**
@@ -413,10 +428,11 @@ class FieldDefinitionSectionController extends ListSectionController implements 
 
     protected function fieldDefinitionsDeleteAction(): Response
     {
+        $folder = $this->getRequiredFolder();
         foreach ($this->getSelectedItems() as $contextIdentifier) {
-            $this->storage->delete((string)$contextIdentifier, $this->getRequiredFolder());
+            $this->storage->delete((string)$contextIdentifier, $folder);
         }
 
-        return $this->redirect('page.integrations.field-definitions');
+        return $this->redirect('page.integrations.field-definitions', ['returnUrl' => $this->getReturnUrl()]);
     }
 }

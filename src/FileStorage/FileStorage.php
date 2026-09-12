@@ -36,12 +36,11 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         $path = $this->getFilePath($fileIdentifier);
 
         // Writing a file implies the folder it goes in: nobody should have to create the
-        // storage folder by hand before the first document can be saved. This matches the
-        // Drupal file storage, which has always done it.
+        // storage folder by hand before the first document can be saved. createFolder() makes
+        // only what is missing and protects the folder either way, which is how a folder that
+        // was there all along gets its access file.
         $folder = dirname($path);
-        if (!is_dir($folder)) {
-            $this->createFolder($folder);
-        }
+        $this->createFolder($folder);
 
         // A file that does not exist yet is never is_writable(), so asking about the file alone
         // would refuse to create anything. For a new file the question is whether its folder
@@ -74,14 +73,16 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return null;
     }
 
+    // PHP's names for these two are the other way round — its "basename" is the one carrying
+    // the extension — which is how they came to be swapped here in the first place.
     public function getFileName(string $fileIdentifier): ?string
     {
-        return $this->getFileInfo($fileIdentifier, PATHINFO_FILENAME);
+        return $this->getFileInfo($fileIdentifier, PATHINFO_BASENAME);
     }
 
     public function getFileBaseName(string $fileIdentifier): ?string
     {
-        return $this->getFileInfo($fileIdentifier, PATHINFO_BASENAME);
+        return $this->getFileInfo($fileIdentifier, PATHINFO_FILENAME);
     }
 
     public function getFileExtension(string $fileIdentifier): ?string
@@ -196,6 +197,13 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
 
         $accessFilePath = rtrim($this->getFilePath($folderIdentifier), '/') . '/' . static::ACCESS_FILE_NAME;
         if (file_exists($accessFilePath)) {
+            return;
+        }
+
+        // A folder that takes no new file cannot be protected from here. Saying so through a
+        // PHP warning on every attempt is not saying it to anyone who can act on it; the
+        // storage answers isStorageReady() with false, which is what reaches the backend.
+        if (!$this->folderIsWriteable($folderIdentifier)) {
             return;
         }
 

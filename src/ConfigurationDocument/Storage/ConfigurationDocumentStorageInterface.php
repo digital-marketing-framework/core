@@ -21,7 +21,12 @@ interface ConfigurationDocumentStorageInterface
 
     public function isReadOnly(string $documentIdentifier): bool;
 
-    public function initializeConfigurationDocumentStorage(): void;
+    /**
+     * Writes the access file into the storage folder when the folder is there, is public and
+     * has none. Nothing outside a backend health check should need this: a folder created by
+     * the storage itself is protected as it is created.
+     */
+    public function protectStorageFolder(): void;
 
     /**
      * Whether a document could be stored, which is not the same as the folder being there:

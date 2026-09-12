@@ -108,11 +108,7 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         return rtrim((string)$this->getStorageConfiguration('folder', ''), '/');
     }
 
-    /**
-     * Protects a folder that already exists. One that does not is created, and protected, by the
-     * first document written to it — a system that never stores one grows no empty directory.
-     */
-    public function initializeConfigurationDocumentStorage(): void
+    public function protectStorageFolder(): void
     {
         $folderIdentifier = $this->getStorageFolderIdentifier();
         if ($folderIdentifier !== '') {

@@ -35,8 +35,18 @@ interface FileStorageInterface
 
     public function deleteFile(string $fileIdentifier): void;
 
+    /**
+     * The name the file has in its folder, extension included: "main.config.yaml".
+     */
     public function getFileName(string $fileIdentifier): ?string;
 
+    /**
+     * The same name with its extension taken off: "main.config".
+     *
+     * Deliberately the opposite of what PHP calls a basename. These names follow the CMS file
+     * APIs the implementations wrap, and callers rely on it — the configuration document
+     * storage recognises a document by a base name ending in ".config".
+     */
     public function getFileBaseName(string $fileIdentifier): ?string;
 
     public function getFileExtension(string $fileIdentifier): ?string;

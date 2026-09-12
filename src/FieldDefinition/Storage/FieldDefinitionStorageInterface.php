@@ -62,10 +62,11 @@ interface FieldDefinitionStorageInterface
     public function getStorageFolder(): string;
 
     /**
-     * Called once the storage is registered, to protect a folder that already exists. A folder
-     * that does not is protected when it is created.
+     * Writes the access file into the storage folder when the folder is there, is public and
+     * has none. Nothing outside a backend health check should need this: a folder created by
+     * the storage itself is protected as it is created.
      */
-    public function initializeStorage(): void;
+    public function protectStorageFolder(): void;
 
     /**
      * Whether a definition could be stored, which is not the same as the folder being there:

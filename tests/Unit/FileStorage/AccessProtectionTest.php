@@ -26,15 +26,16 @@ class AccessProtectionTest extends TestCase
         }
     }
 
-    protected function subject(bool $public, bool $accessFileExists): object
+    protected function subject(bool $public, bool $folderExists, bool $accessFileExists): object
     {
-        return new class($public, $accessFileExists) {
+        return new class($public, $folderExists, $accessFileExists) {
             use AccessProtectionTrait;
 
             public const ACCESS_FILE_NAME = FileStorageInterface::ACCESS_FILE_NAME;
 
             public function __construct(
                 protected bool $public,
+                protected bool $folderExists,
                 protected bool $accessFileExists,
             ) {
             }
@@ -42,6 +43,11 @@ class AccessProtectionTest extends TestCase
             public function isPubliclyAccessible(string $identifier): bool
             {
                 return $this->public;
+            }
+
+            public function folderExists(string $folderIdentifier): bool
+            {
+                return $this->folderExists;
             }
 
             public function fileExists(string $fileIdentifier): bool
@@ -78,6 +84,32 @@ class AccessProtectionTest extends TestCase
     {
         $_SERVER['SERVER_SOFTWARE'] = $server;
 
-        $this->assertSame($expected, $this->subject($public, $accessFileExists)->folderIsProtected('1:/some/folder'));
+        $this->assertSame($expected, $this->subject($public, true, $accessFileExists)->folderIsProtected('1:/some/folder'));
+    }
+
+    /**
+     * @return array<string,array{string,bool}>
+     */
+    public static function missingFolderProvider(): array
+    {
+        return [
+            // Nothing is stored yet, and the first file written creates the folder with its
+            // access file, so there is nothing to warn about ahead of time.
+            'apache' => ['Apache/2.4', true],
+
+            // Here the warning has to come before the folder does: this server will serve
+            // whatever lands in it and no file can stop that, so the only thing that can change
+            // the answer is moving the storage — which is what the warning says to do.
+            'nginx' => ['nginx/1.24', false],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('missingFolderProvider')]
+    public function aMissingFolderIsJudgedByWhatWritingToItWouldMean(string $server, bool $expected): void
+    {
+        $_SERVER['SERVER_SOFTWARE'] = $server;
+
+        $this->assertSame($expected, $this->subject(true, false, false)->folderIsProtected('1:/some/folder'));
     }
 }

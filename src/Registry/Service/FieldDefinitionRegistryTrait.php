@@ -41,7 +41,6 @@ trait FieldDefinitionRegistryTrait
     public function setFieldDefinitionStorage(FieldDefinitionStorageInterface $fieldDefinitionStorage): void
     {
         $this->fieldDefinitionStorage = $fieldDefinitionStorage;
-        $fieldDefinitionStorage->initializeStorage();
     }
 
     public function getFieldDefinitionManager(): FieldDefinitionManagerInterface

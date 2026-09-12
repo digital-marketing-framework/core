@@ -12,6 +12,7 @@
     } %}
     {{ include('configuration-editor/editor-setup.html.twig', {
         documentType: 'field-definition',
+        saveRoute: 'page.integrations.field-definitions-save',
         returnUri: returnUrl ?? uri('page.integrations.field-definitions'),
         title: context.id,
         document: context.content,

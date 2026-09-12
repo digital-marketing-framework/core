@@ -8,6 +8,12 @@ use DigitalMarketingFramework\Core\Utility\WebServerUtility;
 /**
  * Reports the two things that can be wrong with a storage folder: it cannot be written to, or
  * its contents can be fetched over the web.
+ *
+ * Also the place where a folder whose access file went missing gets it back. A folder is
+ * protected as it is created and as it is written to, so losing the file takes someone
+ * deleting it — and this handler runs where that is reported, on the backend overview.
+ * Restoring it from here costs one file check when someone looks, rather than one on every
+ * request the system serves.
  */
 class ConfigurationStorageAlertHandler extends AlertHandler
 {
@@ -16,6 +22,7 @@ class ConfigurationStorageAlertHandler extends AlertHandler
         $alerts = [];
 
         $configurationStorage = $this->registry->getConfigurationDocumentStorage();
+        $configurationStorage->protectStorageFolder();
         if (!$configurationStorage->isStorageReady()) {
             $alerts[] = $this->unwriteable('Configuration Storage', 'Configuration documents');
         } elseif (!$configurationStorage->isStorageProtected()) {
@@ -30,6 +37,7 @@ class ConfigurationStorageAlertHandler extends AlertHandler
             return $alerts;
         }
 
+        $fieldDefinitionStorage->protectStorageFolder();
         if (!$fieldDefinitionStorage->isStorageReady()) {
             $alerts[] = $this->unwriteable('Field Definition Storage', 'Field definitions');
         } elseif (!$fieldDefinitionStorage->isStorageProtected()) {
