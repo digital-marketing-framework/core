@@ -7,9 +7,12 @@ use DigitalMarketingFramework\Core\Log\LoggerAwareInterface;
 use DigitalMarketingFramework\Core\Log\LoggerAwareTrait;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValue;
 use DigitalMarketingFramework\Core\Model\Data\Value\FileValueInterface;
+use DigitalMarketingFramework\Core\Utility\WebServerUtility;
 
 class FileStorage implements FileStorageInterface, LoggerAwareInterface
 {
+    use AccessProtectionTrait;
+
     use LoggerAwareTrait;
 
     protected function getFilePath(string $fileIdentifier): string
@@ -30,8 +33,24 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
 
     public function putFileContents(string $fileIdentifier, string $fileContent): void
     {
-        if ($this->fileIsWriteable($fileIdentifier)) {
-            file_put_contents($this->getFilePath($fileIdentifier), $fileContent);
+        $path = $this->getFilePath($fileIdentifier);
+
+        // Writing a file implies the folder it goes in: nobody should have to create the
+        // storage folder by hand before the first document can be saved. createFolder() makes
+        // only what is missing and protects the folder either way, which is how a folder that
+        // was there all along gets its access file.
+        $folder = dirname($path);
+        $this->createFolder($folder);
+
+        // A file that does not exist yet is never is_writable(), so asking about the file alone
+        // would refuse to create anything. For a new file the question is whether its folder
+        // takes one.
+        $writeable = file_exists($path)
+            ? $this->fileIsWriteable($fileIdentifier)
+            : is_writable($folder);
+
+        if ($writeable) {
+            file_put_contents($path, $fileContent);
         } else {
             $this->logger->warning(sprintf('File %s does not seem to be writeable.', $fileIdentifier));
         }
@@ -54,14 +73,16 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return null;
     }
 
+    // PHP's names for these two are the other way round — its "basename" is the one carrying
+    // the extension — which is how they came to be swapped here in the first place.
     public function getFileName(string $fileIdentifier): ?string
     {
-        return $this->getFileInfo($fileIdentifier, PATHINFO_FILENAME);
+        return $this->getFileInfo($fileIdentifier, PATHINFO_BASENAME);
     }
 
     public function getFileBaseName(string $fileIdentifier): ?string
     {
-        return $this->getFileInfo($fileIdentifier, PATHINFO_BASENAME);
+        return $this->getFileInfo($fileIdentifier, PATHINFO_FILENAME);
     }
 
     public function getFileExtension(string $fileIdentifier): ?string
@@ -133,12 +154,60 @@ class FileStorage implements FileStorageInterface, LoggerAwareInterface
         return is_dir($path);
     }
 
+    public function folderIsWriteable(string $folderIdentifier): bool
+    {
+        $path = rtrim($this->getFilePath($folderIdentifier), '/');
+
+        // Walk up to the nearest existing ancestor: a folder that does not exist yet is
+        // writeable exactly when something above it will take a new directory.
+        while ($path !== '' && !is_dir($path)) {
+            $parent = dirname($path);
+            if ($parent === $path) {
+                return false;
+            }
+
+            $path = $parent;
+        }
+
+        return $path !== '' && is_writable($path);
+    }
+
     public function createFolder(string $folderIdentifier): void
     {
         if (!$this->folderExists($folderIdentifier)) {
             $path = rtrim($this->getFilePath($folderIdentifier), '/');
             mkdir($path, recursive: true);
         }
+
+        $this->protectFolder($folderIdentifier);
+    }
+
+    public function isPubliclyAccessible(string $identifier): bool
+    {
+        // A plain path says nothing about what a web server serves, so the cautious answer is
+        // the one that makes callers warn rather than stay quiet.
+        return true;
+    }
+
+    public function protectFolder(string $folderIdentifier): void
+    {
+        if (!WebServerUtility::supportsAccessFile() || !$this->folderExists($folderIdentifier)) {
+            return;
+        }
+
+        $accessFilePath = rtrim($this->getFilePath($folderIdentifier), '/') . '/' . static::ACCESS_FILE_NAME;
+        if (file_exists($accessFilePath)) {
+            return;
+        }
+
+        // A folder that takes no new file cannot be protected from here. Saying so through a
+        // PHP warning on every attempt is not saying it to anyone who can act on it; the
+        // storage answers isStorageReady() with false, which is what reaches the backend.
+        if (!$this->folderIsWriteable($folderIdentifier)) {
+            return;
+        }
+
+        file_put_contents($accessFilePath, static::ACCESS_FILE_CONTENTS);
     }
 
     public function getPublicUrl(string $fileIdentifier): string

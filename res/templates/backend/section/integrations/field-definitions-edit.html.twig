@@ -1,0 +1,23 @@
+{% extends "module.html.twig" %}
+
+{% block section %}
+    {% set config = {
+        ready: true,
+        mode: 'embedded',
+        readonly: readonly,
+        globalDocument: false,
+        includes: false,
+        debug: debug ?? false,
+        uid: 'field-definition:' ~ context.id ~ '@' ~ folder
+    } %}
+    {{ include('configuration-editor/editor-setup.html.twig', {
+        documentType: 'field-definition',
+        saveRoute: 'page.integrations.field-definitions-save',
+        returnUri: returnUrl ?? uri('page.integrations.field-definitions'),
+        title: context.id,
+        document: context.content,
+        documentIdentifier: context.id,
+        hiddenFields: { folder: folder },
+        config
+    }) }}
+{% endblock %}

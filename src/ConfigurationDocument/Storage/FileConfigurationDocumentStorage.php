@@ -108,18 +108,36 @@ abstract class FileConfigurationDocumentStorage extends ConfigurationDocumentSto
         return rtrim((string)$this->getStorageConfiguration('folder', ''), '/');
     }
 
-    public function initializeConfigurationDocumentStorage(): void
+    public function protectStorageFolder(): void
     {
         $folderIdentifier = $this->getStorageFolderIdentifier();
-        if ($folderIdentifier !== '' && !$this->fileStorage->folderExists($folderIdentifier)) {
-            $this->fileStorage->createFolder($folderIdentifier);
+        if ($folderIdentifier !== '') {
+            $this->fileStorage->protectFolder($folderIdentifier);
         }
     }
 
+    /**
+     * Whether a document could be stored, which is not the same as a folder being there:
+     * the folder appears with the first document.
+     */
     public function isStorageReady(): bool
     {
         $folderIdentifier = $this->getStorageFolderIdentifier();
 
-        return $folderIdentifier !== '' && $this->fileStorage->folderExists($folderIdentifier);
+        return $folderIdentifier !== '' && $this->fileStorage->folderIsWriteable($folderIdentifier);
+    }
+
+    public function isStoragePubliclyAccessible(): bool
+    {
+        $folderIdentifier = $this->getStorageFolderIdentifier();
+
+        return $folderIdentifier !== '' && $this->fileStorage->isPubliclyAccessible($folderIdentifier);
+    }
+
+    public function isStorageProtected(): bool
+    {
+        $folderIdentifier = $this->getStorageFolderIdentifier();
+
+        return $folderIdentifier === '' || $this->fileStorage->folderIsProtected($folderIdentifier);
     }
 }

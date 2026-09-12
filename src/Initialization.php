@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core;
 
 use DigitalMarketingFramework\Core\Backend\Section\SectionInterface;
+use DigitalMarketingFramework\Core\Backend\Section\SubSectionInterface;
 use DigitalMarketingFramework\Core\ConfigurationDocument\Migration\ConfigurationDocumentMigrationInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Schema\GlobalConfigurationSchemaInterface;
 use DigitalMarketingFramework\Core\Plugin\PluginInterface;
@@ -36,6 +37,9 @@ abstract class Initialization implements InitializationInterface
     /** @var array<string> */
     protected const CONFIGURATION_DOCUMENT_FOLDERS = ['configuration'];
 
+    /** @var array<string> resource sub folders a package ships field definition files in */
+    protected const FIELD_DEFINITION_FOLDERS = ['fields'];
+
     /** @var array<string,int> */
     protected const TEMPLATE_FOLDERS = ['templates/frontend' => 100];
 
@@ -66,6 +70,14 @@ abstract class Initialization implements InitializationInterface
      * @return array<SectionInterface>
      */
     protected function getBackendSections(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<SubSectionInterface>
+     */
+    protected function getBackendSubSections(): array
     {
         return [];
     }
@@ -150,6 +162,17 @@ abstract class Initialization implements InitializationInterface
         }
     }
 
+    protected function initFieldDefinitions(RegistryInterface $registry): void
+    {
+        // The configuration document pattern, because it says where a package keeps its
+        // resources and that is the same place for both. Only the folder name below it differs,
+        // and that has its own constant.
+        $pathIdentifier = $this->getPathIdentifier();
+        foreach (static::FIELD_DEFINITION_FOLDERS as $path) {
+            $registry->addFieldDefinitionFolderIdentifier(sprintf(static::CONFIGURATION_DOCUMENT_FOLDER_PATTERN, $pathIdentifier, $path));
+        }
+    }
+
     protected function initTemplateFolders(RegistryInterface $registry): void
     {
         $pathIdentifier = $this->getPathIdentifier();
@@ -190,6 +213,10 @@ abstract class Initialization implements InitializationInterface
     {
         foreach ($this->getBackendSections() as $section) {
             $registry->getBackendManager()->setSection($section);
+        }
+
+        foreach ($this->getBackendSubSections() as $subSection) {
+            $registry->getBackendManager()->addSubSection($subSection);
         }
     }
 
@@ -250,6 +277,7 @@ abstract class Initialization implements InitializationInterface
         $this->initConfigurationEditorScripts($registry);
         $this->initFrontendScripts($registry);
         $this->initStaticConfigurationDocuments($registry);
+        $this->initFieldDefinitions($registry);
         $this->initSchemaMigrations($registry);
     }
 }

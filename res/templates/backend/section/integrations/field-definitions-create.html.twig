@@ -1,0 +1,20 @@
+{#
+  Only ever rendered when creation was refused: a successful create redirects to the edit view.
+  It exists so that a refusal can offer the file that is already there, which the generic error
+  page has no way of knowing about.
+#}
+{% extends "module.html.twig" %}
+
+{% block section %}
+    {{ include('alert/alert.html.twig', {alert: {type: 2, title: 'No field definition file was created', content: error}}) }}
+
+    <p>
+        <a class="btn btn-default" href="{{ returnUrl }}">Back to Field Definitions</a>
+
+        {% if contextIdentifier %}
+            <a class="btn btn-default" href="{{ uri('page.integrations.field-definitions-edit', {id:contextIdentifier, folder:folder, returnUrl:returnUrl}) }}">
+                {{ readonly ? 'View existing field definitions' : 'Edit existing field definitions' }}
+            </a>
+        {% endif %}
+    </p>
+{% endblock %}

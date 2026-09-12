@@ -272,6 +272,10 @@ trait ConfigurationSchemaRegistryTrait
         if (!isset($this->schemaDocument)) {
             $this->schemaDocument = new SchemaDocument();
             $this->addConfigurationSchemaDocument($this->schemaDocument);
+
+            // Last, so stored definitions can correct or extend the contexts just declared
+            // from code. RegistryCollection does the same for the multi-registry document.
+            $this->getFieldDefinitionManager()->applyToSchemaDocument($this->schemaDocument);
         }
 
         return $this->schemaDocument;

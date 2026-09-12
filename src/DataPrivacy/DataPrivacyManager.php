@@ -33,6 +33,14 @@ class DataPrivacyManager extends DataPrivacyPlugin implements DataPrivacyManager
         $this->plugins[$keyword] = $plugin;
     }
 
+    /**
+     * @return array<string,DataPrivacyPluginInterface>
+     */
+    public function getPlugins(): array
+    {
+        return $this->plugins;
+    }
+
     public function addContext(WriteableContextInterface $context): void
     {
         foreach ($this->plugins as $plugin) {

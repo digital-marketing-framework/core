@@ -141,6 +141,19 @@ class SchemaDocument
         $this->fieldContexts[$name] = $fields;
     }
 
+    public function getFieldContext(string $name): ?FieldListDefinition
+    {
+        return $this->fieldContexts[$name] ?? null;
+    }
+
+    /**
+     * @return array<string,FieldListDefinition>
+     */
+    public function getFieldContexts(): array
+    {
+        return $this->fieldContexts;
+    }
+
     /**
      * @param array<string,mixed> $schemaDocument
      */
