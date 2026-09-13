@@ -21,6 +21,7 @@ use DigitalMarketingFramework\Core\Registry\Service\CryptoRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\DataSourceRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryInterface;
+use DigitalMarketingFramework\Core\Registry\Service\FieldDefinitionRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\FrontendTemplatingRegistryInterface;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryInterface;
@@ -56,6 +57,7 @@ interface RegistryInterface extends
     AssetServiceRegistryInterface,
     TemplateEngineRegistryInterface,
     VendorResourceServiceRegistryInterface,
+    FieldDefinitionRegistryInterface,
     StaticConfigurationDocumentRegistryInterface,
 
     SchemaProcessorRegistryInterface,

@@ -1,0 +1,13 @@
+{% extends "module.html.twig" %}
+
+{% block headline %}
+    <h1>Error</h1>
+{% endblock %}
+
+{% block section %}
+    {{ include('alert/alert.html.twig', {alert: {type: 2, title: 'The action could not be carried out', content: error}}) }}
+
+    <p>
+        <a class="btn btn-default" href="{{ returnUri }}">Back to {{ section.title }}</a>
+    </p>
+{% endblock %}

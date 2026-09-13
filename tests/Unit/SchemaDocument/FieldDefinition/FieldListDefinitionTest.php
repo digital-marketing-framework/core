@@ -34,6 +34,29 @@ class FieldListDefinitionTest extends TestCase
     }
 
     #[Test]
+    public function setFieldReplacesTheDefinitionOfTheSameField(): void
+    {
+        $list = $this->list(new FieldDefinition('email', FieldDefinition::TYPE_STRING, 'Email', required: true));
+        $list->setField(new FieldDefinition('email', FieldDefinition::TYPE_INTEGER, 'E-Mail', required: false));
+
+        $email = $list->getField('email');
+        $this->assertNotNull($email);
+        $this->assertSame(FieldDefinition::TYPE_INTEGER, $email->getType());
+        $this->assertSame('E-Mail', $email->getLabel());
+        $this->assertFalse($email->isRequired());
+    }
+
+    #[Test]
+    public function setFieldAddsAFieldThatDoesNotExistYet(): void
+    {
+        $list = $this->list(new FieldDefinition('email'));
+        $list->setField(new FieldDefinition('phone', label: 'Phone'));
+
+        $this->assertTrue($list->fieldExists('phone'));
+        $this->assertCount(2, $list->getFields());
+    }
+
+    #[Test]
     public function fieldsAreKeyedByName(): void
     {
         $list = $this->list(new FieldDefinition('email'), new FieldDefinition('phone'));

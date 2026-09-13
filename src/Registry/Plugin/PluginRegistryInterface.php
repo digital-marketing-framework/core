@@ -36,6 +36,17 @@ interface PluginRegistryInterface
     public function getAllPluginClasses(string $interface): array;
 
     /**
+     * Every interface something has been registered for.
+     *
+     * Lets a caller find plugin types it has no way to name — a package's own interfaces are
+     * unknown to the packages below it, and asking each registry what it holds is the only way
+     * across that line.
+     *
+     * @return array<class-string<PluginInterface>>
+     */
+    public function getAllPluginInterfaces(): array;
+
+    /**
      * @template PluginTypeInterface of PluginInterface
      *
      * @param class-string<PluginTypeInterface> $interface

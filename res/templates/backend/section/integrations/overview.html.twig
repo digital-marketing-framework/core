@@ -1,0 +1,42 @@
+{% extends "module.html.twig" %}
+
+{% block section %}
+
+    <h2>Integrations</h2>
+
+    <p>
+        What this installation does with data. An integration groups everything that talks to one
+        system; the kinds listed beside it are what that system can do here.
+    </p>
+
+    {% if integrations is empty %}
+        <p>No integrations are installed.</p>
+    {% else %}
+        <div class="table-fit">
+            <table class="table table-striped">
+                {% for integration in integrations %}
+                    <tr>
+                        <th scope="row" class="nowrap align-top" style="width:1px">{{ integration.label }}</th>
+                        <td>
+                            {% for contribution in integration.contributions %}
+                                <div>{{ contribution.kind }}: <strong>{{ contribution.label }}</strong></div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    {% for pluginType in pluginTypes %}
+        <h2>{{ pluginType.label }}</h2>
+
+        <div class="table-fit">
+            <table class="table table-striped">
+                {% for plugin in pluginType.plugins %}
+                    <tr><td>{{ plugin }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}

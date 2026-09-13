@@ -42,7 +42,6 @@ trait ConfigurationDocumentManagerRegistryTrait
     public function setConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $configurationDocumentStorage): void
     {
         $this->configurationDocumentStorage = $configurationDocumentStorage;
-        $this->configurationDocumentStorage->initializeConfigurationDocumentStorage();
     }
 
     public function getStaticConfigurationDocumentStorage(): ConfigurationDocumentStorageInterface
@@ -59,7 +58,6 @@ trait ConfigurationDocumentManagerRegistryTrait
     public function setStaticConfigurationDocumentStorage(ConfigurationDocumentStorageInterface $staticConfigurationDocumentStorage): void
     {
         $this->staticConfigurationDocumentStorage = $staticConfigurationDocumentStorage;
-        $this->staticConfigurationDocumentStorage->initializeConfigurationDocumentStorage();
     }
 
     public function getConfigurationDocumentParser(): ConfigurationDocumentParserInterface

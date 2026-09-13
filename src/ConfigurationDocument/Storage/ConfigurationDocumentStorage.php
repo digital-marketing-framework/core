@@ -41,11 +41,25 @@ abstract class ConfigurationDocumentStorage implements ConfigurationDocumentStor
         return $config;
     }
 
-    public function initializeConfigurationDocumentStorage(): void
+    public function protectStorageFolder(): void
     {
     }
 
     public function isStorageReady(): bool
+    {
+        return true;
+    }
+
+    /**
+     * A storage that keeps documents somewhere other than a file system has no answer to this
+     * and is not the thing the warning is about.
+     */
+    public function isStoragePubliclyAccessible(): bool
+    {
+        return false;
+    }
+
+    public function isStorageProtected(): bool
     {
         return true;
     }

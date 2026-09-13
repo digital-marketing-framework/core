@@ -113,6 +113,11 @@ trait PluginRegistryTrait
         return $result;
     }
 
+    public function getAllPluginInterfaces(): array
+    {
+        return array_keys($this->pluginClasses);
+    }
+
     public function getAllPluginClasses(string $interface): array
     {
         $classes = $this->pluginClasses[$interface] ?? [];

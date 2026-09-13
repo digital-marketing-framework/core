@@ -35,6 +35,7 @@ use DigitalMarketingFramework\Core\Registry\Service\CryptoRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\DataPrivacyManagerRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\DataSourceRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\EnvironmentRegistryTrait;
+use DigitalMarketingFramework\Core\Registry\Service\FieldDefinitionRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FileStorageRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\FrontendTemplatingRegistryTrait;
 use DigitalMarketingFramework\Core\Registry\Service\GlobalConfigurationRegistryTrait;
@@ -75,6 +76,7 @@ class Registry implements RegistryInterface
     use AssetServiceRegistryTrait;
     use TemplateEngineRegistryTrait;
     use VendorResourceServiceRegistryTrait;
+    use FieldDefinitionRegistryTrait;
     use StaticConfigurationDocumentRegistryTrait;
 
     use SchemaProcessorRegistryTrait;

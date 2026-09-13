@@ -38,6 +38,12 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_CONFIGURATION_STORAGE_ALLOW_SAVE_TO_EXTENSION_PATHS = false;
 
+    public const KEY_FIELD_DEFINITION_STORAGE = 'fieldDefinitionStorage';
+
+    public const KEY_FIELD_DEFINITION_STORAGE_FOLDER = 'folder';
+
+    public const KEY_FIELD_DEFINITION_STORAGE_ADDITIONAL_FOLDERS = 'additionalFolders';
+
     public const KEY_API = 'api';
 
     public const KEY_API_ENABLED = 'enabled';
@@ -107,6 +113,22 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
     public function getWeight(): int
     {
         return 50;
+    }
+
+    protected function getFieldDefinitionStorageSchema(): ContainerSchema
+    {
+        $fieldDefinitionStorageSchema = new ContainerSchema();
+
+        $folderSchema = new StringSchema();
+        $folderSchema->getRenderingDefinition()->setGeneralDescription('Folder that field definitions are written to. Definitions found here take precedence over any shipped in a package.');
+        $fieldDefinitionStorageSchema->addProperty(static::KEY_FIELD_DEFINITION_STORAGE_FOLDER, $folderSchema);
+
+        $additionalFoldersSchema = new StringSchema();
+        $additionalFoldersSchema->getRenderingDefinition()->setLabel('Additional field definition folders (comma-separated)');
+        $additionalFoldersSchema->getRenderingDefinition()->setGeneralDescription('Folders searched in addition to the ones registered by packages, for example a folder in the site package. Listed in ascending precedence, all below the folder above. Read-only unless writing to package paths is allowed for this system.');
+        $fieldDefinitionStorageSchema->addProperty(static::KEY_FIELD_DEFINITION_STORAGE_ADDITIONAL_FOLDERS, $additionalFoldersSchema);
+
+        return $fieldDefinitionStorageSchema;
     }
 
     protected function getConfigurationStorageSchema(): ContainerSchema
@@ -304,6 +326,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
         $this->configurationStorageSchema = $this->getConfigurationStorageSchema();
         $this->addProperty(static::KEY_CONFIGURATION_STORAGE, $this->configurationStorageSchema);
+
+        $this->addProperty(static::KEY_FIELD_DEFINITION_STORAGE, $this->getFieldDefinitionStorageSchema());
 
         $this->apiSchema = $this->getApiSchema();
         $this->addProperty(static::KEY_API, $this->apiSchema);

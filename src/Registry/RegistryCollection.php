@@ -157,6 +157,10 @@ class RegistryCollection implements RegistryCollectionInterface
                     $registry->addConfigurationSchemaDocumentEditorContext($this->configurationSchemaDocument);
                 }
             }
+
+            // Last, so stored definitions can correct or extend the contexts every registry
+            // has just declared from code.
+            $this->getRegistry(RegistryDomain::CORE)->getFieldDefinitionManager()->applyToSchemaDocument($this->configurationSchemaDocument);
         }
 
         return $this->configurationSchemaDocument;
@@ -194,6 +198,30 @@ class RegistryCollection implements RegistryCollectionInterface
     public function getDataSourceManagers(): array
     {
         return array_values($this->dataSourceManagers);
+    }
+
+    public function getAllPluginInterfaces(): array
+    {
+        $interfaces = [];
+        foreach ($this->collection as $registry) {
+            foreach ($registry->getAllPluginInterfaces() as $interface) {
+                $interfaces[$interface] = true;
+            }
+        }
+
+        return array_keys($interfaces);
+    }
+
+    public function getAllPluginClasses(string $interface): array
+    {
+        $classes = [];
+        foreach ($this->collection as $registry) {
+            // Union with the earlier registries winning a shared keyword, and "+" rather than
+            // array_merge so that a numeric keyword keeps its key instead of being renumbered.
+            $classes += $registry->getAllPluginClasses($interface);
+        }
+
+        return $classes;
     }
 
     public function getFrontendScripts(bool $activeOnly = false): array

@@ -6,13 +6,17 @@ use DigitalMarketingFramework\Core\Alert\AlertHandlerInterface;
 use DigitalMarketingFramework\Core\Alert\ConfigurationStorageAlertHandler;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\AjaxControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\ConfigurationDocumentConfigurationEditorAjaxController;
+use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\FieldDefinitionConfigurationEditorAjaxController;
 use DigitalMarketingFramework\Core\Backend\Controller\AjaxController\GlobalSettingsConfigurationEditorAjaxController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\ApiSectionController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\ConfigurationDocumentSectionController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\DashboardSectionController;
+use DigitalMarketingFramework\Core\Backend\Controller\SectionController\FieldDefinitionSectionController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\GlobalSettingsSectionController;
+use DigitalMarketingFramework\Core\Backend\Controller\SectionController\IntegrationOverviewSectionController;
 use DigitalMarketingFramework\Core\Backend\Controller\SectionController\SectionControllerInterface;
 use DigitalMarketingFramework\Core\Backend\Section\Section;
+use DigitalMarketingFramework\Core\Backend\Section\SubSection;
 use DigitalMarketingFramework\Core\Backend\UriBuilder;
 use DigitalMarketingFramework\Core\Backend\UriRouteResolver\ApiEndPointDataSourceEditUriRouteResolver;
 use DigitalMarketingFramework\Core\Backend\UriRouteResolver\UriRouteResolverInterface;
@@ -250,11 +254,14 @@ class CoreInitialization extends Initialization
                 DashboardSectionController::class,
                 ConfigurationDocumentSectionController::class,
                 GlobalSettingsSectionController::class,
+                IntegrationOverviewSectionController::class,
+                FieldDefinitionSectionController::class,
                 ApiSectionController::class,
             ],
             AjaxControllerInterface::class => [
                 ConfigurationDocumentConfigurationEditorAjaxController::class,
                 GlobalSettingsConfigurationEditorAjaxController::class,
+                FieldDefinitionConfigurationEditorAjaxController::class,
             ],
         ],
     ];
@@ -266,6 +273,23 @@ class CoreInitialization extends Initialization
             'digital-marketing-framework.js',
         ],
     ];
+
+    protected function getBackendSubSections(): array
+    {
+        return [
+            // Registered even though it is on its own: it renders as nothing until a second
+            // subsection appears, and without it installing one would leave no way back here.
+            new SubSection('List', 'page.configuration-document.list', ['edit'], weight: 100),
+
+            new SubSection('Overview', 'page.integrations.overview', weight: 100),
+            new SubSection(
+                'Field Definitions',
+                'page.integrations.field-definitions',
+                ['field-definitions-edit', 'field-definitions-save', 'field-definitions-create', 'field-definitions-delete'],
+                weight: 200
+            ),
+        ];
+    }
 
     protected function getBackendSections(): array
     {
@@ -285,6 +309,15 @@ class CoreInitialization extends Initialization
                 'page.configuration-document.list',
                 'Manage Configuration Documents',
                 'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-configuration.svg',
+                'Show',
+                100
+            ),
+            new Section(
+                'Integrations',
+                'CORE',
+                'page.integrations.overview',
+                'Manage Integrations',
+                'PKG:digital-marketing-framework/core/res/assets/icons/dashboard-integrations.svg',
                 'Show',
                 100
             ),
@@ -316,6 +349,20 @@ class CoreInitialization extends Initialization
         $additionalStorageFolders = GeneralUtility::castValueToArray($additionalStorageFoldersString);
         foreach ($additionalStorageFolders as $folder) {
             $registry->addStaticConfigurationDocumentFolderIdentifier($folder);
+        }
+
+        // Registered after the package folders so a site package can override what a package
+        // ships without having to register anything in code.
+        //
+        // Read straight from the global configuration rather than through a settings object,
+        // as the lines above do: resolving settings computes schema defaults, and the schema
+        // processors that does needs are registered in initPlugins(), after this runs.
+        $additionalFieldDefinitionFoldersString = trim(
+            $registry->getGlobalConfiguration()->get('core')[CoreGlobalConfigurationSchema::KEY_FIELD_DEFINITION_STORAGE][CoreGlobalConfigurationSchema::KEY_FIELD_DEFINITION_STORAGE_ADDITIONAL_FOLDERS] ?? ''
+        );
+        $additionalFieldDefinitionFolders = GeneralUtility::castValueToArray($additionalFieldDefinitionFoldersString);
+        foreach ($additionalFieldDefinitionFolders as $folder) {
+            $registry->addFieldDefinitionFolderIdentifier($folder);
         }
     }
 

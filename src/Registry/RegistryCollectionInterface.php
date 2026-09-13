@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\DataSource\DataSourceManagerInterface;
 use DigitalMarketingFramework\Core\Model\DataSource\DataSourceInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationManagerInterface;
+use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\Service\ContextRegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
 
@@ -36,6 +37,27 @@ interface RegistryCollectionInterface extends ContextRegistryInterface
      * @return array{core:RegistryInterface,distributor?:RegistryInterface,collector?:RegistryInterface}
      */
     public function getAllRegistries(): array;
+
+    /**
+     * Every interface anything has been registered for, across all registries.
+     *
+     * The same plugin type is often registered in more than one domain, so asking each registry
+     * in turn would report it more than once. Callers that want to know what exists want this.
+     *
+     * @return array<class-string<PluginInterface>>
+     */
+    public function getAllPluginInterfaces(): array;
+
+    /**
+     * Everything registered for an interface, across all registries, keyword by keyword.
+     *
+     * @template PluginTypeInterface of PluginInterface
+     *
+     * @param class-string<PluginTypeInterface> $interface
+     *
+     * @return array<string,class-string<PluginTypeInterface>>
+     */
+    public function getAllPluginClasses(string $interface): array;
 
     // collect actions //
 
