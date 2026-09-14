@@ -4,12 +4,24 @@ namespace DigitalMarketingFramework\Core\Model\Alert;
 
 class Alert implements AlertInterface
 {
+    /**
+     * @var array<AlertActionInterface>
+     */
+    protected array $actions = [];
+
+    /**
+     * @param array<AlertActionInterface> $actions
+     */
     public function __construct(
         protected string $source,
         protected string $content,
         protected ?string $title = null,
         protected int $type = self::TYPE_INFO,
+        array $actions = [],
     ) {
+        foreach ($actions as $action) {
+            $this->addAction($action);
+        }
     }
 
     public function getSource(): string
@@ -50,5 +62,15 @@ class Alert implements AlertInterface
     public function setType(int $type): void
     {
         $this->type = $type;
+    }
+
+    public function getActions(): array
+    {
+        return $this->actions;
+    }
+
+    public function addAction(AlertActionInterface $action): void
+    {
+        $this->actions[] = $action;
     }
 }

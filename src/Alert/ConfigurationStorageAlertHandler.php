@@ -2,6 +2,7 @@
 
 namespace DigitalMarketingFramework\Core\Alert;
 
+use DigitalMarketingFramework\Core\Model\Alert\AlertActionInterface;
 use DigitalMarketingFramework\Core\Model\Alert\AlertInterface;
 use DigitalMarketingFramework\Core\Utility\WebServerUtility;
 
@@ -52,7 +53,8 @@ class ConfigurationStorageAlertHandler extends AlertHandler
         return $this->createAlert(
             sprintf('%s cannot be stored: the configured folder is not writeable. Please check your file system configuration.', $subject),
             $title,
-            AlertInterface::TYPE_ERROR
+            AlertInterface::TYPE_ERROR,
+            [$this->createGlobalSettingsAction()]
         );
     }
 
@@ -69,7 +71,17 @@ class ConfigurationStorageAlertHandler extends AlertHandler
         return $this->createAlert(
             sprintf('%s are stored in a location that can be fetched over the web. %s', $subject, $advice),
             $title,
-            AlertInterface::TYPE_WARNING
+            AlertInterface::TYPE_WARNING,
+            [$this->createGlobalSettingsAction()]
         );
+    }
+
+    /**
+     * Both storage folders are chosen in the global settings, so that is where either problem
+     * is looked into, even when the fix itself lies in the file system.
+     */
+    protected function createGlobalSettingsAction(): AlertActionInterface
+    {
+        return $this->createAction('Open global settings', 'page.global-settings.edit');
     }
 }

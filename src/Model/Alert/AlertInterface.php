@@ -25,4 +25,11 @@ interface AlertInterface
     public function getType(): int;
 
     public function setType(int $type): void;
+
+    /**
+     * @return array<AlertActionInterface> in the order they were added, which is the order they are offered in
+     */
+    public function getActions(): array;
+
+    public function addAction(AlertActionInterface $action): void;
 }
