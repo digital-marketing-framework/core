@@ -298,7 +298,29 @@ const getContentModifierInputDefaultContext = (store, name) => {
 };
 
 /*
-  distributor.in.defaults.EVENT.NAME
+  The "defaults" segment marks a suggestion: the fields something outside the configuration
+  offers, such as a CRM's web-to-lead form or a form on the site. A mapping never has to honour
+  them — it may drop fields, rename them, or add its own — so a defaults context describes what
+  is on offer, never what will be produced. Without the segment the context is what the
+  configuration actually produces, from what is configured.
+
+  How each name resolves is marked below:
+
+    NAME      static   - read from the schema document, as PHP registered it
+    NAME()    computed - built here, by combining or processing other contexts
+    NAME->    redirect - resolves to whichever context is configured for it, and stays a
+                         redirect when that target turns out to be computed
+
+  Only the two route defaults are static, being the ones that describe something outside the
+  configuration document. The data source defaults look like they should be too, but the data
+  provider fields are merged into them, which makes them computed.
+
+  The dataMapperGroup redirects are how one group's output suggests fields for the next in a
+  sequence; distributor.in.defaults.current resolves to the data source being edited, and to the
+  union of all of them when there is no single one.
+
+  distributor.in.defaults.EVENT.NAME()
+  distributor.in.defaults.current->
   distributor.in.defaults.all()
   distributor.in.dataProvider.all()
   distributor.out.defaults.INTEGRATION.ROUTE_KEYWORD
@@ -309,14 +331,14 @@ const getContentModifierInputDefaultContext = (store, name) => {
   collector.out.INTEGRATION.ROUTE_KEYWORD()
   collector.out.all()
 
-  dataMapperGroup.in.defaults.ID
-  dataMapperGroup.out.defaults.ID
+  dataMapperGroup.in.defaults.ID->
+  dataMapperGroup.out.defaults.ID->
   dataMapperGroup.out.ID()
 
-  condition.in.defaults.ID
+  condition.in.defaults.ID->
 
-  personalization.personas.in.defaults.ID
-  personalization.contentModifiers.in.defaults.ID
+  personalization.personas.in.defaults.ID->
+  personalization.contentModifiers.in.defaults.ID->
 */
 const getContext = (store, name) => {
   if (name === '') {
@@ -438,7 +460,9 @@ const getActiveOutputContextNames = (store, path) => {
     return ['distributor.out.defaults.' + outboundRoute.integration + '.' + outboundRoute.keyword];
   }
 
-  // NOTE inbound routes do not have a default output context
+  // NOTE inbound routes do not have a default output context: what a collector gathers from an
+  // external source is the *input* to a mapping, and the mapping's output corresponds to no
+  // external system and to no form, so there is nothing to suggest.
   // const inboundRoute = isInboundRoutePath(path);
   // if (inboundRoute) {
   //   return ['collector.out.defaults.' + inboundRouteKeyword];
