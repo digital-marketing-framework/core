@@ -15,4 +15,9 @@ interface PluginInterface
      * @return int The configured weight of the plugin, may be different from the initial weight
      */
     public function getConfiguredWeight(): int;
+
+    /**
+     * Human-readable name, or null to have one derived from the keyword where it is shown.
+     */
+    public static function getLabel(): ?string;
 }

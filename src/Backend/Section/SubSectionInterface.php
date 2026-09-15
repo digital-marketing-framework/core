@@ -2,6 +2,8 @@
 
 namespace DigitalMarketingFramework\Core\Backend\Section;
 
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
+
 interface SubSectionInterface
 {
     /**
@@ -25,4 +27,10 @@ interface SubSectionInterface
      * any of its actions is being used.
      */
     public function matchesAction(string $action): bool;
+
+    /**
+     * Whether the subsection is offered in its section's row of links. Asked when the row is
+     * rendered, once the registry is complete.
+     */
+    public function enabled(RegistryInterface $registry): bool;
 }

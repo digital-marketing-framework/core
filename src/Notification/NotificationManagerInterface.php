@@ -21,6 +21,12 @@ interface NotificationManagerInterface
         int $level = NotificationManagerInterface::LEVEL_NOTICE,
     ): void;
 
+    /**
+     * Whether notifications are switched on at all. Reads the global configuration directly, so
+     * it can be asked while the registry is still being set up.
+     */
+    public function enabled(): bool;
+
     public function getComponentDepth(): int;
 
     public function pushComponent(string $component): int;

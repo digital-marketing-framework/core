@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Backend\Section;
 
 use DigitalMarketingFramework\Core\Backend\Request;
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 /**
  * One entry in the row of links to a section's other actions.
@@ -67,5 +68,10 @@ class SubSection implements SubSectionInterface
     public function matchesAction(string $action): bool
     {
         return $action === $this->action || in_array($action, $this->additionalActions, true);
+    }
+
+    public function enabled(RegistryInterface $registry): bool
+    {
+        return true;
     }
 }

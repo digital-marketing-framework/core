@@ -18,6 +18,13 @@ interface BackendManagerInterface
      */
     public function getAllSections(): array;
 
+    /**
+     * The sections to offer: all of them except those that say they are not enabled.
+     *
+     * @return array<string,SectionInterface>
+     */
+    public function getEnabledSections(): array;
+
     public function getSection(string $name): ?SectionInterface;
 
     /**
