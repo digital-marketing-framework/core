@@ -82,4 +82,21 @@ class SubSectionMenuTest extends TestCase
 
         $this->assertCount(2, $this->subject->getSubSectionMenu(new Request('page.configuration-document.list')));
     }
+
+    #[Test]
+    public function disabledSubSectionsAreNotOfferedAndDoNotCountTowardsTheMenu(): void
+    {
+        $this->register(
+            new SubSection('List', 'page.notifications.list', weight: 100),
+            new class('Test', 'page.notifications.test', weight: 200) extends SubSection {
+                public function enabled(RegistryInterface $registry): bool
+                {
+                    return false;
+                }
+            },
+        );
+
+        // One enabled subsection left, which is nothing to choose between.
+        $this->assertSame([], $this->subject->getSubSectionMenu(new Request('page.notifications.list')));
+    }
 }

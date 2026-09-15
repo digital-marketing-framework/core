@@ -3,6 +3,7 @@
 namespace DigitalMarketingFramework\Core\Backend\Section;
 
 use DigitalMarketingFramework\Core\Backend\Request;
+use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
 class Section implements SectionInterface
 {
@@ -59,5 +60,10 @@ class Section implements SectionInterface
     public function getWeight(): int
     {
         return $this->weight;
+    }
+
+    public function enabled(RegistryInterface $registry): bool
+    {
+        return true;
     }
 }

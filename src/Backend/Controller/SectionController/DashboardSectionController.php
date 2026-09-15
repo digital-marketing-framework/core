@@ -19,7 +19,7 @@ class DashboardSectionController extends SectionController
 
     protected function indexAction(): Response
     {
-        $this->viewData['sections'] = $this->registry->getBackendManager()->getAllSections();
+        $this->viewData['sections'] = $this->registry->getBackendManager()->getEnabledSections();
         $this->viewData['alerts'] = $this->registry->getBackendManager()->getAlerts();
 
         return $this->render();

@@ -30,4 +30,9 @@ abstract class Plugin implements PluginInterface, LoggerAwareInterface
     {
         return static::getWeight();
     }
+
+    public static function getLabel(): ?string
+    {
+        return null;
+    }
 }

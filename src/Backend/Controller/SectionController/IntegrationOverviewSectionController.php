@@ -5,8 +5,8 @@ namespace DigitalMarketingFramework\Core\Backend\Controller\SectionController;
 use DigitalMarketingFramework\Core\Backend\Response\Response;
 use DigitalMarketingFramework\Core\IdentifierCollector\IdentifierCollectorInterface;
 use DigitalMarketingFramework\Core\Notification\NotificationChannelInterface;
-use DigitalMarketingFramework\Core\Plugin\ConfigurablePluginInterface;
 use DigitalMarketingFramework\Core\Plugin\IntegrationPluginInterface;
+use DigitalMarketingFramework\Core\Plugin\PluginInterface;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\Utility\GeneralUtility;
 
@@ -135,7 +135,7 @@ class IntegrationOverviewSectionController extends SectionController
      */
     protected function getPluginLabel(string $class, string $keyword): string
     {
-        $label = is_a($class, ConfigurablePluginInterface::class, true) ? $class::getLabel() : null;
+        $label = is_a($class, PluginInterface::class, true) ? $class::getLabel() : null;
 
         return $label ?? GeneralUtility::getLabelFromValue($keyword);
     }

@@ -124,6 +124,11 @@ class BackendManager implements BackendManagerInterface
         return $this->sections;
     }
 
+    public function getEnabledSections(): array
+    {
+        return array_filter($this->sections, fn (SectionInterface $section): bool => $section->enabled($this->registry));
+    }
+
     public function getSection(string $name): ?SectionInterface
     {
         if ($name === 'core') {
@@ -150,13 +155,16 @@ class BackendManager implements BackendManagerInterface
     /**
      * The subsections of the section a request belongs to, marked with which one is in use.
      *
-     * A section with fewer than two of them gets an empty menu: there is nothing to choose
+     * A section with fewer than two enabled ones gets an empty menu: there is nothing to choose
      * between, and a lone button pointing at the page you are already on is noise. This is why
      * a section that registers none never has to know the concept exists.
      */
     public function getSubSectionMenu(Request $request): array
     {
-        $subSections = $this->subSections[$request->getSection()] ?? [];
+        $subSections = array_filter(
+            $this->subSections[$request->getSection()] ?? [],
+            fn (SubSectionInterface $subSection): bool => $subSection->enabled($this->registry)
+        );
         if (count($subSections) < 2) {
             return [];
         }
@@ -179,7 +187,7 @@ class BackendManager implements BackendManagerInterface
         $ungrouped = [];
         $groups = [];
 
-        $sections = [new CoreIndexSection(), ...$this->sections];
+        $sections = [new CoreIndexSection(), ...$this->getEnabledSections()];
         foreach ($sections as $section) {
             $entry = [
                 'route' => $section->getRoute(),

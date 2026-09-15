@@ -46,4 +46,25 @@ class SectionMenuTest extends TestCase
         // Any action of the section counts, not just the one the section links to.
         $this->assertSame([false, true], array_column($menu[1]['sections'], 'active'));
     }
+
+    #[Test]
+    public function disabledSectionsAreNotOffered(): void
+    {
+        $this->subject->setSection(new Section('Global Settings', 'CORE', 'page.global-settings.edit'));
+        $this->subject->setSection(new class('Notifications', 'CORE', 'page.notifications.list') extends Section {
+            public function enabled(RegistryInterface $registry): bool
+            {
+                return false;
+            }
+        });
+
+        $menu = $this->subject->getSectionMenu(new Request('page.global-settings.edit'));
+
+        $this->assertSame(['Global Settings'], array_column($menu[1]['sections'], 'label'));
+        $this->assertSame(['global-settings'], array_keys($this->subject->getEnabledSections()));
+        $this->assertCount(2, $this->subject->getAllSections());
+
+        // Still found by name, so its own pages keep working when opened directly.
+        $this->assertInstanceOf(Section::class, $this->subject->getSection('notifications'));
+    }
 }
