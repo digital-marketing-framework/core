@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerAwareTrait;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\BackendSettings;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Model\ConfigurationDocument\ConfigurationDocumentInformation;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
@@ -85,6 +86,7 @@ class ConfigurationDocumentSectionController extends ListSectionController imple
         $this->viewData['document'] = $document;
 
         $this->viewData['debug'] = $this->globalConfiguration->getGlobalSettings(CoreSettings::class)->debug();
+        $this->viewData['colorScheme'] = $this->globalConfiguration->getGlobalSettings(BackendSettings::class)->getColorScheme();
 
         return $this->render();
     }

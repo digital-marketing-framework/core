@@ -105,7 +105,7 @@ watch(
 <template>
     <div class="tw-flex tw-items-center tw-gap-x-2">
         <div ref="hintToggle"
-                class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500"
+                class="tw-p-1 tw-text-accent hover:tw-text-accent-hover"
                 v-if="hint">
             <HintIcon class="tw-w-3 tw-h-3" />
         </div>
@@ -119,15 +119,15 @@ watch(
         </div>
         <div v-if="isDynamic"
              @click="copyValue(dynamicItemPath)"
-             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+             class="tw-p-1 tw-text-accent hover:tw-text-accent-hover">
             <CopyIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="canMove"
              @click="canMoveUp && moveValueUp(dynamicItemPath)"
              class="tw-p-1"
              :class="{
-                 'tw-text-indigo-500': canMoveUp,
-                 'tw-text-indigo-400': !canMoveUp
+                 'tw-text-accent-hover': canMoveUp,
+                 'tw-text-accent': !canMoveUp
              }">
             <SortUpIcon class="tw-w-3 tw-h-3" />
         </div>
@@ -135,32 +135,32 @@ watch(
              @click="canMoveDown && moveValueDown(dynamicItemPath)"
              class="tw-p-1"
              :class="{
-                 'tw-text-indigo-500': canMoveDown,
-                 'tw-text-indigo-400': !canMoveDown
+                 'tw-text-accent-hover': canMoveDown,
+                 'tw-text-accent': !canMoveDown
              }">
             <SortDownIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="isDynamic"
              @click="remove()"
-             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+             class="tw-p-1 tw-text-accent hover:tw-text-accent-hover">
             <TrashIcon class="tw-w-3 tw-h-3" />
         </div>
         <div v-if="!store.settings.readonly && isDynamicContainer"
              @click="addValue(currentPath)"
-             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+             class="tw-p-1 tw-text-accent hover:tw-text-accent-hover">
             <PlusIcon class="tw-w-3 tw-h-3" />
         </div>
         <div @click="toggleRawView(currentPath)"
              class="tw-p-1"
              :class="{
-                 'tw-text-indigo-500': raw,
-                 'tw-text-indigo-400': !raw
+                 'tw-text-accent-hover': raw,
+                 'tw-text-accent': !raw
              }">
             <CodeIcon class="tw-w-4 tw-h-4" />
         </div>
         <div v-if="debug"
              ref="debugToggle"
-             class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+             class="tw-p-1 tw-text-accent hover:tw-text-accent-hover">
             <BugIcon class="tw-w-3 tw-h-3" />
         </div>
     </div>

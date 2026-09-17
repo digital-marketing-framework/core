@@ -51,7 +51,7 @@ const icon = computed(() => getIcon(props.currentPath, undefined, schema.value))
 </script>
 
 <template>
-    <div class="tw-text-xs tw-text-left tw-text-gray-500">
+    <div class="tw-text-xs tw-text-left tw-text-muted">
         <table>
             <tr>
                 <th class="tw-p-1 tw-align-top">Path</th>

@@ -33,11 +33,11 @@ const type = computed(() => props.itemType);
 
 const iconClassName = computed(() => {
     return ["tw-h-4 tw-w-4 tw-shrink-0", {
-        'tw-text-gray-400': !props.active,
-        'group-hover:tw-text-indigo-600': isContainerType(props.itemType),
-        'group-hover:tw-text-blue-600': !isContainerType(props.itemType),
-        'tw-text-indigo-600 group-hover:tw-text-indigo-600': props.active && isContainerType(props.itemType),
-        'tw-text-blue-600 group-hover:tw-text-blue-600': props.active && !isContainerType(props.itemType),
+        'tw-text-muted': !props.active,
+        'group-hover:tw-text-accent-hover': isContainerType(props.itemType),
+        'group-hover:tw-text-field-accent': !isContainerType(props.itemType),
+        'tw-text-accent-hover group-hover:tw-text-accent-hover': props.active && isContainerType(props.itemType),
+        'tw-text-field-accent group-hover:tw-text-field-accent': props.active && !isContainerType(props.itemType),
         '!tw-w-3.5 !tw-h-3.5': props.itemType === "CONTAINER" || props.itemType === "LIST",
     }];
 });

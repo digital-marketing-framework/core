@@ -376,9 +376,10 @@ const updateTextArea = (textarea, stage, settings, start) => {
   textarea.style.display = 'none';
 };
 
-const createStage = (isFixed) => {
+const createStage = (isFixed, settings) => {
   const stage = document.createElement('DIV');
   stage.classList.add('dmf-configuration-document-editor-stage');
+  stage.setAttribute('data-dmf-color-scheme', settings?.colorScheme ?? 'auto');
   if(isFixed) {
     stage.style.position = 'fixed';
     stage.style.backgroundColor = 'rgba(0,0,0,0.5)';
@@ -391,22 +392,22 @@ const createStage = (isFixed) => {
   return stage;
 };
 
-const setupEmbedded = () => {
-  const stage = createStage(false);
+const setupEmbedded = (settings) => {
+  const stage = createStage(false, settings);
   const stageContainer = getStageContainer();
   stageContainer.appendChild(stage);
   return stage;
 };
 
-const setupFullscreen = () => {
-  const stage = createStage(true);
+const setupFullscreen = (settings) => {
+  const stage = createStage(true, settings);
   const stageContainer = getStageContainer();
   stageContainer.appendChild(stage);
   return stage;
 };
 
-const setupModal = () => {
-  const stage = createStage(true);
+const setupModal = (settings) => {
+  const stage = createStage(true, settings);
   document.body.appendChild(stage);
   return stage;
 };
@@ -422,6 +423,7 @@ const getSettings = (textarea) => {
   settings['readonly'] = textarea.dataset.readonly === 'true';
   settings['globalDocument'] = textarea.dataset.globalDocument === 'true';
   settings['debug'] = textarea.dataset.debug === 'true';
+  settings['colorScheme'] = textarea.dataset.colorScheme || 'auto';
   settings['contextIdentifier'] = textarea.dataset.contextIdentifier || '';
   settings['documentType'] = textarea.dataset.documentType || '';
   settings['documentGroup'] = textarea.dataset.documentGroup || '';
@@ -489,7 +491,7 @@ const initEnvironment = async (textarea, link) => {
   };
 
   if (settings.mode === 'modal') {
-    stage = setupModal();
+    stage = setupModal(settings);
     updateTextArea(textarea, stage, settings, start);
   } else if (settings.mode == 'fullscreen') {
     stage = setupFullscreen(settings, start);

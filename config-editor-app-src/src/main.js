@@ -1,3 +1,4 @@
+import './assets/tokens.css';
 import './assets/tailwind.css';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import './assets/custom.css';

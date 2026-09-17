@@ -7,6 +7,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentMa
 use DigitalMarketingFramework\Core\ConfigurationEditor\MetaData;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\BackendSettings;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 
@@ -36,6 +37,7 @@ class RenderingService implements RenderingServiceInterface, GlobalConfiguration
         string $contextType = '',
     ): array {
         $debug = $this->globalConfiguration->getGlobalSettings(CoreSettings::class)->debug();
+        $colorScheme = $this->globalConfiguration->getGlobalSettings(BackendSettings::class)->getColorScheme();
         $parameters['documentType'] ??= $documentType;
         $dataAttributes = [
             'app' => $ready ? 'true' : 'false',
@@ -43,6 +45,7 @@ class RenderingService implements RenderingServiceInterface, GlobalConfiguration
             'readonly' => $readonly ? 'true' : 'false',
             'global-document' => $globalDocument ? 'true' : 'false',
             'debug' => $debug ? 'true' : 'false',
+            'color-scheme' => $colorScheme,
             'uid' => $uid,
             'context-identifier' => $contextIdentifier,
             'context-type' => $contextType,

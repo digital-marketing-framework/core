@@ -66,6 +66,18 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_NOTIFICATIONS_ENABLED = false;
 
+    public const KEY_BACKEND = 'backend';
+
+    public const KEY_BACKEND_COLOR_SCHEME = 'colorScheme';
+
+    public const DEFAULT_BACKEND_COLOR_SCHEME = self::VALUE_COLOR_SCHEME_AUTO;
+
+    public const VALUE_COLOR_SCHEME_AUTO = 'auto';
+
+    public const VALUE_COLOR_SCHEME_LIGHT = 'light';
+
+    public const VALUE_COLOR_SCHEME_DARK = 'dark';
+
     public const KEY_FRONTEND = 'frontend';
 
     public const KEY_FRONTEND_PREFIX = 'prefix';
@@ -107,6 +119,8 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
     protected ContainerSchema $dataPrivacySchema;
 
     protected ContainerSchema $notificationsSchema;
+
+    protected ContainerSchema $backendSchema;
 
     protected ContainerSchema $frontendSchema;
 
@@ -200,6 +214,23 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $notificationsSchema->addProperty(static::KEY_NOTIFICATIONS_ENABLED, $enableNotificationsSchema);
 
         return $notificationsSchema;
+    }
+
+    protected function getBackendSchema(): ContainerSchema
+    {
+        $backendSchema = new ContainerSchema();
+        $backendSchema->getRenderingDefinition()->setLabel('Backend');
+
+        $colorSchemeSchema = new StringSchema(static::DEFAULT_BACKEND_COLOR_SCHEME);
+        $colorSchemeSchema->getRenderingDefinition()->setLabel('Color Scheme');
+        $colorSchemeSchema->getRenderingDefinition()->setGeneralDescription('Appearance of the Anyrel backend. Automatic follows the surrounding system.');
+        $colorSchemeSchema->getRenderingDefinition()->setFormat(RenderingDefinitionInterface::FORMAT_SELECT);
+        $colorSchemeSchema->getAllowedValues()->addValue(static::VALUE_COLOR_SCHEME_AUTO, 'Automatic');
+        $colorSchemeSchema->getAllowedValues()->addValue(static::VALUE_COLOR_SCHEME_LIGHT, 'Light');
+        $colorSchemeSchema->getAllowedValues()->addValue(static::VALUE_COLOR_SCHEME_DARK, 'Dark');
+        $backendSchema->addProperty(static::KEY_BACKEND_COLOR_SCHEME, $colorSchemeSchema);
+
+        return $backendSchema;
     }
 
     protected function getFrontendSchema(): ContainerSchema
@@ -337,6 +368,9 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
         $this->notificationsSchema = $this->getNotificationsSchema();
         $this->addProperty(static::KEY_NOTIFICATIONS, $this->notificationsSchema);
+
+        $this->backendSchema = $this->getBackendSchema();
+        $this->addProperty(static::KEY_BACKEND, $this->backendSchema);
 
         $this->frontendSchema = $this->getFrontendSchema();
         $this->addProperty(static::KEY_FRONTEND, $this->frontendSchema);
