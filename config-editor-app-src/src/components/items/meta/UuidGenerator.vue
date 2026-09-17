@@ -39,7 +39,7 @@ const selectUuid = () => {
 
 </script>
 <template>
-    <div class="tw-w-full tw-max-w-3xl tw-bg-blue-100 tw-text-blue-800 tw-border tw-border-blue-200 tw-py-2 tw-px-3 tw-rounded">
+    <div class="tw-w-full tw-max-w-3xl tw-bg-field tw-text-field-ink tw-border tw-border-field-line tw-py-2 tw-px-3 tw-rounded">
         <header class="tw-flex tw-items-center tw-justify-between tw-gap-4">
             <div class="tw-flex tw-items-center tw-gap-x-1">
                 <label :for="'input_raw_uuid' + currentPath"
@@ -47,11 +47,11 @@ const selectUuid = () => {
             </div>
             <div class="tw-flex tw-items-center tw-gap-x-2">
                 <div @click="updateUuid()"
-                     class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+                     class="tw-p-1 tw-text-accent hover:tw-text-accent-hover">
                     <RotateLeftIcon class="tw-w-3 tw-h-3" />
                 </div>
                 <div @click="copyUuid()"
-                     class="tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+                     class="tw-p-1 tw-text-accent hover:tw-text-accent-hover">
                     <CopySolidIcon v-if="newUuidCopied"
                                    class="tw-w-3 tw-h-3" />
                     <CopyIcon v-else
@@ -67,7 +67,7 @@ const selectUuid = () => {
                    autocomplete="off"
                    @focus="selectUuid"
                    ref="newUuidInput"
-                   class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
+                   class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-ink placeholder:tw-text-placeholder tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-input focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-focus sm:tw-text-sm sm:tw-leading-6"
                    readonly="readonly" />
         </div>
     </div>

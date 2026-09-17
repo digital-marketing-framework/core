@@ -37,7 +37,7 @@ const description = computed(() => schema.value.description || '');
             <label :for="'input_' + currentPath"
                    :class="{
                        'tw-font-medium tw-text-sm': !isDynamicItem || parentSchema.type === 'MAP',
-                       'tw-text-blue-800/50 tw-text-xs': isDynamicItem && parentSchema.type !== 'MAP'
+                       'tw-text-placeholder tw-text-xs': isDynamicItem && parentSchema.type !== 'MAP'
                    }">
                 {{ label }}
             </label>
@@ -45,7 +45,7 @@ const description = computed(() => schema.value.description || '');
         <HeaderActions :currentPath="currentPath"
                        :dynamicItemPath="dynamicItemPath" />
     </header>
-    <div class="tw-pt-3 tw-text-xs tw-text-indigo-800 tw-opacity-80"
+    <div class="tw-pt-3 tw-text-xs tw-text-accent-selected-ink tw-opacity-80"
         v-if="description">{{ description }}
     </div>
 </template>

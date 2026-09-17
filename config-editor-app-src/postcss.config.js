@@ -19,6 +19,13 @@ module.exports = {
               return selector;
           }
 
+          // Selectors that already start at the root scope themselves, such as
+          // the colour scheme attribute on the stage. Prefixing them again
+          // would ask for a stage inside a stage, which never matches.
+          if (selector.startsWith(prefix + '[') || selector.startsWith(prefix + ':')) {
+              return selector;
+          }
+
           return prefix + ' ' + selector;
       }
   }),

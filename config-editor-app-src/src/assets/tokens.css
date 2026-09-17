@@ -1,0 +1,135 @@
+/* Colour tokens for the configuration editor.
+ *
+ * Every colour the editor uses is declared here once, as a light and a dark
+ * value. Components never name a colour directly; they use the Tailwind
+ * classes mapped to these variables in tailwind.config.js.
+ *
+ * Which scheme applies is decided by the `color-scheme` property, which
+ * `light-dark()` reads. The stage takes its value from the global setting
+ * backend.colorScheme, passed in as data-dmf-color-scheme:
+ *
+ *   "auto"            take the scheme of the system the editor is embedded in
+ *                     (the default)
+ *   "light" / "dark"  use that one, whatever the surrounding system does
+ *
+ * "auto" is `color-scheme: inherit` rather than `light dark`, which matters:
+ * inherit reads what the surrounding document declares, so a backend that
+ * forces a scheme is followed exactly, and one that leaves the choice to the
+ * viewer passes that choice on. `light dark` would ask the browser directly
+ * and ignore the system around it. Nothing here knows about any particular
+ * CMS - a plain PHP application declaring `color-scheme` is followed too.
+ *
+ * Palette: task 067, direction "Slate v2", reviewed with the design team.
+ * Light values are the ones the editor shipped with before dark mode.
+ */
+
+.dmf-configuration-document-editor-stage {
+  color-scheme: inherit;
+
+  /* -- chrome ------------------------------------------------------- */
+  --dmf-surface: light-dark(#ffffff, #0f172a);
+  --dmf-surface-bar: light-dark(#f3f4f6, #242e41);
+  --dmf-surface-readonly: light-dark(#f5f5f5, #242d3d);
+  --dmf-border: light-dark(#e5e7eb, #44506e);
+  --dmf-text: light-dark(#111827, #e8edf5);
+  --dmf-text-muted: light-dark(#6b7280, #c6cfdd);
+
+  /* -- fields: the blue family -------------------------------------- */
+  --dmf-field-bg: light-dark(#dbeafe, #1e3e74);
+  --dmf-field-text: light-dark(#1e40af, #cfe2ff);
+  --dmf-field-border: light-dark(#bfdbfe, #3767b0);
+  --dmf-input-ring: light-dark(#bfdbfe, #46699f);
+  --dmf-focus-ring: light-dark(#2563eb, #6fb0ff);
+  --dmf-chip-bg: light-dark(#eff6ff, #22375c);
+  --dmf-chip-border: light-dark(#93c5fd, #42679c);
+
+  /* -- containers: the indigo family -------------------------------- */
+  --dmf-container-accent: light-dark(#4f46e5, #c3caff);
+  --dmf-container-selected-bg: light-dark(#e6ecff, #3a4278);
+  --dmf-container-selected-text: light-dark(#4f46e5, #dde1ff);
+  --dmf-field-selected-bg: light-dark(#e2eefe, #234888);
+  --dmf-code-bg: light-dark(#312e81, #363b85);
+
+  /* -- actions and state -------------------------------------------- */
+  --dmf-button-bg: light-dark(#2563eb, #2f6fe4);
+  --dmf-button-text: light-dark(#ffffff, #ffffff);
+  --dmf-danger-text: light-dark(#dc2626, #ffd8d8);
+  --dmf-danger-bg: light-dark(#fee2e2, #7a2b33);
+  --dmf-danger-border: light-dark(#b91c1c, #d2555c);
+
+  /* The outline colour is too light to carry white text as a fill in dark:
+     4.04:1, below both WCAG 4.5:1 and APCA Lc 75. Destructive buttons use
+     this deeper red instead, which keeps 3.7:1 against the surface. */
+  --dmf-danger-solid: light-dark(#b91c1c, #c04a51);
+
+  /* -- dialogs and messages ----------------------------------------- */
+  --dmf-backdrop: light-dark(rgb(107 114 128 / 0.75), rgb(2 6 23 / 0.8));
+  --dmf-notice-bg: light-dark(#93c5fd, #2f5183);
+
+  /* -- item-type rails ---------------------------------------------- */
+  --dmf-rail-default: light-dark(#e5e7eb, #5a6884);
+  --dmf-rail-scalar: light-dark(#bbf7d0, #3fae74);
+  --dmf-rail-dynamic: light-dark(#d8b4fe, #a583f5);
+
+  /* -- translucent values -------------------------------------------
+   * Tailwind's opacity modifier (bg-surface/50) cannot work on a token,
+   * because a colour built by light-dark() has no channels for Tailwind to
+   * recombine. The few places that need transparency get their own token.
+   */
+  --dmf-surface-veil: light-dark(rgb(255 255 255 / 0.5), rgb(15 23 42 / 0.55));
+  --dmf-ring-subtle: light-dark(rgb(0 0 0 / 0.05), rgb(255 255 255 / 0.09));
+  --dmf-container-border-subtle: light-dark(rgb(99 102 241 / 0.2), rgb(195 202 255 / 0.22));
+  --dmf-placeholder: light-dark(rgb(30 64 175 / 0.6), rgb(207 226 255 / 0.55));
+
+  /* -- hover states --------------------------------------------------
+   * Derived rather than picked, so a change to a resting colour carries to
+   * its hover. The rule is "one step further from the surface": darker in
+   * light, lighter in dark. Filled buttons are the exception and lighten in
+   * both, which is what they do today (blue-600 to blue-500 on hover).
+   */
+  --dmf-button-bg-hover: color-mix(in srgb, var(--dmf-button-bg), white 14%);
+  --dmf-danger-bg-hover: color-mix(in srgb, var(--dmf-danger-solid), white 14%);
+  --dmf-surface-hover: light-dark(
+    color-mix(in srgb, var(--dmf-surface), black 4%),
+    color-mix(in srgb, var(--dmf-surface), white 7%)
+  );
+  --dmf-container-accent-hover: light-dark(
+    color-mix(in srgb, var(--dmf-container-accent), black 22%),
+    color-mix(in srgb, var(--dmf-container-accent), white 22%)
+  );
+  --dmf-field-accent-hover: light-dark(
+    color-mix(in srgb, var(--dmf-focus-ring), black 22%),
+    color-mix(in srgb, var(--dmf-focus-ring), white 22%)
+  );
+  --dmf-text-muted-hover: light-dark(
+    color-mix(in srgb, var(--dmf-text-muted), black 25%),
+    color-mix(in srgb, var(--dmf-text-muted), white 25%)
+  );
+  --dmf-rail-default-hover: light-dark(
+    color-mix(in srgb, var(--dmf-rail-default), black 25%),
+    color-mix(in srgb, var(--dmf-rail-default), white 22%)
+  );
+  --dmf-rail-scalar-hover: light-dark(
+    color-mix(in srgb, var(--dmf-rail-scalar), black 25%),
+    color-mix(in srgb, var(--dmf-rail-scalar), white 22%)
+  );
+  --dmf-rail-dynamic-hover: light-dark(
+    color-mix(in srgb, var(--dmf-rail-dynamic), black 25%),
+    color-mix(in srgb, var(--dmf-rail-dynamic), white 22%)
+  );
+
+  color: var(--dmf-text);
+}
+
+/* An explicit choice overrides the surrounding system, in both directions. */
+.dmf-configuration-document-editor-stage[data-dmf-color-scheme='auto'] {
+  color-scheme: inherit;
+}
+
+.dmf-configuration-document-editor-stage[data-dmf-color-scheme='light'] {
+  color-scheme: only light;
+}
+
+.dmf-configuration-document-editor-stage[data-dmf-color-scheme='dark'] {
+  color-scheme: only dark;
+}

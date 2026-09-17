@@ -54,7 +54,7 @@ const reset = () => {
         >
         <div v-if="canResetOverwrite"
                 @click="reset()"
-                class="resetOverwrite tw-p-1 tw-text-indigo-400 hover:tw-text-indigo-500">
+                class="resetOverwrite tw-p-1 tw-text-accent hover:tw-text-accent-hover">
             <RotateLeftIcon class="tw-w-3 tw-h-3" />
         </div>
     </div>

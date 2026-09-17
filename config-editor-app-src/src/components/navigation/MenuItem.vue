@@ -45,18 +45,18 @@ const customIcon = computed(() => getIcon(props.currentPath, undefined, schema.v
 
         <div class="tw-flex tw-justify-between tw-rounded tw-cursor-pointer tw-gap-x-3"
              :class="{
-                 'hover:tw-bg-indigo-100/80': !selected && isContainer,
-                 'hover:tw-bg-blue-100/80': !selected && !isContainer,
-                 'tw-bg-indigo-100/80': selected && isContainer,
-                 'tw-bg-blue-100/80': selected && !isContainer,
+                 'hover:tw-bg-accent-selected': !selected && isContainer,
+                 'hover:tw-bg-field-selected': !selected && !isContainer,
+                 'tw-bg-accent-selected': selected && isContainer,
+                 'tw-bg-field-selected': selected && !isContainer,
              }">
             <div class="tw-flex tw-group tw-gap-x-2.5 tw-items-center tw-text-sm tw-leading-6 tw-font-semibold tw-grow tw-py-1.5 tw-px-3"
                  :class="{
-                     'tw-text-gray-700': !selected,
-                     'hover:tw-text-indigo-600': isContainer,
-                     'hover:tw-text-blue-600': !isContainer,
-                     'tw-text-indigo-600': selected && isContainer,
-                     'tw-text-blue-600': selected && !isContainer,
+                     'tw-text-muted': !selected,
+                     'hover:tw-text-accent-hover': isContainer,
+                     'hover:tw-text-field-accent': !isContainer,
+                     'tw-text-accent-hover': selected && isContainer,
+                     'tw-text-field-accent': selected && !isContainer,
                  }"
                  @click="selectPath(currentPath)">
                 <ItemIcon :item-type="schema.type"
@@ -65,7 +65,7 @@ const customIcon = computed(() => getIcon(props.currentPath, undefined, schema.v
                 {{ label }}
             </div>
             <DisclosureButton v-if="navigationChildPaths.length && !isRoot"
-                              class="tw-flex tw-items-center tw-justify-center tw-w-8 hover:tw-text-indigo-600"
+                              class="tw-flex tw-items-center tw-justify-center tw-w-8 hover:tw-text-accent-hover"
                               @click="toggleContainerNavigationState(currentPath)">
                 <AngleDownIcon class="tw-w-3 tw-h-3"
                                :class="open && 'tw-rotate-180 tw-transform'" />

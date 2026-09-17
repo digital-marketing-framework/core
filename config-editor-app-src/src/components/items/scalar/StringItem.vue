@@ -102,9 +102,10 @@ function editComboboxValue() {
             <div class="tw-mt-2">
                 <select v-if="schema.format === 'select'"
                         v-model="parentValue[currentKey]"
-                        class="tw-form-select tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6 tw-text-ellipsis"
+                        class="tw-form-select tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-ink placeholder:tw-text-placeholder tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-input focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-focus sm:tw-text-sm sm:tw-leading-6 tw-text-ellipsis"
                         :class="{
-                            'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
+                            'custom-class-readonly tw-bg-surface-readonly': store.settings.readonly,
+                            'tw-bg-surface': !store.settings.readonly
                         }"
                         :disabled="store.settings.readonly">
                     <option v-if="invalidValue"
@@ -115,9 +116,10 @@ function editComboboxValue() {
                 </select>
                 <textarea v-else-if="schema.format === 'text'"
                           v-model="parentValue[currentKey]"
-                          class="tw-form-textarea tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
+                          class="tw-form-textarea tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-ink placeholder:tw-text-placeholder tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-input focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-focus sm:tw-text-sm sm:tw-leading-6"
                           :class="{
-                              'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
+                              'custom-class-readonly tw-bg-surface-readonly': store.settings.readonly,
+                              'tw-bg-surface': !store.settings.readonly
                           }" />
                 <input v-else-if="schema.format === 'hidden'"
                        :id="'input_' + currentPath"
@@ -127,11 +129,11 @@ function editComboboxValue() {
                 <div v-else-if="schema.format === 'combobox'" class="tw-relative" :class="{ 'tw-z-50': showSuggestions }">
                     <div v-if="currentValue && isValueSuggested && !editingCombobox"
                          class="tw-flex tw-items-center tw-gap-1">
-                        <span class="tw-inline-flex tw-items-center tw-gap-1.5 tw-rounded tw-border tw-border-blue-300 tw-bg-blue-50 tw-px-2.5 tw-py-1.5 tw-text-sm tw-text-gray-900 tw-cursor-pointer hover:tw-bg-blue-100"
+                        <span class="tw-inline-flex tw-items-center tw-gap-1.5 tw-rounded tw-border tw-border-chip-line tw-bg-chip tw-px-2.5 tw-py-1.5 tw-text-sm tw-text-ink tw-cursor-pointer hover:tw-bg-field"
                               @click="editComboboxValue">
                             {{ suggestedValues[currentValue] }}
                             <span v-if="suggestedValues[currentValue] !== currentValue"
-                                  class="tw-text-xs tw-text-gray-500">({{ currentValue }})</span>
+                                  class="tw-text-xs tw-text-muted">({{ currentValue }})</span>
                         </span>
                     </div>
                     <div v-else>
@@ -145,20 +147,21 @@ function editComboboxValue() {
                                @focus="showSuggestions = true; editingCombobox = true"
                                @blur="showSuggestions = false; editingCombobox = false; highlightedIndex = -1"
                                @keydown="onComboboxKeydown"
-                               class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
+                               class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-ink placeholder:tw-text-placeholder tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-input focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-focus sm:tw-text-sm sm:tw-leading-6"
                                :class="{
-                                   'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
+                                   'custom-class-readonly tw-bg-surface-readonly': store.settings.readonly,
+                                   'tw-bg-surface': !store.settings.readonly
                                }"
                                :disabled="store.settings.readonly" />
                         <ul v-if="showSuggestions && hasSuggestions"
-                            class="combobox-suggestions tw-absolute tw-z-10 tw-mt-1 tw-max-h-60 tw-w-full tw-overflow-auto tw-rounded tw-bg-white tw-py-1 tw-shadow-lg tw-ring-1 tw-ring-black/5">
+                            class="combobox-suggestions tw-absolute tw-z-10 tw-mt-1 tw-max-h-60 tw-w-full tw-overflow-auto tw-rounded tw-bg-surface tw-py-1 tw-shadow-lg tw-ring-1 tw-ring-subtle">
                             <li v-for="(label, value, index) in filteredSuggestions"
                                 :key="value"
                                 @mousedown.prevent="selectSuggestion(value)"
                                 class="tw-cursor-pointer tw-px-3 tw-py-2 tw-text-sm"
-                                :class="index === highlightedIndex ? 'tw-bg-blue-100' : 'hover:tw-bg-blue-50'">
+                                :class="index === highlightedIndex ? 'tw-bg-field' : 'hover:tw-bg-chip'">
                                 {{ label }}
-                                <span v-if="label !== value" class="tw-text-xs tw-text-gray-400 tw-ml-1">({{ value }})</span>
+                                <span v-if="label !== value" class="tw-text-xs tw-text-muted tw-ml-1">({{ value }})</span>
                             </li>
                         </ul>
                     </div>
@@ -170,9 +173,10 @@ function editComboboxValue() {
                        type="text"
                        autocomplete="off"
                        placeholder="Enter value"
-                       class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-gray-900 placeholder:tw-text-blue-800 placeholder:tw-opacity-60 tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-blue-200 focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-blue-600 sm:tw-text-sm sm:tw-leading-6"
+                       class="tw-form-input tw-block tw-w-full tw-rounded tw-border-0 tw-py-1.5 tw-text-ink placeholder:tw-text-placeholder tw-shadow-sm tw-ring-1 tw-ring-inset tw-ring-input focus:tw-ring-2 focus:tw-ring-inset focus:tw-ring-focus sm:tw-text-sm sm:tw-leading-6"
                        :class="{
-                           'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
+                           'custom-class-readonly tw-bg-surface-readonly': store.settings.readonly,
+                           'tw-bg-surface': !store.settings.readonly
                        }"
                        :disabled="store.settings.readonly" />
             </div>

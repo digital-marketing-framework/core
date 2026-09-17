@@ -35,15 +35,15 @@ const description = computed(() => schema.value.description || '');
 </script>
 
 <template>
-    <div class="tw-bg-indigo-100 tw-border tw-rounded tw-border-indigo-500/20">
-        <header class="tw-flex tw-items-center tw-justify-between tw-gap-4 tw-px-3 tw-py-2 tw-text-indigo-800">
+    <div class="tw-bg-accent-selected tw-border tw-rounded tw-border-accent-line">
+        <header class="tw-flex tw-items-center tw-justify-between tw-gap-4 tw-px-3 tw-py-2 tw-text-accent-selected-ink">
             <div class="tw-flex tw-items-center tw-gap-x-2">
                 <slot name="disclosureButton"></slot>
                 <label :for="label"
                     class="tw-flex tw-items-center tw-text-sm tw-font-medium">
                     <ItemIcon :item-type="schema.type"
                             :custom-icon="customIcon"
-                            class="!tw-text-indigo-800 tw-mr-2.5" />
+                            class="!tw-text-accent-selected-ink tw-mr-2.5" />
                     <span>{{ label }}</span>
                     <span v-if="itemCount !== null"
                           class="tw-text-xs tw-font-normal tw-opacity-60 tw-ml-1 tw-self-center">[{{ itemCount }}]</span>
@@ -52,7 +52,7 @@ const description = computed(() => schema.value.description || '');
             <HeaderActions :currentPath="currentPath"
                         :dynamicItemPath="dynamicItemPath" />
         </header>
-        <div class="tw-pl-10 tw-pr-4 tw-pb-3 tw-text-xs tw-text-indigo-800 tw-opacity-80"
+        <div class="tw-pl-10 tw-pr-4 tw-pb-3 tw-text-xs tw-text-accent-selected-ink tw-opacity-80"
             v-if="description">{{ description }}
         </div>
     </div>

@@ -8,6 +8,7 @@ use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDoc
 use DigitalMarketingFramework\Core\ConfigurationDocument\Parser\ConfigurationDocumentParserAwareTrait;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\BackendSettings;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Registry\RegistryInterface;
 use DigitalMarketingFramework\Core\SchemaDocument\SchemaDocument;
@@ -49,6 +50,7 @@ class GlobalSettingsSectionController extends SectionController implements Globa
         $this->viewData['document'] = $document;
 
         $this->viewData['debug'] = $this->globalConfiguration->getGlobalSettings(CoreSettings::class)->debug();
+        $this->viewData['colorScheme'] = $this->globalConfiguration->getGlobalSettings(BackendSettings::class)->getColorScheme();
 
         return $this->render();
     }

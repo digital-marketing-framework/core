@@ -13,18 +13,18 @@
   width: 0.5rem;
   border-left-width: 0.2rem;
   transition: all 0.5s;
-  @apply tw-border-l-gray-200;
+  @apply tw-border-l-rail;
 }
 .custom-class-overwritten:hover:before {
-  @apply tw-border-l-gray-400;
+  @apply tw-border-l-rail-hover;
 }
 
 /* Item type: Scalar */
 .custom-class-overwritten.item-type-scalar:before {
-  @apply tw-border-l-green-200;
+  @apply tw-border-l-rail-scalar;
 }
 .custom-class-overwritten.item-type-scalar:hover:before {
-  @apply tw-border-l-green-400;
+  @apply tw-border-l-rail-scalar-hover;
 }
 
 /* Item type: Container */
@@ -34,10 +34,10 @@
 
 /* Item type: Dynamic Container */
 .custom-class-overwritten.item-type-dynamic-container:before {
-  @apply tw-border-l-purple-300;
+  @apply tw-border-l-rail-dynamic;
 }
 .custom-class-overwritten.item-type-dynamic-container:hover:before {
-  @apply tw-border-l-purple-500;
+  @apply tw-border-l-rail-dynamic-hover;
 }
 
 .custom-class-overwritten .resetOverwrite {
@@ -51,15 +51,14 @@
   opacity: 1;
 }
 
-.custom-class-readonly {
-  /* TODO */
-}
-
-/* Prism editor: prevent line wrapping */
+/* Prism editor: prevent line wrapping. The text colour matches the
+   foreground of the Prism "Tomorrow" theme the editor loads, which is dark in
+   both schemes; it used to be a TYPO3 backend variable, which resolved to
+   nothing outside TYPO3. */
 .prism-editor-wrapper .prism-editor__editor,
 .prism-editor-wrapper .prism-editor__textarea {
-  color: var(--token-color-neutral-15);
-  caret-color: var(--token-color-neutral-15);
+  color: #cccccc;
+  caret-color: #cccccc;
   white-space: pre !important;
   overflow-wrap: normal !important;
 }
@@ -84,3 +83,4 @@
 .generic-item:has(.tippy-box[data-state="visible"]) {
   z-index: 1;
 }
+

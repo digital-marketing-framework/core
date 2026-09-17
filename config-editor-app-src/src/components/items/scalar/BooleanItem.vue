@@ -40,9 +40,10 @@ const label = computed(() => getLabel(props.currentPath));
                            v-model="parentValue[currentKey]"
                            type="checkbox"
                            autocomplete="off"
-                           class="tw-form-checkbox tw-w-4 tw-h-4 tw-text-blue-600 tw-border-blue-200 tw-rounded focus:tw-ring-blue-600"
+                           class="tw-form-checkbox tw-w-4 tw-h-4 tw-text-focus tw-border-field-line tw-rounded focus:tw-ring-focus"
                            :class="{
-                               'custom-class-readonly tw-bg-neutral-100': store.settings.readonly
+                               'custom-class-readonly tw-bg-surface-readonly': store.settings.readonly,
+                               'tw-bg-surface': !store.settings.readonly
                            }"
                            :disabled="store.settings.readonly">
                 </div>

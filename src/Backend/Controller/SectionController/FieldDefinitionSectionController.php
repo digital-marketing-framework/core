@@ -12,6 +12,7 @@ use DigitalMarketingFramework\Core\FieldDefinition\FieldDefinitionManagerInterfa
 use DigitalMarketingFramework\Core\FieldDefinition\Storage\FieldDefinitionStorageInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareTrait;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\BackendSettings;
 use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Model\FieldDefinition\FieldContextInformation;
@@ -318,6 +319,7 @@ class FieldDefinitionSectionController extends ListSectionController implements 
         $this->viewData['folder'] = $folder;
         $this->viewData['readonly'] = $this->storage->isReadOnly($contextIdentifier, $folder);
         $this->viewData['debug'] = $this->globalConfiguration->getGlobalSettings(CoreSettings::class)->debug();
+        $this->viewData['colorScheme'] = $this->globalConfiguration->getGlobalSettings(BackendSettings::class)->getColorScheme();
 
         return $this->render();
     }
