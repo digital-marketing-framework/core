@@ -9,9 +9,11 @@
         <form method="post" action="{{ uri(saveRoute) }}">
             <div>
                 <p>
-                    <button class="btn btn-default btn-sm" value="save" title="Save" type="submit">
-                        Save
-                    </button>
+                    {% if not (config.readonly ?? false) %}
+                        <button class="btn btn-default btn-sm" value="save" title="Save" type="submit">
+                            Save
+                        </button>
+                    {% endif %}
                     <a data-role="close" class="btn btn-default btn-sm" title="Close" href="{{ returnUri }}">
                         Close
                     </a>

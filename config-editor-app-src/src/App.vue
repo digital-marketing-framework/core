@@ -83,6 +83,7 @@ const confirmationDialogOpen = computed(() => store.confirmDialog.open);
                                 <span v-else-if="store.settings.mode === 'modal'">Discard</span>
                             </button>
                             <button type="button"
+                                    v-if="!store.settings.readonly"
                                     @click="store.save()"
                                     class="tw-rounded tw-px-4 tw-text-sm tw-py-1.5 disabled:tw-opacity-50 tw-bg-button tw-font-semibold tw-text-button-ink tw-shadow-sm hover:tw-bg-button-hover focus-visible:tw-outline focus-visible:tw-outline-2 focus-visible:tw-outline-offset-2 focus-visible:tw-outline-focus">
                                 <span v-if="store.settings.mode === 'embedded'">
