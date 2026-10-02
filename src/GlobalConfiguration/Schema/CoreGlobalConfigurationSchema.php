@@ -24,6 +24,10 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
 
     public const DEFAULT_TIMEZONE = self::VALUE_TIMEZONE_SERVER;
 
+    public const KEY_ALLOWED_ENVIRONMENT_VARIABLES = 'allowedEnvironmentVariables';
+
+    public const DEFAULT_ALLOWED_ENVIRONMENT_VARIABLES = '';
+
     public const KEY_CONFIGURATION_STORAGE = 'configurationStorage';
 
     public const KEY_CONFIGURATION_STORAGE_FOLDER = 'folder';
@@ -354,6 +358,11 @@ class CoreGlobalConfigurationSchema extends GlobalConfigurationSchema
         $this->addProperty(static::KEY_ENVIRONMENT, $environmentSchema);
 
         $this->addProperty(static::KEY_DEFAULT_TIMEZONE, $this->getTimezoneSchema());
+
+        $allowedEnvironmentVariablesSchema = new StringSchema(static::DEFAULT_ALLOWED_ENVIRONMENT_VARIABLES);
+        $allowedEnvironmentVariablesSchema->getRenderingDefinition()->setLabel('Environment variables available in configuration documents (comma-separated)');
+        $allowedEnvironmentVariablesSchema->getRenderingDefinition()->setGeneralDescription('Only these environment variables can be read in configuration documents. Never list secrets — their values can end up in processed and transmitted data.');
+        $this->addProperty(static::KEY_ALLOWED_ENVIRONMENT_VARIABLES, $allowedEnvironmentVariablesSchema);
 
         $this->configurationStorageSchema = $this->getConfigurationStorageSchema();
         $this->addProperty(static::KEY_CONFIGURATION_STORAGE, $this->configurationStorageSchema);

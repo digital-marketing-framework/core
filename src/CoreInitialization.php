@@ -75,6 +75,7 @@ use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConcatenationValueS
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConditionValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\ConstantValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\DateValueSource;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\EnvironmentVariableValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldCollectorValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FieldValueSource;
 use DigitalMarketingFramework\Core\DataProcessor\ValueSource\FileValueSource;
@@ -134,6 +135,7 @@ class CoreInitialization extends Initialization
                 ConditionValueSource::class,
                 ConstantValueSource::class,
                 DateValueSource::class,
+                EnvironmentVariableValueSource::class,
                 FieldCollectorValueSource::class,
                 FieldValueSource::class,
                 FileValueSource::class,

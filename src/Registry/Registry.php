@@ -11,6 +11,7 @@ use DigitalMarketingFramework\Core\Context\WriteableContextInterface;
 use DigitalMarketingFramework\Core\Crypto\HashServiceAwareInterface;
 use DigitalMarketingFramework\Core\DataPrivacy\DataPrivacyManagerAwareInterface;
 use DigitalMarketingFramework\Core\DataProcessor\DataProcessorAwareInterface;
+use DigitalMarketingFramework\Core\Environment\EnvironmentServiceAwareInterface;
 use DigitalMarketingFramework\Core\FileStorage\FileStorageAwareInterface;
 use DigitalMarketingFramework\Core\Frontend\FrontendUriBuilderAwareInterface;
 use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationAwareInterface;
@@ -123,6 +124,10 @@ class Registry implements RegistryInterface
 
         if ($object instanceof HashServiceAwareInterface) {
             $object->setHashService($this->getHashService());
+        }
+
+        if ($object instanceof EnvironmentServiceAwareInterface) {
+            $object->setEnvironmentService($this->getEnvironmentService());
         }
 
         if ($object instanceof LoggerAwareInterface) {
