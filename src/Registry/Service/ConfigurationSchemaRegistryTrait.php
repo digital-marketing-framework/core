@@ -3,6 +3,9 @@
 namespace DigitalMarketingFramework\Core\Registry\Service;
 
 use DigitalMarketingFramework\Core\ConfigurationDocument\ConfigurationDocumentManagerInterface;
+use DigitalMarketingFramework\Core\DataProcessor\ValueSource\EnvironmentVariableValueSource;
+use DigitalMarketingFramework\Core\GlobalConfiguration\GlobalConfigurationInterface;
+use DigitalMarketingFramework\Core\GlobalConfiguration\Settings\CoreSettings;
 use DigitalMarketingFramework\Core\Integration\IntegrationInfo;
 use DigitalMarketingFramework\Core\Model\Configuration\ConfigurationInterface;
 use DigitalMarketingFramework\Core\Registry\Plugin\DataProcessorRegistryTrait;
@@ -46,6 +49,8 @@ trait ConfigurationSchemaRegistryTrait
      * @return array<string,string>
      */
     abstract protected function getIncludeValueSet(): array;
+
+    abstract public function getGlobalConfiguration(): GlobalConfigurationInterface;
 
     public function getActiveFieldContext(): string
     {
@@ -177,6 +182,12 @@ trait ConfigurationSchemaRegistryTrait
         // document IDs
         foreach ($this->getIncludeValueSet() as $documentIdentifier => $label) {
             $schemaDocument->addValueToValueSet('document/all', $documentIdentifier, $label);
+        }
+
+        // allowed environment variables
+        $allowedEnvironmentVariables = $this->getGlobalConfiguration()->getGlobalSettings(CoreSettings::class)->getAllowedEnvironmentVariables();
+        foreach ($allowedEnvironmentVariables as $name) {
+            $schemaDocument->addValueToValueSet(EnvironmentVariableValueSource::VALUE_SET_ALLOWED_VARIABLES, $name, $name);
         }
 
         // schema versions
