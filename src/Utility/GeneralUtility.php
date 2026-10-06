@@ -24,7 +24,7 @@ final class GeneralUtility
      */
     private const LABEL_WORD_PATTERN = '/\p{Lu}+(?=\p{Lu}\p{Ll})|\p{Lu}?\p{Ll}+|\p{Lu}+|\d+/u';
 
-    protected const CHARACTER_MAP = [
+    private const CHARACTER_MAP = [
         '\\n' => PHP_EOL,
         '\\s' => ' ',
         '\\t' => "\t",
@@ -199,7 +199,7 @@ final class GeneralUtility
     /**
      * @param array<mixed> $array
      */
-    protected static function castArrayToMultiValueStructure(array $array, MultiValueInterface $multiValue): void
+    private static function castArrayToMultiValueStructure(array $array, MultiValueInterface $multiValue): void
     {
         foreach ($array as $key => $value) {
             if (is_array($value)) {
@@ -239,7 +239,7 @@ final class GeneralUtility
     /**
      * @return array<mixed>
      */
-    protected static function castMultiValueStructureToArray(MultiValueInterface $multiValue): array
+    private static function castMultiValueStructureToArray(MultiValueInterface $multiValue): array
     {
         $array = [];
         foreach ($multiValue as $key => $value) {
